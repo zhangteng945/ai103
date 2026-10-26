@@ -1132,3 +1132,71 @@ footer.app-foot {
   padding-left: 0.75em;
   border-left: 1px solid var(--border);
 }
+
+/* Jump to question number (练习 · 跳转到题号) */
+.jump-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+}
+.jump-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.jump-row input,
+.jump-row select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 42px;
+  font-size: 16px; /* >=16px: no iOS zoom on focus */
+}
+.jump-row input {
+  width: 4.6rem;
+  padding: 0.35rem 0.5rem;
+  text-align: center;
+}
+.jump-row input:focus,
+.jump-row select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+.jump-row input.is-invalid {
+  border-color: var(--warning);
+}
+.jump-row .btn {
+  min-height: 42px;
+  min-width: 56px;
+}
+.jump-row select {
+  flex: 1 1 8rem;
+  min-width: 7.5rem;
+  max-width: 100%;
+  padding: 0.35rem 0.5rem;
+}
+.jump-hint {
+  flex-basis: 100%;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  min-height: 0;
+}
+.jump-hint:empty {
+  display: none;
+}
+.jump-hint.warn {
+  color: var(--warning);
+}
+.jump-hint.ok {
+  color: var(--success);
+}

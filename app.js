@@ -56,6 +56,14 @@
       unshuffleTitle: "恢复 PDF 原始题目顺序",
       shuffledTag: " · 乱序",
       progressPractice: (a, t, i) => "已答 " + a + " / " + t + "（当前第 " + i + " 题）",
+      jumpPre: "跳到第",
+      jumpSuf: "题",
+      jumpGo: "跳转",
+      jumpPick: "选择题号",
+      jumpOpt: (n) => "第 " + n + " 题",
+      jumpInvalid: (max) => "请输入 1–" + max + " 之间的题号（如 15 或 q015）",
+      jumpSwitched: (n) => "第 " + n + " 题不在当前筛选中，已切换到「全部」",
+      jumpShuffled: (n, pos) => "已跳到第 " + n + " 题（乱序中第 " + pos + " 个）",
       noQuestions: "当前筛选下没有题目。",
       typeHotspot: "热点配置",
       typeYn: "是/否",
@@ -167,6 +175,14 @@
       unshuffleTitle: "Restore original PDF question order",
       shuffledTag: " · shuffled",
       progressPractice: (a, t, i) => "Done " + a + " / " + t + " (Q " + i + ")",
+      jumpPre: "Go to question",
+      jumpSuf: "",
+      jumpGo: "Go",
+      jumpPick: "Pick question",
+      jumpOpt: (n) => "Q" + n,
+      jumpInvalid: (max) => "Enter a question number from 1 to " + max + " (e.g. 15 or q015)",
+      jumpSwitched: (n) => "Q" + n + " is not in the current filter — switched to All",
+      jumpShuffled: (n, pos) => "Jumped to Q" + n + " (position " + pos + " in shuffled order)",
       noQuestions: "No questions in this filter.",
       typeHotspot: "Hotspot config",
       typeYn: "Yes/No",
@@ -288,6 +304,20 @@
   }
   function yaLabel() {
     return state.lang === "both" ? "你的答案 / Your answer：" : t().yourAnswer;
+  }
+  /** UI string; in 对照 mode joins 中文 / English (skips duplicates/empties) */
+  function bi(key) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    const val = (pack) => {
+      const v = pack[key];
+      return typeof v === "function" ? v.apply(null, args) : v;
+    };
+    if (state.lang !== "both") return val(t());
+    const z = val(I18N.zh);
+    const e = val(I18N.en);
+    if (!e || z === e) return z;
+    if (!z) return e;
+    return z + " / " + e;
   }
   function optLine(q, oid) {
     const opt = (q.options || []).find((o) => o.id === oid);
@@ -776,6 +806,13 @@
     setTxt("#btn-practice-skip", pack.skip);
     setTxt("#btn-practice-submit", pack.submit);
     setTxt("#lbl-practice-showall span", pack.alwaysShow);
+    setTxt("#practice-jump-pre", state.lang === "both" ? "跳到第 / Go to Q" : pack.jumpPre);
+    setTxt("#practice-jump-suf", state.lang === "en" ? "" : I18N.zh.jumpSuf);
+    setTxt("#btn-practice-jump", bi("jumpGo"));
+    const jsel = $("#practice-jump-select");
+    if (jsel) jsel.setAttribute("aria-label", bi("jumpPick"));
+    const jin = $("#practice-jump-input");
+    if (jin) jin.setAttribute("aria-label", bi("jumpPre"));
     const filtLab = $("#view-practice .toolbar label.muted");
     if (filtLab) {
       const sel = filtLab.querySelector("select");
@@ -838,6 +875,7 @@
     if (lang !== "zh" && lang !== "en" && lang !== "both") return;
     state.lang = lang;
     saveLang(lang);
+    setJumpHint("");
     applyChrome();
     if (state.mode === "home") renderHome();
     else if (state.mode === "practice") renderPractice();
@@ -1163,6 +1201,7 @@
     if (idx < 0) idx = 0;
     state.practiceIndex = idx;
     $("#practice-filter").value = state.practiceFilter;
+    setJumpHint("");
     showView("practice");
     renderPractice();
   }
@@ -1228,12 +1267,109 @@
     return state.practiceList[state.practiceIndex];
   }
 
+  /* ---- Jump to question number (选题号) ---- */
+  /** original question number from id ("q015" -> 15) */
+  function qNumOf(q) {
+    const m = /(\d+)$/.exec(String(q && q.id));
+    return m ? parseInt(m[1], 10) : 0;
+  }
+  function maxQNum() {
+    return QUESTIONS.reduce((mx, q) => Math.max(mx, qNumOf(q)), 0);
+  }
+  /** accepts "15", "015", "q15", "Q015", "#15", "第15题", full-width digits; returns number or NaN */
+  function parseJumpInput(raw) {
+    const s = String(raw == null ? "" : raw)
+      .replace(/[\uff10-\uff19]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+      .replace(/[\uff51\uff31]/g, "q")
+      .replace(/[\uff03]/g, "#")
+      .trim();
+    const m = /^(?:#|q|no\.?|第)?\s*(\d{1,4})\s*(?:题)?$/i.exec(s);
+    return m ? parseInt(m[1], 10) : NaN;
+  }
+  let jumpHintKey = "";
+  function setJumpHint(msg, kind) {
+    const el = $("#practice-jump-hint");
+    if (!el) return;
+    el.textContent = msg || "";
+    jumpHintKey = msg ? state.practiceFilter + ":" + state.practiceIndex : "";
+    el.className = "jump-hint" + (msg && kind ? " " + kind : "");
+    const inp = $("#practice-jump-input");
+    if (inp) {
+      inp.classList.toggle("is-invalid", kind === "warn");
+      if (kind === "warn") inp.setAttribute("aria-invalid", "true");
+      else inp.removeAttribute("aria-invalid");
+    }
+  }
+  /** Jump to an original question number; respects filter + shuffle order. Returns true on success. */
+  function jumpToQuestionNumber(n) {
+    const target = QUESTIONS.find((q) => qNumOf(q) === n);
+    if (!Number.isFinite(n) || !target) {
+      setJumpHint(bi("jumpInvalid", maxQNum()), "warn");
+      return false;
+    }
+    let switched = false;
+    let pos = state.practiceList.findIndex((q) => q.id === target.id);
+    if (pos < 0) {
+      // not in current domain filter -> switch to 全部 (keeps saved shuffle order for "all")
+      state.practiceFilter = "all";
+      state.practiceList = QUESTIONS.slice();
+      applyPracticeOrder();
+      const f = $("#practice-filter");
+      if (f) f.value = "all";
+      pos = state.practiceList.findIndex((q) => q.id === target.id);
+      switched = true;
+    }
+    if (pos < 0) {
+      setJumpHint(bi("jumpInvalid", maxQNum()), "warn");
+      return false;
+    }
+    state.practiceIndex = pos;
+    renderPractice();
+    if (switched) setJumpHint(bi("jumpSwitched", n), "ok");
+    else if (isPracticeShuffled()) setJumpHint(bi("jumpShuffled", n, pos + 1), "ok");
+    else setJumpHint("");
+    const inp = $("#practice-jump-input");
+    if (inp) inp.value = "";
+    const body = $("#practice-body");
+    if (body && body.scrollIntoView) {
+      try {
+        body.scrollIntoView({ block: "start", behavior: "smooth" });
+      } catch (e) {
+        body.scrollIntoView();
+      }
+    }
+    return true;
+  }
+  function renderJumpSelect() {
+    // drop a stale success hint once the user navigates elsewhere (prev/next/shuffle…)
+    const hintEl = $("#practice-jump-hint");
+    if (hintEl && jumpHintKey && !hintEl.classList.contains("warn") &&
+        jumpHintKey !== state.practiceFilter + ":" + state.practiceIndex) setJumpHint("");
+    const sel = $("#practice-jump-select");
+    if (!sel) return;
+    const cur = currentPracticeQ();
+    const items = state.practiceList.slice().sort((a, b) => qNumOf(a) - qNumOf(b));
+    let html = '<option value="" disabled>' + escapeHtml(bi("jumpPick")) + "…</option>";
+    items.forEach((q) => {
+      const n = qNumOf(q);
+      let mark = "";
+      if (state.practiceSubmitted[q.id]) mark += " ✓";
+      if (state.practiceFlags[q.id]) mark += " ⚑";
+      html +=
+        '<option value="' + n + '"' + (cur && cur.id === q.id ? " selected" : "") + ">" +
+        escapeHtml(bi("jumpOpt", n) + mark) + "</option>";
+    });
+    sel.innerHTML = html;
+    if (!cur) sel.value = "";
+  }
+
   function renderPractice() {
     applyChrome();
     const q = currentPracticeQ();
     const pack = t();
     if (!q) {
       $("#practice-body").innerHTML = "<p class='muted'>" + pack.noQuestions + "</p>";
+      renderJumpSelect();
       return;
     }
     const answeredCount = state.practiceList.filter((x) => state.practiceSubmitted[x.id]).length;
@@ -1341,6 +1477,7 @@
     }
 
     $("#practice-body").innerHTML = html;
+    renderJumpSelect();
 
     $("#btn-practice-submit").disabled = submitted || revealed || !allBoxesSelected(q, selected);
     const rb = $("#btn-practice-reveal");
@@ -1957,6 +2094,19 @@
       renderPractice();
     });
     $("#btn-practice-reset").addEventListener("click", resetPracticeFilter);
+    $("#practice-jump").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const inp = $("#practice-jump-input");
+      if (jumpToQuestionNumber(parseJumpInput(inp ? inp.value : "")) && inp) inp.blur();
+    });
+    $("#practice-jump-input").addEventListener("input", () => {
+      const h = $("#practice-jump-hint");
+      if (h && h.classList.contains("warn")) setJumpHint("");
+    });
+    $("#practice-jump-select").addEventListener("change", (e) => {
+      const n = parseInt(e.target.value, 10);
+      if (n) jumpToQuestionNumber(n);
+    });
 
     $("#btn-exam-config-back").addEventListener("click", () => showView("home"));
     $("#btn-exam-start").addEventListener("click", startExam);

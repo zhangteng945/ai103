@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="FXS-张腾" />
   <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610262110" />
+  <link rel="stylesheet" href="styles.css?v=202610262232" />
 </head>
 <body>
   <div class="app">
@@ -84,6 +85,14 @@
         <button type="button" class="btn btn-primary" id="btn-practice-submit">提交</button>
         <button type="button" class="btn" id="btn-practice-next">下一题</button>
       </div>
+      <form class="jump-row" id="practice-jump" novalidate autocomplete="off">
+        <label class="jump-label" for="practice-jump-input"><span class="jump-pre" id="practice-jump-pre">跳到第</span>
+          <input type="text" id="practice-jump-input" inputmode="numeric" enterkeyhint="go" maxlength="5" placeholder="1–187" aria-describedby="practice-jump-hint" />
+          <span class="jump-suf" id="practice-jump-suf">题</span></label>
+        <button type="submit" class="btn" id="btn-practice-jump">跳转</button>
+        <select id="practice-jump-select" aria-label="选择题号"></select>
+        <span class="jump-hint" id="practice-jump-hint" role="status" aria-live="polite"></span>
+      </form>
       <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题</p>
     </section>
 
@@ -165,7 +174,7 @@
     </footer>
   </div>
 
-  <script src="questions.js?v=202610262110"></script>
-  <script src="app.js?v=202610262110"></script>
+  <script src="questions.js?v=202610262232"></script>
+  <script src="app.js?v=202610262232"></script>
 </body>
 </html>

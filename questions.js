@@ -1053,25 +1053,25 @@ const QUESTIONS = [
     "id": "A",
     "text": "tool_choice={“required”}",
     "textEn": "tool_choice={“required”}",
-    "textZh": "一个。tool_choice={“必需”}"
+    "textZh": "tool_choice={“required”}"
    },
    {
     "id": "B",
     "text": "tool_choice={“auto”}",
     "textEn": "tool_choice={“auto”}",
-    "textZh": "tool_choice={“自动”}"
+    "textZh": "tool_choice={“auto”}"
    },
    {
     "id": "C",
     "text": "tool_choice={“type”:“knowledge_base”}",
     "textEn": "tool_choice={“type”:“knowledge_base”}",
-    "textZh": "tool_choice={“类型”:“知识库”}"
+    "textZh": "tool_choice={“type”:“knowledge_base”}"
    },
    {
     "id": "D",
     "text": "tool_choice ={“type”:“mcp”}",
     "textEn": "tool_choice ={“type”:“mcp”}",
-    "textZh": "tool_choice ={“类型”:“mcp”}"
+    "textZh": "tool_choice ={“type”:“mcp”}"
    }
   ],
   "answer": [
@@ -3852,25 +3852,25 @@ const QUESTIONS = [
     "id": "A",
     "text": "az cognitiveservices account network-rule",
     "textEn": "az cognitiveservices account network-rule",
-    "textZh": "一个。 az 认知服务帐户网络规则"
+    "textZh": "az cognitiveservices account network-rule"
    },
    {
     "id": "B",
     "text": "az cognitiveservices account show",
     "textEn": "az cognitiveservices account show",
-    "textZh": "az 认知服务帐户显示"
+    "textZh": "az cognitiveservices account show"
    },
    {
     "id": "C",
     "text": "az account list",
     "textEn": "az account list",
-    "textZh": "帐户列表"
+    "textZh": "az account list"
    },
    {
     "id": "D",
     "text": "az resource link",
     "textEn": "az resource link",
-    "textZh": "资源链接"
+    "textZh": "az resource link"
    }
   ],
   "answer": [
@@ -3879,13 +3879,13 @@ const QUESTIONS = [
   "pdfAnswer": [
    "B"
   ],
-  "explanation": "az 认知服务帐户显示\n管理 Azure 认知服务账户。\n示例\n显示账户信息。\naz 认知服务帐户显示 --name myresource --resource-group 认知服务资源-\ngroup\n不正确：\n* az cognitiveservices account network-rule\n管理网络规则。\n* az resource link\n管理资源之间的链接。\n链接是资源管理器的一个功能。它允许声明资源之间的关系，即使它们不在同一个资源组中。链接对资源使\n用、计费或基于角色的访问没有影响。它允许将跨组的多个资源作为一个单元进行管理。\n* az 账户列表\n获取已登录账户的订阅列表。默认情况下，仅显示当前云中的“启用”订阅。",
+  "explanation": "az cognitiveservices account show\n管理 Azure 认知服务账户。\n示例\n显示账户信息。\naz cognitiveservices account show --name myresource --resource-group cognitive-services-resource-\ngroup\n不正确：\n* az cognitiveservices account network-rule\n管理网络规则。\n* az resource link\n管理资源之间的链接。\n链接是资源管理器的一个功能。它允许声明资源之间的关系，即使它们不在同一个资源组中。链接对资源使\n用、计费或基于角色的访问没有影响。它允许将跨组的多个资源作为一个单元进行管理。\n* az account list\n获取已登录账户的订阅列表。默认情况下，仅显示当前云中的“启用”订阅。",
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
   "stemZh": "您有一个名为 Pipeline1 的 Azure DevOps 管道，用于部署应用程序。Pipeline1 包含一个将创建 Azure AI 服务帐户的步骤。\n您需要向 Pipeline1 添加一个步骤，以识别创建的 Azure AI 服务帐户。解决方案必须最小化开发工作量。\n您应该运行哪个 Azure 命令行界面 (CLI) 命令？",
   "stemEn": "You have an Azure DevOps pipeline named Pipeline1 that is used to deploy an app. Pipeline1 includes a\nstep that will create an Azure AI services account.\nYou need to add a step to Pipeline1 that will identify the created Azure AI services account. The solution\nmust minimize development effort.\nWhich Azure Command-Line Interface (CLI) command should you run?",
-  "explanationZh": "az 认知服务帐户显示\n管理 Azure 认知服务账户。\n示例\n显示账户信息。\naz 认知服务帐户显示 --name myresource --resource-group 认知服务资源-\ngroup\n不正确：\n* az cognitiveservices account network-rule\n管理网络规则。\n* az resource link\n管理资源之间的链接。\n链接是资源管理器的一个功能。它允许声明资源之间的关系，即使它们不在同一个资源组中。链接对资源使\n用、计费或基于角色的访问没有影响。它允许将跨组的多个资源作为一个单元进行管理。\n* az 账户列表\n获取已登录账户的订阅列表。默认情况下，仅显示当前云中的“启用”订阅。",
+  "explanationZh": "az cognitiveservices account show\n管理 Azure 认知服务账户。\n示例\n显示账户信息。\naz cognitiveservices account show --name myresource --resource-group cognitive-services-resource-\ngroup\n不正确：\n* az cognitiveservices account network-rule\n管理网络规则。\n* az resource link\n管理资源之间的链接。\n链接是资源管理器的一个功能。它允许声明资源之间的关系，即使它们不在同一个资源组中。链接对资源使\n用、计费或基于角色的访问没有影响。它允许将跨组的多个资源作为一个单元进行管理。\n* az account list\n获取已登录账户的订阅列表。默认情况下，仅显示当前云中的“启用”订阅。",
   "explanationEn": "az cognitiveservices account show\nManage Azure Cognitive Services accounts.\nExample\nShow account information.\naz cognitiveservices account show --name myresource --resource-group cognitive-services-resource-\ngroup\nIncorrect:\n* az cognitiveservices account network-rule\nManage network rules.\n* az resource link\nManage links between resources.\nLinking is a feature of the Resource Manager. It enables declaring relationships between resources even if\nthey do not reside in the same resource group. Linking has no impact on resource usage, billing, or role-\nbased access. It allows for managing multiple resources across groups as a single unit.\n* az account list\nGet a list of subscriptions for the logged in account. By default, only 'Enabled' subscriptions from the\ncurrent cloud is shown.",
   "boxes": [],
   "domainLabelZh": "规划和管理 Azure AI 解决方案",
@@ -8637,25 +8637,25 @@ const QUESTIONS = [
     "id": "A",
     "text": "prebuilt-documentFieldSchema",
     "textEn": "prebuilt-documentFieldSchema",
-    "textZh": "一个。预建文档字段架构"
+    "textZh": "prebuilt-documentFieldSchema"
    },
    {
     "id": "B",
     "text": "prebuilt-read",
     "textEn": "prebuilt-read",
-    "textZh": "预建读"
+    "textZh": "prebuilt-read"
    },
    {
     "id": "C",
     "text": "prebuilt-documentSearch",
     "textEn": "prebuilt-documentSearch",
-    "textZh": "预建文档搜索"
+    "textZh": "prebuilt-documentSearch"
    },
    {
     "id": "D",
     "text": "prebuilt-layout",
     "textEn": "prebuilt-layout",
-    "textZh": "预建布局"
+    "textZh": "prebuilt-layout"
    }
   ],
   "answer": [
@@ -12579,25 +12579,25 @@ const QUESTIONS = [
     "id": "A",
     "text": "{“type”: “bing_grouding”}",
     "textEn": "{“type”: “bing_grouding”}",
-    "textZh": "一个。{“类型”: “bing_grouding”}"
+    "textZh": "{“type”: “bing_grouding”}"
    },
    {
     "id": "B",
     "text": "{“type”: “azure_ai-search”}",
     "textEn": "{“type”: “azure_ai-search”}",
-    "textZh": "{“类型”: “azure_ai-search”}"
+    "textZh": "{“type”: “azure_ai-search”}"
    },
    {
     "id": "C",
     "text": "“auto”",
     "textEn": "“auto”",
-    "textZh": "“自动”"
+    "textZh": "“auto”"
    },
    {
     "id": "D",
     "text": "“required”",
     "textEn": "“required”",
-    "textZh": "“必需的”"
+    "textZh": "“required”"
    }
   ],
   "answer": [
@@ -12637,25 +12637,25 @@ const QUESTIONS = [
     "id": "A",
     "text": "prebuilt-documentFieldSchema",
     "textEn": "prebuilt-documentFieldSchema",
-    "textZh": "一个。预建文档字段架构"
+    "textZh": "prebuilt-documentFieldSchema"
    },
    {
     "id": "B",
     "text": "prebuilt-documentSearch",
     "textEn": "prebuilt-documentSearch",
-    "textZh": "预构建文档搜索"
+    "textZh": "prebuilt-documentSearch"
    },
    {
     "id": "C",
     "text": "prebuilt-read",
     "textEn": "prebuilt-read",
-    "textZh": "预构建阅读"
+    "textZh": "prebuilt-read"
    },
    {
     "id": "D",
     "text": "prebuilt-layout",
     "textEn": "prebuilt-layout",
-    "textZh": "预建布局"
+    "textZh": "prebuilt-layout"
    }
   ],
   "answer": [
@@ -12664,7 +12664,7 @@ const QUESTIONS = [
   "pdfAnswer": [
    "B"
   ],
-  "explanation": "适合使用的内置分析器是预构建文档搜索。\nRAG 优化：预构建文档搜索分析器是 Azure 内容理解中专用检索增强生成（RAG）分析器套件的一部分\n。它专门构建用于执行语义分析并提取优化为分块、索引和向量工作流程的文档结构。\n原生 Markdown 布局：它将布局结构（例如段落、复杂的多页表格和层次部分）直接提取为干净的 Ma\nrkdown 格式。这种结构保留非常适合大型语言模型（LLM）或其他 AI 代理的下游使用。",
+  "explanation": "适合使用的内置分析器是prebuilt-documentSearch。\nRAG 优化：prebuilt-documentSearch分析器是 Azure 内容理解中专用检索增强生成（RAG）分析器套件的一部分\n。它专门构建用于执行语义分析并提取优化为分块、索引和向量工作流程的文档结构。\n原生 Markdown 布局：它将布局结构（例如段落、复杂的多页表格和层次部分）直接提取为干净的 Ma\nrkdown 格式。这种结构保留非常适合大型语言模型（LLM）或其他 AI 代理的下游使用。",
   "caseStudy": true,
   "answerConfidence": "medium",
   "answerFixed": false,
@@ -12672,7 +12672,7 @@ const QUESTIONS = [
   "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
   "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理在 Foundry Too 中使用 Azure 内容理解来处理供应商入职包。这些包包括包含表格和超链接的数字 P\nDF。\n提取的内容被编入索引以供搜索，并以 Markdown 格式提供给下游代理。\n您需要生成一个 Markdown 输出，其布局和语义结构经过优化，以适应检索增强生成（RAG）工作流程。\n您应该使用哪个内置分析器？",
   "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses Azure Content Understanding in Foundry Too to process vendor onboarding packets. The\npacks include digital PDFs that contain tables and hyperlinks.\nThe extracted content is indexed for search and provided to a downstream agent in the Markdown format.\nYou need to generate a Markdown output that has a layout and a semantic structure optimized for\nRetrieval Augmented Generation (RAG) workflows.\nWhich built-in analyzer should you use?",
-  "explanationZh": "适合使用的内置分析器是预构建文档搜索。\nRAG 优化：预构建文档搜索分析器是 Azure 内容理解中专用检索增强生成（RAG）分析器套件的一部分\n。它专门构建用于执行语义分析并提取优化为分块、索引和向量工作流程的文档结构。\n原生 Markdown 布局：它将布局结构（例如段落、复杂的多页表格和层次部分）直接提取为干净的 Ma\nrkdown 格式。这种结构保留非常适合大型语言模型（LLM）或其他 AI 代理的下游使用。",
+  "explanationZh": "适合使用的内置分析器是prebuilt-documentSearch。\nRAG 优化：prebuilt-documentSearch分析器是 Azure 内容理解中专用检索增强生成（RAG）分析器套件的一部分\n。它专门构建用于执行语义分析并提取优化为分块、索引和向量工作流程的文档结构。\n原生 Markdown 布局：它将布局结构（例如段落、复杂的多页表格和层次部分）直接提取为干净的 Ma\nrkdown 格式。这种结构保留非常适合大型语言模型（LLM）或其他 AI 代理的下游使用。",
   "explanationEn": "The appropriate built-in analyzer to use is prebuilt-documentSearch.\nRAG Optimization: The prebuilt-documentSearch analyzer is part of the dedicated Retrieval-Augmented\nGeneration (RAG) analyzer suite within Azure Content Understanding. It is specifically built to perform\nsemantic analysis and extract documents in structures optimized for chunking, indexing, and vector\nworkflows.\nNative Markdown Layout: It extracts layout structures (such as paragraphs, complex multi-page tables,\nand hierarchical sections) directly into clean Markdown format. This structural preservation is ideal for\ndownstream consumption by large language models (LLMs) or other AI agents.",
   "boxes": [],
   "domainLabelZh": "实现信息提取解决方案",
