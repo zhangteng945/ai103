@@ -1,0 +1,13386 @@
+const QUESTIONS = [
+ {
+  "id": "q001",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您需要为 Agent1 配置模型部署以满足技术要求。\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Standard",
+   "Opt out of automatic model version upgrades"
+  ],
+  "pdfAnswer": [
+   "Standard",
+   "Opt out of automatic model version upgrades"
+  ],
+  "explanation": "场景： 技术要求\nAgent1 使用的模型部署必须支持可扩展的、高吞吐量的生成 AI 工作负载\n并动态扩展以处理可变的客户支持流量，而无需保留吞吐量\n容量。\n模型处理的数据必须保留在欧盟内。\n环境\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\n \n框 1：标准 \n部署类型\n \n在提供的选项中，最佳部署类型是标准。 \n \n数据驻留：标准部署确保静态数据和推理/处理严格保留在所选的本地 Azure 区域内。由于您的代理位于欧\n盟 Azure 区域，选择标准部署可确保数据处理不会离开欧盟边界。\n无预留容量：标准部署采用灵活的按需付费令牌模型。它们会动态扩展以适应可变的客户支持流量，而\n无需预先购买或保留容量。\n不正确：\n以下是标准是正确选择的原因，以及其他选项不符合要求的解释：\n全球标准与全球预配置：虽然全球部署提供最高的初始吞吐量，并利用 Microsoft Azure 的全球基础设\n施动态路由流量，但它们并不保证数据处理保持在欧盟内。Microsoft 指定发送到“全球”部署类型的提示\n和完成可以在任何可用容量的全球 Azure 区域进行处理。这违反了您对模型处理的数据必须保持\n在欧盟内的严格要求。\n不正确：\n标准：此部署类型严格限制模型推理在单个本地 Azure 区域内。它对区域容量限制高度敏感，并且与全球\n路由相比，不支持应对可变客户流量所需的大规模、高度可扩展的吞吐量。\n全球预配置：此部署类型要求保留吞吐量容量。它迫使您预先购买固定数量的预配置吞吐单元（PTUs\n），使其不适合于避免保留容量是严格要求的场景。\n框 2：选择退出自动模型版本升级\n版本更新政策\n场景：\n计划变更：更新 Agent1 使用的基础模型部署，并标准化模型版本以确保连续性和一致的响应。\n技术要求：\n*-> Agent1 使用的模型版本必须保持一致，以确保响应稳定。\n在这种情况下，最佳版本更新策略是选择不自动升级模型版本（也称为指定特定模型版本或设置为手\n动升级）。\n为什么这个政策是最好的\n确保一致和稳定的响应：通过将部署锁定到一个确切的、特定的模型版本，您可以防止在自动模型切换期\n间自然发生的代理行为、延迟、推理或语气的突然变化。\n提供部署控制：该政策保证模型不会在后台自动升级。模型版本保持固定，直到您手动决定测试、验\n证并迁移到更新版本。\n保护面向客户的生产环境：因为您的代理通过数字支持渠道直接与公众用户互动，在自动政策下的自发\n升级可能会意外破坏提示格式、改变内容安全防护措施，或引入意外的幻觉。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-plan-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品\n详细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "部署类型",
+    "labelEn": "Deployment type",
+    "labelZh": "部署类型",
+    "choices": [
+     {
+      "key": "Standard",
+      "en": "Standard",
+      "zh": "标准（Standard）"
+     },
+     {
+      "key": "Global Standard",
+      "en": "Global Standard",
+      "zh": "全局标准（Global Standard）"
+     },
+     {
+      "key": "Global Provisioned",
+      "en": "Global Provisioned",
+      "zh": "全局预配（Global Provisioned）"
+     }
+    ],
+    "answer": "Standard"
+   },
+   {
+    "id": "2",
+    "label": "版本更新政策",
+    "labelEn": "Version update policy",
+    "labelZh": "版本更新政策",
+    "choices": [
+     {
+      "key": "Once the current version expires",
+      "en": "Once the current version expires",
+      "zh": "在当前版本到期时升级"
+     },
+     {
+      "key": "Opt out of automatic model version upgrades",
+      "en": "Opt out of automatic model version upgrades",
+      "zh": "选择退出自动模型版本升级"
+     },
+     {
+      "key": "Upgrade once a new default version becomes available",
+      "en": "Upgrade once a new default version becomes available",
+      "zh": "在新的默认版本可用时升级"
+     }
+    ],
+    "answer": "Opt out of automatic model version upgrades"
+   }
+  ],
+  "stemZh": "您需要为 Agent1 配置模型部署以满足技术要求。\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You need to configure the model deployment for Agent1 to meet the technical requirements.\nWhat should you configure? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "场景： 技术要求\nAgent1 使用的模型部署必须支持可扩展的、高吞吐量的生成 AI 工作负载\n并动态扩展以处理可变的客户支持流量，而无需保留吞吐量\n容量。\n模型处理的数据必须保留在欧盟内。\n环境\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\n \n框 1：标准 \n部署类型\n \n在提供的选项中，最佳部署类型是标准。 \n \n数据驻留：标准部署确保静态数据和推理/处理严格保留在所选的本地 Azure 区域内。由于您的代理位于欧\n盟 Azure 区域，选择标准部署可确保数据处理不会离开欧盟边界。\n无预留容量：标准部署采用灵活的按需付费令牌模型。它们会动态扩展以适应可变的客户支持流量，而\n无需预先购买或保留容量。\n不正确：\n以下是标准是正确选择的原因，以及其他选项不符合要求的解释：\n全球标准与全球预配置：虽然全球部署提供最高的初始吞吐量，并利用 Microsoft Azure 的全球基础设\n施动态路由流量，但它们并不保证数据处理保持在欧盟内。Microsoft 指定发送到“全球”部署类型的提示\n和完成可以在任何可用容量的全球 Azure 区域进行处理。这违反了您对模型处理的数据必须保持\n在欧盟内的严格要求。\n不正确：\n标准：此部署类型严格限制模型推理在单个本地 Azure 区域内。它对区域容量限制高度敏感，并且与全球\n路由相比，不支持应对可变客户流量所需的大规模、高度可扩展的吞吐量。\n全球预配置：此部署类型要求保留吞吐量容量。它迫使您预先购买固定数量的预配置吞吐单元（PTUs\n），使其不适合于避免保留容量是严格要求的场景。\n框 2：选择退出自动模型版本升级\n版本更新政策\n场景：\n计划变更：更新 Agent1 使用的基础模型部署，并标准化模型版本以确保连续性和一致的响应。\n技术要求：\n*-> Agent1 使用的模型版本必须保持一致，以确保响应稳定。\n在这种情况下，最佳版本更新策略是选择不自动升级模型版本（也称为指定特定模型版本或设置为手\n动升级）。\n为什么这个政策是最好的\n确保一致和稳定的响应：通过将部署锁定到一个确切的、特定的模型版本，您可以防止在自动模型切换期\n间自然发生的代理行为、延迟、推理或语气的突然变化。\n提供部署控制：该政策保证模型不会在后台自动升级。模型版本保持固定，直到您手动决定测试、验\n证并迁移到更新版本。\n保护面向客户的生产环境：因为您的代理通过数字支持渠道直接与公众用户互动，在自动政策下的自发\n升级可能会意外破坏提示格式、改变内容安全防护措施，或引入意外的幻觉。",
+  "explanationEn": "Scenario: Technical Requirements\nThe model deployment used by Agent1 must support scalable, high-throughput generative AI workloads\nand dynamically scale to handle variable customer support traffic, without requiring reserved throughput\ncapacity.\nThe data processed by the model must remain within the EU.\nEnvironment\nProject1 contains a customer support agent named Agent1 that assists customers with product inquiries\nand troubleshooting requests.\nProject1 is deployed to an Azure region located in the European Union (EU).\n \nBox 1: Standard \nDeployment type\n \n \nThe best deployment type among the choices provided is Standard.\n \nData Residency: A Standard deployment ensures that both data at rest and inferencing/processing remain\nstrictly within the chosen local Azure region. Because your agent is located in an EU Azure region,\nselecting a Standard deployment guarantees that data processing does not leave the EU boundary.\nNo Reserved Capacity: Standard deployments operate on a flexible, pay-as-you-go, on-demand token\nmodel. They dynamically scale to accommodate variable customer support traffic without requiring pre-\npurchased or reserved capacity.\nIncorrect:\nHere is why Standard is the correct choice, along with explanations of why the other options do not meet\nthe requirements:\nGlobal Standard & Global Provisioned: While global deployments offer the highest initial throughput and\nleverage Microsoft Azure's global infrastructure to dynamically route traffic, they do not guarantee that data\nprocessing stays within the EU. Microsoft specifies that prompts and completions sent to \"Global\"\ndeployment types can be processed in any global Azure region where capacity is available. This violates\nyour strict requirement that data processed by the model must remain within the EU.\nIncorrect:\nStandard: This deployment type restricts model inference strictly to a single, local Azure region. It is highly\nsusceptible to regional capacity limits and does not support the massive, highly scalable throughput\nneeded for variable customer traffic compared to global routing.\nGlobal Provisioned: This deployment type requires reserved throughput capacity. It forces you to pre-\npurchase a fixed number of Provisioned Throughput Units (PTUs), making it poorly suited for scenarios\nwhere avoiding reserved capacity is a strict requirement\nBox 2: Opt out of automatic model version upgrades\nVersion update policy\nScenario:\nPlanned changes: Update the base model deployment used by Agent1 and standardize the model version\nto ensure continuity and consistent responses.\nTechnical requirements:\n*-> The model version used by Agent1 must remain consistent to ensure stable responses.\nThe best version update policy for this scenario is Opt out of automatic model version upgrades (also\nknown as specifying a Specific model version or setting to manual upgrade).\nWhy This Policy Is Best\nEnsures Consistent and Stable Responses: By locking the deployment to a exact, specific model version,\nyou prevent sudden shifts in the agent's behavior, latency, reasoning, or tone that naturally occur during\nautomated model switches.\nProvides Deployment Control: This policy guarantees that the model will never automatically upgrade\nbehind the scenes. The model version remains pinned until you manually decide to test, validate, and\nmigrate to a newer version.\nProtects Customer-Facing Production: Because your agent interacts directly with public users via digital\nsupport channels, spontaneous upgrades u",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 案例研究 · 问题 1",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Case Study · Question 1",
+  "pdfPage": 4,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q002",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您需要配置 Agent1 以满足安全和合规要求。\n \n你应该使用什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "self-harm content filtering",
+    "textEn": "self-harm content filtering",
+    "textZh": "自残内容过滤"
+   },
+   {
+    "id": "B",
+    "text": "prompt shields",
+    "textEn": "prompt shields",
+    "textZh": "提示屏障"
+   },
+   {
+    "id": "C",
+    "text": "Personally identifiable information (PII) Detection",
+    "textEn": "Personally identifiable information (PII) Detection",
+    "textZh": "个人可识别信息 (PII) 检测"
+   },
+   {
+    "id": "D",
+    "text": "violence content filtering",
+    "textEn": "violence content filtering",
+    "textZh": "暴力内容过滤"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了防止 AI 代理在敏感信息意外上传到基础存储时泄露客户数据，您必须配置代理护栏，启用 PII 检\n测和工具响应过滤。\n因为数据存储库包含非结构化的产品表，并可能意外接收非结构化的客户数据，仅依赖存储级别\n的访问控制是不够的。\n场景：\n安全和合规要求\n*-> Agent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\nazure-ai-foundry/4415186",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-plan-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品\n详细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要配置 Agent1 以满足安全和合规要求。\n \n你应该使用什么？",
+  "stemEn": "You need to configure Agent1 to meet the security and compliance requirements.\nWhat should you use?",
+  "explanationZh": "为了防止 AI 代理在敏感信息意外上传到基础存储时泄露客户数据，您必须配置代理护栏，启用 PII 检\n测和工具响应过滤。\n因为数据存储库包含非结构化的产品表，并可能意外接收非结构化的客户数据，仅依赖存储级别\n的访问控制是不够的。\n场景：\n安全和合规要求\n*-> Agent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\nazure-ai-foundry/4415186",
+  "explanationEn": "To prevent an AI agent from revealing customer data even when sensitive information is accidentally\nuploaded to the underlying storage, you must configure Agent Guardrails with PII Detection and Tool\nResponse Filtering.\nBecause the data repository contains unstructured product sheets and could accidentally ingest\nunstructured customer data, relying solely on access controls at the storage level is not enough.\nScenario:\nSecurity and Compliance Requirements\n*-> Agent1 must never reveal customer information, even if a document that contains customer data is\nadded erroneously to the product sheet repository in storage1.\nThe product sheets might contain images that include embedded text. Agent1 must be protected from\nmalicious instructions potentially hidden within the images.\nazure-ai-foundry/4415186",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 案例研究 · 问题 2",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Case Study · Question 2",
+  "pdfPage": 6,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q003",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您需要配置 Agent1 以满足安全和合规要求。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "prompt shields",
+    "textEn": "prompt shields",
+    "textZh": "提示屏障"
+   },
+   {
+    "id": "B",
+    "text": "protected material detection",
+    "textEn": "protected material detection",
+    "textZh": "受保护材料检测"
+   },
+   {
+    "id": "C",
+    "text": "violence content filtering",
+    "textEn": "violence content filtering",
+    "textZh": "暴力内容过滤"
+   },
+   {
+    "id": "D",
+    "text": "self-harm content filtering",
+    "textEn": "self-harm content filtering",
+    "textZh": "自残内容过滤"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 个人可识别信息（PII）检测为了防止AI代理在意\n外上传敏感信息到基础存储时泄露客户数据，您必须配置代理护栏，启用PII检测和工具响应过滤。\n因为数据存储库包含非结构化的产品表，并可能意外接收非结构化的客户数据，仅依赖存储级别\n的访问控制是不够的。\n* 受保护材料检测\nAzure AI 中的受保护材料检测是一项安全功能，扫描 AI 生成的文本和代码，以\n识别与已知的受版权保护或受限内容的匹配。\n \n \n歌词、文章、食谱和选定的网页。 \n \n代码扫描：将生成的代码片段与公共 GitHub 存储库进行比较，以发现匹配的 \n \n操作：在输出到用户之前标记、阻止或审查匹配的输出，以减少知识产权\n \n和版权风险。\n主要好处\n法律合规：帮助组织避免无意中发布或分发受版权保护的文本。\n风险缓解：保护企业免受声誉损害和许可违规。\n原创性：确保 AI 代理生成原创文本和自定义代码，而不是复制\n受限作品。\n不正确：\n* 提示保护\n* 自残内容过滤\n* 暴力内容过滤\n场景：\n安全和合规要求\n*-> Agent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\nazure-ai-foundry/4415186\n规划和管理 Azure AI 解决方案\n问题集 2",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-plan-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品\n详细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要配置 Agent1 以满足安全和合规要求。\n您应该在解决方案中包含什么？",
+  "stemEn": "You need to configure Agent1 to meet the security and compliance requirements.\nWhat should you include in the solution?",
+  "explanationZh": "正确：\n* 个人可识别信息（PII）检测为了防止AI代理在意\n外上传敏感信息到基础存储时泄露客户数据，您必须配置代理护栏，启用PII检测和工具响应过滤。\n因为数据存储库包含非结构化的产品表，并可能意外接收非结构化的客户数据，仅依赖存储级别\n的访问控制是不够的。\n* 受保护材料检测\nAzure AI 中的受保护材料检测是一项安全功能，扫描 AI 生成的文本和代码，以\n识别与已知的受版权保护或受限内容的匹配。\n \n \n歌词、文章、食谱和选定的网页。 \n \n代码扫描：将生成的代码片段与公共 GitHub 存储库进行比较，以发现匹配的 \n \n操作：在输出到用户之前标记、阻止或审查匹配的输出，以减少知识产权\n \n和版权风险。\n主要好处\n法律合规：帮助组织避免无意中发布或分发受版权保护的文本。\n风险缓解：保护企业免受声誉损害和许可违规。\n原创性：确保 AI 代理生成原创文本和自定义代码，而不是复制\n受限作品。\n不正确：\n* 提示保护\n* 自残内容过滤\n* 暴力内容过滤\n场景：\n安全和合规要求\n*-> Agent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\nazure-ai-foundry/4415186\n规划和管理 Azure AI 解决方案\n问题集 2",
+  "explanationEn": "Correct:\n* Personally identifiable information (PII) Detection\nTo prevent an AI agent from revealing customer data even when sensitive information is accidentally\nuploaded to the underlying storage, you must configure Agent Guardrails with PII Detection and Tool\nResponse Filtering.\nBecause the data repository contains unstructured product sheets and could accidentally ingest\nunstructured customer data, relying solely on access controls at the storage level is not enough.\n* protected material detection\nProtected material detection in Azure AI is a safety feature that scans AI-generated text and code to\nidentify matches against known copyrighted or restricted content.\nText Scanning: Checks model outputs against an index of third-party natural language content, such as 文本扫描：检查模型输出与第三方自然语言内容的索引，例如\n \nsong lyrics, articles, recipes, and selected web pages.\nCode Scanning: Compares generated code snippets against public GitHub repositories to spot matching\nsource code and associated software licenses. 源代码和相关软件许可证。\n \nAction: Flags, blocks, or reviews the matching output before it reaches the user to reduce intellectual\nproperty and copyright risks.\nKey Benefits\nLegal Compliance: Helps organizations avoid unintentionally publishing or distributing copyrighted text.\nRisk Mitigation: Protects businesses from reputation damage and licensing violations.\nOriginality: Ensures that AI agents produce original text and custom code rather than reproducing\nrestricted works.\nIncorrect:\n* prompt shields\n* self-harm content filtering\n* violence content filtering\nScenario:\nSecurity and Compliance Requirements\n*-> Agent1 must never reveal customer information, even if a document that contains customer data is\nadded erroneously to the product sheet repository in storage1.\nThe product sheets might contain images that include embedded text. Agent1 must be protected from\nmalicious instructions potentially hidden within the images.\nazure-ai-foundry/4415186\nPlan and manage an Azure AI solution\nQuestion Set 2",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 案例研究 · 问题 3",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Case Study · Question 3",
+  "pdfPage": 7,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q004",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在规划一个名为 Project1 的 Microsoft Foundry 项目，该项目将包含多个代理。每个代理将访问相同的 Azure AI 搜索资源。\n您需要推荐一个解决方案，以在项目1中集中管理Azure AI搜索凭据。\n该解决方案必须在所有代理上实施。\n您应该推荐什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Enable role-based access control (RBAC) for the Azure AI Search resource",
+    "textEn": "Enable role-based access control (RBAC) for the Azure AI Search resource.",
+    "textZh": "为Azure AI搜索资源启用基于角色的访问控制（RBAC）。"
+   },
+   {
+    "id": "B",
+    "text": "Disable key-based access control on the Azure AI Search resource",
+    "textEn": "Disable key-based access control on the Azure AI Search resource.",
+    "textZh": "禁用Azure AI搜索资源上的基于密钥的访问控制。"
+   },
+   {
+    "id": "C",
+    "text": "Add a connection to the Azure AI Search resource",
+    "textEn": "Add a connection to the Azure AI Search resource.",
+    "textZh": "添加与Azure AI搜索资源的连接。"
+   },
+   {
+    "id": "D",
+    "text": "Create a managed private endpoint that connects to the Azure AI Search resource",
+    "textEn": "Create a managed private endpoint that connects to the Azure AI Search resource.",
+    "textZh": "创建一个连接到Azure AI搜索资源的托管私有终端。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了最佳管理安全性并在多个代理之间集中处理凭据，您应该在Azure AI Foundry项目级别添加与\nAzure AI搜索资源的连接。\n为什么这样有效\n中央枢纽：该项目充当所有代理的单一安全边界。\n \n凭证掩码：代理在其代码中无需硬编码秘密、API 密钥或连接字符串即可继承访问权限。 \n \n身份管理：它允许您利用 Microsoft Entra ID（前身为 Azure AD）进行基于角色的访问控制（RBAC \n \n如何实施\n1. 导航到您的 Azure AI Foundry 门户。\n2. 从仪表板中选择您的特定项目。\n3. 打开“管理中心”或“项目设置”选项卡。\n4. 点击“连接资源”或“连接”。\n5. 添加 Azure AI 搜索资源。\n . 选择 Entra ID（托管身份）而不是 API 密钥以获得最大安全性。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-plan-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品\n详细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您正在规划一个名为 Project1 的 Microsoft Foundry 项目，该项目将包含多个代理。每个代理将访问相同的 Azure AI 搜索资源。\n您需要推荐一个解决方案，以在项目1中集中管理Azure AI搜索凭据。\n该解决方案必须在所有代理上实施。\n您应该推荐什么？",
+  "stemEn": "You are planning a Microsoft Foundry project named Project1 that will contain multiple agents. Each agent\nwill access the same Azure AI Search resource.\nYou need to recommend a solution to centrally manage the Azure AI Search credentials within Project1.\nThe solution must be implemented across all the agents.\nWhat should you recommend?",
+  "explanationZh": "为了最佳管理安全性并在多个代理之间集中处理凭据，您应该在Azure AI Foundry项目级别添加与\nAzure AI搜索资源的连接。\n为什么这样有效\n中央枢纽：该项目充当所有代理的单一安全边界。\n \n凭证掩码：代理在其代码中无需硬编码秘密、API 密钥或连接字符串即可继承访问权限。 \n \n身份管理：它允许您利用 Microsoft Entra ID（前身为 Azure AD）进行基于角色的访问控制（RBAC \n \n如何实施\n1. 导航到您的 Azure AI Foundry 门户。\n2. 从仪表板中选择您的特定项目。\n3. 打开“管理中心”或“项目设置”选项卡。\n4. 点击“连接资源”或“连接”。\n5. 添加 Azure AI 搜索资源。\n . 选择 Entra ID（托管身份）而不是 API 密钥以获得最大安全性。",
+  "explanationEn": "To best manage security and centrally handle credentials across multiple agents, you should add a\nconnection to the Azure AI Search resource at the Azure AI Foundry project level.\nWhy This Works\nCentral Hub: The project acts as the single security perimeter for all your agents.\n \ntheir code.\n \nCredential Masking: Agents inherit access without hardcoding secrets, API keys, or connection strings in\n \n \nIdentity Management: It allows you to leverage Microsoft Entra ID (formerly Azure AD) for role-based\naccess control (RBAC). ）。\nHow to Implement It\n1. Navigate to your Azure AI Foundry portal.\n2. Select your specific project from the dashboard.\n3. Open the \"Management Center\" or \"Project settings\" tab.\n4. Click on \"Connected resources\" or \"Connections\".\n5. Add the Azure AI Search resource.\n . Choose Entra ID (managed identity) over API keys for maximum security.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 1",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 1",
+  "pdfPage": 8,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q005",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您的公司正在 Microsoft Foundry 项目名称为 Project1 的客户支持代理试点。Project1连接到现有的 Application Insights 资源，公司支持团队在跟踪选项卡中查看运行情况。\nFoundry Agent 服务配置为执行以下操作：\n通过调用\nproject_client.telemetry.get_application_insights_connection_string() 来检索 Application Insights 连接字符串。\n调用 configure_azure_monitor(connection_string=...) 以启用遥测。\n一个单独的 LangChain 服务配置为使用 OpenTelemetry，并具有以下配置：\n使用 AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\n通过使用 config={“callbacks”:[azure_tracer]} 传递跟踪器。\n公司政策有以下要求：\n来自 LangChain 和 OpenTelemetry 的遥测必须在同一个 ApplicationInsights 资源中可区分。\n秘密和凭据必须 不 存储在提示、工具参数或跨度属性中。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "No"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "No"
+  ],
+  "explanation": "框 1: 否\n否 - LangChain 服务将在 Traces 中出现，而无需配置追踪器。\nLangChain 服务在未配置追踪器的情况下不会出现在 Traces 中。\n因为 OpenTelemetry 需要显式的导出器或追踪器提供者来收集和发送数据，您必须\n提供有效的追踪器注册。然而，由于 configure_azure_monitor() 在后台设置了全局\nOpenTelemetry 追踪器提供者，任何共享同一进程的标准 OpenTelemetry 仪器化服务理论上都可\n以全局导出追踪。尽管如此，LangChain 特别依赖于通过配置传递的显式回调处理程序（如 AzureAIOp\nenTelemetryTracer）来将LangChain 特定的执行块（链、工具和提示）映射到 OpenTelemetry\n跨度中。未配置并传递此追踪器，您的 LangChain 编排将不会向 ApplicationInsights 发送遥测数据\n。\n框 2: 是\n是 - 设置不同的 OTEL_SERVICE_NAME 值可以在 Application Insights 中区分服务。\n设置不同的 OTEL_SERVICE_NAME 值可以在同一 ApplicationInsights 资源内区分服务。\n在 Azure Monitor 和 Application Insights 中，OpenTelemetry 的 service.name 属性会自动映射to 您\n的遥测日志和跨度上的 cloud_RoleName 属性。通过通过 OTEL_SERVICE_NAME 指定不同的名称\n（或在追踪器提供者中设置），您可以隔离和过滤来自核心 Foundry Agent Service 与 LangCha\nin 组件的遥测。\n框 3：否\n否 - 当使用 enable_content_recording=False 时，提示和工具数据将被捕获在遥测中。\n提示文本和工具数据将不会被捕获在遥测中。\n将 enable_content_recording=False 设置为特定指示 AzureAIOpenTelemetryTracer 从跨度属性中删除\n和屏蔽用户提示、LLM 响应和工具调用参数。\n此配置成功防止凭据、秘密或敏感个人身份信息在文本中泄露到您的 Azure 应用程序洞察资源中。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-plan-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品\n详细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "无需配置跟踪器，LangChain 服务也会出现在“跟踪”(Traces) 中",
+    "labelEn": "The LangChain service will appear in Traces without configuring a tracer",
+    "labelZh": "无需配置跟踪器，LangChain 服务也会出现在“跟踪”(Traces) 中",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "设置不同的 OTEL_SERVICE_NAME 值可以在 Application Insights 中区分这些服务",
+    "labelEn": "Setting different OTEL_SERVICE_NAME values separates the services in Application Insights",
+    "labelZh": "设置不同的 OTEL_SERVICE_NAME 值可以在 Application Insights 中区分这些服务",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "使用 enable_content_recording=False 时，提示和工具数据会被记录到遥测中",
+    "labelEn": "When using enable_content_recording=False, prompts and tool data will be captured in the telemetry",
+    "labelZh": "使用 enable_content_recording=False 时，提示和工具数据会被记录到遥测中",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   }
+  ],
+  "stemZh": "您的公司正在 Microsoft Foundry 项目名称为 Project1 的客户支持代理试点。Project1连接到现有的 Application Insights 资源，公司支持团队在跟踪选项卡中查看运行情况。\nFoundry Agent 服务配置为执行以下操作：\n通过调用\nproject_client.telemetry.get_application_insights_connection_string() 来检索 Application Insights 连接字符串。\n调用 configure_azure_monitor(connection_string=...) 以启用遥测。\n一个单独的 LangChain 服务配置为使用 OpenTelemetry，并具有以下配置：\n使用 AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\n通过使用 config={“callbacks”:[azure_tracer]} 传递跟踪器。\n公司政策有以下要求：\n来自 LangChain 和 OpenTelemetry 的遥测必须在同一个 ApplicationInsights 资源中可区分。\n秘密和凭据必须 不 存储在提示、工具参数或跨度属性中。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "Your company is piloting a customer support agent in a Microsoft Foundry project name Project1. Project1\nis connected to an existing Application Insights resource, and the company’s support team reviews runs in\nthe Traces tab.\nThe Foundry Agent Service is configured to perform the following actions:\nRetrieve, the Application Insights connection string by calling\nproject_client.telemetry.get_application_insights_connection_string().\nCall configure_azure_monitor(connection_string=...) to enable telemetry.\nA separate LangChain service is configured to use OpenTelemetry and has the following configurations:\nUses AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\nPasses the tracer by using config={“callbacks”:[azure_tracer]}\nCompany policy has the following requirements:\nTelemetry from LangChain and OpenTelemetry must be distinguishable within the same Application\nInsights resource.\nSecrets and credentials must NOT be stored in prompts, tool arguments, or span attributes.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: 否\n否 - LangChain 服务将在 Traces 中出现，而无需配置追踪器。\nLangChain 服务在未配置追踪器的情况下不会出现在 Traces 中。\n因为 OpenTelemetry 需要显式的导出器或追踪器提供者来收集和发送数据，您必须\n提供有效的追踪器注册。然而，由于 configure_azure_monitor() 在后台设置了全局\nOpenTelemetry 追踪器提供者，任何共享同一进程的标准 OpenTelemetry 仪器化服务理论上都可\n以全局导出追踪。尽管如此，LangChain 特别依赖于通过配置传递的显式回调处理程序（如 AzureAIOp\nenTelemetryTracer）来将LangChain 特定的执行块（链、工具和提示）映射到 OpenTelemetry\n跨度中。未配置并传递此追踪器，您的 LangChain 编排将不会向 ApplicationInsights 发送遥测数据\n。\n框 2: 是\n是 - 设置不同的 OTEL_SERVICE_NAME 值可以在 Application Insights 中区分服务。\n设置不同的 OTEL_SERVICE_NAME 值可以在同一 ApplicationInsights 资源内区分服务。\n在 Azure Monitor 和 Application Insights 中，OpenTelemetry 的 service.name 属性会自动映射to 您\n的遥测日志和跨度上的 cloud_RoleName 属性。通过通过 OTEL_SERVICE_NAME 指定不同的名称\n（或在追踪器提供者中设置），您可以隔离和过滤来自核心 Foundry Agent Service 与 LangCha\nin 组件的遥测。\n框 3：否\n否 - 当使用 enable_content_recording=False 时，提示和工具数据将被捕获在遥测中。\n提示文本和工具数据将不会被捕获在遥测中。\n将 enable_content_recording=False 设置为特定指示 AzureAIOpenTelemetryTracer 从跨度属性中删除\n和屏蔽用户提示、LLM 响应和工具调用参数。\n此配置成功防止凭据、秘密或敏感个人身份信息在文本中泄露到您的 Azure 应用程序洞察资源中。",
+  "explanationEn": "Box 1: No\nNo - The LangChain service will appear in Traces without configuring a tracer.\nThe LangChain service will not appear in Traces without configuring a tracer.\nBecause OpenTelemetry requires an explicit exporter or tracer provider to collect and send data, you must\nprovide a valid tracer registration. However, since configure_azure_monitor() sets up a global\nOpenTelemetry tracer provider under the hood, any standard OpenTelemetry-instrumented service\nsharing the same process could theoretically export traces globally. Despite this, LangChain specifically\nrelies on explicit callback handlers (like AzureAIOpenTelemetryTracer) passed in the config to map\nLangChain-specific execution blocks (chains, tools, and prompts) into OpenTelemetry spans. Without\nconfiguring and passing this tracer, your LangChain orchestrations will not emit telemetry to Application\nInsights.\nBox 2: Yes\nYes - Setting different OTEL_SERVICE_NAME values separates the services in Application Insights.\nSetting different OTEL_SERVICE_NAME values distinguishes the services within the same Application\nInsights resource.\nIn Azure Monitor and Application Insights, the OpenTelemetry service.name attribute automatically maps\nto the cloud_RoleName property on your telemetry logs and spans. By specifying distinct names via\nOTEL_SERVICE_NAME (or setting it in the tracer providers), you can isolate and filter telemetry\noriginating from the core Foundry Agent Service versus the LangChain components.\nBox 3: No\nNo - When using enable_content_recording=False, prompts and tool data will be captured in the telemetry.\nPrompt text and tool data will not be captured in the telemetry.\nSetting enable_content_recording=False specifically instructs the AzureAIOpenTelemetryTracer to redact\nand mask user prompts, LLM responses, and tool call arguments from being emitted into span attributes.\nThis configuration successfully prevents credentials, secrets, or sensitive PII residing inside the text from\nbleeding into your Azure Application Insights resource.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "yn",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 2",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 2",
+  "pdfPage": 8,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q006",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "drag",
+  "stem": "您有一个 Microsoft Foundry 项目，用于处理供应商提交的采购文档。\n您需要使用 Foundry Tools 中的 Azure 内容理解实现两个管道。该\n \n解决方案必须满足以下要求： \n包括一个名为 Pipeline1 的管道，支持经济高效、高容量处理独立的\n \nPDF 发票。 \n包括一个名为 Pipeline2 的管道，支持通过多步骤推理和参考数据进行跨文档验证。\n \n \n您应该如何配置每个管道？要回答这个问题，请将适当的配置拖动到正确的管道中。每个配置可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Single-file task in standard mode",
+   "Multi-file task in pro mode"
+  ],
+  "pdfAnswer": [
+   "Single-file task in standard mode",
+   "Multi-file task in pro mode"
+  ],
+  "explanation": "框1：以标准模式运行的单文件任务\n管道1\n为了满足使用 Azure 内容理解在 Foundry 工具中处理独立 PDF 发票的成本效益高的高容量处理管道的要求\n，您应该将管道配置为以标准模式运行的单文件任务。\n1. 任务类型：单文件任务\n该场景涉及处理独立的 PDF 发票。单文件任务旨在独立处理单个文件，逐个提取结构化字段。\n何时避免多文件：多文件任务旨在用于高级用例，在这些用例中，您需要在单个请求中传递多个不同\n的文档，以交叉引用数据、汇总统计信息或运行复杂的跨文件验证逻辑。将其用于高容量独立提取\n会增加不必要的技术开销。\n2. 分析模式：标准模式\n标准模式明确强调成本效益和降低延迟。它针对从单个文档中提取简单字段（例如收集发票号码\n、日期、行项目和总额）进行了优化。\n成本差异：标准模式的上下文化令牌定价较低（每百万个令牌 $1.00），相比之下专业模式为每百万个令\n牌 $1.50。\n何时避免专业模式：专业模式是为多步骤推理、进行推断和将输入文件与预先上传的知识库/参考数据进\n \n行比较而构建的。对于简单的大量提取，专业模式增加了不必要的成本和延迟。 \n \n框2：专业模式下的多文件任务 \nPipeline2\n \n要在Azure内容理解中使用多步骤推理和参考数据实现跨文档验证，您的管道必须配置为专业模式下的多 \n文件任务。\n以下是为什么需要这种确切配置的详细说明：\n1. 任务类型：多文件任务\n单任务（单文件任务）配置仅限于每个请求处理一个孤立文档。\n能力：多文件任务允许Azure内容理解在单个请求中接受多个输入文件，使系统能够集体推理、验证结\n果并在不同文档之间聚合模式。\n2. 处理模式：专业模式\n标准模式严格用于从单个文件中进行简单字段提取，而没有复杂的认知负担。\n能力：专业模式解锁了高级生成AI代理能力。它允许您注入外部知识库作为参考数据，进行多步骤\n语义推理，并执行跨文档数据验证，以在生成最终统一模式之前标记错误。\nfoundry-classic",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-plan-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品\n详细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "Pipeline1",
+    "labelEn": "Pipeline1",
+    "labelZh": "Pipeline1",
+    "answer": "Single-file task in standard mode",
+    "choices": [
+     {
+      "key": "Multi-file task in pro mode",
+      "en": "Multi-file task in pro mode",
+      "zh": "专业模式下的多文件任务"
+     },
+     {
+      "key": "Multi-file task in standard mode",
+      "en": "Multi-file task in standard mode",
+      "zh": "标准模式下的多文件任务"
+     },
+     {
+      "key": "Single-file task in pro mode",
+      "en": "Single-file task in pro mode",
+      "zh": "专业模式下的单文件任务"
+     },
+     {
+      "key": "Single-file task in standard mode",
+      "en": "Single-file task in standard mode",
+      "zh": "标准模式下的单文件任务"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "Pipeline2",
+    "labelEn": "Pipeline2",
+    "labelZh": "Pipeline2",
+    "answer": "Multi-file task in pro mode",
+    "choices": [
+     {
+      "key": "Multi-file task in pro mode",
+      "en": "Multi-file task in pro mode",
+      "zh": "专业模式下的多文件任务"
+     },
+     {
+      "key": "Multi-file task in standard mode",
+      "en": "Multi-file task in standard mode",
+      "zh": "标准模式下的多文件任务"
+     },
+     {
+      "key": "Single-file task in pro mode",
+      "en": "Single-file task in pro mode",
+      "zh": "专业模式下的单文件任务"
+     },
+     {
+      "key": "Single-file task in standard mode",
+      "en": "Single-file task in standard mode",
+      "zh": "标准模式下的单文件任务"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，用于处理供应商提交的采购文档。\n您需要使用 Foundry Tools 中的 Azure 内容理解实现两个管道。该\n \n解决方案必须满足以下要求： \n包括一个名为 Pipeline1 的管道，支持经济高效、高容量处理独立的\n \nPDF 发票。 \n包括一个名为 Pipeline2 的管道，支持通过多步骤推理和参考数据进行跨文档验证。\n \n \n您应该如何配置每个管道？要回答这个问题，请将适当的配置拖动到正确的管道中。每个配置可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that processes procurement documents submitted by suppliers.\nYou need to implement two pipelines by using Azure Content Understanding in Foundry Tools. The\nsolution must meet the following requirements:\n \nInclude a pipeline named Pipeline1 that supports cost-effective, high-volume processing of standalone\nPDF invoices. \nreasoning and reference data.\n \nInclude a pipeline named Pipeline2 that supports cross-document validation by using multi-step\n \nHow should you configure each pipeline? To answer, drag the appropriate configurations to the correct\npipelines. Each configuration may be used once, more than once, of not at all. You may need to drag the\nsplit bar between panes or scroll to view content.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框1：以标准模式运行的单文件任务\n管道1\n为了满足使用 Azure 内容理解在 Foundry 工具中处理独立 PDF 发票的成本效益高的高容量处理管道的要求\n，您应该将管道配置为以标准模式运行的单文件任务。\n1. 任务类型：单文件任务\n该场景涉及处理独立的 PDF 发票。单文件任务旨在独立处理单个文件，逐个提取结构化字段。\n何时避免多文件：多文件任务旨在用于高级用例，在这些用例中，您需要在单个请求中传递多个不同\n的文档，以交叉引用数据、汇总统计信息或运行复杂的跨文件验证逻辑。将其用于高容量独立提取\n会增加不必要的技术开销。\n2. 分析模式：标准模式\n标准模式明确强调成本效益和降低延迟。它针对从单个文档中提取简单字段（例如收集发票号码\n、日期、行项目和总额）进行了优化。\n成本差异：标准模式的上下文化令牌定价较低（每百万个令牌 $1.00），相比之下专业模式为每百万个令\n牌 $1.50。\n何时避免专业模式：专业模式是为多步骤推理、进行推断和将输入文件与预先上传的知识库/参考数据进\n \n行比较而构建的。对于简单的大量提取，专业模式增加了不必要的成本和延迟。 \n \n框2：专业模式下的多文件任务 \nPipeline2\n \n要在Azure内容理解中使用多步骤推理和参考数据实现跨文档验证，您的管道必须配置为专业模式下的多 \n文件任务。\n以下是为什么需要这种确切配置的详细说明：\n1. 任务类型：多文件任务\n单任务（单文件任务）配置仅限于每个请求处理一个孤立文档。\n能力：多文件任务允许Azure内容理解在单个请求中接受多个输入文件，使系统能够集体推理、验证结\n果并在不同文档之间聚合模式。\n2. 处理模式：专业模式\n标准模式严格用于从单个文件中进行简单字段提取，而没有复杂的认知负担。\n能力：专业模式解锁了高级生成AI代理能力。它允许您注入外部知识库作为参考数据，进行多步骤\n语义推理，并执行跨文档数据验证，以在生成最终统一模式之前标记错误。\nfoundry-classic",
+  "explanationEn": "Box 1: Single-file task running in Standard mode\nPipeline1\nTo meet the requirements for a cost-effective, high-volume processing pipeline of standalone PDF invoices\nusing Azure Content Understanding in Foundry Tools, you should configure the pipeline with a Single-file\ntask running in Standard mode.\n1. Task Type: Single-file task\nThe scenario involves processing standalone PDF invoices. A Single-file task is designed to process\nindividual files independently, drawing structured field extractions schema-by-schema.\nWhen to avoid Multi-file: Multi-file tasks are intended for advanced use cases where you need to pass\nmultiple distinct documents in a single request to cross-reference data, aggregate statistics, or run\ncomplex cross-file validation logic. Using it for high-volume standalone extraction would add unnecessary\ntechnical overhead.\n2. Analysis Mode: Standard mode\nStandard mode explicitly emphasizes cost-effectiveness and reduced latency. It is optimized for\nstraightforward field extraction (such as gathering invoice numbers, dates, line items, and totals) from\nindividual documents.\nCost Difference: Standard mode features lower pricing for Contextualization tokens ($1.00 per 1M tokens)\ncompared to Pro mode ($1.50 per 1M tokens).\nWhen to avoid Pro mode: Pro mode is built for multi-step reasoning, drawing inferences, and comparing\ninput files against a pre-uploaded knowledge base/reference data. For simple high-volume extraction, Pro\nmode adds unnecessary cost and latency. \nBox 2: Multi-file task in Pro mode \nPipeline2\n \n and reference data in Azure Content\nTo implement cross-document validation using multi-step reasoning\nUnderstanding, your pipeline must be configured as a Multi-file task in Pro mode.\nHere is the breakdown of why this exact configuration is required:\n1. Task Type: Multi-file task\nSingle-task (Single-file task) configurations are restricted to processing one isolated document per request.\nCapability: A Multi-file task allows Azure Content Understanding to accept multiple input files in a single\nrequest, enabling the system to collectively reason, validate results, and aggregate schemas across\ndistinct documents.\n2. Processing Mode: Pro Mode\nStandard mode is built strictly for straightforward field extraction from single files without complex cognitive\noverhead.\nCapability: Pro mode unlocks advanced generative AI agentic capabilities. It allows you to inject an\nexternal knowledge base for reference data, run multi-step semantic reasoning, and perform cross-\ndocument data validation to flag errors before producing a final unified schema.\nfoundry-classic",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "drag",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 3",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 3",
+  "pdfPage": 10,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q007",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个名为 App1 的 Python 应用程序，它与一个名为Project1 的 Microsoft Foundry 项目集成\n。\n您需要确保 App1 满足以下要求：\n使用 Microsoft Entra 管理的身份进行身份验证通过 Azure OpenAI Responses API 向已部署的模型发送提示您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "DefaultAzureCredential",
+   "create"
+  ],
+  "pdfAnswer": [
+   "DefaultAzureCredential",
+   "create"
+  ],
+  "explanation": "框 1：DefaultAzureCredential \nazure.identity 包提供 DefaultAzureCredential，它会自动评估\nenvironment 以找到有效的身份验证机制。当在 Azure 中部署时，它会原生获取\n配置的 Microsoft Entra 管理身份，而无需硬编码的密钥。\n框 2：create\nget_openai_client() 上下文管理器返回一个与 OpenAI 兼容的实例，预先为您的\n项目端点配置。要使用 Microsoft Foundry 的 Responses API 协议生成响应，您需要与\n.responses 资源进行交互并调用其 create 方法。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "AzureKeyCredential",
+      "en": "AzureKeyCredential",
+      "zh": "AzureKeyCredential"
+     },
+     {
+      "key": "ClientSecretCredential",
+      "en": "ClientSecretCredential",
+      "zh": "ClientSecretCredential"
+     },
+     {
+      "key": "DefaultAzureCredential",
+      "en": "DefaultAzureCredential",
+      "zh": "DefaultAzureCredential"
+     }
+    ],
+    "answer": "DefaultAzureCredential"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "compact",
+      "en": "compact",
+      "zh": "compact"
+     },
+     {
+      "key": "create",
+      "en": "create",
+      "zh": "create"
+     },
+     {
+      "key": "retrieve",
+      "en": "retrieve",
+      "zh": "retrieve"
+     }
+    ],
+    "answer": "create"
+   }
+  ],
+  "stemZh": "您有一个名为 App1 的 Python 应用程序，它与一个名为Project1 的 Microsoft Foundry 项目集成\n。\n您需要确保 App1 满足以下要求：\n使用 Microsoft Entra 管理的身份进行身份验证通过 Azure OpenAI Responses API 向已部署的模型发送提示您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Python application named App1 that integrates with a Microsoft Foundry project named\nProject1.\nYou need to ensure that App1 meets the following requirements:\nAuthenticates by using a Microsoft Entra managed identity\nSends prompts to a deployed model by using the Azure OpenAI Responses API\nHow should you complete the Python code? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：DefaultAzureCredential \nazure.identity 包提供 DefaultAzureCredential，它会自动评估\nenvironment 以找到有效的身份验证机制。当在 Azure 中部署时，它会原生获取\n配置的 Microsoft Entra 管理身份，而无需硬编码的密钥。\n框 2：create\nget_openai_client() 上下文管理器返回一个与 OpenAI 兼容的实例，预先为您的\n项目端点配置。要使用 Microsoft Foundry 的 Responses API 协议生成响应，您需要与\n.responses 资源进行交互并调用其 create 方法。",
+  "explanationEn": "解释：\nBox 1: DefaultAzureCredential \nThe azure.identity package provides DefaultAzureCredential, which automatically evaluates the\nenvironment to find a valid authentication mechanism. When deployed in Azure, it natively picks up the\nconfigured Microsoft Entra managed identity without requiring hardcoded secrets.\nBox 2: create\nThe get_openai_client() context manager returns an OpenAI-compatible instance pre-configured for your\nproject endpoint. To generate responses using Microsoft Foundry's Responses API protocol, you interact\nwith the .responses resource and call its create method.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "template": "from azure.identity import DefaultAzureCredential\nfrom azure.ai.projects import AIProjectClient\n\ncredential = {{1}}()\n\nproject_client = AIProjectClient(\n    endpoint=\"https://contosoai.services.ai.azure.com/api/projects/project1\",\n    credential=credential,\n)\n\nwith project_client.get_openai_client() as openai_client:\n    response = openai_client.responses.{{2}}(\n        model=\"trail-guide-chat\",\n        input=\"Create a 3-day hiking itinerary near Seattle.\",\n    )\n    print(response.output_text)",
+  "templateEn": "from azure.identity import DefaultAzureCredential\nfrom azure.ai.projects import AIProjectClient\n\ncredential = {{1}}()\n\nproject_client = AIProjectClient(\n    endpoint=\"https://contosoai.services.ai.azure.com/api/projects/project1\",\n    credential=credential,\n)\n\nwith project_client.get_openai_client() as openai_client:\n    response = openai_client.responses.{{2}}(\n        model=\"trail-guide-chat\",\n        input=\"Create a 3-day hiking itinerary near Seattle.\",\n    )\n    print(response.output_text)",
+  "templateZh": "from azure.identity import DefaultAzureCredential\nfrom azure.ai.projects import AIProjectClient\n\ncredential = {{1}}()\n\nproject_client = AIProjectClient(\n    endpoint=\"https://contosoai.services.ai.azure.com/api/projects/project1\",\n    credential=credential,\n)\n\nwith project_client.get_openai_client() as openai_client:\n    response = openai_client.responses.{{2}}(\n        model=\"trail-guide-chat\",\n        input=\"Create a 3-day hiking itinerary near Seattle.\",\n    )\n    print(response.output_text)",
+  "templateKind": "code",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 4",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 4",
+  "pdfPage": 11,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 4
+ },
+ {
+  "id": "q008",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含客户支持分流流程的工作流。\n您有一个 Ask a question 节点，用于将用户响应存储在名为 Var01 的本地变量中。\n您需要创建以下 Power Fx 表达式：\n一个 if/else 条件表达式，确保 Var01 包含一个值一个 发送消息 表达式，返回存储的用户响应的大写形式您应该如何配置这些表达式？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Not(IsBlank(Local.Var01))",
+   "{Upper(Local.Var01)}"
+  ],
+  "pdfAnswer": [
+   "Not(IsBlank(Local.Var01))",
+   "{Upper(Local.Var01)}"
+  ],
+  "explanation": "框 1: Not(IsBlank(Topic.Var01)\n一个 if/else 条件表达式，确保 Var01 包含一个值\n要验证 Microsoft Foundry 工作流中的局部变量是否有值（使用 Power Fx\n表达式语言），最合适的表达式是：\nIf(Not(IsBlank(Topic.VariableName)), \"有值操作\", \"为空操作\")\n表达式分解主题。\nVariableName: 指当前工作流主题范围内的局部变量。\nIsBlank(): 检查变量是否完全为 null 或包含空字符串 (\"\")。\nNot(): 反转布尔结果，使得包含内容的变量评估为真。\nIf(): 如果条件为真（包含值），则执行第一个操作路径；如果为假（为空），则执行第二个操作路径。\n框 2: {Upper(Local.Var01)}\nA 发送消息 表达式，返回存储的用户响应的大写形式\n在发送消息区域中使用的适当 Power Fx 表达式是 {Upper(Local.Var01)}.\n关键实施规则\n变量作用域前缀：\n在 Microsoft Foundry 工作流中，所有在工作流作用域内定义的变量必须使用 Local。\n前缀。大写函数：\nUpper() 函数将文本字符串转换为全大写字母。\n消息插值：在发送消息节点中，Power Fx 表达式必须用大括号\n{ } 括起来，以便在运行时动态评估。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "If/else 条件表达式",
+    "labelEn": "If/else condition expression",
+    "labelZh": "If/else 条件表达式",
+    "answer": "Not(IsBlank(Local.Var01))",
+    "choices": [
+     {
+      "key": "IsBlank(Local.Var01)",
+      "en": "IsBlank(Local.Var01)",
+      "zh": "IsBlank(Local.Var01)"
+     },
+     {
+      "key": "IsEmpty(Local.Var01)",
+      "en": "IsEmpty(Local.Var01)",
+      "zh": "IsEmpty(Local.Var01)"
+     },
+     {
+      "key": "Not(IsBlank(Local.Var01))",
+      "en": "Not(IsBlank(Local.Var01))",
+      "zh": "Not(IsBlank(Local.Var01))"
+     }
+    ],
+    "positionNoteEn": "If/else condition expression",
+    "positionNoteZh": "If/else 条件表达式",
+    "positionNote": "If/else 条件表达式"
+   },
+   {
+    "id": "box2",
+    "label": "发送消息表达式",
+    "labelEn": "Send message expression",
+    "labelZh": "发送消息表达式",
+    "answer": "{Upper(Local.Var01)}",
+    "choices": [
+     {
+      "key": "{Local.Var01}",
+      "en": "{Local.Var01}",
+      "zh": "{Local.Var01}"
+     },
+     {
+      "key": "{Upper(Local.Var01)}",
+      "en": "{Upper(Local.Var01)}",
+      "zh": "{Upper(Local.Var01)}"
+     },
+     {
+      "key": "{Upper(Var01)}",
+      "en": "{Upper(Var01)}",
+      "zh": "{Upper(Var01)}"
+     }
+    ],
+    "positionNoteEn": "Send message expression",
+    "positionNoteZh": "发送消息表达式",
+    "positionNote": "发送消息表达式"
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含客户支持分流流程的工作流。\n您有一个 Ask a question 节点，用于将用户响应存储在名为 Var01 的本地变量中。\n您需要创建以下 Power Fx 表达式：\n一个 if/else 条件表达式，确保 Var01 包含一个值一个 发送消息 表达式，返回存储的用户响应的大写形式您应该如何配置这些表达式？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains a workflow for a customer support triage process.\nYou have an Ask a question node that stores user responses in a local variable named Var01.\nYou need to create the following Power Fx expressions:\nAn if/else condition expression that ensures that Var01 contains a value\nA Send message expression that returns the stored user response in uppercase\nHow should you configure the expressions? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: Not(IsBlank(Topic.Var01)\n一个 if/else 条件表达式，确保 Var01 包含一个值\n要验证 Microsoft Foundry 工作流中的局部变量是否有值（使用 Power Fx\n表达式语言），最合适的表达式是：\nIf(Not(IsBlank(Topic.VariableName)), \"有值操作\", \"为空操作\")\n表达式分解主题。\nVariableName: 指当前工作流主题范围内的局部变量。\nIsBlank(): 检查变量是否完全为 null 或包含空字符串 (\"\")。\nNot(): 反转布尔结果，使得包含内容的变量评估为真。\nIf(): 如果条件为真（包含值），则执行第一个操作路径；如果为假（为空），则执行第二个操作路径。\n框 2: {Upper(Local.Var01)}\nA 发送消息 表达式，返回存储的用户响应的大写形式\n在发送消息区域中使用的适当 Power Fx 表达式是 {Upper(Local.Var01)}.\n关键实施规则\n变量作用域前缀：\n在 Microsoft Foundry 工作流中，所有在工作流作用域内定义的变量必须使用 Local。\n前缀。大写函数：\nUpper() 函数将文本字符串转换为全大写字母。\n消息插值：在发送消息节点中，Power Fx 表达式必须用大括号\n{ } 括起来，以便在运行时动态评估。",
+  "explanationEn": "Box 1: Not(IsBlank(Topic.Var01)\nAn if/else condition expression that ensures that Var01 contains a value\nTo validate that a local variable has a value in Microsoft Foundry workflows (which use the Power Fx\nexpression language), the most adequate expression is:\nIf(Not(IsBlank(Topic.VariableName)), \"Has Value Action\", \"Is Blank Action\")\nExpression BreakdownTopic.\nVariableName: Refers to a local variable scoped to the current workflow topic.\nIsBlank(): Checks if the variable is completely null or contains an empty string (\"\").\nNot(): Inverts the boolean result so that a variable with contents evaluates to true.\nIf(): Executes the first action path if the condition is true (contains a value) and the second action path if it\nis false (blank).\nBox 2: {Upper(Local.Var01)}\nA Send message expression that returns the stored user response in uppercase\nThe adequate Power Fx expression to use in the Message to send area is {Upper(Local.Var01)}.\nKey Implementation Rules\nVariable Scope Prefix:\nIn Microsoft Foundry Workflows, all variables defined within the scope of the workflow must use the Local.\nprefix.Uppercase Function:\nThe Upper() function converts text strings to all capital letters.\nMessage Interpolation: In a Send message node, Power Fx expressions must be enclosed in curly braces\n{ } to be dynamically evaluated at runtime.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 5",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 5",
+  "pdfPage": 13,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 5
+ },
+ {
+  "id": "q009",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个使用 FoundryAgent Service 构建的客户支持代理。\n该代理通过工单工具将用户提供的屏幕截图上传到 Azure 存储，并接收一个\nblob URL 以进行额外推理。\n您需要在代理运行期间使用图像审核，并防止有害内容在运行期间被返回。Azure AI 内容安全必须通过\nblob URL 访问图像。解决方案必须遵循最小权限原则。\n您应该为内容安全配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Select User input, Output, Tool response, and Tool call and set Action to Block.",
+   "A system-assigned managed identity that is assigned the Storage Blob Data Reader role"
+  ],
+  "pdfAnswer": [
+   "Select User input, Output, Tool response, and Tool call and set Action to Block.",
+   "A system-assigned managed identity that is assigned the Storage Blob Data Reader role"
+  ],
+  "explanation": "框 1：选择用户输入、输出、工具响应和工具调用，并将操作设置为阻止。\n保护措施\n正确的配置选项是：选择用户输入、输出、工具响应和工具调用，并将操作设置为\n阻止。\n覆盖点：\nMicrosoft Foundry Guardrails 支持四个关键干预点：用户输入、工具调用、工具响应，\n和输出。为了彻底保护代理运行不受有害输入、隐藏指令或生成的\n漏洞影响，生命周期的每个阶段都必须进行扫描。\n工具调用和工具响应：\n由于客户支持代理通过工单工具动态上传文件和处理 blob URL，评估工具调用（代理发送的内容）和 P\nM/工具响应（工具返回给代理的内容）对于防止间接提示注入或恶意内容在运行时处理至关重要。\nime.\n操作模式：\n将操作设置为阻止确保在生命周期的任何时刻检测到任何有害内容或政策违规时，应用程序会积极防止其\n执行或返回给用户，从而满足严格的安全要求。\n不正确：\n* 选择工具调用并将操作设置为阻止\n仅选择工具调用会使主要用户提示、工具输出和最终代理响应完全\n \n不受监管。此外，“黑色”不是有效的配置操作。 \n* 选择用户输入和输出并将操作设置为注释\n \n和 \n* 选择用户输入和工具响应并将操作设置为注释\n将操作设置为注释会用安全元数据/严重性评分标记或标记内容，但不会\n \n主动阻止运行或防止有害内容被返回。此外，这些选项省略了 \n必要的干预点（例如工具调用），违反了代理工作流的安全约束。\n框 2：一个系统分配的托管身份，分配了存储 Blob 数据读取器角色\n存储访问\n为了最佳配置图像审核的存储访问，您应该在 Azure AI 内容安全实例上启用系统分配的托管身份，并将\n其分配为 Azure 存储帐户上的存储 Blob 数据读取器角色。这消除了在代理执行期间传递原始存储帐户密\n钥或生成不安全的共享访问签名（SAS）令牌的安全风险。\nfba1abcc0eed",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "护栏",
+    "labelEn": "Guardrails",
+    "labelZh": "护栏",
+    "choices": [
+     {
+      "key": "Select Tool call and set Action to Block.",
+      "en": "Select Tool call and set Action to Block.",
+      "zh": "选择“工具调用”(Tool call)，并将操作设置为“阻止”(Block)。"
+     },
+     {
+      "key": "Select User input and Output and set Action to Annotate.",
+      "en": "Select User input and Output and set Action to Annotate.",
+      "zh": "选择“用户输入”(User input)和“输出”(Output)，并将操作设置为“注释”(Annotate)。"
+     },
+     {
+      "key": "Select User input and Tool response and set Action to Annotate.",
+      "en": "Select User input and Tool response and set Action to Annotate.",
+      "zh": "选择“用户输入”(User input)和“工具响应”(Tool response)，并将操作设置为“注释”(Annotate)。"
+     },
+     {
+      "key": "Select User input, Output, Tool response, and Tool call and set Action to Block.",
+      "en": "Select User input, Output, Tool response, and Tool call and set Action to Block.",
+      "zh": "选择“用户输入”、“输出”、“工具响应”和“工具调用”，并将操作设置为“阻止”(Block)。"
+     }
+    ],
+    "answer": "Select User input, Output, Tool response, and Tool call and set Action to Block."
+   },
+   {
+    "id": "2",
+    "label": "存储访问",
+    "labelEn": "Storage access",
+    "labelZh": "存储访问",
+    "choices": [
+     {
+      "key": "Storage account access keys",
+      "en": "Storage account access keys",
+      "zh": "存储帐户访问密钥"
+     },
+     {
+      "key": "A user-assigned identity that is assigned the Storage Queue Data Contributor role",
+      "en": "A user-assigned identity that is assigned the Storage Queue Data Contributor role",
+      "zh": "分配了“存储队列数据参与者”(Storage Queue Data Contributor) 角色的用户分配的身份"
+     },
+     {
+      "key": "A system-assigned managed identity that is assigned the Storage Blob Data Reader role",
+      "en": "A system-assigned managed identity that is assigned the Storage Blob Data Reader role",
+      "zh": "分配了“存储 Blob 数据读取者”(Storage Blob Data Reader) 角色的系统分配托管身份"
+     },
+     {
+      "key": "A system-assigned managed identity that is assigned the Storage Blob Data Contributor role",
+      "en": "A system-assigned managed identity that is assigned the Storage Blob Data Contributor role",
+      "zh": "分配了“存储 Blob 数据参与者”(Storage Blob Data Contributor) 角色的系统分配托管身份"
+     }
+    ],
+    "answer": "A system-assigned managed identity that is assigned the Storage Blob Data Reader role"
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个使用 FoundryAgent Service 构建的客户支持代理。\n该代理通过工单工具将用户提供的屏幕截图上传到 Azure 存储，并接收一个\nblob URL 以进行额外推理。\n您需要在代理运行期间使用图像审核，并防止有害内容在运行期间被返回。Azure AI 内容安全必须通过\nblob URL 访问图像。解决方案必须遵循最小权限原则。\n您应该为内容安全配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains a customer support agent built by using the Foundry\nAgent Service.\nThe agent uploads user-provided screenshots to Azure Storage through a ticketing tool and receives a\nblob URL for additional reasoning.\nYou need to use image moderation during agent runs and prevent harmful content from being returned\nduring runs. Azure AI Content Safety must access the images by using the blob URL. The solution must\nfollow the principle of least privilege.\nWhat should you configure for Content Safety? To answer, select the appropriate options in the answer\narea.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：选择用户输入、输出、工具响应和工具调用，并将操作设置为阻止。\n保护措施\n正确的配置选项是：选择用户输入、输出、工具响应和工具调用，并将操作设置为\n阻止。\n覆盖点：\nMicrosoft Foundry Guardrails 支持四个关键干预点：用户输入、工具调用、工具响应，\n和输出。为了彻底保护代理运行不受有害输入、隐藏指令或生成的\n漏洞影响，生命周期的每个阶段都必须进行扫描。\n工具调用和工具响应：\n由于客户支持代理通过工单工具动态上传文件和处理 blob URL，评估工具调用（代理发送的内容）和 P\nM/工具响应（工具返回给代理的内容）对于防止间接提示注入或恶意内容在运行时处理至关重要。\nime.\n操作模式：\n将操作设置为阻止确保在生命周期的任何时刻检测到任何有害内容或政策违规时，应用程序会积极防止其\n执行或返回给用户，从而满足严格的安全要求。\n不正确：\n* 选择工具调用并将操作设置为阻止\n仅选择工具调用会使主要用户提示、工具输出和最终代理响应完全\n \n不受监管。此外，“黑色”不是有效的配置操作。 \n* 选择用户输入和输出并将操作设置为注释\n \n和 \n* 选择用户输入和工具响应并将操作设置为注释\n将操作设置为注释会用安全元数据/严重性评分标记或标记内容，但不会\n \n主动阻止运行或防止有害内容被返回。此外，这些选项省略了 \n必要的干预点（例如工具调用），违反了代理工作流的安全约束。\n框 2：一个系统分配的托管身份，分配了存储 Blob 数据读取器角色\n存储访问\n为了最佳配置图像审核的存储访问，您应该在 Azure AI 内容安全实例上启用系统分配的托管身份，并将\n其分配为 Azure 存储帐户上的存储 Blob 数据读取器角色。这消除了在代理执行期间传递原始存储帐户密\n钥或生成不安全的共享访问签名（SAS）令牌的安全风险。\nfba1abcc0eed",
+  "explanationEn": "Box 1: Select user input, output, tool response, and Tool call and set Action to Block.\nGuardrails\nThe correct configuration is option is: Select user input, output, tool response, and Tool call and set Action\nto Block.\nPoints Coverage:\nMicrosoft Foundry Guardrails support four key intervention points: User input, Tool call, Tool response,\nand Output. To thoroughly secure an agent run from harmful inputs, hidden instructions, or generated\nvulnerabilities, every stage of the lifecycle must be scanned.\nTool Call and Tool Response:\nBecause the customer support agent uploads files and processes blob URLs dynamically via a ticketing\ntool, evaluating both Tool call (what the agent sends) and PM/Tool response (what the tool sends back to\nthe agent) is critical to prevent indirect prompt injections or malicious content processing at runt\nAction Mode:\nSetting the action to Block ensures that if any harmful content or policy violation is detected at any point in\nthe cycle, the application aggressively prevents it from executing or returning to the user, satisfying the\nstrict safety mandate.\nIncorrect:\n* Select Tool call and set Action to Block\nSelecting only Tool call leaves the primary user prompt, tool output, and final agent response completely\nunmoderated. Furthermore, \"Black\" is not a valid configuration action.\n \n* Select user input and Output and Set action to Annotate\nand \n \n* Select user input and Tool response and set Action to Annotate\nSetting the action to Annotate flags or labels content with safety metadata/severity scores but does not\n \nproactively block the run or prevent harmful content from being returned. Additionally, these options omit\nnecessary intervention points (such as Tool call), violating the security constraints of the agentic workflow.\nBox 2: A system-assigned managed identity that is assigned the Storage Blob Data Reader role\nStorage access\nTo best configure storage access for image moderation, you should enable a system-assigned managed\nidentity on the Azure AI Content Safety instance and assign it the Storage Blob Data Reader role on the\nAzure Storage account. This eliminates the security risk of passing raw storage account keys or\ngenerating insecure Shared Access Signature (SAS) tokens during agent execution.\nfba1abcc0eed",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 6",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 6",
+  "pdfPage": 15,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 6
+ },
+ {
+  "id": "q010",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含三个代理的 Microsoft Foundry 项目，如下表所示。\n```\n| 名称 (Name) | 描述 (Description) |\n| TriageAgent | 对传入的客户请求进行分类 |\n| PolicyAgent | 通过搜索内部内容回答策略问题 |\n| ActionAgent | 通过调用 HTTP API 创建或更新工单 |\n```\n您需要协调代理，以确保客户请求满足以下要求：\n支持一个确定性的、基于步骤的过程，该过程使用条件分支和跨代理的共享状态。\n根据分流结果可选择性触发工单操作。\n解决方案必须最小化开发工作量。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a workflow",
+    "textEn": "a workflow",
+    "textZh": "一个工作流程"
+   },
+   {
+    "id": "B",
+    "text": "threads and runs without a workflow",
+    "textEn": "threads and runs without a workflow",
+    "textZh": "线程和没有工作流的运行"
+   },
+   {
+    "id": "C",
+    "text": "a multi-agent group chat session",
+    "textEn": "a multi-agent group chat session",
+    "textZh": "多代理群聊会话"
+   },
+   {
+    "id": "D",
+    "text": "separate agent runs coordinated in the application code",
+    "textEn": "separate agent runs coordinated in the application code",
+    "textZh": "在应用代码中协调的独立代理运行"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "为了满足您的需求，同时将开发工作量降到最低，您应该利用原生的 Microsoft Foundry 多代理工作流功能\n（直接内置于 Foundry 代理服务中，并通过 Foundry 门户可视化编辑器或声明性 YAML 文件进行管理）\n。使用这个可视化的低代码编排层消除了编写自定义图路由逻辑、状态管理器或代码中手动交接的需要\n。\n您解决方案中必须包含的最低要求架构和功能如下结构化\n。\n1. 编排层：声明式工作流\n您必须定义一个 Foundry 工作流定义（YAML 或可视化），而不是编写代码优先的编排器。\n \n2. 状态管理：共享上下文变量",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含三个代理的 Microsoft Foundry 项目，如下表所示。\n```\n| 名称 (Name) | 描述 (Description) |\n| TriageAgent | 对传入的客户请求进行分类 |\n| PolicyAgent | 通过搜索内部内容回答策略问题 |\n| ActionAgent | 通过调用 HTTP API 创建或更新工单 |\n```\n您需要协调代理，以确保客户请求满足以下要求：\n支持一个确定性的、基于步骤的过程，该过程使用条件分支和跨代理的共享状态。\n根据分流结果可选择性触发工单操作。\n解决方案必须最小化开发工作量。\n您应该在解决方案中包含什么？",
+  "stemEn": "You have a Microsoft Foundry project that contains three agents as shown in the following table.\n```\n| Name | Description |\n| TriageAgent | Classifies incoming customer requests |\n| PolicyAgent | Answers policy questions by searching internal content |\n| ActionAgent | Creates or updates tickets by calling an HTTP API |\n```\nYou need to orchestrate the agents to ensure that the customer requests meet the following requirements:\nSupport a deterministic, step-based process that uses conditional branching and shared state across\nthe agents.\nOptionally trigger a ticket action based on the triage result.\nThe solution must minimize development effort.\nWhat should you include in the solution?",
+  "explanationZh": "为了满足您的需求，同时将开发工作量降到最低，您应该利用原生的 Microsoft Foundry 多代理工作流功能\n（直接内置于 Foundry 代理服务中，并通过 Foundry 门户可视化编辑器或声明性 YAML 文件进行管理）\n。使用这个可视化的低代码编排层消除了编写自定义图路由逻辑、状态管理器或代码中手动交接的需要\n。\n您解决方案中必须包含的最低要求架构和功能如下结构化\n。\n1. 编排层：声明式工作流\n您必须定义一个 Foundry 工作流定义（YAML 或可视化），而不是编写代码优先的编排器。\n \n2. 状态管理：共享上下文变量\n \n \n \n参考：",
+  "explanationEn": "To fulfill your requirements while keeping development effort to an absolute minimum, you should leverage\nthe native Microsoft Foundry Multi-Agent Workflows feature (built directly into the Foundry Agent Service\nand managed via the Foundry portal visual editor or declarative YAML files).Using this visual, low-code\norchestration layer removes the need to write custom graph routing logic, state managers, or manual\nhandoffs in code.\nThe minimum required architecture and features that must be included in your solution are structured\nbelow.\n1. The Orchestration Layer: Declarative Workflow\nInstead of writing a code-first orchestrator, you must define a Foundry Workflow Definition (YAML or\nVisual). \n2. State Management: Shared Context Variables\n \n \n3. Agent Configuration & Native Tooling 3. 代理配置与本地工具",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 7",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 7",
+  "pdfPage": 16,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 7
+ },
+ {
+  "id": "q011",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理在 Foundry工具中使用 Azure 语音。\n您为 en-us 区域微调了一个基线语音转文本模型并发布了该模型。\n该代理调用语音转文本 REST API，并返回一条错误消息，指示项目 ID\n无效。\n您需要将 project 属性设置为正确的 ID。\n您应该将 project 属性设置为什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "the project URL",
+    "textEn": "the project URL",
+    "textZh": "项目 URL"
+   },
+   {
+    "id": "B",
+    "text": "the custom speech project ID",
+    "textEn": "the custom speech project ID",
+    "textZh": "自定义语音项目 ID"
+   },
+   {
+    "id": "C",
+    "text": "the project ID",
+    "textEn": "the project ID",
+    "textZh": "项目 ID"
+   },
+   {
+    "id": "D",
+    "text": "the custom speech endpoint URL",
+    "textEn": "the custom speech endpoint URL",
+    "textZh": "自定义语音端点 URL"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理在 Foundry工具中使用 Azure 语音。\n您为 en-us 区域微调了一个基线语音转文本模型并发布了该模型。\n该代理调用语音转文本 REST API，并返回一条错误消息，指示项目 ID\n无效。\n您需要将 project 属性设置为正确的 ID。\n您应该将 project 属性设置为什么？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent uses Azure Speech in Foundry\nTools.\nYou fine-tune a baseline speech to text model for the en-us locale and publish the model.\nThe agent calls the Speech to text REST API and returns an error message indicating that the project ID is\ninvalid.\nYou need to set the project property to the correct ID.\nTo what should you set the project property?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 8",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 8",
+  "pdfPage": 17,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 8
+ },
+ {
+  "id": "q012",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个名为 PaymentAgent 的 Microsoft Foundry 项目。\nPaymentAgent 包含一个功能工具，通过使用外部 API 来发放客户退款。\n您正在创建一个 YAML 工作流。\n您需要确保工作流在获得人工批准后暂停，并且仅在获得批准后继续进行退款步骤。\n您应该如何完成工作流定义？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "ask_question",
+   "approval == \"approved\""
+  ],
+  "pdfAnswer": [
+   "ask_question",
+   "approval == \"approved\""
+  ],
+  "explanation": "框 1：ask_question \n要在 Microsoft Foundry 工作流中创建一个人机协作的审批步骤，您应该用 ask_question 填写缺失的类型\n \n。\n在 Microsoft Foundry 中，ask_question 步骤专门设计用于暂停工作流，提示用户输入（例如批准或拒绝\n），并将响应存储在可以被后续逻辑评估的变量中。\n框 2：approval == \"approved\"\n执行条件：\n使用条件，例如 steps.approval.output == 'approved'（或基于您的选择变量的类似逻辑检查），以\n确保退款仅在获得授权时执行。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "审批步骤类型（type）",
+    "labelEn": "approval type",
+    "labelZh": "审批步骤类型（type）",
+    "answer": "ask_question",
+    "choices": [
+     {
+      "key": "ask_question",
+      "en": "ask_question",
+      "zh": "ask_question"
+     },
+     {
+      "key": "basic_chat",
+      "en": "basic_chat",
+      "zh": "basic_chat"
+     },
+     {
+      "key": "data_transformation",
+      "en": "data_transformation",
+      "zh": "data_transformation"
+     }
+    ],
+    "positionNoteEn": "approval type",
+    "positionNoteZh": "审批步骤类型（type）",
+    "positionNote": "审批步骤类型（type）"
+   },
+   {
+    "id": "box2",
+    "label": "execute_refund 的执行条件",
+    "labelEn": "execute_refund condition",
+    "labelZh": "execute_refund 的执行条件",
+    "answer": "approval == \"approved\"",
+    "choices": [
+     {
+      "key": "approval == \"approved\"",
+      "en": "approval == \"approved\"",
+      "zh": "approval == \"approved\""
+     },
+     {
+      "key": "propose_refund.output != null",
+      "en": "propose_refund.output != null",
+      "zh": "propose_refund.output != null"
+     },
+     {
+      "key": "true",
+      "en": "true",
+      "zh": "true"
+     }
+    ],
+    "positionNoteEn": "execute_refund condition",
+    "positionNoteZh": "execute_refund 的执行条件",
+    "positionNote": "execute_refund 的执行条件"
+   }
+  ],
+  "stemZh": "您有一个名为 PaymentAgent 的 Microsoft Foundry 项目。\nPaymentAgent 包含一个功能工具，通过使用外部 API 来发放客户退款。\n您正在创建一个 YAML 工作流。\n您需要确保工作流在获得人工批准后暂停，并且仅在获得批准后继续进行退款步骤。\n您应该如何完成工作流定义？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent named PaymentAgent.\nPaymentAgent includes a function tool that issues customer refunds by using an external API.\nYou are creating a workflow in YAML.\nYou need to ensure that the workflow pauses for human approval and continues with the refund step only\nafter approval is granted.\nHow should you complete the workflow definition? To answer, select the appropriate options in the answer\narea.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：ask_question \n要在 Microsoft Foundry 工作流中创建一个人机协作的审批步骤，您应该用 ask_question 填写缺失的类型\n \n。\n在 Microsoft Foundry 中，ask_question 步骤专门设计用于暂停工作流，提示用户输入（例如批准或拒绝\n），并将响应存储在可以被后续逻辑评估的变量中。\n框 2：approval == \"approved\"\n执行条件：\n使用条件，例如 steps.approval.output == 'approved'（或基于您的选择变量的类似逻辑检查），以\n确保退款仅在获得授权时执行。",
+  "explanationEn": "Box 1: ask_question \n \nTo create a human-in-the-loop approval step in a Microsoft Foundry workflow, you should fill in the missing\ntype with ask_question.\nIn Microsoft Foundry, the ask_question step is specifically designed to pause a workflow, prompt a user for\ninput (such as an approval or rejection), and store the response in a variable that can be evaluated by\nsubsequent logic.\nBox 2: approval == \"approved\"\nExecute Condition:\nUse a condition such as steps.approval.output == 'approved' (or a similar logical check based on your\nchoice variable) to ensure the refund only executes when authorized.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "template": "steps:\n  - id: propose_refund\n    type: agent\n    agent: PaymentAgent\n  - id: approval\n    type: {{box1}}\n  - id: execute_refund\n    type: agent\n    agent: PaymentAgent\n    condition: {{box2}}",
+  "templateEn": "steps:\n  - id: propose_refund\n    type: agent\n    agent: PaymentAgent\n  - id: approval\n    type: {{box1}}\n  - id: execute_refund\n    type: agent\n    agent: PaymentAgent\n    condition: {{box2}}",
+  "templateZh": "steps:\n  - id: propose_refund\n    type: agent\n    agent: PaymentAgent\n  - id: approval\n    type: {{box1}}\n  - id: execute_refund\n    type: agent\n    agent: PaymentAgent\n    condition: {{box2}}",
+  "templateKind": "code",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 9",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 9",
+  "pdfPage": 18,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 9
+ },
+ {
+  "id": "q013",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您在 Foundry Tools 中有一个 Azure Speech 资源，托管了一个部署到自定义端点的自定义语音转文本模型。代理使用该端点进行实时语音识别。\n您即将到达自定义语音转文本模型的到期日期。\n当模型过期时，预期的行为是什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Speech recognition requests will return a 4xx error until a new custom model is deployed",
+    "textEn": "Speech recognition requests will return a 4xx error until a new custom model is deployed.",
+    "textZh": "语音识别请求将在部署新的自定义模型之前返回 4xx 错误。"
+   },
+   {
+    "id": "B",
+    "text": "Speech recognition requests will continue to use the expired custom model until the model is removed manually",
+    "textEn": "Speech recognition requests will continue to use the expired custom model until the model is removed manually.",
+    "textZh": "语音识别请求将继续使用过期的自定义模型，直到该模型被手动移除 。"
+   },
+   {
+    "id": "C",
+    "text": "Speech recognition requests will fall back to the most recent base model for the same locale",
+    "textEn": "Speech recognition requests will fall back to the most recent base model for the same locale.",
+    "textZh": "语音识别请求将回退到同一地区最新的基础模型。"
+   },
+   {
+    "id": "D",
+    "text": "The custom model will be deleted automatically when the model expires",
+    "textEn": "The custom model will be deleted automatically when the model expires.",
+    "textZh": "自定义模型将在模型过期时自动删除。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "当自定义语音转文本模型过期时，实时端点将自动回退使用\n该地区最新的基础模型。\n由于这种自动回退设计，您的代理的实时语音识别流不会失败或抛出连接错误。然而，您可能会经历转录\n准确性的下降，因为回退的基础模型缺乏特定领域的词汇、缩略语或您自定义模型中构建的独特音频适\n配。\n即时影响摘要\n实时端点：继续处理请求。该端点在后台将过期的自定义模型替换为\n最新的标准基础模型。\n批量转录（如果使用）：任何明确针对过期自定义模型 ID 的批量转录作业\n将以 4xx 错误代码失败。\n定制损失：训练到您的模型中的特定行话、格式规则或口音将暂时\n停止应用于传入的代理音频。\nendpoint-lifecycle",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您在 Foundry Tools 中有一个 Azure Speech 资源，托管了一个部署到自定义端点的自定义语音转文本模型。代理使用该端点进行实时语音识别。\n您即将到达自定义语音转文本模型的到期日期。\n当模型过期时，预期的行为是什么？",
+  "stemEn": "You have an Azure Speech in Foundry Tools resource that hosts a custom speech to text model deployed\nto a custom endpoint. An agent uses the endpoint to perform real-time speech recognition.\nYou are approaching the expiration date of the custom speech to text model.\nWhat is the expected behavior when the model expires?",
+  "explanationZh": "当自定义语音转文本模型过期时，实时端点将自动回退使用\n该地区最新的基础模型。\n由于这种自动回退设计，您的代理的实时语音识别流不会失败或抛出连接错误。然而，您可能会经历转录\n准确性的下降，因为回退的基础模型缺乏特定领域的词汇、缩略语或您自定义模型中构建的独特音频适\n配。\n即时影响摘要\n实时端点：继续处理请求。该端点在后台将过期的自定义模型替换为\n最新的标准基础模型。\n批量转录（如果使用）：任何明确针对过期自定义模型 ID 的批量转录作业\n将以 4xx 错误代码失败。\n定制损失：训练到您的模型中的特定行话、格式规则或口音将暂时\n停止应用于传入的代理音频。\nendpoint-lifecycle",
+  "explanationEn": "When the custom speech-to-text model expires, the real-time endpoint will automatically fall back to using\nthe most recent base model for that locale.\nBecause of this automated fallback design, your agent's real-time speech recognition streams will not fail\nor throw a connection error. However, you will likely experience a drop in transcription accuracy, as the\nfallback base model lacks the domain-specific vocabulary, acronyms, or unique audio adaptations built into\nyour custom model.\nImmediate Impact Summary\nReal-Time Endpoints: Continue to process requests. The endpoint swaps the expired custom model for\nthe newest standard base model behind the scenes.\nBatch Transcriptions (If used): Any batch transcription jobs explicitly targeting the expired custom model ID\nwill fail with a 4xx error code.\nCustomization Loss: Specific jargon, formatting rules, or accents trained into your model will temporarily\nstop applying to incoming agent audio.\nendpoint-lifecycle",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 10",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 10",
+  "pdfPage": 19,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 10
+ },
+ {
+  "id": "q014",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含模型部署的 Microsoft Foundry 项目。 \n您有一个应用程序，通过使用 Azure OpenAI v1 API 和\n \n默认AzureCredential。 \n您公司的开发人员在发送推理请求时收到 HTTP 403 错误，即使在运行 az login 之后也是如此。\n \n \n您需要确保开发人员能够执行模型推理。解决方案必须遵循最小权限原则。\n您应该将哪个基于角色的访问控制 (RBAC) 角色分配给开发人员？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Cognitive Services User",
+    "textEn": "Cognitive Services User",
+    "textZh": "认知服务用户"
+   },
+   {
+    "id": "B",
+    "text": "Cognitive Services OpenAI User",
+    "textEn": "Cognitive Services OpenAI User",
+    "textZh": "认知服务 OpenAI 用户"
+   },
+   {
+    "id": "C",
+    "text": "Contributor",
+    "textEn": "Contributor",
+    "textZh": "贡献者"
+   },
+   {
+    "id": "D",
+    "text": "Cognitive Services Data Reader",
+    "textEn": "Cognitive Services Data Reader",
+    "textZh": "认知服务数据读取器"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "要解决通过 Azure OpenAI v1 API 和DefaultAzureCredential 进行推理调用时出现的 HTTP 403 Forbidde\nn 错误，用户必须被分配认知服务 OpenAI 用户内置的 Azure RBAC角色。\n为什么会发生这种情况\n成功运行 az login 可以使用 Microsoft Entra ID 进行用户身份验证，但它并不授予数据-平面访问权限。\n默认情况下，标准控制平面角色（如读取者或 Foundry 用户）仅允许用户查看项目元数据或管理设置\n，而不能向模型部署端点本身发送提示。\n推荐角色定义\n角色名称：认知服务 OpenAI 用户\n授予的权限：此角色提供执行聊天\n完成、嵌入和一般推理任务所需的绝对最低权限（Microsoft.CognitiveServices/accounts/OpenAI/\ndeployments/search/action 和 Microsoft.CognitiveServices/accounts/OpenAI/deployments/\ncausalLanguageModeling/action）。它不允许用户部署新模型、查看访问密钥或更改\n配置\n范围分配：将此角色分配给 Azure OpenAI\n资源级别或包含您的 Microsoft Foundry 基础设施的资源组级别的用户（或 Microsoft Entra ID 组）。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含模型部署的 Microsoft Foundry 项目。 \n您有一个应用程序，通过使用 Azure OpenAI v1 API 和\n \n默认AzureCredential。 \n您公司的开发人员在发送推理请求时收到 HTTP 403 错误，即使在运行 az login 之后也是如此。\n \n \n您需要确保开发人员能够执行模型推理。解决方案必须遵循最小权限原则。\n您应该将哪个基于角色的访问控制 (RBAC) 角色分配给开发人员？",
+  "stemEn": "You have a Microsoft Foundry project that contains a model deployment.\n \nYou have an application that calls the deployment by using the Azure OpenAI v1 API and\nDefaultAzureCredential. \n \nrunning az login.\n \nThe developers at your company receive HTTP 403 errors when they send inference requests, even after\nYou need to ensure that the developers can perform model inference. The solution must follow the\nprinciple of least privilege.\nWhich role-based access control (RBAC) role should you assign to the developers?",
+  "explanationZh": "要解决通过 Azure OpenAI v1 API 和DefaultAzureCredential 进行推理调用时出现的 HTTP 403 Forbidde\nn 错误，用户必须被分配认知服务 OpenAI 用户内置的 Azure RBAC角色。\n为什么会发生这种情况\n成功运行 az login 可以使用 Microsoft Entra ID 进行用户身份验证，但它并不授予数据-平面访问权限。\n默认情况下，标准控制平面角色（如读取者或 Foundry 用户）仅允许用户查看项目元数据或管理设置\n，而不能向模型部署端点本身发送提示。\n推荐角色定义\n角色名称：认知服务 OpenAI 用户\n授予的权限：此角色提供执行聊天\n完成、嵌入和一般推理任务所需的绝对最低权限（Microsoft.CognitiveServices/accounts/OpenAI/\ndeployments/search/action 和 Microsoft.CognitiveServices/accounts/OpenAI/deployments/\ncausalLanguageModeling/action）。它不允许用户部署新模型、查看访问密钥或更改\n配置\n范围分配：将此角色分配给 Azure OpenAI\n资源级别或包含您的 Microsoft Foundry 基础设施的资源组级别的用户（或 Microsoft Entra ID 组）。",
+  "explanationEn": "To resolve the HTTP 403 Forbidden errors when making inference calls via the Azure OpenAI v1 API and\nDefaultAzureCredential, users must be assigned the Cognitive Services OpenAI User built-in Azure RBAC\nrole.\nWhy This Happens\nRunning az login successfully authenticates the user with Microsoft Entra ID, but it does not grant data-\nplane access permissions. By default, standard control-plane roles (like Reader or Foundry User) only\nallow users to view project metadata or manage settings, not send prompts to the model deployment\nendpoint itself.\nRecommended Role Definition\nRole Name: Cognitive Services OpenAI User\nPermissions Granted: This role provides the absolute minimum privileges required to execute chat\ncompletions, embeddings, and general inference tasks (Microsoft.CognitiveServices/accounts/OpenAI/\ndeployments/search/action and Microsoft.CognitiveServices/accounts/OpenAI/deployments/\ncausalLanguageModeling/action). It does not allow users to deploy new models, view access keys, or alter\nconfigurations\nScope Placement: Assign this role to the users (or a Microsoft Entra ID Group) at the Azure OpenAI\nresource level or the Resource Group level containing your Microsoft Foundry infrastructure.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 11",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 11",
+  "pdfPage": 20,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 11
+ },
+ {
+  "id": "q015",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理具有一个模型上下文协议\n（MCP）工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要在代码中添加正确的 tool _choice 参数，以确定性地强制代理在每次运行时调用 MCP 工具。",
+  "options": [
+   {
+    "id": "A",
+    "text": "tool_choice={“required”}",
+    "textEn": "tool_choice={“required”}",
+    "textZh": "一个。tool_choice={“必需”}"
+   },
+   {
+    "id": "B",
+    "text": "tool_choice={“auto”}",
+    "textEn": "tool_choice={“auto”}",
+    "textZh": "tool_choice={“自动”}"
+   },
+   {
+    "id": "C",
+    "text": "tool_choice={“type”:“knowledge_base”}",
+    "textEn": "tool_choice={“type”:“knowledge_base”}",
+    "textZh": "tool_choice={“类型”:“知识库”}"
+   },
+   {
+    "id": "D",
+    "text": "tool_choice ={“type”:“mcp”}",
+    "textEn": "tool_choice ={“type”:“mcp”}",
+    "textZh": "tool_choice ={“类型”:“mcp”}"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "要强制代理在每次运行时确定性地调用您的模型上下文协议（MCP）工具，您\n必须将 tool_choice=\"required\" 传递给 run_create_and_process 方法。\n“required”工具选择：将此参数设置为“required”会强制底层的 Azure OpenAI 模型在每个响应中调用\n您可用的工具之一，确保代理不会从基础模型中猜测答案。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理具有一个模型上下文协议\n（MCP）工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要在代码中添加正确的 tool _choice 参数，以确定性地强制代理在每次运行时调用 MCP 工具。",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent has a Model Context Protocol\n(MCP) tool that queries a knowledge base stored in Azure AI Search.\nSome agent runs return answers from the base model without invoking the knowledge base, which results\nin responses without grounded citations.\nYou are provided with the following code snippet that runs the agent.\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\nYou need to add the correct tool _choice parameter to the code to deterministically force the agent to\ninvoke the MCP tool on each run. \n \nWhat should you add?",
+  "explanationZh": "要强制代理在每次运行时确定性地调用您的模型上下文协议（MCP）工具，您\n必须将 tool_choice=\"required\" 传递给 run_create_and_process 方法。\n“required”工具选择：将此参数设置为“required”会强制底层的 Azure OpenAI 模型在每个响应中调用\n您可用的工具之一，确保代理不会从基础模型中猜测答案。",
+  "explanationEn": "To deterministically force the agent to invoke your Model Context Protocol (MCP) tool on every run, you\nmust pass tool_choice=\"required\" into the run_create_and_process method.\nThe 'required' tool choice: Setting this parameter to 'required' forces the underlying Azure OpenAI model to\ninvoke one of your available tools on every response, ensuring the agent doesn't guess answers from the\nbase model.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 12",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 12",
+  "pdfPage": 21,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 12
+ },
+ {
+  "id": "q016",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "drag",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含基于内部文档的客户支持代理。\n在最近的更新后，用户报告了以下问题：\n一些答案没有被检索到的文档支持。\n少量响应被标记为违反政策。\n您需要评估每个问题。\n您应该使用哪些可观察信号来处理每个问题？要回答，请将适当的可观察信号拖到正确的问题上。每个可观察信号可以使用一次、使用多次或根本不使用。\n您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Groundedness evaluation metrics",
+   "Risk and safety metrics"
+  ],
+  "pdfAnswer": [
+   "Groundedness evaluation metrics",
+   "Risk and safety metrics"
+  ],
+  "explanation": "框 1：基础性评估指标\n一些答案没有被检索到的文档支持。\n要验证代理答案中的哪些声明没有得到您检索的内部文档的支持，您需要使用基础性（或忠实性）可观察\n信号。它专门设计用于通过验证生成的响应是否与提供的上下文在事实上一致来检测 AI 幻觉。\next.\n该指标评估代理人回答中可以直接通过检索到的源上下文验证的索赔比例。\n随着时间推移，跟踪该指标作为一个聚合的指标信号将告诉您在最近更新后，问题在所有用户会话中\n的普遍程度。\n框 2：风险和安全指标\n少量响应被标记为违反政策。\n风险和安全指标是最佳选择。\n由于最近的更新特别触发了内容政策违规，这些评估者使用专门的\nLLM-judge 指标（例如，内容过滤、自我伤害、仇恨、暴力和越狱检测）来诊断\n究竟是哪些短语或数据交互导致平台阻止代理的响应。\n直接对齐：政策违规直接属于人工智能安全、内容过滤和\n合规对齐的领域。\n针对性监控：在 Microsoft Foundry 中，风险和安全指标跟踪内容过滤日志、越狱\n尝试或政策不合规问题。这使您能够准确找出哪些响应被\n阻止以及原因（例如，特定过滤器如仇恨言论或暴力）。\nsources-a\nmonitoring-and-tracing-in-microsoft-foundry/4502760",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "不受支持的响应",
+    "labelEn": "Unsupported responses",
+    "labelZh": "不受支持的响应",
+    "answer": "Groundedness evaluation metrics",
+    "choices": [
+     {
+      "key": "Groundedness evaluation metrics",
+      "en": "Groundedness evaluation metrics",
+      "zh": "基础性评估指标"
+     },
+     {
+      "key": "Latency breakdown traces",
+      "en": "Latency breakdown traces",
+      "zh": "延迟分解追踪"
+     },
+     {
+      "key": "Risk and safety metrics",
+      "en": "Risk and safety metrics",
+      "zh": "风险和安全指标"
+     },
+     {
+      "key": "Token usage analytics",
+      "en": "Token usage analytics",
+      "zh": "令牌使用分析"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "策略违规",
+    "labelEn": "Policy violations",
+    "labelZh": "策略违规",
+    "answer": "Risk and safety metrics",
+    "choices": [
+     {
+      "key": "Groundedness evaluation metrics",
+      "en": "Groundedness evaluation metrics",
+      "zh": "基础性评估指标"
+     },
+     {
+      "key": "Latency breakdown traces",
+      "en": "Latency breakdown traces",
+      "zh": "延迟分解追踪"
+     },
+     {
+      "key": "Risk and safety metrics",
+      "en": "Risk and safety metrics",
+      "zh": "风险和安全指标"
+     },
+     {
+      "key": "Token usage analytics",
+      "en": "Token usage analytics",
+      "zh": "令牌使用分析"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含基于内部文档的客户支持代理。\n在最近的更新后，用户报告了以下问题：\n一些答案没有被检索到的文档支持。\n少量响应被标记为违反政策。\n您需要评估每个问题。\n您应该使用哪些可观察信号来处理每个问题？要回答，请将适当的可观察信号拖到正确的问题上。每个可观察信号可以使用一次、使用多次或根本不使用。\n您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that contains a customer support agent grounded in internal\ndocumentation.\nAfter a recent update, users report the following issues:\nSome answers are unsupported by retrieved documents.\nA small number of responses are flagged for policy violations.\nYou need to evaluate each issue.\nWhich observability signals should you use for each issue? To answer, drag the appropriate observability\nsignals to the correct issues. Each observability signal may be used once, more than once, or not at all.\nYou may need to drag the split bar between panes or scroll to view content.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1：基础性评估指标\n一些答案没有被检索到的文档支持。\n要验证代理答案中的哪些声明没有得到您检索的内部文档的支持，您需要使用基础性（或忠实性）可观察\n信号。它专门设计用于通过验证生成的响应是否与提供的上下文在事实上一致来检测 AI 幻觉。\next.\n该指标评估代理人回答中可以直接通过检索到的源上下文验证的索赔比例。\n随着时间推移，跟踪该指标作为一个聚合的指标信号将告诉您在最近更新后，问题在所有用户会话中\n的普遍程度。\n框 2：风险和安全指标\n少量响应被标记为违反政策。\n风险和安全指标是最佳选择。\n由于最近的更新特别触发了内容政策违规，这些评估者使用专门的\nLLM-judge 指标（例如，内容过滤、自我伤害、仇恨、暴力和越狱检测）来诊断\n究竟是哪些短语或数据交互导致平台阻止代理的响应。\n直接对齐：政策违规直接属于人工智能安全、内容过滤和\n合规对齐的领域。\n针对性监控：在 Microsoft Foundry 中，风险和安全指标跟踪内容过滤日志、越狱\n尝试或政策不合规问题。这使您能够准确找出哪些响应被\n阻止以及原因（例如，特定过滤器如仇恨言论或暴力）。\nsources-a\nmonitoring-and-tracing-in-microsoft-foundry/4502760",
+  "explanationEn": "Box 1: The Groundedness evaluation metric\nSome answers are unsupported by retrieved documents.\nTo verify which claims in the agent's answers are unsupported by your retrieved internal documents, you\nneed to use the Groundedness (or Faithfulness) observability signal. It is specifically designed to detect AI\nhallucinations by verifying if the generated response is factually consistent with the provided cont\nThis metric evaluates the fraction of claims in the agent’s answer that can be directly verified by the\nretrieved source context.\nTracking this metric as a aggregated Metric signal over time will tell you how widespread the issue is\nacross all user sessions following the recent update.\nBox 2: Risk and safety metrics\nA small number of responses are flagged for policy violations.\nRisk and safety metrics is the best choice.\nBecause the recent update specifically triggers content policy violations, these evaluators use specialized\nLLM-judge metrics (e.g., content filters, self-harm, hate, violence, and jailbreak detection) to diagnose\nexactly which phrases or data interactions are causing the platform to block the agent’s responses.\nDirect Alignment: Policy violations directly fall under the domain of AI safety, content filtering, and\ncompliance alignment.\nTargeted Monitoring: In Microsoft Foundry, Risk and safety metrics track content filtering logs, jailbreak\nattempts, or policy non-compliance issues. This allows you to pinpoint exactly which responses were\nblocked and why (e.g., specific filters like hate speech or violence).\nsources-a\nmonitoring-and-tracing-in-microsoft-foundry/4502760",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "drag",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 13",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 13",
+  "pdfPage": 21,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 13
+ },
+ {
+  "id": "q017",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含一个代理。该代理使用 OpenAPI\n3.0 规范调用外部天气服务。\n天气服务要求在 HTTP 头中传递一个密钥。密钥值存储为\nProject1 中的连接。\n您需要确保在调用 OpenAPI 工具时，连接中的密钥值会自动包含。\n您应该在 OpenAPI 规范中配置什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a header parameter defined for each operation",
+    "textEn": "a header parameter defined for each operation",
+    "textZh": "为每个操作定义的头部参数"
+   },
+   {
+    "id": "B",
+    "text": "an Azure Key Vault connection",
+    "textEn": "an Azure Key Vault connection",
+    "textZh": "一个 Azure Key Vault 连接"
+   },
+   {
+    "id": "C",
+    "text": "an API key security scheme",
+    "textEn": "an API key security scheme",
+    "textZh": "一个 API 密钥安全方案"
+   },
+   {
+    "id": "D",
+    "text": "a Bearer token security scheme",
+    "textEn": "a Bearer token security scheme",
+    "textZh": "一个 Bearer 令牌安全方案"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了确保 Microsoft Foundry 在每次调用 OpenAPI 工具时自动注入您项目连接中的 API 密钥，您的 Open\nAPI 3.0 规范必须明确包含一个映射到确切头部名称的 securitySchemes 组件，以及一个引用该方\n案的全局或操作级安全要求。协调器将规范中的名称字段与存储在您项目自定义连接中的密钥进行匹\n配。\n1. 必需的 OpenAPI 3.0 配置\n您必须将 components.securitySchemes 块和 security 块添加到您的规范文件中：\nopenapi: 3.0.0\n信息:\ntitle: 外部天气服务\nversion: 1.0.0\n路径：\n/天气：\n获取：\noperationId: 获取天气\n响应：\n'200'：\n描述：成功获取天气\n# 1. 在组件部分定义安全方案\n组件：\n*-> 安全方案：\nweatherApiKey: # 此方案的任意逻辑标识符\n类型：apiKey\n在：头部\n名称：X-Weather-API-Key # 必须与您在 Foundry 连接中配置的 \"key\" 名称匹配\n# 2. 在全局（或单个操作内部）应用安全要求\n安全：\n- weatherApiKey: [] # 指示 Foundry 在 API 请求上强制执行此方案在：头部：明确指\n示 Foundry 代理层将凭证值附加到 HTTP 请求头部（而不是作为查询参数）。名称：此字符串值是确切\n的 HTTP 头部键（例如，X-Weather-API-Key 或 Authorization）。至关重要的是，此值必须与您在 Micros\noft Foundry 自定义连接中提供的 \"Key\" 属性完全匹配。\n安全：主动触发工具端点的身份验证工作流。没有此块，Microsoft\nFoundry 将 API 调用视为匿名并删除连接值。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含一个代理。该代理使用 OpenAPI\n3.0 规范调用外部天气服务。\n天气服务要求在 HTTP 头中传递一个密钥。密钥值存储为\nProject1 中的连接。\n您需要确保在调用 OpenAPI 工具时，连接中的密钥值会自动包含。\n您应该在 OpenAPI 规范中配置什么？",
+  "stemEn": "You have a Microsoft Foundry project named Project1 that contains an agent. The agent uses an OpenAPI\n3.0 specification to call an external weather service.\nThe weather service requires a key to be passed in an HTTP header. The key value is stored as a\nconnection in Project1.\nYou need to ensure that the key value from the connection is included automatically whenever the\nOpenAPI tool is invoked.\nWhat should you configure in the OpenAPI specification?",
+  "explanationZh": "为了确保 Microsoft Foundry 在每次调用 OpenAPI 工具时自动注入您项目连接中的 API 密钥，您的 Open\nAPI 3.0 规范必须明确包含一个映射到确切头部名称的 securitySchemes 组件，以及一个引用该方\n案的全局或操作级安全要求。协调器将规范中的名称字段与存储在您项目自定义连接中的密钥进行匹\n配。\n1. 必需的 OpenAPI 3.0 配置\n您必须将 components.securitySchemes 块和 security 块添加到您的规范文件中：\nopenapi: 3.0.0\n信息:\ntitle: 外部天气服务\nversion: 1.0.0\n路径：\n/天气：\n获取：\noperationId: 获取天气\n响应：\n'200'：\n描述：成功获取天气\n# 1. 在组件部分定义安全方案\n组件：\n*-> 安全方案：\nweatherApiKey: # 此方案的任意逻辑标识符\n类型：apiKey\n在：头部\n名称：X-Weather-API-Key # 必须与您在 Foundry 连接中配置的 \"key\" 名称匹配\n# 2. 在全局（或单个操作内部）应用安全要求\n安全：\n- weatherApiKey: [] # 指示 Foundry 在 API 请求上强制执行此方案在：头部：明确指\n示 Foundry 代理层将凭证值附加到 HTTP 请求头部（而不是作为查询参数）。名称：此字符串值是确切\n的 HTTP 头部键（例如，X-Weather-API-Key 或 Authorization）。至关重要的是，此值必须与您在 Micros\noft Foundry 自定义连接中提供的 \"Key\" 属性完全匹配。\n安全：主动触发工具端点的身份验证工作流。没有此块，Microsoft\nFoundry 将 API 调用视为匿名并删除连接值。",
+  "explanationEn": "To ensure Microsoft Foundry automatically injects the API key from your project connection whenever the\nOpenAPI tool is invoked, your OpenAPI 3.0 specification must explicitly include a securitySchemes\ncomponent mapping to the exact header name, and a global or operation-level security requirement\nreferencing that scheme.The orchestrator matches the name field in the specification against the key\nstored inside your project's custom connection.\n1. Required OpenAPI 3.0 Configuration\nYou must add both the components.securitySchemes block and the security block to your specification file:\nopenapi: 3.0.0\ninfo:\n title: External Weather Service\n version: 1.0.0\npaths:\n /weather:\n get:\n operationId: getWeather\n responses:\n '200':\n description: Successful weather retrieval\n# 1. Define the security scheme in the components section\ncomponents:\n*-> securitySchemes:\n weatherApiKey: # Arbitrary logical identifier for this scheme\n*-> type: apiKey *->\n in: header\n name: X-Weather-API-Key # MUST match the \"key\" name configured in your Foundry Connection\n# 2. Apply the security requirement globally (or inside individual operations)\nsecurity:\n - weatherApiKey: [] # Instructs Foundry to enforce this scheme on the API requests\nin: header: Explicitly instructs the Foundry proxy layer to attach the credential value to the HTTP request\nheaders (rather than as a query parameter).name: This string value is the exact HTTP header key (e.g., X-\nWeather-API-Key or Authorization). Crucially, this value must identically match the \"Key\" property given to\nthe secret in your Microsoft Foundry Custom Connection.\nsecurity: Actively triggers the authentication workflow for the tool's endpoints. Without this block, Microsoft\nFoundry treats the API call as anonymous and strips out connection values.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 14",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 14",
+  "pdfPage": 23,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 14
+ },
+ {
+  "id": "q018",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，服务于高流量聊天应用。\n大多数请求是简单的常见问题解答，但有些需要高级推理。\n您需要降低常见查询的成本和延迟，而不降低对复杂问题的响应质量。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Route all the requests to a smaller model",
+    "textEn": "Route all the requests to a smaller model.",
+    "textZh": "将所有请求路由到一个较小的模型。"
+   },
+   {
+    "id": "B",
+    "text": "Use a model cascade that routes the requests to different models",
+    "textEn": "Use a model cascade that routes the requests to different models.",
+    "textZh": "使用模型级联，将请求路由到不同的模型。"
+   },
+   {
+    "id": "C",
+    "text": "Increase the value of the max_tokens parameter for all the requests",
+    "textEn": "Increase the value of the max_tokens parameter for all the requests.",
+    "textZh": "增加所有请求的 max_tokens 参数值。"
+   },
+   {
+    "id": "D",
+    "text": "Route all the requests to the most capable model",
+    "textEn": "Route all the requests to the most capable model.",
+    "textZh": "将所有请求路由到最强大的模型。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "绝对应该使用模型级联，根据复杂性将请求路由到不同的模型。\n这种架构模式对于高流量聊天应用程序非常有效，因为它直接解决了\n运营成本、API 延迟和响应质量之间的权衡。\n使用模型级联路由器可以确保您的高流量 Microsoft Foundry 应用程序高效扩展，\n通过将昂贵的计算能力专门保留给实际需要\n高级认知处理的查询。\n注意：\n1. 分析请求复杂性\n在您的 Microsoft Foundry 项目的入口点实现一个轻量级意图分类器或路由层。\n该路由器快速检查传入的用户提示，使用基本的启发式关键字匹配、语义\n嵌入或高度优化的快速模型（如 Phi-3 或 GPT-4o-mini）将查询分类为\n“简单常见问题”或“复杂推理”请求。\n2. 路由到最佳层级层级 1（快速且便宜）：\n将标准、可预测的常见问题请求路由到一个更小、更具成本效益的模型或本地缓存/向量数据库查找\n。这将保持延迟在毫秒级，并大幅降低令牌成本。\n第二层（高级推理）：将多步骤逻辑、编码或高度上下文相关的查询路由到前沿\n模型（如 GPT-4o）。\n3. 实施回退逻辑设计级联为动态。如果较小的第一层模型生成的\n响应信心低，或者用户提出的后续问题使简单的常见问题解答状态失效，\n则无缝升级对话循环到第二层模型。\nlearning-0b145a7bc6e2",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目，服务于高流量聊天应用。\n大多数请求是简单的常见问题解答，但有些需要高级推理。\n您需要降低常见查询的成本和延迟，而不降低对复杂问题的响应质量。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that serves a high-volume chat app.\nMost requests are simple FAQs, but some require advanced reasoning.\nYou need to reduce costs and latency for common queries, without degrading the quality of the responses\nto complex questions.\nWhat should you do?",
+  "explanationZh": "绝对应该使用模型级联，根据复杂性将请求路由到不同的模型。\n这种架构模式对于高流量聊天应用程序非常有效，因为它直接解决了\n运营成本、API 延迟和响应质量之间的权衡。\n使用模型级联路由器可以确保您的高流量 Microsoft Foundry 应用程序高效扩展，\n通过将昂贵的计算能力专门保留给实际需要\n高级认知处理的查询。\n注意：\n1. 分析请求复杂性\n在您的 Microsoft Foundry 项目的入口点实现一个轻量级意图分类器或路由层。\n该路由器快速检查传入的用户提示，使用基本的启发式关键字匹配、语义\n嵌入或高度优化的快速模型（如 Phi-3 或 GPT-4o-mini）将查询分类为\n“简单常见问题”或“复杂推理”请求。\n2. 路由到最佳层级层级 1（快速且便宜）：\n将标准、可预测的常见问题请求路由到一个更小、更具成本效益的模型或本地缓存/向量数据库查找\n。这将保持延迟在毫秒级，并大幅降低令牌成本。\n第二层（高级推理）：将多步骤逻辑、编码或高度上下文相关的查询路由到前沿\n模型（如 GPT-4o）。\n3. 实施回退逻辑设计级联为动态。如果较小的第一层模型生成的\n响应信心低，或者用户提出的后续问题使简单的常见问题解答状态失效，\n则无缝升级对话循环到第二层模型。\nlearning-0b145a7bc6e2",
+  "explanationEn": "One should absolutely use a model cascade to route requests to different models based on complexity.\nThis architectural pattern is highly effective for high-volume chat applications because it directly addresses\nthe trade-off between operational cost, API latency, and response quality.\nUsing a model cascade router ensures that your high-volume Microsoft Foundry application scales\nefficiently by reserving expensive computational power exclusively for queries that actually require\nadvanced cognitive processing.\nNote:\n1. Analyze Request Complexity\nImplement a lightweight intent classifier or routing layer at the entry point of your Microsoft Foundry project.\nThis router quickly inspects incoming user prompts using basic heuristic keyword matching, semantic\nembeddings, or a highly optimized, fast model (like Phi-3 or GPT-4o-mini) to categorize the query as either\na \"Simple FAQ\" or a \"Complex Reasoning\" request.\n2. Route to the Optimal TierTier 1 (Fast & Cheap):\nRoute standard, predictable FAQ requests to a smaller, cost-effective model or a local cache/vector\ndatabase lookup. This keeps latency in milliseconds and drastically lowers token costs.\nTier 2 (Advanced Reasoning): Route multi-step logic, coding, or highly contextual queries to a frontier\nmodel (like GPT-4o).\n3. Implement Fallback LogicDesign the cascade to be dynamic. If the smaller Tier 1 model generates a\nresponse with low confidence, or if the user asks a follow-up question that invalidates the simple FAQ\nstatus, seamlessly upgrade the conversation loop to the Tier 2 model.\nlearning-0b145a7bc6e2",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 15",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 15",
+  "pdfPage": 24,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 15
+ },
+ {
+  "id": "q019",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含内部问答代理的 Microsoft Foundry 项目。\n用户在向代理提问时报告以下问题：\n以下响应的增加：“未找到相关信息”高峰时段周期性出现 HTTP 429\n速率限制超出错误您需要确定每个问题是由于模型不可用、资源限制还是推理失败造成的。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Model Availability Rate and Provisioned Utilization",
+   "RequestResponse"
+  ],
+  "pdfAnswer": [
+   "Model Availability Rate and Provisioned Utilization",
+   "RequestResponse"
+  ],
+  "explanation": "框 1：模型可用性率和预配置利用率。\n需要启用的指标\n要诊断这些问题，需要模型可用性率和预配置利用率指标。\n问题 1 (\"未找到相关信息\"): 这指向推理失败（RAG 幻觉或\n检索缺口），通常是由于模型在缺乏上下文基础时产生幻觉所致。\n问题 2 (HTTP 429 速率限制超出)：这表示资源限制。监控已分配的使用情况\n有助于识别在高峰时段您的分配容量是否达到了上限。\n框 2：请求响应\n要收集的诊断日志\n为了确定您的问题是由于模型不可用、资源限制还是推理失败引起的，\n您需要收集和分析请求响应诊断日志类别（也称为\n请求响应日志）。\n虽然您启用的指标提供了高层次的上下文（例如，模型可用性突出显示后端服务中断，已分配使用情况突\n出显示容量压力），但它们并未揭示每个请求的详细信息。请求响应日志记录了每个事务的确切 HTTP\n状态代码、错误代码和后端延迟。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "要启用的指标",
+    "labelEn": "Metrics to enable",
+    "labelZh": "要启用的指标",
+    "answer": "Model Availability Rate and Provisioned Utilization",
+    "choices": [
+     {
+      "key": "Model Availability Rate and Provisioned Utilization",
+      "en": "Model Availability Rate and Provisioned Utilization",
+      "zh": "模型可用性率和预配利用率"
+     },
+     {
+      "key": "Only Tokens Cache Match Rate",
+      "en": "Only Tokens Cache Match Rate",
+      "zh": "仅令牌缓存匹配率"
+     },
+     {
+      "key": "Only Total Requests filtered to status code 200",
+      "en": "Only Total Requests filtered to status code 200",
+      "zh": "仅筛选状态代码 200 的总请求数"
+     },
+     {
+      "key": "Time To Response and Total Tokens",
+      "en": "Time To Response and Total Tokens",
+      "zh": "响应时间和总令牌数"
+     }
+    ],
+    "positionNoteEn": "Metrics to enable",
+    "positionNoteZh": "要启用的指标",
+    "positionNote": "要启用的指标"
+   },
+   {
+    "id": "box2",
+    "label": "要收集的诊断日志",
+    "labelEn": "Diagnostic log to collect",
+    "labelZh": "要收集的诊断日志",
+    "answer": "RequestResponse",
+    "choices": [
+     {
+      "key": "AllMetrics",
+      "en": "AllMetrics",
+      "zh": "AllMetrics"
+     },
+     {
+      "key": "audit",
+      "en": "audit",
+      "zh": "audit"
+     },
+     {
+      "key": "RequestResponse",
+      "en": "RequestResponse",
+      "zh": "RequestResponse"
+     },
+     {
+      "key": "trace",
+      "en": "trace",
+      "zh": "trace"
+     }
+    ],
+    "positionNoteEn": "Diagnostic log to collect",
+    "positionNoteZh": "要收集的诊断日志",
+    "positionNote": "要收集的诊断日志"
+   }
+  ],
+  "stemZh": "您有一个包含内部问答代理的 Microsoft Foundry 项目。\n用户在向代理提问时报告以下问题：\n以下响应的增加：“未找到相关信息”高峰时段周期性出现 HTTP 429\n速率限制超出错误您需要确定每个问题是由于模型不可用、资源限制还是推理失败造成的。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains an internal Q&A agent.\nUsers report the following issues when they ask the agent questions:\nAn increase in the following response: “No relevant information found”\nPeriodic HTTP 429 rate limit exceeded errors during peak hours\nYou need to identify whether each issue is caused by model unavailability, resource limits, or inference\nfailures.\nWhat should you do? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：模型可用性率和预配置利用率。\n需要启用的指标\n要诊断这些问题，需要模型可用性率和预配置利用率指标。\n问题 1 (\"未找到相关信息\"): 这指向推理失败（RAG 幻觉或\n检索缺口），通常是由于模型在缺乏上下文基础时产生幻觉所致。\n问题 2 (HTTP 429 速率限制超出)：这表示资源限制。监控已分配的使用情况\n有助于识别在高峰时段您的分配容量是否达到了上限。\n框 2：请求响应\n要收集的诊断日志\n为了确定您的问题是由于模型不可用、资源限制还是推理失败引起的，\n您需要收集和分析请求响应诊断日志类别（也称为\n请求响应日志）。\n虽然您启用的指标提供了高层次的上下文（例如，模型可用性突出显示后端服务中断，已分配使用情况突\n出显示容量压力），但它们并未揭示每个请求的详细信息。请求响应日志记录了每个事务的确切 HTTP\n状态代码、错误代码和后端延迟。",
+  "explanationEn": "Box 1: Model Availability rate and Provisioned Utilization.\nMetrics to enable\nTo diagnose these issues, the Model Availability rate and Provisioned Utilization metrics are needed.\nProblem 1 (\"No relevant information found\"): This points to an inference failure (RAG hallucination or\nretrieval gap), which is often caused by the model hallucinating when it is missing contextual grounding.\nProblem 2 (HTTP 429 rate limit exceeded): This indicates resource limits. Monitoring provisioned utilization\nhelps identify if your allocated capacity is simply maxing out during peak hours.\nBox 2: RequestResponse\nDiagnostic log to collect\nTo isolate whether your issues are caused by model unavailability, resource limits, or inference failures,\nyou need to collect and analyze the RequestResponse diagnostic log category (also referred to as\nRequestResponseLogs).\nWhile your enabled metrics provide high-level context (e.g., Model Availability highlights backend service\ndrops and Provisioned Utilization highlights capacity strain), they do not reveal per-request details. The\nRequestResponse log records the exact HTTP status codes, error codes, and backend latency for every\ntransaction.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 16",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 16",
+  "pdfPage": 25,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 16
+ },
+ {
+  "id": "q020",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含高流量代理的 Microsoft Foundry 项目。\n在最近的更新后，运营成本显著增加。\n \n监控确认用户流量到代理的数量保持不变。\n \n \n您怀疑请求或响应特征的变化导致了成本的增加。您需要 \n确定额外的成本是由模型输入大小、模型输出大小还是\nor\n扩展工具使用引起的。\n \n \n您应该使用哪种可观察性能力？",
+  "options": [
+   {
+    "id": "A",
+    "text": "latency",
+    "textEn": "latency",
+    "textZh": "延迟"
+   },
+   {
+    "id": "B",
+    "text": "evaluation metrics",
+    "textEn": "evaluation metrics",
+    "textZh": "评估指标"
+   },
+   {
+    "id": "C",
+    "text": "run success rate",
+    "textEn": "run success rate",
+    "textZh": "运行成功率"
+   },
+   {
+    "id": "D",
+    "text": "token usage",
+    "textEn": "token usage",
+    "textZh": "令牌使用"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "要确定模型输入、模型输出或扩展工具使用是否导致成本激增，您应该\n关注令牌使用。\n对令牌使用的细粒度跟踪直接分解成本：\n输入与输出令牌：跟踪令牌使用可以隔离用户提示（输入）是否增加，或者模型是否生成了更长、更昂贵\n的响应（输出）。\n工具调用：每次代理架构处理执行循环时，扩展工具使用会消耗额外的令牌，这将明显反映为膨胀的\n令牌计数。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含高流量代理的 Microsoft Foundry 项目。\n在最近的更新后，运营成本显著增加。\n \n监控确认用户流量到代理的数量保持不变。\n \n \n您怀疑请求或响应特征的变化导致了成本的增加。您需要 \n确定额外的成本是由模型输入大小、模型输出大小还是\nor\n扩展工具使用引起的。\n \n \n您应该使用哪种可观察性能力？",
+  "stemEn": "You have a Microsoft Foundry project that contains a high-traffic agent.\nAfter a recent update, operational costs increase significantly.\n \n \nMonitoring confirms that the volume of user traffic to the agent remains unchanged.\nYou suspect that changes to the request or response characteristics are causing the increase. You need\nexpanded tool usage.\n \nto identify whether the additional costs are driven by the model input size, the model output size,\n \nWhich observability capability should you use?",
+  "explanationZh": "要确定模型输入、模型输出或扩展工具使用是否导致成本激增，您应该\n关注令牌使用。\n对令牌使用的细粒度跟踪直接分解成本：\n输入与输出令牌：跟踪令牌使用可以隔离用户提示（输入）是否增加，或者模型是否生成了更长、更昂贵\n的响应（输出）。\n工具调用：每次代理架构处理执行循环时，扩展工具使用会消耗额外的令牌，这将明显反映为膨胀的\n令牌计数。",
+  "explanationEn": "To identify whether model input, model output, or expanded tool usage is driving the cost spike, you should\nfocus on token usage.\nGranular tracking of token usage breaks down the costs directly:\nInput vs. Output Tokens: Tracing token usage isolates whether the user prompt (input) has grown or if the\nmodel is generating longer, more expensive responses (output).\nTool Calling: Expanded tool usage consumes extra tokens each time the agent schema processes an\nexecution loop, which will clearly reflect as inflated token counts.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 17",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 17",
+  "pdfPage": 26,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 17
+ },
+ {
+  "id": "q021",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用工具来检索内部内容并调用外部 API。代理被配置为让模型决定何时调用这些工具。\n您需要发布代理以用于合规工作流。解决方案必须满足以下要求：\n每个工作流运行必须在生成响应之前包含一个检索步骤。\n工具调用必须通过使用发布的代理自身的身份进行身份验证。\n工具访问必须使用与其他项目资源隔离的身份。\n工具访问必须使用支持审计追踪。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "required",
+   "Using a distinct agent identity bound to the client application"
+  ],
+  "pdfAnswer": [
+   "required",
+   "Using a distinct agent identity bound to the client application"
+  ],
+  "explanation": "框 1：必填\n工具选择\n为了遵守您的严格工作流程和合规要求，您设置了工具选择参数为必填。\n将工具选择设置为必填在数学上强制模型在最终确定答案之前至少调用一个工具（您的内部\n检索机制）。\n不正确\n[不自动]\n将工具选择设置为自动将绝对决策权交给基础\n模型。如果模型确定它已经从训练数据中“知道”答案，它可以完全跳过检索\n步骤。\n框 2：使用绑定到客户端应用程序的独特代理身份\n配置工具以通过\n限制：使用已发布代理的自身身份\n将代理映射到 Microsoft Entra 代理身份。这为发布的代理提供了其在 Entra ID 中独特的服务\n主体身份，确保它不会继承或使用用户令牌或次级\n管理密钥。\n限制：身份与项目资源隔离\n与其共享默认的 Microsoft Foundry 项目管理身份（project-mi），为此代理实例分配一个独特的\n用户分配的托管身份。将其基于角色的访问控制\n（RBAC）范围限制仅限于特定的检索索引和目标外部 API 端点。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "将 tool_choice 设置为",
+    "labelEn": "Set tool_choice to",
+    "labelZh": "将 tool_choice 设置为",
+    "answer": "required",
+    "choices": [
+     {
+      "key": "auto",
+      "en": "auto",
+      "zh": "auto"
+     },
+     {
+      "key": "none",
+      "en": "none",
+      "zh": "none"
+     },
+     {
+      "key": "required",
+      "en": "required",
+      "zh": "required"
+     }
+    ],
+    "positionNoteEn": "Set tool_choice to",
+    "positionNoteZh": "将 tool_choice 设置为",
+    "positionNote": "将 tool_choice 设置为"
+   },
+   {
+    "id": "box2",
+    "label": "将工具配置为通过以下方式进行身份验证",
+    "labelEn": "Configure the tool to authenticate by",
+    "labelZh": "将工具配置为通过以下方式进行身份验证",
+    "answer": "Using a distinct agent identity bound to the client application",
+    "choices": [
+     {
+      "key": "Storing API keys in prompts",
+      "en": "Storing API keys in prompts",
+      "zh": "在提示中存储 API 密钥"
+     },
+     {
+      "key": "Using the shared project agent identity",
+      "en": "Using the shared project agent identity",
+      "zh": "使用共享项目代理标识"
+     },
+     {
+      "key": "Using a distinct agent identity bound to the client application",
+      "en": "Using a distinct agent identity bound to the client application",
+      "zh": "使用绑定到客户端应用程序的独特代理标识"
+     }
+    ],
+    "positionNoteEn": "Configure the tool to authenticate by",
+    "positionNoteZh": "将工具配置为通过以下方式进行身份验证",
+    "positionNote": "将工具配置为通过以下方式进行身份验证"
+   }
+  ],
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用工具来检索内部内容并调用外部 API。代理被配置为让模型决定何时调用这些工具。\n您需要发布代理以用于合规工作流。解决方案必须满足以下要求：\n每个工作流运行必须在生成响应之前包含一个检索步骤。\n工具调用必须通过使用发布的代理自身的身份进行身份验证。\n工具访问必须使用与其他项目资源隔离的身份。\n工具访问必须使用支持审计追踪。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses tools to retrieve internal content and call external APIs. The agent is configured to let the\nmodel decide when to call the tools.\nYou need to publish the agent for a compliance workflow. The solution must meet the following\nrequirements:\nEach workflow run must include a retrieval step before generating a response.\nTool calls must authenticate by using the published agent’s own identity.\nTool access must use an identity isolated from other project resources.\nTool access must use support audit tracing.\nWhat should you do? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：必填\n工具选择\n为了遵守您的严格工作流程和合规要求，您设置了工具选择参数为必填。\n将工具选择设置为必填在数学上强制模型在最终确定答案之前至少调用一个工具（您的内部\n检索机制）。\n不正确\n[不自动]\n将工具选择设置为自动将绝对决策权交给基础\n模型。如果模型确定它已经从训练数据中“知道”答案，它可以完全跳过检索\n步骤。\n框 2：使用绑定到客户端应用程序的独特代理身份\n配置工具以通过\n限制：使用已发布代理的自身身份\n将代理映射到 Microsoft Entra 代理身份。这为发布的代理提供了其在 Entra ID 中独特的服务\n主体身份，确保它不会继承或使用用户令牌或次级\n管理密钥。\n限制：身份与项目资源隔离\n与其共享默认的 Microsoft Foundry 项目管理身份（project-mi），为此代理实例分配一个独特的\n用户分配的托管身份。将其基于角色的访问控制\n（RBAC）范围限制仅限于特定的检索索引和目标外部 API 端点。",
+  "explanationEn": "Box 1: required\nTool choice\nTo comply with your strict workflow and compliance requirements, you set tool_choice parameter required.\nSetting tool_choice to required mathematically forces the model to invoke at least one tool (your internal\nretrieval mechanism) during the turn before it can finalize its answer.\nIncorrect\n[Not auto]\nSetting tool_choice to auto hands over absolute decision-making power to the underlying foundational\nmodel. If the model determines it already \"knows\" the answer from its training data, it can skip the retrieval\nstep entirely.\nBox 2: Using a distinct agent identity bound to the client application\nConfigure the tool to authenticate by\nRestriction: Use Published Agent's Own Identity\nMap the agent to a Microsoft Entra Agent Identity. This gives the published agent its own distinct service\nprincipal identity within Entra ID, ensuring it does not inherit or use user tokens or secondary\nadministrative keys.\nRestriction: Identity Isolated from Project Resources\nRather than sharing the default Microsoft Foundry project managed identity (project-mi), assign a unique\nUser-Assigned Managed Identity exclusively to this agent instance. Limit its role-based access control\n(RBAC) scopes solely to the specific retrieval indexes and the target external API endpoints.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 18",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 18",
+  "pdfPage": 26,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 18
+ },
+ {
+  "id": "q022",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含以下内容：\n一个调用外部 API 的 OpenAPI 工具一个名为 Connection1 的项目连接，存储外部 API 的 API 密钥当代理调用 OpenAPI 工具时，API 返回 401 未授权错误，跟踪显示\nAPI 密钥头 未 被发送。\n您需要确保 OpenAPI 工具在所有请求中自动包含来自 Connection1 的 API 密钥。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Enable identity passthrough so that the tool uses the Microsoft Entra token of the caller",
+    "textEn": "Enable identity passthrough so that the tool uses the Microsoft Entra token of the caller.",
+    "textZh": "启用身份传递，以便工具使用调用者的 Microsoft Entra 令牌。"
+   },
+   {
+    "id": "B",
+    "text": "Add the API key header manually to the OpenAPI specification",
+    "textEn": "Add the API key header manually to the OpenAPI specification.",
+    "textZh": "手动将 API 密钥头添加到 OpenAPI 规范中。"
+   },
+   {
+    "id": "C",
+    "text": "Configure the tool to use the default connection of Project1",
+    "textEn": "Configure the tool to use the default connection of Project1.",
+    "textZh": "配置工具以使用 Project1 的默认连接。"
+   },
+   {
+    "id": "D",
+    "text": "Connect the tool to Connection1",
+    "textEn": "Connect the tool to Connection1.",
+    "textZh": "将工具连接到 Connection1。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含以下内容：\n一个调用外部 API 的 OpenAPI 工具一个名为 Connection1 的项目连接，存储外部 API 的 API 密钥当代理调用 OpenAPI 工具时，API 返回 401 未授权错误，跟踪显示\nAPI 密钥头 未 被发送。\n您需要确保 OpenAPI 工具在所有请求中自动包含来自 Connection1 的 API 密钥。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project named Project1 that contains the following:\nAn OpenAPI tool that calls an external API\nA project connection named Connection1 that stores the API key of the external API\nWhen an agent calls the OpenAPI tool, the API returns a 401 unauthorized error, and traces show that the\nAPI key header is NOT being sent.\nYou need to ensure that the OpenAPI tool automatically includes the API key from Connection1 on all\nrequests.\nWhat should you do?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 19",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 19",
+  "pdfPage": 28,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 19
+ },
+ {
+  "id": "q023",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含客户支持代理的 Microsoft Foundry 项目。该代理在生成响应之前会调用一个内部知识 API 工具。\n用户报告了以下问题：\n某些请求的完成时间超过 15 秒。\n即使知识 API 返回预期数据，某些响应仍然不正确。\n您需要检查单个代理运行，以查看大型语言模型 (LLM)\n调用、工具调用和时间信息的有序序列。\n您应该使用哪种可观察性能力？",
+  "options": [
+   {
+    "id": "A",
+    "text": "token usage",
+    "textEn": "token usage",
+    "textZh": "令牌使用"
+   },
+   {
+    "id": "B",
+    "text": "monitoring",
+    "textEn": "monitoring",
+    "textZh": "监控"
+   },
+   {
+    "id": "C",
+    "text": "safety metrics",
+    "textEn": "safety metrics",
+    "textZh": "安全指标"
+   },
+   {
+    "id": "D",
+    "text": "tracing",
+    "textEn": "tracing",
+    "textZh": "跟踪"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "这里是 LLM 跟踪（也称为跟踪视图或 GenAI 的分布式跟踪）所需的内容。\n跟踪执行流程：它捕获 LLM 调用和工具调用的确切有序序列。\n确定延迟：它为每个单独的步骤提供时间戳和持续时间，以捕捉 15 秒的\n瓶颈。\n检查输入/输出：它让您查看发送到知识 API 和从知识 API 返回的确切有效负载，以及最终的\nLLM 提示，以找出代理为何产生幻觉或忽略数据。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含客户支持代理的 Microsoft Foundry 项目。该代理在生成响应之前会调用一个内部知识 API 工具。\n用户报告了以下问题：\n某些请求的完成时间超过 15 秒。\n即使知识 API 返回预期数据，某些响应仍然不正确。\n您需要检查单个代理运行，以查看大型语言模型 (LLM)\n调用、工具调用和时间信息的有序序列。\n您应该使用哪种可观察性能力？",
+  "stemEn": "You have a Microsoft Foundry project that contains a customer support agent. The agent calls an internal\nknowledge API tool before generating responses.\nUsers report the following issues:\nSome requests take more than 15 seconds to complete.\nSome responses are incorrect, even when the knowledge API returns the expected data.\nYou need to inspect individual agent runs to view the ordered sequence of large language model (LLM)\ncalls, tool invocations, and timing information.\nWhich observability capability should you use?",
+  "explanationZh": "这里是 LLM 跟踪（也称为跟踪视图或 GenAI 的分布式跟踪）所需的内容。\n跟踪执行流程：它捕获 LLM 调用和工具调用的确切有序序列。\n确定延迟：它为每个单独的步骤提供时间戳和持续时间，以捕捉 15 秒的\n瓶颈。\n检查输入/输出：它让您查看发送到知识 API 和从知识 API 返回的确切有效负载，以及最终的\nLLM 提示，以找出代理为何产生幻觉或忽略数据。",
+  "explanationEn": "Here is LLM tracing (also known as trace view or distributed tracing for GenAI) needed.\nTracks Execution Flow: It captures the exact ordered sequence of LLM calls and tool invocations.\nPinpoints Latency: It provides timestamps and durations for every individual step to catch the 15-second\nbottlenecks.\nInspects Inputs/Outputs: It lets you see the exact payload sent to and from the knowledge API and the final\nLLM prompt to find out why the agent hallucinated or ignored the data.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 20",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 20",
+  "pdfPage": 28,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 20
+ },
+ {
+  "id": "q024",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n \n您需要实施控制措施以降低风险。 \n \n解决方案：您为用户提示配置了提示保护。 \n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n \n您需要实施控制措施以降低风险。 \n \n解决方案：您为用户提示配置了提示保护。 \n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a multimodal AI generative model that accepts image uploads and uses extracted image text to\ngenerate responses.\nYou discover that users can upload unsafe images and embed hidden instructions into images to\nmanipulate the model.\n \n \nYou need to implement controls to mitigate the risk.\nSolution: You configure a prompt shield for user prompts.\nDoes this meet the goal?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 21",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 21",
+  "pdfPage": 29,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 21
+ },
+ {
+  "id": "q025",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n解决方案：您配置图像审核以在处理图像之前阻止不安全内容。\n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n解决方案：您配置图像审核以在处理图像之前阻止不安全内容。\n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a multimodal AI generative model that accepts image uploads and uses extracted image text to\ngenerate responses.\nYou discover that users can upload unsafe images and embed hidden instructions into images to\nmanipulate the model.\nYou need to implement controls to mitigate the risk.\nSolution: You configure image moderation to block unsafe content before processing the images.\nDoes this meet the goal?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 22",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 22",
+  "pdfPage": 29,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 22
+ },
+ {
+  "id": "q026",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n \n解决方案：您为文档配置了提示保护。\n \n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确：\n* 您为文档配置了提示保护。\n文档的提示保护：高度有效（关键防御）\n它的帮助：该保护专门扫描不受信任的第三方数据输入（如外部文档或\n从上传的图像中提取的文本）。\n机制：在将提取的图像文本发送到 LLM 之前，它会评估该文本，以识别隐藏的监狱\n* 您为用户提示配置了提示保护。\n用户提示的提示保护：部分有效（深度防御）\n它的帮助：该保护针对用户在文本提示\n字段中手动编写的直接越狱尝试。\n机制：它防止用户输入支持性指令，从而使模型执行图像中找到的\n隐藏指令。\n* 您配置图像审核以在处理图像之前阻止不安全内容。\n实施严格的图像审核是保护多模态 AI 系统免受这些威胁的最有效方法之一。审核充当必要的守门人\n，防止恶意输入到达生成模型。\n不正确：\n* 您配置受保护材料检测。\n受保护材料检测：对该威胁无效\n为什么无效：此功能旨在扫描模型输出，以防止生成\n受版权保护的文本、专有源代码或许可图像。\n限制：它不会扫描输入以查找对抗性指令，也不会阻止用户操纵\n模型的逻辑。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n \n解决方案：您为文档配置了提示保护。\n \n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a multimodal AI generative model that accepts image uploads and uses extracted image text to\ngenerate responses.\nYou discover that users can upload unsafe images and embed hidden instructions into images to\nmanipulate the model.\nYou need to implement controls to mitigate the risk.\n \nSolution: You configure a prompt shield for documents.\n \nDoes this meet the goal?",
+  "explanationZh": "正确：\n* 您为文档配置了提示保护。\n文档的提示保护：高度有效（关键防御）\n它的帮助：该保护专门扫描不受信任的第三方数据输入（如外部文档或\n从上传的图像中提取的文本）。\n机制：在将提取的图像文本发送到 LLM 之前，它会评估该文本，以识别隐藏的监狱\n* 您为用户提示配置了提示保护。\n用户提示的提示保护：部分有效（深度防御）\n它的帮助：该保护针对用户在文本提示\n字段中手动编写的直接越狱尝试。\n机制：它防止用户输入支持性指令，从而使模型执行图像中找到的\n隐藏指令。\n* 您配置图像审核以在处理图像之前阻止不安全内容。\n实施严格的图像审核是保护多模态 AI 系统免受这些威胁的最有效方法之一。审核充当必要的守门人\n，防止恶意输入到达生成模型。\n不正确：\n* 您配置受保护材料检测。\n受保护材料检测：对该威胁无效\n为什么无效：此功能旨在扫描模型输出，以防止生成\n受版权保护的文本、专有源代码或许可图像。\n限制：它不会扫描输入以查找对抗性指令，也不会阻止用户操纵\n模型的逻辑。",
+  "explanationEn": "Correct:\n* You configure a prompt shield for documents.\nPrompt Shield for Documents: Highly Effective (Critical Defense)\nHow it helps: This shield specifically scans untrusted, third-party data inputs (like external documents or\ntext extracted from uploaded images).\nMechanism: It evaluates the extracted image text before it is sent to the LLM to identify hidden jail\n* You configure a prompt shield for user prompts.\nPrompt Shield for User Prompts: Partially Effective (Defense in Depth)\nHow it helps: This shield targets direct jailbreak attempts written manually by the user in the text prompt\nfield accompanying the upload.\nMechanism: It prevents the user from typing supporting instructions that prime the model to execute the\nhidden instructions found within the image.\n* You configure image moderation to block unsafe content before processing the images.\nImplementing rigorous image moderation is one of the most effective ways to secure multimodal AI\nsystems against these threats. Moderation acts as a necessary gatekeeper, preventing malicious inputs\nfrom ever reaching the generative model.\nIncorrect:\n* You configure protected material detection.\n Protected Material Detection: Ineffective for this Threat\nWhy it does not help: This feature is designed to scan model outputs to prevent the generation of\ncopyrighted text, proprietary source code, or licensed imagery.\nLimitation: It does not scan inputs for adversarial instructions and will not prevent a user from manipulating\nthe model's logic.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 23",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 23",
+  "pdfPage": 30,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 23
+ },
+ {
+  "id": "q027",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n \n您需要实施控制措施以降低风险。 \n解决方案：您配置受保护材料检测。 \n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 您为文档配置了提示保护。\n文档的提示保护：高度有效（关键防御）\n它的帮助：该保护专门扫描不受信任的第三方数据输入（如外部文档或\n从上传的图像中提取的文本）。\n机制：在将提取的图像文本发送到 LLM 之前，它会评估该文本，以识别隐藏的监狱\n* 您为用户提示配置了提示保护。\n用户提示的提示保护：部分有效（深度防御）\n它的帮助：该保护针对用户在文本提示\n字段中手动编写的直接越狱尝试。\n机制：它防止用户输入支持性指令，从而使模型执行图像中找到的\n隐藏指令。\n* 您配置图像审核以在处理图像之前阻止不安全内容。\n实施严格的图像审核是保护多模态 AI\n系统免受这些威胁的最有效方法之一。审核充当必要的守门人，防止恶意输入\n到达生成模型。\n不正确：\n* 您配置受保护材料检测。\n受保护材料检测：对该威胁无效\n为什么无效：此功能旨在扫描模型输出，以防止生成\n受版权保护的文本、专有源代码或许可图像。\n限制：它不会扫描输入以查找对抗性指令，也不会阻止用户操纵\n模型的逻辑。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n \n您需要实施控制措施以降低风险。 \n解决方案：您配置受保护材料检测。 \n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a multimodal AI generative model that accepts image uploads and uses extracted image text to\ngenerate responses.\nYou discover that users can upload unsafe images and embed hidden instructions into images to\nmanipulate the model.\n \n \nYou need to implement controls to mitigate the risk.\nSolution: You configure protected material detection. \nDoes this meet the goal?",
+  "explanationZh": "正确：\n* 您为文档配置了提示保护。\n文档的提示保护：高度有效（关键防御）\n它的帮助：该保护专门扫描不受信任的第三方数据输入（如外部文档或\n从上传的图像中提取的文本）。\n机制：在将提取的图像文本发送到 LLM 之前，它会评估该文本，以识别隐藏的监狱\n* 您为用户提示配置了提示保护。\n用户提示的提示保护：部分有效（深度防御）\n它的帮助：该保护针对用户在文本提示\n字段中手动编写的直接越狱尝试。\n机制：它防止用户输入支持性指令，从而使模型执行图像中找到的\n隐藏指令。\n* 您配置图像审核以在处理图像之前阻止不安全内容。\n实施严格的图像审核是保护多模态 AI\n系统免受这些威胁的最有效方法之一。审核充当必要的守门人，防止恶意输入\n到达生成模型。\n不正确：\n* 您配置受保护材料检测。\n受保护材料检测：对该威胁无效\n为什么无效：此功能旨在扫描模型输出，以防止生成\n受版权保护的文本、专有源代码或许可图像。\n限制：它不会扫描输入以查找对抗性指令，也不会阻止用户操纵\n模型的逻辑。",
+  "explanationEn": "Correct:\n* You configure a prompt shield for documents.\nPrompt Shield for Documents: Highly Effective (Critical Defense)\nHow it helps: This shield specifically scans untrusted, third-party data inputs (like external documents or\ntext extracted from uploaded images).\nMechanism: It evaluates the extracted image text before it is sent to the LLM to identify hidden jail\n* You configure a prompt shield for user prompts.\nPrompt Shield for User Prompts: Partially Effective (Defense in Depth)\nHow it helps: This shield targets direct jailbreak attempts written manually by the user in the text prompt\nfield accompanying the upload.\nMechanism: It prevents the user from typing supporting instructions that prime the model to execute the\nhidden instructions found within the image.\n* You configure image moderation to block unsafe content before processing the images.\nImplementing rigorous image moderation is one of the most effective ways to secure multimodal AI\nsystems against these threats. Moderation acts as a necessary gatekeeper, preventing malicious inputs\nfrom ever reaching the generative model.\nIncorrect:\n* You configure protected material detection.\n Protected Material Detection: Ineffective for this Threat\nWhy it does not help: This feature is designed to scan model outputs to prevent the generation of\ncopyrighted text, proprietary source code, or licensed imagery.\nLimitation: It does not scan inputs for adversarial instructions and will not prevent a user from manipulating\nthe model's logic.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 24",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 24",
+  "pdfPage": 31,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 24
+ },
+ {
+  "id": "q028",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含两个代理，分别名为 PolicyWriter 和 RiskReviewer。\nPolicyWriter 为客户政策生成草稿更新，而 RiskReviewer 则审核这些草稿。\n在可视化构建器中，您需要创建一个满足以下要求的工作流：\n在没有人工干预的情况下完成低风险更新确保代理之间的可预测执行对高风险更新需要用户批准\n \n您应该配置什么？要回答，请在答案区域选择适当的选项。\n \n注意： 每个彗星选择值为一分。",
+  "options": [],
+  "answer": [
+   "The human-in-the-loop template that pauses execution of the workflow for input",
+   "Add a Condition statement."
+  ],
+  "pdfAnswer": [
+   "The human-in-the-loop template that pauses execution of the workflow for input",
+   "Add a Condition statement."
+  ],
+  "explanation": "框 1：人机交互模板，暂停工作流的执行以获取输入\n人机交互模板是正确的。该模式允许系统自动运行以实现可预测的，\n逐节点代理执行，同时在满足高风险条件时明确暂停工作流，以\n等待人工干预。\n框 2：添加条件语句\n条件语句是正确的。在决定是否完成策略之前，您必须评估风险级别（低与高）。条件节点检查来自 Ris\nkReviewer 的风险评分输出。如果它是低风险，则路由到自动完成。如果它是高风险，则路由到批准步骤\n \n。 \n \n \nwith-microsoft-agent-framework/4460342",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "业务流程模式",
+    "labelEn": "Orchestration pattern",
+    "labelZh": "业务流程模式",
+    "answer": "The human-in-the-loop template that pauses execution of the workflow for input",
+    "choices": [
+     {
+      "key": "The sequential template that passes outputs node by-node",
+      "en": "The sequential template that passes outputs node by-node",
+      "zh": "按节点传递输出的顺序模板"
+     },
+     {
+      "key": "The group chat template to dynamically route control between the agents",
+      "en": "The group chat template to dynamically route control between the agents",
+      "zh": "在代理之间动态路由控制的组聊天模板"
+     },
+     {
+      "key": "The human-in-the-loop template that pauses execution of the workflow for input",
+      "en": "The human-in-the-loop template that pauses execution of the workflow for input",
+      "zh": "暂停工作流执行以获取输入的人机交互模板"
+     }
+    ],
+    "positionNoteEn": "Orchestration pattern",
+    "positionNoteZh": "业务流程模式",
+    "positionNote": "业务流程模式"
+   },
+   {
+    "id": "box2",
+    "label": "审批检查点",
+    "labelEn": "Approval checkpoints",
+    "labelZh": "审批检查点",
+    "answer": "Add a Condition statement.",
+    "choices": [
+     {
+      "key": "Add a Basic chat node.",
+      "en": "Add a Basic chat node.",
+      "zh": "添加“基本聊天”(Basic chat) 节点。"
+     },
+     {
+      "key": "Add a Condition statement.",
+      "en": "Add a Condition statement.",
+      "zh": "添加“条件”(Condition) 语句。"
+     },
+     {
+      "key": "Add an Ask a question node.",
+      "en": "Add an Ask a question node.",
+      "zh": "添加“提问”(Ask a question) 节点。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含两个代理，分别名为 PolicyWriter 和 RiskReviewer。\nPolicyWriter 为客户政策生成草稿更新，而 RiskReviewer 则审核这些草稿。\n在可视化构建器中，您需要创建一个满足以下要求的工作流：\n在没有人工干预的情况下完成低风险更新确保代理之间的可预测执行对高风险更新需要用户批准\n \n您应该配置什么？要回答，请在答案区域选择适当的选项。\n \n注意： 每个彗星选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains two agents named PolicyWriter and RiskReviewer.\nPolicyWriter generates daft updates for customer polices, and RiskReviewer reviews the drafts.\nIn the visual builder, you need to create a workflow that meets the following requirements:\nFinalizes low-risk updates without manual intervention\nEnsures predictable execution across the agents\nRequires user approval for high-risk updates\n \n \nWhat should you configure? To answer, select the appropriate options in the answer area.\nNOTE: Each comet selection is worth one point.",
+  "explanationZh": "框 1：人机交互模板，暂停工作流的执行以获取输入\n人机交互模板是正确的。该模式允许系统自动运行以实现可预测的，\n逐节点代理执行，同时在满足高风险条件时明确暂停工作流，以\n等待人工干预。\n框 2：添加条件语句\n条件语句是正确的。在决定是否完成策略之前，您必须评估风险级别（低与高）。条件节点检查来自 Ris\nkReviewer 的风险评分输出。如果它是低风险，则路由到自动完成。如果它是高风险，则路由到批准步骤\n \n。 \n \n \nwith-microsoft-agent-framework/4460342",
+  "explanationEn": "Box 1: The human-in-the-loop template that pauses execution of the workflow for input\nHuman-in-the-loop template is correct. This pattern allows the system to run automatically for predictable,\nnode-by-node agent execution while explicitly pausing the workflow when a high-risk condition is met to\nwait for human intervention.\nBox 2: Add a Condition statement\nCondition statement is correct. You must evaluate the risk level (low vs. high) before deciding whether to\nfinalize the policy. A condition node checks the risk score output from RiskReviewer. If it is low, it routes to\nauto-finalization. If it is high, it routes to an approval step.\nwith-microsoft-agent-framework/4460342",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 25",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 25",
+  "pdfPage": 32,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 25
+ },
+ {
+  "id": "q029",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含名为 Agent1 的代理的 Microsoft Foundry 项目。\nAgent1 成功运行，但 Foundry 控制平面不显示错误率、运行次数和\ntoken 使用情况的值，并且跟踪选项卡为空。\n您需要确保 Foundry 控制平面显示 Agent1 的适当值。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Update Agent1 to a new version",
+    "textEn": "Update Agent1 to a new version.",
+    "textZh": "将 Agent1 更新到新版本。"
+   },
+   {
+    "id": "B",
+    "text": "Restart Agent1 from Foundry Control Plane",
+    "textEn": "Restart Agent1 from Foundry Control Plane.",
+    "textZh": "从 Foundry 控制平面重启 Agent1。"
+   },
+   {
+    "id": "C",
+    "text": "Assign a Log Analytics workspace to Agent1",
+    "textEn": "Assign a Log Analytics workspace to Agent1.",
+    "textZh": "将日志分析工作区分配给 Agent1。"
+   },
+   {
+    "id": "D",
+    "text": "Enable Application Insights for Agent1",
+    "textEn": "Enable Application Insights for Agent1.",
+    "textZh": "为 Agent1 启用应用程序洞察。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "要解决此问题，您必须为您的Microsoft Foundry 项目连接并配置 Azure 应用程序洞察资源。\nFoundry 控制平面、其代理监控仪表板和跟踪选项卡直接依赖于存储在连接的应用程序洞察实例中的遥测\ndata。如果此资源缺失、未链接或\n配置不当，仪表板将无法显示运行、错误率、令牌使用情况或事务跨度。\nfoundry/4517250",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含名为 Agent1 的代理的 Microsoft Foundry 项目。\nAgent1 成功运行，但 Foundry 控制平面不显示错误率、运行次数和\ntoken 使用情况的值，并且跟踪选项卡为空。\n您需要确保 Foundry 控制平面显示 Agent1 的适当值。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent named Agent1.\nAgent1 runs successfully, but Foundry Control Plane does NOT display values for error rates, runs, and\ntoken usage, and the Traces tab is empty.\nYou need to ensure that Foundry Control Plane displays the appropriate values for Agent1.\nWhat should you do?",
+  "explanationZh": "要解决此问题，您必须为您的Microsoft Foundry 项目连接并配置 Azure 应用程序洞察资源。\nFoundry 控制平面、其代理监控仪表板和跟踪选项卡直接依赖于存储在连接的应用程序洞察实例中的遥测\ndata。如果此资源缺失、未链接或\n配置不当，仪表板将无法显示运行、错误率、令牌使用情况或事务跨度。\nfoundry/4517250",
+  "explanationEn": "To resolve this issue, you must connect and configure an Azure Application Insights resource for your\nMicrosoft Foundry project.\nThe Foundry Control Plane, its Agent Monitoring Dashboard, and the Traces tab rely directly on telemetry\ndata stored within the connected Application Insights instance. If this resource is missing, unlinked, or\nimproperly configured, the dashboard cannot display runs, error rates, token usage, or transaction spans.\nfoundry/4517250",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 26",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 26",
+  "pdfPage": 33,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 26
+ },
+ {
+  "id": "q030",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在 Microsoft Foundry 中构建一个名为 App1 的客户支持 Web 应用程序，该应用程序使用 GPT 实时模型。\nApp1 必须支持：\n实时、低延迟的语音对话，使用 Azure OpenAI\n从用户处流式音频输入并播放音频响应您需要配置一种支持客户端应用程序中实时音频流的连接方法并目标大约 100 毫秒的延迟。\n您应该使用哪种连接方法？",
+  "options": [
+   {
+    "id": "A",
+    "text": "RTMP",
+    "textEn": "RTMP",
+    "textZh": "RTMP"
+   },
+   {
+    "id": "B",
+    "text": "WebRTC",
+    "textEn": "WebRTC",
+    "textZh": "WebRTC"
+   },
+   {
+    "id": "C",
+    "text": "SIP",
+    "textEn": "SIP",
+    "textZh": "SIP"
+   },
+   {
+    "id": "D",
+    "text": "WebSocket",
+    "textEn": "WebSocket",
+    "textZh": "WebSocket"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在 Microsoft Foundry 中构建一个名为 App1 的客户支持 Web 应用程序，该应用程序使用 GPT 实时模型。\nApp1 必须支持：\n实时、低延迟的语音对话，使用 Azure OpenAI\n从用户处流式音频输入并播放音频响应您需要配置一种支持客户端应用程序中实时音频流的连接方法并目标大约 100 毫秒的延迟。\n您应该使用哪种连接方法？",
+  "stemEn": "You are building a customer support web app named App1 in Microsoft Foundry that uses a GPT realtime\nmodel.\nApp1 must support:\nLive, low-latency voice conversations that use Azure OpenAI\nStreaming audio input from users and playback audio responses\nYou need to configure a connection method that supports real-time audio streaming in client application\nand targets approximately 100 ms latency.\nWhich connection method should you use?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 27",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 27",
+  "pdfPage": 34,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 27
+ },
+ {
+  "id": "q031",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "tory\n \n您有一个包含代理的 Microsoft Foundry 项目，并使用 GitHub 存储库。该存储库包含一个名为 File1 的 YAML 文件，定义了代理的评估设置。\n \n您需要创建一个 GitHub Actions 工作流，当打开拉取请求 \n（PR）时运行在 File1 中定义的评估。您应该如何配置工作流？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Set project-endpoint to the endpoint of the project",
+    "textEn": "Set project-endpoint to the endpoint of the project.",
+    "textZh": "将 project-endpoint 设置为项目的端点。"
+   },
+   {
+    "id": "B",
+    "text": "Set evaluation-config to the path of the YAML file",
+    "textEn": "Set evaluation-config to the path of the YAML file.",
+    "textZh": "将 evaluation-config 设置为 YAML 文件的路径。"
+   },
+   {
+    "id": "C",
+    "text": "Set model-deployment-name to the deployed model",
+    "textEn": "Set model-deployment-name to the deployed model.",
+    "textZh": "将 model-deployment-name 设置为已部署的模型。"
+   },
+   {
+    "id": "D",
+    "text": "Set tenant-id to the Microsoft Entra tenant ID",
+    "textEn": "Set tenant-id to the Microsoft Entra tenant ID",
+    "textZh": "将 tenant-id 设置为 Microsoft Entra 租户 ID"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确的配置选择是将 project-endpoint 设置为项目的端点。\nazure-ai-project-endpoint：此参数是必需的，必须设置为您的\nMicrosoft Foundry 项目的 URL 端点。这与设置 project-endpoint 一致。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "tory\n \n您有一个包含代理的 Microsoft Foundry 项目，并使用 GitHub 存储库。该存储库包含一个名为 File1 的 YAML 文件，定义了代理的评估设置。\n \n您需要创建一个 GitHub Actions 工作流，当打开拉取请求 \n（PR）时运行在 File1 中定义的评估。您应该如何配置工作流？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent and uses a GitHub repository. The reposi\ncontains a YAML file named File1 that defines the evaluation settings of the agent.\n \n \nYou need to create a GitHub Actions workflow that runs the evaluation defined in File1 when a pull request\n(PR) is opened. How should you configure the workflow?",
+  "explanationZh": "正确的配置选择是将 project-endpoint 设置为项目的端点。\nazure-ai-project-endpoint：此参数是必需的，必须设置为您的\nMicrosoft Foundry 项目的 URL 端点。这与设置 project-endpoint 一致。",
+  "explanationEn": "The correct configuration choice is to set project-endpoint to the endpoint of the project.\nazure-ai-project-endpoint: This parameter is required and must be set to the URL endpoint of your\nMicrosoft Foundry project. This aligns with setting project-endpoint.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 28",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 28",
+  "pdfPage": 34,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 28
+ },
+ {
+  "id": "q032",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用存储的访问密钥从 Azure 密钥保管库中检索机密，这违反了无密钥凭据的要求。\n您需要确保代理可以检索机密。解决方案必须遵循最小权限原则。\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Enable a system-assigned managed identity at the project level.",
+   "Assign the Key Vault Secrets User role to the managed identity."
+  ],
+  "pdfAnswer": [
+   "Enable a system-assigned managed identity at the project level.",
+   "Assign the Key Vault Secrets User role to the managed identity."
+  ],
+  "explanation": "框 1：在项目级别启用系统分配的托管身份\n正确的配置是在项目级别启用系统分配的托管身份。\n这是正确的方法。Azure AI Foundry（前身为 Azure 机器学习）允许您直接在项目级别启用系统分配的托\n管身份。此身份作为 Azure 的无密钥凭据。为了遵循最小权限原则，您需要将此项目级别身份分配一个\n特定角色（例如 Key Vault 秘密用户），仅限于所需的 Azure Key Vault。这确保代理可以安全地检\n索秘密，而不会将凭据暴露给其他项目或资源。\nor\n框 2：将密钥保管库机密用户角色分配给托管身份\n为了遵守无凭证要求并遵循最小权限原则，您应该\n配置密钥保管库授权方法，将密钥保管库机密用户角色分配给托管\n身份，使用 Azure 基于角色的访问控制（Azure RBAC）。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "托管身份范围",
+    "labelEn": "Managed identity scope",
+    "labelZh": "托管身份范围",
+    "answer": "Enable a system-assigned managed identity at the project level.",
+    "choices": [
+     {
+      "key": "Enable a system-assigned managed identity at the Foundry level.",
+      "en": "Enable a system-assigned managed identity at the Foundry level.",
+      "zh": "在 Foundry 级别启用系统分配的托管身份。"
+     },
+     {
+      "key": "Enable a system-assigned managed identity at the project level.",
+      "en": "Enable a system-assigned managed identity at the project level.",
+      "zh": "在项目级别启用系统分配的托管身份。"
+     },
+     {
+      "key": "Create a service principal and store the principal’s client secret.",
+      "en": "Create a service principal and store the principal’s client secret.",
+      "zh": "创建服务主体并存储该主体的客户端密码。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "密钥保管库授权方法",
+    "labelEn": "Key Vault authorization method",
+    "labelZh": "密钥保管库授权方法",
+    "answer": "Assign the Key Vault Secrets User role to the managed identity.",
+    "choices": [
+     {
+      "key": "Add an API key to application settings.",
+      "en": "Add an API key to application settings.",
+      "zh": "将 API 密钥添加到应用程序设置中。"
+     },
+     {
+      "key": "Add a Key Vault access policy for the secrets.",
+      "en": "Add a Key Vault access policy for the secrets.",
+      "zh": "为机密添加 Key Vault 访问策略。"
+     },
+     {
+      "key": "Assign the Key Vault Secrets User role to the managed identity.",
+      "en": "Assign the Key Vault Secrets User role to the managed identity.",
+      "zh": "为托管身份分配“Key Vault 机密用户”(Key Vault Secrets User) 角色。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用存储的访问密钥从 Azure 密钥保管库中检索机密，这违反了无密钥凭据的要求。\n您需要确保代理可以检索机密。解决方案必须遵循最小权限原则。\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses a stored access key to retrieve secrets from an Azure key vault, which violates a keyless-\ncredentials requirement.\nYou need to ensure that the agent can retrieve the secrets. The solution must follow the principle of least\nprivilege.\nWhat should you configure? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：在项目级别启用系统分配的托管身份\n正确的配置是在项目级别启用系统分配的托管身份。\n这是正确的方法。Azure AI Foundry（前身为 Azure 机器学习）允许您直接在项目级别启用系统分配的托\n管身份。此身份作为 Azure 的无密钥凭据。为了遵循最小权限原则，您需要将此项目级别身份分配一个\n特定角色（例如 Key Vault 秘密用户），仅限于所需的 Azure Key Vault。这确保代理可以安全地检\n索秘密，而不会将凭据暴露给其他项目或资源。\nor\n框 2：将密钥保管库机密用户角色分配给托管身份\n为了遵守无凭证要求并遵循最小权限原则，您应该\n配置密钥保管库授权方法，将密钥保管库机密用户角色分配给托管\n身份，使用 Azure 基于角色的访问控制（Azure RBAC）。",
+  "explanationEn": "Box 1: Enable a system-assigned managed identity at the project level\nThe correct configuration is to enable a system-assigned managed identity at the project level.\nThis is the correct approach. Azure AI Foundry (formerly Azure Machine Learning) allows you to enable a\nsystem-assigned managed identity directly at the project level. This identity acts as a keyless credential\nnative to Azure. To follow the principle of least privilege, you then assign this project-level identity a\nspecific role (such as Key Vault Secrets User) restricted only to the required Azure Key Vault. This\nensures that the agent can retrieve secrets securely without exposing credentials to other projects\nresources\nBox 2: Assign the Key Vault Secrets User role to the managed identity\nTo comply with the keyless-credentials requirement and follow the principle of least privilege, you should\nconfigure the Key Vault authorization method to assign the Key Vault Secrets User role to the managed\nidentity using Azure Role-Based Access Control (Azure RBAC).",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 29",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 29",
+  "pdfPage": 34,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 29
+ },
+ {
+  "id": "q033",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含客户支持应用程序的 Microsoft Foundry 项目。\n您创建了两个名为 Run1 和 Run2 的评估，它们具有以下配置：\n两者都包括风险和安全指标两者都包括受保护材料评估\nRun1 包括使用中等严重性阈值的有害内容指标\nRun2 包括使用高严重性阈值的有害内容指标您对名为 DB1 的数据集运行这两个评估，并收到以下结果：\nRun1 的内容危害缺陷率：12%\nRun2 的内容危害缺陷率：4%\nRun1 的受保护材料评估： 6%\nRun2 的受保护材料评估： 6%\n您通过使用 DB1 开始一个微调任务。该任务在自动 RAI 检查多个内容危害类型时失败。\n您发现内容过滤配置设置为高严重性。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "框 1: 否\n将内容过滤配置更改为低严重性不会解决微调作业问题。\n框 2: 是\nRun1 中 12% 的缺陷率与 Run2 中 4% 的缺陷率之间的差异完全符合\n为两个评估配置的不同严重性阈值。\n框 3：是\n受保护材料评估指标完全不受内容危害严重性阈值变化的影响。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "将内容过滤配置更改为低严重性将解决微调作业的问题。",
+    "labelEn": "Changing the content filtering configuration to low severity will resolve the fine-tuning job issues.",
+    "labelZh": "将内容过滤配置更改为低严重性将解决微调作业的问题。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "12% 与 4% 的内容危害缺陷率之间的差异，与 Run1 和 Run2 中使用的不同严重性阈值一致。",
+    "labelEn": "The difference between the 12% and 4% content harm defect rate is consistent with the different severity thresholds used in Run1 and Run2.",
+    "labelZh": "12% 与 4% 的内容危害缺陷率之间的差异，与 Run1 和 Run2 中使用的不同严重性阈值一致。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "Run1 和 Run2 中相同的 6% 受保护材料评估值表明，该指标不受严重性阈值变化的影响。",
+    "labelEn": "The identical 6% protected material evaluation values across Run1 and Run2 indicate that this metric is unaffected by the change in the severity threshold.",
+    "labelZh": "Run1 和 Run2 中相同的 6% 受保护材料评估值表明，该指标不受严重性阈值变化的影响。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "stemZh": "您有一个包含客户支持应用程序的 Microsoft Foundry 项目。\n您创建了两个名为 Run1 和 Run2 的评估，它们具有以下配置：\n两者都包括风险和安全指标两者都包括受保护材料评估\nRun1 包括使用中等严重性阈值的有害内容指标\nRun2 包括使用高严重性阈值的有害内容指标您对名为 DB1 的数据集运行这两个评估，并收到以下结果：\nRun1 的内容危害缺陷率：12%\nRun2 的内容危害缺陷率：4%\nRun1 的受保护材料评估： 6%\nRun2 的受保护材料评估： 6%\n您通过使用 DB1 开始一个微调任务。该任务在自动 RAI 检查多个内容危害类型时失败。\n您发现内容过滤配置设置为高严重性。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains a customer support application.\nYou create two evaluations named Run1 and Run2 that have the following configurations:\nBoth include risk and safety metrics\nBoth include the protected material evaluation\nRun1 includes harmful content metrics that use a medium severity threshold\nRun2 includes harmful content metric that use a high severity threshold\nYou run both evaluations against a dataset named DB1 and receive the following results:\nContent harm defect rate of Run1: 12%\nContent harm defect rate of Run2: 4%\nProtected material evaluation of Run1: 6%\nProtected material evaluation of Run2: 6%\nYou start a fine-tuning job by using DB1. The job fails during automatic RAI checks for multiple content\nharm types.\nYou discover that the content filtering configuration is set to high severity.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: 否\n将内容过滤配置更改为低严重性不会解决微调作业问题。\n框 2: 是\nRun1 中 12% 的缺陷率与 Run2 中 4% 的缺陷率之间的差异完全符合\n为两个评估配置的不同严重性阈值。\n框 3：是\n受保护材料评估指标完全不受内容危害严重性阈值变化的影响。",
+  "explanationEn": "Box 1: No\nChanging the content filtering configuration to low severity will not resolve the fine-tuning job issues.\nBox 2: Yes\nThe difference between a 12% defect rate in Run1 and a 4% defect rate in Run2 is entirely consistent with\nthe different severity thresholds configured for the two evaluations.\nBox 3: Yes\nThe protected material evaluation metric is entirely unaffected by changes to the content harm severity\nthreshold.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "yn",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 30",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 30",
+  "pdfPage": 36,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 30
+ },
+ {
+  "id": "q034",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "drag",
+  "stem": "您有一个包含多代理解决方案的 Microsoft Foundry 项目。代理使用工具调用来查询内部系统。\n您需要实施负责任的人工智能审计以满足以下要求：\n捕获整个代理运行中的所有嵌套操作。\n将工具调用参数和返回结果记录为元数据。\n您应该为每个要求使用什么？要回答，请将适当的选项拖到正确的目标。\n \n \n每个选项可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n \n注意： 每个正确的选择值为一分。 \n选择和放置：",
+  "options": [],
+  "answer": [
+   "Hierarchical spans",
+   "Tool call attributes"
+  ],
+  "pdfAnswer": [
+   "Hierarchical spans",
+   "Tool call attributes"
+  ],
+  "explanation": "框 1：层次跨度\n在这种情况下应使用层次跨度。\n父子跟踪：在 OpenTelemetry 和 Azure Monitor Application Insights（支持 MicrosoftFoundry 环境\n）中，层次跨度为整个请求利用一个唯一的跟踪 ID，并为各个操作使用不同的跨度 ID。\n \n \n嵌套捕获：当一个主代理调用一个子代理，或者一个代理调用一个特定的系统工具时，每个后续操作都被\n记录为一个子跨度。这明确地保留了父子关系，允许审计员重建整个多代理运行中所有嵌套操作的确切\n执行树。\n \n \n框 2：工具调用属性\n \n为了在 Microsoft Foundry 多代理项目中记录工具调用参数和返回结果作为负责任的 AI 审计的元数据 \n，您应该使用工具调用属性。\n在利用 OpenTelemetry 语义约定的 GenAI 和多代理系统中（Microsoft Foundry 利用这些约定进行\n可观察性、追踪和日志记录），工具执行细节通过特定的跨度属性进行捕获。配置的工具调用属性明确\n映射并记录参数\n(tool.call.arguments) 和输出 (tool.call.result) 作为审计和验证的追踪上下文中的元数据键。\nfoundry-agents/4522751",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "捕获整个代理运行中的所有嵌套操作",
+    "labelEn": "Capture all the nested operations across the entire agent run",
+    "labelZh": "捕获整个代理运行中的所有嵌套操作",
+    "answer": "Hierarchical spans",
+    "choices": [
+     {
+      "key": "Hierarchical spans",
+      "en": "Hierarchical spans",
+      "zh": "层次跨度"
+     },
+     {
+      "key": "A KQL query filter",
+      "en": "A KQL query filter",
+      "zh": "KQL 查询筛选器"
+     },
+     {
+      "key": "Sampling",
+      "en": "Sampling",
+      "zh": "采样"
+     },
+     {
+      "key": "Tool call attributes",
+      "en": "Tool call attributes",
+      "zh": "工具调用属性"
+     },
+     {
+      "key": "Trace sampling policy",
+      "en": "Trace sampling policy",
+      "zh": "追踪采样策略"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "记录工具调用参数和结果",
+    "labelEn": "Record tool invocation arguments and results",
+    "labelZh": "记录工具调用参数和结果",
+    "answer": "Tool call attributes",
+    "choices": [
+     {
+      "key": "Hierarchical spans",
+      "en": "Hierarchical spans",
+      "zh": "层次跨度"
+     },
+     {
+      "key": "A KQL query filter",
+      "en": "A KQL query filter",
+      "zh": "KQL 查询筛选器"
+     },
+     {
+      "key": "Sampling",
+      "en": "Sampling",
+      "zh": "采样"
+     },
+     {
+      "key": "Tool call attributes",
+      "en": "Tool call attributes",
+      "zh": "工具调用属性"
+     },
+     {
+      "key": "Trace sampling policy",
+      "en": "Trace sampling policy",
+      "zh": "追踪采样策略"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含多代理解决方案的 Microsoft Foundry 项目。代理使用工具调用来查询内部系统。\n您需要实施负责任的人工智能审计以满足以下要求：\n捕获整个代理运行中的所有嵌套操作。\n将工具调用参数和返回结果记录为元数据。\n您应该为每个要求使用什么？要回答，请将适当的选项拖到正确的目标。\n \n \n每个选项可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n \n注意： 每个正确的选择值为一分。 \n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that contains a multi-agent solution. The agents use tool calling to\nquery internal systems.\nYou need to implement responsible AI auditing to meet the following requirements:\nCapture all the nested operations across the entire agent run.\nRecord tool invocation arguments and retuned results as metadata.\nWhat should you use for each requirement? To answer, drag the appropriate options to the correct targets.\nEach option may be used once, more than once, or not at all. You may need to drag the split bar between\npanes or scroll to view content. \nNOTE: Each correct selection is worth one point. \nSelect and Place:",
+  "explanationZh": "框 1：层次跨度\n在这种情况下应使用层次跨度。\n父子跟踪：在 OpenTelemetry 和 Azure Monitor Application Insights（支持 MicrosoftFoundry 环境\n）中，层次跨度为整个请求利用一个唯一的跟踪 ID，并为各个操作使用不同的跨度 ID。\n \n \n嵌套捕获：当一个主代理调用一个子代理，或者一个代理调用一个特定的系统工具时，每个后续操作都被\n记录为一个子跨度。这明确地保留了父子关系，允许审计员重建整个多代理运行中所有嵌套操作的确切\n执行树。\n \n \n框 2：工具调用属性\n \n为了在 Microsoft Foundry 多代理项目中记录工具调用参数和返回结果作为负责任的 AI 审计的元数据 \n，您应该使用工具调用属性。\n在利用 OpenTelemetry 语义约定的 GenAI 和多代理系统中（Microsoft Foundry 利用这些约定进行\n可观察性、追踪和日志记录），工具执行细节通过特定的跨度属性进行捕获。配置的工具调用属性明确\n映射并记录参数\n(tool.call.arguments) 和输出 (tool.call.result) 作为审计和验证的追踪上下文中的元数据键。\nfoundry-agents/4522751",
+  "explanationEn": "Box 1: Hierarchical spans\nHierarchical spans should be used in this case.\nParent-Child tracking: In OpenTelemetry and Azure Monitor Application Insights (which back Microsoft\nFoundry environments), hierarchical spans utilize a unique Trace ID for the entire request and distinct\nSpan IDs for individual operations.\nNested capture: When a primary agent calls a sub-agent, or an agent invokes a specific system tool, each\nsubsequent operation is recorded as a child span. This explicitly preserves the parent-child relationship,\n \nallowing auditors to reconstruct the exact execution tree of all nested operations across the entire multi-\nagent run \nBox 2: Tool call attributes\n \n \nTo record tool invocation arguments and returned results as metadata for responsible AI auditing in a\nMicrosoft Foundry multi-agent project, you should use Tool call attributes.\nIn GenAI and multi-agent systems leveraging OpenTelemetry semantic conventions (which Microsoft\nFoundry utilizes for its observability, tracing, and logging pillars), tool execution details are captured via\nspecific span attributes. Configured tool call attributes explicitly map and record the parameters\n(tool.call.arguments) and outputs (tool.call.result) as metadata keys inside the tracing context for auditing\nand validation.\nfoundry-agents/4522751",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "drag",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 31",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 31",
+  "pdfPage": 37,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 31
+ },
+ {
+  "id": "q035",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目。\n您需要从模型目录中部署一个模型，以支持内部政策文档的搜索解决方案。该模型必须生成文档中文本和用户查询的向量表示。\n您应该使用哪种类型的模型？",
+  "options": [
+   {
+    "id": "A",
+    "text": "an embedding model",
+    "textEn": "an embedding model",
+    "textZh": "嵌入模型"
+   },
+   {
+    "id": "B",
+    "text": "an image generation model",
+    "textEn": "an image generation model",
+    "textZh": "图像生成模型"
+   },
+   {
+    "id": "C",
+    "text": "a large language model (LLM)",
+    "textEn": "a large language model (LLM)",
+    "textZh": "大型语言模型 (LLM)"
+   },
+   {
+    "id": "D",
+    "text": "a small language model (SLM)",
+    "textEn": "a small language model (SLM)",
+    "textZh": "小型语言模型 (SLM)"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "为了满足此要求，您需要从 Microsoft Foundry AI 模型目录中获取一个嵌入模型，\n该模型能够捕捉语义含义并为文本块输出数值向量。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目。\n您需要从模型目录中部署一个模型，以支持内部政策文档的搜索解决方案。该模型必须生成文档中文本和用户查询的向量表示。\n您应该使用哪种类型的模型？",
+  "stemEn": "You have a Microsoft Foundry project.\nYou need to deploy a model from the model catalog to support a search solution for internal policy\ndocuments. The model must generate vector representations of the text in the documents and of user\nqueries.\nWhich type of model should you use?",
+  "explanationZh": "为了满足此要求，您需要从 Microsoft Foundry AI 模型目录中获取一个嵌入模型，\n该模型能够捕捉语义含义并为文本块输出数值向量。",
+  "explanationEn": "To fulfill this requirement, you need an embeddings model from the Microsoft Foundry AI Model Catalog\nthat captures semantic meaning and outputs numerical vectors for text chunks.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 32",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 32",
+  "pdfPage": 38,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 32
+ },
+ {
+  "id": "q036",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目。\n您需要从模型目录中部署一个模型以支持实时推理。解决方案必须满足以下要求：\n使用基于密钥的身份验证。\n支持实时 REST API 访问。\n不消耗 Azure 订阅中虚拟机的 vCPU 配额。\n您应该使用哪种类型的部署？",
+  "options": [
+   {
+    "id": "A",
+    "text": "serverless API",
+    "textEn": "serverless API",
+    "textZh": "无服务器 API"
+   },
+   {
+    "id": "B",
+    "text": "batch",
+    "textEn": "batch",
+    "textZh": "批处理"
+   },
+   {
+    "id": "C",
+    "text": "self-hosted container",
+    "textEn": "self-hosted container",
+    "textZh": "自托管容器"
+   },
+   {
+    "id": "D",
+    "text": "standard",
+    "textEn": "standard",
+    "textZh": "标准"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "最合适的部署类型是无服务器 API 部署（也称为标准部署或模型即服务 / MaaS）。 \n基于密钥的身份验证：无服务器 API 部署本地提供一个端点 URL，以及主 API 密钥和次 API 密钥，以\n保护您的客户端应用程序。\n实时 REST API 访问：当模型成功部署时，它会暴露一个可扩展的实时 HTTP/REST 端点，匹配标准化的\nAzure AI 模型推理 API。\n没有虚拟机 vCPU 配额消耗：与托管计算部署不同——后者在您的订阅中配置专用虚拟机并需要 VM vCPU\n配额——无服务器 API 部署完全由微软托管和管理。它们采用按需付费、基于令牌的计费结构，并且不会\n消耗您 Azure 订阅中的任何 VM vCPU 配额。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目。\n您需要从模型目录中部署一个模型以支持实时推理。解决方案必须满足以下要求：\n使用基于密钥的身份验证。\n支持实时 REST API 访问。\n不消耗 Azure 订阅中虚拟机的 vCPU 配额。\n您应该使用哪种类型的部署？",
+  "stemEn": "You have a Microsoft Foundry project.\nYou need to deploy a model from the model catalog to support real-time inference. The solution must meet\nthe following requirements:\nUse key-based authentication.\nSupport real-time REST API access.\nNOT consume the vCPU quota of the virtual machines in the Azure subscription.\nWhich type of deployment should you use?",
+  "explanationZh": "最合适的部署类型是无服务器 API 部署（也称为标准部署或模型即服务 / MaaS）。 \n基于密钥的身份验证：无服务器 API 部署本地提供一个端点 URL，以及主 API 密钥和次 API 密钥，以\n保护您的客户端应用程序。\n实时 REST API 访问：当模型成功部署时，它会暴露一个可扩展的实时 HTTP/REST 端点，匹配标准化的\nAzure AI 模型推理 API。\n没有虚拟机 vCPU 配额消耗：与托管计算部署不同——后者在您的订阅中配置专用虚拟机并需要 VM vCPU\n配额——无服务器 API 部署完全由微软托管和管理。它们采用按需付费、基于令牌的计费结构，并且不会\n消耗您 Azure 订阅中的任何 VM vCPU 配额。",
+  "explanationEn": "说明：\n \nThe most appropriate type of deployment is a serverless API deployment (also referred to as a standard\ndeployment or Models-as-a-Service / MaaS).\nKey-Based Authentication: Serverless API deployments natively provision an endpoint URL alongside\nprimary and secondary API keys to secure your client applications.\nReal-Time REST API Access: When the model is successfully deployed, it exposes a scalable, real-time\nHTTP/REST endpoint matching the standardized Azure AI Model Inference API.\nNo Virtual Machine vCPU Quota Consumption: Unlike managed compute deployments—which provision\ndedicated virtual machines in your subscription and require VM vCPU quota—serverless API deployments\nare completely hosted and managed by Microsoft. They operate on a pay-as-you-go, token-based billing\nstructure and do not consume any VM vCPU quota from your Azure subscription.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 33",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 33",
+  "pdfPage": 39,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 33
+ },
+ {
+  "id": "q037",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您计划创建一个名为 Project1 的 Microsoft Foundry 项目，该项目将包含一个代理并使用名为 KV1 的 Azure 密钥保管库。\n您需要配置从 Project1 到 KV1 的连接。\n您应该如何完成 Bicep 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "'AzureKeyVault'",
+   "'AccountManagedIdentity'"
+  ],
+  "pdfAnswer": [
+   "'AzureKeyVault'",
+   "'AccountManagedIdentity'"
+  ],
+  "explanation": "框 1：AzureKeyVault\n要配置从 Microsoft Foundry 项目到 Azure 密钥保管库的连接，您必须使用 AzureKeyVault 连接类别\n。\n框 2：AccountManagedIdentity\n要将 Microsoft Foundry 项目连接到 Azure 密钥保管库，您必须使用 AccountManagedIdentity 作为 aut\nhType。\nMicrosoft Foundry 使用 Microsoft Entra ID 基于角色的访问控制 (RBAC) 来保护其与核心 Azure 存储\n和安全基础设施的出站连接。使用 AccountManagedIdentity 完全消除了在您的配置中处理或轮换显式\n凭据或 API 密钥的需要。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "category",
+    "labelEn": "category",
+    "labelZh": "category",
+    "answer": "'AzureKeyVault'",
+    "choices": [
+     {
+      "key": "'AzureAIService'",
+      "en": "'AzureAIService'",
+      "zh": "'AzureAIService'"
+     },
+     {
+      "key": "'AzureKeyVault'",
+      "en": "'AzureKeyVault'",
+      "zh": "'AzureKeyVault'"
+     },
+     {
+      "key": "'AzureOpenAI'",
+      "en": "'AzureOpenAI'",
+      "zh": "'AzureOpenAI'"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "authType",
+    "labelEn": "authType",
+    "labelZh": "authType",
+    "answer": "'AccountManagedIdentity'",
+    "choices": [
+     {
+      "key": "'AccountKey'",
+      "en": "'AccountKey'",
+      "zh": "'AccountKey'"
+     },
+     {
+      "key": "'AccountManagedIdentity'",
+      "en": "'AccountManagedIdentity'",
+      "zh": "'AccountManagedIdentity'"
+     },
+     {
+      "key": "'ApiKey'",
+      "en": "'ApiKey'",
+      "zh": "'ApiKey'"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您计划创建一个名为 Project1 的 Microsoft Foundry 项目，该项目将包含一个代理并使用名为 KV1 的 Azure 密钥保管库。\n您需要配置从 Project1 到 KV1 的连接。\n您应该如何完成 Bicep 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You plan to create a Microsoft Foundry project named Project1 that will contain an agent and use an Azure\nkey vault named KV1.\nYou need to configure a connection from Project1 to KV1.\nHow should you complete the Bicep code? To answer, select the appropriate options in the answer area?\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：AzureKeyVault\n要配置从 Microsoft Foundry 项目到 Azure 密钥保管库的连接，您必须使用 AzureKeyVault 连接类别\n。\n框 2：AccountManagedIdentity\n要将 Microsoft Foundry 项目连接到 Azure 密钥保管库，您必须使用 AccountManagedIdentity 作为 aut\nhType。\nMicrosoft Foundry 使用 Microsoft Entra ID 基于角色的访问控制 (RBAC) 来保护其与核心 Azure 存储\n和安全基础设施的出站连接。使用 AccountManagedIdentity 完全消除了在您的配置中处理或轮换显式\n凭据或 API 密钥的需要。",
+  "explanationEn": "Box 1: AzureKeyVault\nTo configure a connection from a Microsoft Foundry project to an Azure Key Vault, you must use the\nAzureKeyVault connection category.\nBox 2: AccountManagedIdentity\nTo connect a Microsoft Foundry project to an Azure Key Vault, you must use AccountManagedIdentity as\nthe authType.\nMicrosoft Foundry secures its outbound connections to core Azure storage and security infrastructure\nusing Microsoft Entra ID role-based access control (RBAC). Using AccountManagedIdentity completely\neliminates the need to handle or rotate explicit credentials or api keys within your configuration.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "template": "resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {\n  name: 'KV1'\n  scope: resourceGroup()\n}\n\nresource connection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {\n  name: '${aiFoundryName}-keyvault'\n  parent: aiFoundry\n  properties: {\n    category: {{box1}}\n    target: existingKeyVault.id\n    authType: {{box2}}\n    isSharedToAll: true\n    metadata: {\n      ApiType: 'Azure'\n      ResourceId: existingKeyVault.id\n      location: existingKeyVault.location\n    }\n  }\n}",
+  "templateEn": "resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {\n  name: 'KV1'\n  scope: resourceGroup()\n}\n\nresource connection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {\n  name: '${aiFoundryName}-keyvault'\n  parent: aiFoundry\n  properties: {\n    category: {{box1}}\n    target: existingKeyVault.id\n    authType: {{box2}}\n    isSharedToAll: true\n    metadata: {\n      ApiType: 'Azure'\n      ResourceId: existingKeyVault.id\n      location: existingKeyVault.location\n    }\n  }\n}",
+  "templateZh": "resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {\n  name: 'KV1'\n  scope: resourceGroup()\n}\n\nresource connection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {\n  name: '${aiFoundryName}-keyvault'\n  parent: aiFoundry\n  properties: {\n    category: {{box1}}\n    target: existingKeyVault.id\n    authType: {{box2}}\n    isSharedToAll: true\n    metadata: {\n      ApiType: 'Azure'\n      ResourceId: existingKeyVault.id\n      location: existingKeyVault.location\n    }\n  }\n}",
+  "templateKind": "code",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 34",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 34",
+  "pdfPage": 39,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 34
+ },
+ {
+  "id": "q038",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Microsoft Foundry 项目。\n您需要创建一个满足以下要求的客户支持代理：\n仅根据存储在策划库中的公司政策文件提供响应在不同的聊天会话中保留客户偏好您应该如何配置代理？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Configure revival from approved data sources.",
+   "Enable agent memory that uses persistent storage."
+  ],
+  "pdfAnswer": [
+   "Configure revival from approved data sources.",
+   "Enable agent memory that uses persistent storage."
+  ],
+  "explanation": "框 1：配置从批准的数据源检索\n您应该配置从批准的数据源检索以满足此要求。\n在 Microsoft Foundry（以及更广泛的 Azure AI Foundry / Azure OpenAI 架构）中，代理的基础仅限于\n公司政策文件需要实现检索增强生成（RAG）模式。这确保 AI 模型仅使用提供的上下文进行回答，而不会\n产生幻觉或依赖其公共训练数据。\n框 2：启用使用持久存储的代理记忆为了在完全独立的聊\n天会话或对话中保留用户偏好，您必须使用持久代理记忆。传统的聊天历史仅跟踪单个活动线程或会\n话中的消息。相比之下，记忆存储功能提供了一个管理的长期记忆系统，结构性地索引不同设备和独立\n会话中的用户偏好和事实。\nopenai-on-your-data/4144636",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "知识基础",
+    "labelEn": "Knowledge grounding",
+    "labelZh": "知识基础",
+    "answer": "Configure revival from approved data sources.",
+    "choices": [
+     {
+      "key": "Configure revival from approved data sources.",
+      "en": "Configure revival from approved data sources.",
+      "zh": "配置从已批准的数据源检索（PDF 原文为 revival，应为 retrieval）。"
+     },
+     {
+      "key": "Upload the policy documents direct to the agent.",
+      "en": "Upload the policy documents direct to the agent.",
+      "zh": "将策略文档直接上传到代理。"
+     },
+     {
+      "key": "Embed the policy documents directly into the agent instructions.",
+      "en": "Embed the policy documents directly into the agent instructions.",
+      "zh": "将策略文档直接嵌入代理说明中。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "记忆",
+    "labelEn": "Memory",
+    "labelZh": "记忆",
+    "answer": "Enable agent memory that uses persistent storage.",
+    "choices": [
+     {
+      "key": "Use orchestration-managed session context.",
+      "en": "Use orchestration-managed session context.",
+      "zh": "使用由业务流程管理的会话上下文。"
+     },
+     {
+      "key": "Enable agent memory that uses persistent storage.",
+      "en": "Enable agent memory that uses persistent storage.",
+      "zh": "启用使用持久存储的代理记忆。"
+     },
+     {
+      "key": "Retain user preferences in the state of the client application",
+      "en": "Retain user preferences in the state of the client application",
+      "zh": "在客户端应用程序的状态中保留用户首选项"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目。\n您需要创建一个满足以下要求的客户支持代理：\n仅根据存储在策划库中的公司政策文件提供响应在不同的聊天会话中保留客户偏好您应该如何配置代理？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project.\nYou need to create a customer support agent that meets the following requirements:\nGrounds responses only in company policy documents stored in curated repositories\nRetains customer preferences across separate chat sessions\nHow should you configure the agent? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：配置从批准的数据源检索\n您应该配置从批准的数据源检索以满足此要求。\n在 Microsoft Foundry（以及更广泛的 Azure AI Foundry / Azure OpenAI 架构）中，代理的基础仅限于\n公司政策文件需要实现检索增强生成（RAG）模式。这确保 AI 模型仅使用提供的上下文进行回答，而不会\n产生幻觉或依赖其公共训练数据。\n框 2：启用使用持久存储的代理记忆为了在完全独立的聊\n天会话或对话中保留用户偏好，您必须使用持久代理记忆。传统的聊天历史仅跟踪单个活动线程或会\n话中的消息。相比之下，记忆存储功能提供了一个管理的长期记忆系统，结构性地索引不同设备和独立\n会话中的用户偏好和事实。\nopenai-on-your-data/4144636",
+  "explanationEn": "Box 1: Configure retrieval from approved data sources\nYou should configure retrieval from approved data sources to meet this requirement.\nIn Microsoft Foundry (and broader Azure AI Foundry / Azure OpenAI architectures), grounding an agent\nexclusively in company policy documents requires implementing a Retrieval-Augmented Generation (RAG)\npattern. This ensures the AI model only answers using the provided context and does not hallucinate or\nrely on its public training data.\nBox 2: Enable agent memory that uses persistent storage\nTo retain user preferences across completely separate chat sessions or conversations, you must use\npersistent agent memory. Traditional chat history only tracks messages within a single active thread or\nsession. By contrast, the Memory Store feature provides a managed, long-term memory system that\nstructurally indexes user preferences and facts across different devices and separate sessions.\nopenai-on-your-data/4144636",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 35",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 35",
+  "pdfPage": 41,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 35
+ },
+ {
+  "id": "q039",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您拥有一个 Azure 订阅。\n您计划构建一个将使用 Azure AI DALL-E 模型的应用程序。\n您需要部署该模型。\n你应该使用什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "the Azure SDK for Python and PowerShell cmdlets",
+    "textEn": "the Azure SDK for Python and PowerShell cmdlets.",
+    "textZh": "Azure Python SDK 和 PowerShell 命令。"
+   },
+   {
+    "id": "B",
+    "text": "the Azure SDK for JavaScript and Azure Machine Learning Studio",
+    "textEn": "the Azure SDK for JavaScript and Azure Machine Learning Studio.",
+    "textZh": "Azure JavaScript SDK 和 Azure 机器学习工作室。"
+   },
+   {
+    "id": "C",
+    "text": "Microsoft Foundry and the Azure Command Line Interface (CLI)",
+    "textEn": "Microsoft Foundry and the Azure Command Line Interface (CLI)",
+    "textZh": "Microsoft Foundry 和 Azure 命令行界面 (CLI)"
+   },
+   {
+    "id": "D",
+    "text": "the Azure portal and Microsoft Graph API",
+    "textEn": "the Azure portal and Microsoft Graph API",
+    "textZh": "Azure 门户和 Microsoft Graph API"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "要部署 DALL-E 模型，您需要 Microsoft Foundry 和 Azure 命令行界面 (CLI)。\n部署与应用逻辑：Azure CLI 和 Microsoft Foundry 处理所需的管理基础设施层，以便在您的订阅中配置、\n设置和管理模型部署。\n不正确：\n[不是 B] \nSDK 的角色：Azure JavaScript SDK 是一个客户端开发库。它在您的代码中用于在模型已部署后调用或\n \n消费模型的 API。它不能部署 DALL-E 模型资产本身。\n \n工作室说明：虽然 Azure 机器学习工作室管理自定义 ML 流水线，但像 DALL-E 这样的基础生成 AI 模型\n \n是通过 Microsoft Foundry 门户及其相关生态系统进行配置和托管的。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个 Azure 订阅。\n您计划构建一个将使用 Azure AI DALL-E 模型的应用程序。\n您需要部署该模型。\n你应该使用什么？",
+  "stemEn": "You have an Azure subscription.\nYou plan to build an app that will use the Azure AI DALL-E model.\nYou need to deploy the model.\nWhat should you use?",
+  "explanationZh": "要部署 DALL-E 模型，您需要 Microsoft Foundry 和 Azure 命令行界面 (CLI)。\n部署与应用逻辑：Azure CLI 和 Microsoft Foundry 处理所需的管理基础设施层，以便在您的订阅中配置、\n设置和管理模型部署。\n不正确：\n[不是 B] \nSDK 的角色：Azure JavaScript SDK 是一个客户端开发库。它在您的代码中用于在模型已部署后调用或\n \n消费模型的 API。它不能部署 DALL-E 模型资产本身。\n \n工作室说明：虽然 Azure 机器学习工作室管理自定义 ML 流水线，但像 DALL-E 这样的基础生成 AI 模型\n \n是通过 Microsoft Foundry 门户及其相关生态系统进行配置和托管的。",
+  "explanationEn": "To deploy the DALL-E model, you need Microsoft Foundry and the Azure Command Line Interface (CLI).\nDeployment vs. Application Logic: The Azure CLI along with Microsoft Foundry handles the administrative\ninfrastructure layer required to provision, configure, and manage model deployments within your\nsubscription.\nIncorrect:\n[Not B] \n \nThe Role of the SDK: The Azure SDK for JavaScript is a client-side development library. It is used within\nyour code to consume or call the model's API after it has already been deployed. It cannot deploy the\nDALL-E model asset itself. \n \n \nStudio Clarification: While Azure Machine Learning Studio manages custom ML pipelines, foundational\ngenerative AI models like DALL-E are provisioned and hosted through the Microsoft Foundry portal and its\nassociated ecosystem.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 36",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 36",
+  "pdfPage": 43,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 36
+ },
+ {
+  "id": "q040",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您拥有一个 Azure 订阅。\n您需要创建一个新资源，以响应用户提示生成虚构的商店。解决方案必须确保该资源使用客户管理的密钥来保护数据。\n您应该如何完成脚本？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "OpenAI",
+   "--assign-identity"
+  ],
+  "pdfAnswer": [
+   "OpenAI",
+   "--assign-identity"
+  ],
+  "explanation": "框 1：OpenAI\n要生成响应用户提示的虚构商店，您需要一个生成性 AI 模型（例如 GPT-3.5 或 GPT-4）。Azure OpenAI\n服务本地支持这种生成能力，并允许您使用客户管理的密钥（CMK）来保护已部署的模型和数据。\n框 2：--assign-identity\n在定义 Azure Key Vault 资源脚本以启用客户管理的密钥（CMK）时，您必须使用 --assign-identity（或\nassign-identity）。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "AIServices",
+      "en": "AIServices",
+      "zh": "AIServices"
+     },
+     {
+      "key": "LanguageAuthoring",
+      "en": "LanguageAuthoring",
+      "zh": "LanguageAuthoring"
+     },
+     {
+      "key": "OpenAI",
+      "en": "OpenAI",
+      "zh": "OpenAI"
+     }
+    ],
+    "answer": "OpenAI"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "--api-properties",
+      "en": "--api-properties",
+      "zh": "--api-properties"
+     },
+     {
+      "key": "--assign-identity",
+      "en": "--assign-identity",
+      "zh": "--assign-identity"
+     },
+     {
+      "key": "--encryption",
+      "en": "--encryption",
+      "zh": "--encryption"
+     }
+    ],
+    "answer": "--assign-identity"
+   }
+  ],
+  "stemZh": "您拥有一个 Azure 订阅。\n您需要创建一个新资源，以响应用户提示生成虚构的商店。解决方案必须确保该资源使用客户管理的密钥来保护数据。\n您应该如何完成脚本？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have an Azure subscription.\nYou need to create a new resource that will generate fictional stores in response to user prompts. The\nsolution must ensure that the resource uses a customer-managed key to protect data.\nHow should you complete the script? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：OpenAI\n要生成响应用户提示的虚构商店，您需要一个生成性 AI 模型（例如 GPT-3.5 或 GPT-4）。Azure OpenAI\n服务本地支持这种生成能力，并允许您使用客户管理的密钥（CMK）来保护已部署的模型和数据。\n框 2：--assign-identity\n在定义 Azure Key Vault 资源脚本以启用客户管理的密钥（CMK）时，您必须使用 --assign-identity（或\nassign-identity）。",
+  "explanationEn": "Box 1: OpenAI\nTo generate fictional stores in response to user prompts, you need a generative AI model (such as GPT-\n3.5 or GPT-4). The Azure OpenAI service natively supports this generative capability and allows you to\nsecure your deployed models and data using customer-managed keys (CMK).\nBox 2: --assign-identity\nWhen defining the Azure Key Vault resource script to enable customer-managed keys (CMK), you must\nuse --assign-identity (or assign-identity).",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "template": "az cognitiveservices account create -n myresource -g myResourceGroup --kind {{1}} --sku S -l WestEurope \\\n  {{2}} '{\n    \"keySource\": \"Microsoft.KeyVault\",\n    \"keyVaultProperties\": {\n      \"keyName\": \"KeyName\",\n      \"keyVersion\": \"secretVersion\",\n      \"keyVaultUri\": \"https://issue23056kv.vault.azure.net/\"\n    }\n  }'",
+  "templateEn": "az cognitiveservices account create -n myresource -g myResourceGroup --kind {{1}} --sku S -l WestEurope \\\n  {{2}} '{\n    \"keySource\": \"Microsoft.KeyVault\",\n    \"keyVaultProperties\": {\n      \"keyName\": \"KeyName\",\n      \"keyVersion\": \"secretVersion\",\n      \"keyVaultUri\": \"https://issue23056kv.vault.azure.net/\"\n    }\n  }'",
+  "templateZh": "az cognitiveservices account create -n myresource -g myResourceGroup --kind {{1}} --sku S -l WestEurope \\\n  {{2}} '{\n    \"keySource\": \"Microsoft.KeyVault\",\n    \"keyVaultProperties\": {\n      \"keyName\": \"KeyName\",\n      \"keyVersion\": \"secretVersion\",\n      \"keyVaultUri\": \"https://issue23056kv.vault.azure.net/\"\n    }\n  }'",
+  "templateKind": "code",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 37",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 37",
+  "pdfPage": 43,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 37
+ },
+ {
+  "id": "q041",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在开发一个新的销售系统，该系统将处理来自面向公众的网站的用户生成的视频和文本。\n您计划通知用户他们的数据已被销售系统处理。\n这有助于满足哪个负责任的 AI 原则？",
+  "options": [
+   {
+    "id": "A",
+    "text": "fairness",
+    "textEn": "fairness",
+    "textZh": "公平性"
+   },
+   {
+    "id": "B",
+    "text": "transparency",
+    "textEn": "transparency",
+    "textZh": "透明度"
+   },
+   {
+    "id": "C",
+    "text": "inclusiveness",
+    "textEn": "inclusiveness",
+    "textZh": "包容性"
+   },
+   {
+    "id": "D",
+    "text": "reliability and safety",
+    "textEn": "reliability and safety",
+    "textZh": "可靠性和安全性"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "通知用户他们的数据已被您的销售系统处理，符合透明度\n负责任的人工智能原则。透明度确保用户了解他们的数据是如何被收集\n和处理的，这有助于促进理解并建立用户与技术提供者之间的信任。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在开发一个新的销售系统，该系统将处理来自面向公众的网站的用户生成的视频和文本。\n您计划通知用户他们的数据已被销售系统处理。\n这有助于满足哪个负责任的 AI 原则？",
+  "stemEn": "You are developing a new sales system that will process user-generated video and text from a public-\nfacing website.\nYou plan to notify users that their data has been processed by the sales system.\nWhich responsible AI principle does this help meet?",
+  "explanationZh": "通知用户他们的数据已被您的销售系统处理，符合透明度\n负责任的人工智能原则。透明度确保用户了解他们的数据是如何被收集\n和处理的，这有助于促进理解并建立用户与技术提供者之间的信任。",
+  "explanationEn": "Notifying users that their data has been processed by your sales system fulfills the Transparency\nresponsible AI principle. Transparency ensures that users are informed about how their data is collected\nand processed, which helps foster understanding and build trust between users and technology providers.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 38",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 38",
+  "pdfPage": 45,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 38
+ },
+ {
+  "id": "q042",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您需要确保阅读体验针对理解能力降低和学习差异的用户进行了优化，例如阅读障碍。解决方案必须最小化开发工作量。\n您应该在解决方案中包含哪个 Azure 服务？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Document Intelligence in Foundry Tools",
+    "textEn": "Azure Document Intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Document Intelligence"
+   },
+   {
+    "id": "B",
+    "text": "Azure Language in Foundry Tools",
+    "textEn": "Azure Language in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Language"
+   },
+   {
+    "id": "C",
+    "text": "Azure AI Immersive Reader",
+    "textEn": "Azure AI Immersive Reader",
+    "textZh": "Azure AI 沉浸式阅读器"
+   },
+   {
+    "id": "D",
+    "text": "Azure Translator in Foundry Tools",
+    "textEn": "Azure Translator in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Translator"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "在您的解决方案中包含 Azure AI 沉浸式阅读器。它是一个应用 AI 服务，提供内置的无障碍功能，如\n朗读（文本转语音）、实时翻译、行聚焦和可自定义的排版。它不需要机器学习专业知识，并且易于集成，\n以最小化开发工作量。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您需要确保阅读体验针对理解能力降低和学习差异的用户进行了优化，例如阅读障碍。解决方案必须最小化开发工作量。\n您应该在解决方案中包含哪个 Azure 服务？",
+  "stemEn": "You are designing a content management system. 您正在设计一个内容管理系统。\nYou need to ensure that the reading experience is optimized for users who have reduced comprehension\nand learning differences, such as dyslexia. The solution must minimize development effort.\nWhich Azure service should you include in the solution?",
+  "explanationZh": "在您的解决方案中包含 Azure AI 沉浸式阅读器。它是一个应用 AI 服务，提供内置的无障碍功能，如\n朗读（文本转语音）、实时翻译、行聚焦和可自定义的排版。它不需要机器学习专业知识，并且易于集成，\n以最小化开发工作量。",
+  "explanationEn": "Include Azure AI Immersive Reader in your solution. It is an applied AI service that provides built-in\naccessibility features like read-aloud (text-to-speech), real-time translation, line focusing, and customizable\ntypography. It requires no machine learning expertise and integrates easily to minimize development effort.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 39",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 39",
+  "pdfPage": 45,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 39
+ },
+ {
+  "id": "q043",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您拥有一个包含名为 App1 的 Azure 应用服务应用的 Azure 订阅。\n您配置了一个名为 CSAccount1 的 Microsoft Foundry Service 资源。\n您需要配置 App1 以访问 CSAccount1。解决方案必须最小化管理工作量。\n您应该使用什么来配置 App1？",
+  "options": [
+   {
+    "id": "A",
+    "text": "the endpoint URI and subscription key",
+    "textEn": "the endpoint URI and subscription key",
+    "textZh": "端点 URI 和订阅密钥"
+   },
+   {
+    "id": "B",
+    "text": "the endpoint URI and an OAuth token",
+    "textEn": "the endpoint URI and an OAuth token",
+    "textZh": "端点 URI 和 OAuth 令牌"
+   },
+   {
+    "id": "C",
+    "text": "the endpoint URI and a shared access signature (SAS) token",
+    "textEn": "the endpoint URI and a shared access signature (SAS) token",
+    "textZh": "端点 URI 和共享访问签名 (SAS) 令牌"
+   },
+   {
+    "id": "D",
+    "text": "a system-assigned managed identity and an X.509 certificate",
+    "textEn": "a system-assigned managed identity and an X.509 certificate",
+    "textZh": "系统分配的托管身份和 X.509 证书"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "要配置应用服务应用以访问 Microsoft Foundry 服务（Azure AI 服务的一部分），并且\n管理工作量低，您需要使用端点 URI 和订阅密钥配置该应用。\n这些凭据可以在 Azure 门户的已配置 Foundry 资源的密钥和端点部分找到，允许应用无缝地进行 API 调用\n的身份验证。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个包含名为 App1 的 Azure 应用服务应用的 Azure 订阅。\n您配置了一个名为 CSAccount1 的 Microsoft Foundry Service 资源。\n您需要配置 App1 以访问 CSAccount1。解决方案必须最小化管理工作量。\n您应该使用什么来配置 App1？",
+  "stemEn": "You have an Azure subscription that contains an Azure App Service app named App1.\nYou provision a Microsoft Foundry Service resource named CSAccount1.\nYou need to configure App1 to access CSAccount1. The solution must minimize administrative effort.\nWhat should you use to configure App1?",
+  "explanationZh": "要配置应用服务应用以访问 Microsoft Foundry 服务（Azure AI 服务的一部分），并且\n管理工作量低，您需要使用端点 URI 和订阅密钥配置该应用。\n这些凭据可以在 Azure 门户的已配置 Foundry 资源的密钥和端点部分找到，允许应用无缝地进行 API 调用\n的身份验证。",
+  "explanationEn": "To configure the App Service app to access the Microsoft Foundry Service (part of Azure AI Services) with\nlow administration, you need to configure the app with the endpoint URI and a subscription key.\nThese credentials can be found in the Azure Portal under the Keys & Endpoint section of your provisioned\nFoundry resource, allowing the app to seamlessly authenticate API calls.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 40",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 40",
+  "pdfPage": 45,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 40
+ },
+ {
+  "id": "q044",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "drag",
+  "stem": "您有一个使用 Azure AI 搜索的 Web 应用。\n \n \n密钥已被泄露。\n \n您需要防止对搜索端点的未经授权访问，并确保用户仅对文档集合具有只读 \n \n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Delete the compromised key",
+   "Add a new query key",
+   "Change the app to use the new key"
+  ],
+  "pdfAnswer": [
+   "Delete the compromised key",
+   "Add a new query key",
+   "Change the app to use the new key"
+  ],
+  "explanation": "强制只读权限：查询密钥专门设计用于提供对索引文档集合的只读访问。管理员密钥提供完全的读写管理\n权限，绝不应分发给面向消费者的应用。\n零停机时间：Azure AI 搜索允许您生成多达 50 个单独的查询密钥。创建一个新的密钥\n允许应用在整个密钥轮换过程中保持在线。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "步骤 1",
+    "labelEn": "Step 1",
+    "labelZh": "步骤 1",
+    "answer": "Delete the compromised key",
+    "choices": [
+     {
+      "key": "Regenerate the primary admin key",
+      "en": "Regenerate the primary admin key",
+      "zh": "重新生成主管理密钥"
+     },
+     {
+      "key": "Regenerate the secondary admin key",
+      "en": "Regenerate the secondary admin key",
+      "zh": "重新生成辅助管理密钥"
+     },
+     {
+      "key": "Change the app to use the secondary admin key",
+      "en": "Change the app to use the secondary admin key",
+      "zh": "更改应用以使用辅助管理密钥"
+     },
+     {
+      "key": "Add a new query key",
+      "en": "Add a new query key",
+      "zh": "添加新的查询密钥"
+     },
+     {
+      "key": "Change the app to use the new key",
+      "en": "Change the app to use the new key",
+      "zh": "更改应用以使用新密钥"
+     },
+     {
+      "key": "Delete the compromised key",
+      "en": "Delete the compromised key",
+      "zh": "删除已泄露的密钥"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "步骤 2",
+    "labelEn": "Step 2",
+    "labelZh": "步骤 2",
+    "answer": "Add a new query key",
+    "choices": [
+     {
+      "key": "Regenerate the primary admin key",
+      "en": "Regenerate the primary admin key",
+      "zh": "重新生成主管理密钥"
+     },
+     {
+      "key": "Regenerate the secondary admin key",
+      "en": "Regenerate the secondary admin key",
+      "zh": "重新生成辅助管理密钥"
+     },
+     {
+      "key": "Change the app to use the secondary admin key",
+      "en": "Change the app to use the secondary admin key",
+      "zh": "更改应用以使用辅助管理密钥"
+     },
+     {
+      "key": "Add a new query key",
+      "en": "Add a new query key",
+      "zh": "添加新的查询密钥"
+     },
+     {
+      "key": "Change the app to use the new key",
+      "en": "Change the app to use the new key",
+      "zh": "更改应用以使用新密钥"
+     },
+     {
+      "key": "Delete the compromised key",
+      "en": "Delete the compromised key",
+      "zh": "删除已泄露的密钥"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "步骤 3",
+    "labelEn": "Step 3",
+    "labelZh": "步骤 3",
+    "answer": "Change the app to use the new key",
+    "choices": [
+     {
+      "key": "Regenerate the primary admin key",
+      "en": "Regenerate the primary admin key",
+      "zh": "重新生成主管理密钥"
+     },
+     {
+      "key": "Regenerate the secondary admin key",
+      "en": "Regenerate the secondary admin key",
+      "zh": "重新生成辅助管理密钥"
+     },
+     {
+      "key": "Change the app to use the secondary admin key",
+      "en": "Change the app to use the secondary admin key",
+      "zh": "更改应用以使用辅助管理密钥"
+     },
+     {
+      "key": "Add a new query key",
+      "en": "Add a new query key",
+      "zh": "添加新的查询密钥"
+     },
+     {
+      "key": "Change the app to use the new key",
+      "en": "Change the app to use the new key",
+      "zh": "更改应用以使用新密钥"
+     },
+     {
+      "key": "Delete the compromised key",
+      "en": "Delete the compromised key",
+      "zh": "删除已泄露的密钥"
+     }
+    ]
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered from PDF Hot Area images (p46-47). Order matches PDF Correct Answer graphic.",
+  "stemZh": "您有一个使用 Azure AI 搜索的 Web 应用。\n \n \n密钥已被泄露。\n \n您需要防止对搜索端点的未经授权访问，并确保用户仅对文档集合具有只读 \n \n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stemEn": "You have a web app that uses Azure AI Search.\n \n \nWhen reviewing activity, you see greater than expected search query volumes. You suspect that the query 在查看活动时，您发现搜索查询量超出预期。您怀疑查询\nkey is compromised.\n \n \nYou need to prevent unauthorized access to the search endpoint and ensure that users only have read\n \nonly access to the documents collection. The solution must minimize app downtime. 访问权限。解决方案必须最小化应用停机时间。\nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the\nlist of actions to the answer area and arrange them in the correct order.\nSelect and Place:",
+  "explanationZh": "强制只读权限：查询密钥专门设计用于提供对索引文档集合的只读访问。管理员密钥提供完全的读写管理\n权限，绝不应分发给面向消费者的应用。\n零停机时间：Azure AI 搜索允许您生成多达 50 个单独的查询密钥。创建一个新的密钥\n允许应用在整个密钥轮换过程中保持在线。",
+  "explanationEn": "Enforces Read-Only Permissions: Query keys are specifically designed to provide read-only access to the\ndocuments collection of an index. Admin keys provide full read-write administrative privileges and should\nnever be distributed to consumer-facing applications.\nZero Downtime: Azure AI Search lets you generate up to 50 individual query keys. Creating a new one\nallows the app to stay online throughout the entire key rotation process",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "drag",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 41",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 41",
+  "pdfPage": 46,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 41
+ },
+ {
+  "id": "q045",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您正在构建一个检测图像中物体的模型。\n基于训练数据的模型性能如以下图示所示。\n【图示】Iteration 1（General 域）— 概率阈值 (Probability Threshold)：50%，重叠阈值 (Overlap Threshold)：30%；精度 (Precision)：100.0%，召回率 (Recall)：25.0%，mAP：77.2%\n使用下拉菜单选择答案选项，根据图示中提供的信息完成每个陈述。\n注意：每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "0",
+   "25"
+  ],
+  "pdfAnswer": [
+   "0",
+   "25"
+  ],
+  "explanation": "框 1：0\n假阳性的百分比为 0%。\n \n因为模型没有做出任何错误的正预测，所以假阳性的计数和百分比必须完全为零。\n \n \n框 2：25\n \n真阳性的数量除以真阳性和假阴性的总数的值为 25%（或 0.25）。 \n \n高精度 (100%): 您的模型检测到的每一个对象都是正确的；它生成零个误报。\n低召回率 (25%): 您的模型错过了75%的实际对象。\n6e7193dcbbf9",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "误报（假正例）的百分比为：",
+    "labelEn": "The percentage of false positives is:",
+    "labelZh": "误报（假正例）的百分比为：",
+    "choices": [
+     {
+      "key": "0",
+      "en": "0",
+      "zh": "0"
+     },
+     {
+      "key": "25",
+      "en": "25",
+      "zh": "25"
+     },
+     {
+      "key": "30",
+      "en": "30",
+      "zh": "30"
+     },
+     {
+      "key": "50",
+      "en": "50",
+      "zh": "50"
+     },
+     {
+      "key": "100",
+      "en": "100",
+      "zh": "100"
+     }
+    ],
+    "answer": "0"
+   },
+   {
+    "id": "2",
+    "label": "真正例数除以真正例与假负例总数所得的值为：",
+    "labelEn": "The value for the number of true positives divided by the total number of true positives and false negatives is:",
+    "labelZh": "真正例数除以真正例与假负例总数所得的值为：",
+    "choices": [
+     {
+      "key": "0",
+      "en": "0",
+      "zh": "0"
+     },
+     {
+      "key": "25",
+      "en": "25",
+      "zh": "25"
+     },
+     {
+      "key": "30",
+      "en": "30",
+      "zh": "30"
+     },
+     {
+      "key": "50",
+      "en": "50",
+      "zh": "50"
+     },
+     {
+      "key": "100",
+      "en": "100",
+      "zh": "100"
+     }
+    ],
+    "answer": "25"
+   }
+  ],
+  "stemZh": "您正在构建一个检测图像中物体的模型。\n基于训练数据的模型性能如以下图示所示。\n【图示】Iteration 1（General 域）— 概率阈值 (Probability Threshold)：50%，重叠阈值 (Overlap Threshold)：30%；精度 (Precision)：100.0%，召回率 (Recall)：25.0%，mAP：77.2%\n使用下拉菜单选择答案选项，根据图示中提供的信息完成每个陈述。\n注意：每个正确的选择值为一分。",
+  "stemEn": "You are building a model to detect objects in images.\nThe performance of the model based on training data is shown in the following exhibit.\n[Exhibit] Iteration 1 (General domain) — Probability Threshold: 50%, Overlap Threshold: 30%; Precision: 100.0%, Recall: 25.0%, mAP: 77.2%\nUse the drop-down menus to select the answer choice that completes each statement based on the\ninformation presented in the graphic.\n \nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：0\n假阳性的百分比为 0%。\n \n因为模型没有做出任何错误的正预测，所以假阳性的计数和百分比必须完全为零。\n \n \n框 2：25\n \n真阳性的数量除以真阳性和假阴性的总数的值为 25%（或 0.25）。 \n \n高精度 (100%): 您的模型检测到的每一个对象都是正确的；它生成零个误报。\n低召回率 (25%): 您的模型错过了75%的实际对象。\n6e7193dcbbf9",
+  "explanationEn": "Box 1: 0\nThe percentage of false positives is 0%.\nBecause the model made zero incorrect positive predictions, the count and percentage of false positives\nmust be exactly zero. \nBox 2: 25\n \n \nThe value for the number of true positives divided by the total number of true positives and false negatives\nis 25% (or 0.25). \nHigh Precision (100%): Every single object your model detects is correct; it generates zero false alarms.\nLow Recall (25%): Your model misses 75% of the actual objects it was supposed to find.\n6e7193dcbbf9",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 42",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 42",
+  "pdfPage": 48,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 42
+ },
+ {
+  "id": "q046",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Microsoft Foundry 项目，用于读取数据库中支持票据的分类应用。\n您需要确保该应用满足以下要求：\n● 按质量、成本和吞吐量比较候选模型\n● 防止在 Azure 订阅中托管模型权重您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Use model catalog leaderboards and model cards.",
+   "Use a serverless deployment."
+  ],
+  "pdfAnswer": [
+   "Use model catalog leaderboards and model cards.",
+   "Use a serverless deployment."
+  ],
+  "explanation": "框 1：使用模型目录排行榜和模型卡您应该使用模型目\n录排行榜和模型卡来比较您在此Microsoft Foundry 项目中的候选模型。\n在根据质量、成本和吞吐量等高层次业务和性能约束评估候选模型时，您正在进行初步静态评估。\n模型目录排行榜和模型卡专门设计用于提供预计算的、标准化的基准。它们允许您在标准质量数据\n集、每个令牌的平均定价（成本）和典型的每秒令牌数指标（吞吐量）上并排比较不同模型，而无需编\n写任何代码。\n工具目录连接和运行跟踪在开发生命周期的后期使用。它们是执行基准工具，旨在监控、调试和\n跟踪应用程序 LLM 编排管道（如 LangChain 或 Semantic Kernel 提示）在运行时的逐步性能和延迟\n。\n框 2：使用无服务器部署\n使用无服务器部署是满足此要求的正确模型评估和部署选择。\n为什么无服务器部署是正确的没有托管权重：无服务器部署（例如 Azure OpenAI 服务或 Azure AI St\nudio 中的无服务器 API 端点）允许您按消耗的令牌付费。\n模型提供者在您的显式 Azure 订阅基础设施之外托管和管理权重。合规性：它完全消除了在您\n的环境中配置、管理或托管基础虚拟机或模型权重文件的需要。\ndeployments",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "模型评估",
+    "labelEn": "Model evaluation",
+    "labelZh": "模型评估",
+    "answer": "Use model catalog leaderboards and model cards.",
+    "choices": [
+     {
+      "key": "Configure private endpoint access.",
+      "en": "Configure private endpoint access.",
+      "zh": "配置专用端点访问。"
+     },
+     {
+      "key": "Use deployment lists and license tabs.",
+      "en": "Use deployment lists and license tabs.",
+      "zh": "使用部署列表和许可证选项卡。"
+     },
+     {
+      "key": "Use tool catalog connections and run traces.",
+      "en": "Use tool catalog connections and run traces.",
+      "zh": "使用工具目录连接和运行跟踪。"
+     },
+     {
+      "key": "Use model catalog leaderboards and model cards.",
+      "en": "Use model catalog leaderboards and model cards.",
+      "zh": "使用模型目录排行榜和模型卡。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "部署选项",
+    "labelEn": "Deployment option",
+    "labelZh": "部署选项",
+    "answer": "Use a serverless deployment.",
+    "choices": [
+     {
+      "key": "Bring your own model.",
+      "en": "Bring your own model.",
+      "zh": "自带模型。"
+     },
+     {
+      "key": "Build a vector index.",
+      "en": "Build a vector index.",
+      "zh": "构建向量索引。"
+     },
+     {
+      "key": "Use a serverless deployment.",
+      "en": "Use a serverless deployment.",
+      "zh": "使用无服务器部署。"
+     },
+     {
+      "key": "Use a managed compute deployment.",
+      "en": "Use a managed compute deployment.",
+      "zh": "使用托管计算部署。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，用于读取数据库中支持票据的分类应用。\n您需要确保该应用满足以下要求：\n● 按质量、成本和吞吐量比较候选模型\n● 防止在 Azure 订阅中托管模型权重您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project for a support ticket triage app that reads ticket text from a database.\nYou need to ensure that the app meets the following requirements:\n● Compares candidate models by quality, cost, and throughput\n● Prevents hosting model weights in the Azure subscription\nWhat should you configure? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：使用模型目录排行榜和模型卡您应该使用模型目\n录排行榜和模型卡来比较您在此Microsoft Foundry 项目中的候选模型。\n在根据质量、成本和吞吐量等高层次业务和性能约束评估候选模型时，您正在进行初步静态评估。\n模型目录排行榜和模型卡专门设计用于提供预计算的、标准化的基准。它们允许您在标准质量数据\n集、每个令牌的平均定价（成本）和典型的每秒令牌数指标（吞吐量）上并排比较不同模型，而无需编\n写任何代码。\n工具目录连接和运行跟踪在开发生命周期的后期使用。它们是执行基准工具，旨在监控、调试和\n跟踪应用程序 LLM 编排管道（如 LangChain 或 Semantic Kernel 提示）在运行时的逐步性能和延迟\n。\n框 2：使用无服务器部署\n使用无服务器部署是满足此要求的正确模型评估和部署选择。\n为什么无服务器部署是正确的没有托管权重：无服务器部署（例如 Azure OpenAI 服务或 Azure AI St\nudio 中的无服务器 API 端点）允许您按消耗的令牌付费。\n模型提供者在您的显式 Azure 订阅基础设施之外托管和管理权重。合规性：它完全消除了在您\n的环境中配置、管理或托管基础虚拟机或模型权重文件的需要。\ndeployments",
+  "explanationEn": "Box 1: Use model catalog lederboards and model cards\nYou should use model catalog leaderboards and model cards to compare your candidate models for this\nMicrosoft Foundry project.\nWhen evaluating candidate models based on high-level business and performance constraints like quality,\ncost, and throughput, you are performing an initial static evaluation.\nModel Catalog Leaderboards and Model Cards are specifically designed to provide pre-computed,\nstandardized benchmarks. They allow you to compare different models side-by-side on standard quality\ndatasets, average pricing per token (cost), and typical tokens-per-second metrics (throughput) before\nwriting any code.\nTool Catalog Connections and Run Traces are used later in the development lifecycle. They are\nexecution-benchmarking tools meant for monitoring, debugging, and tracing the specific step-by-step\nperformance and latency of an application's LLM orchestration pipeline (like LangChain or Semantic\nKernel prompts) during runtime.\nBox 2: Use a serverless deployment\nTo use a serverless deployment is the correct model evaluation and deployment choice to meet this\nrequirement.\nWhy Serverless Deployment is CorrectNo Hosted Weights: A serverless deployment (such as Azure\nOpenAI Service or serverless API endpoints in Azure AI Studio) allows you to pay per token consumed.\nThe model provider hosts and manages the weights outside of your explicit Azure subscription\ninfrastructure.Compliance: It completely eliminates the need to provision, manage, or host underlying\nvirtual machines or model weight files in your environment.\ndeployments",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 43",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 43",
+  "pdfPage": 49,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 43
+ },
+ {
+  "id": "q047",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个名为 AI1 的 Azure OpenAI 模型。\n您正在使用 Azure OpenAI SDK 构建一个名为 App1 的 Web 应用。\n您需要配置 App1 以连接到 AI1。\n您必须提供什么信息？",
+  "options": [
+   {
+    "id": "A",
+    "text": "the deployment name, key, and model name",
+    "textEn": "the deployment name, key, and model name",
+    "textZh": "部署名称、密钥和模型名称"
+   },
+   {
+    "id": "B",
+    "text": "the endpoint, key, and model type",
+    "textEn": "the endpoint, key, and model type",
+    "textZh": "端点、密钥和模型类型"
+   },
+   {
+    "id": "C",
+    "text": "the deployment name, endpoint, and key",
+    "textEn": "the deployment name, endpoint, and key",
+    "textZh": "部署名称、端点和密钥"
+   },
+   {
+    "id": "D",
+    "text": "the endpoint, key, and model name",
+    "textEn": "the endpoint, key, and model name",
+    "textZh": "端点、密钥和模型名称"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "使用您自己的数据与 Azure OpenAI \nAzure OpenAI 服务使您能够将自己的数据与底层 LLM 的智能结合使用。 \n您可以限制模型仅使用您的数据来处理相关主题，或将其与预训练模型的结果混合。 \n配置您的应用程序\n更新配置值以包括：\n* 您创建的 Azure OpenAI 资源的端点和密钥（可在 Azure 门户的 Azure OpenAI 资源的密钥和\n端点页面上找到）\n* 您为模型部署指定的部署名称（可在 Azure OpenAI Studio 的部署页面上找到）。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 AI1 的 Azure OpenAI 模型。\n您正在使用 Azure OpenAI SDK 构建一个名为 App1 的 Web 应用。\n您需要配置 App1 以连接到 AI1。\n您必须提供什么信息？",
+  "stemEn": "You have an Azure OpenAI model named AI1.\nYou are building a web app named App1 by using the Azure OpenAI SDK.\nYou need to configure App1 to connect to AI1.\nWhat information must you provide?",
+  "explanationZh": "使用您自己的数据与 Azure OpenAI \nAzure OpenAI 服务使您能够将自己的数据与底层 LLM 的智能结合使用。 \n您可以限制模型仅使用您的数据来处理相关主题，或将其与预训练模型的结果混合。 \n配置您的应用程序\n更新配置值以包括：\n* 您创建的 Azure OpenAI 资源的端点和密钥（可在 Azure 门户的 Azure OpenAI 资源的密钥和\n端点页面上找到）\n* 您为模型部署指定的部署名称（可在 Azure OpenAI Studio 的部署页面上找到）。",
+  "explanationEn": "Use your own data with Azure OpenAI \n \nThe Azure OpenAI Service enables you to use your own data with the intelligence of the underlying LLM.\n \nYou can limit the model to only use your data for pertinent topics, or blend it with results from the pre-\ntrained model.\nConfigure your application\nUpdate the configuration values to include:\n* The endpoint and a key from the Azure OpenAI resource you created (available on the Keys and\nEndpoint page for your Azure OpenAI resource in the Azure portal)\n* The deployment name you specified for your model deployment (available in the Deployments page in\nAzure OpenAI Studio).",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 44",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 44",
+  "pdfPage": 51,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 44
+ },
+ {
+  "id": "q048",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在 Azure 中构建一个解决方案，该解决方案将使用 Azure Language in Foundry Tools 服务来处理敏感客户数据。\n您需要确保只有特定的 Azure 进程可以访问 Language 服务。该解决方案必须最小化管理工作。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Application Gateway",
+    "textEn": "Azure Application Gateway",
+    "textZh": "Azure 应用程序网关"
+   },
+   {
+    "id": "B",
+    "text": "a virtual network gateway",
+    "textEn": "a virtual network gateway",
+    "textZh": "虚拟网络网关"
+   },
+   {
+    "id": "C",
+    "text": "IPsec rules",
+    "textEn": "IPsec rules",
+    "textZh": "IPsec 规则"
+   },
+   {
+    "id": "D",
+    "text": "virtual network rules",
+    "textEn": "virtual network rules",
+    "textZh": "虚拟网络规则"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "配置 Azure AI 服务虚拟网络\nAzure AI 服务提供分层安全模型。该模型使您能够将 Azure AI服务帐户的安全性限制为特定子集的网\n络。当配置网络规则时，只有通过指定网络集请求数据的应用程序才能访问该帐户。您可以通过请求过滤\n限制对资源的访问，该过滤允许仅来自指定 IP 地址、IP范围或 Azure 虚拟网络中子网列表的请求。\nses, IP\n在网络规则生效时，访问 Azure AI 服务资源的应用程序需要\nauthorization。授权支持 Microsoft Entra ID 凭据或有效的 API 密钥。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在 Azure 中构建一个解决方案，该解决方案将使用 Azure Language in Foundry Tools 服务来处理敏感客户数据。\n您需要确保只有特定的 Azure 进程可以访问 Language 服务。该解决方案必须最小化管理工作。\n您应该在解决方案中包含什么？",
+  "stemEn": "You are building a solution in Azure that will use Azure Language in Foundry Tools service to process\nsensitive customer data.\nYou need to ensure that only specific Azure processes can access the Language service. The solution\nmust minimize administrative effort.\nWhat should you include in the solution?",
+  "explanationZh": "配置 Azure AI 服务虚拟网络\nAzure AI 服务提供分层安全模型。该模型使您能够将 Azure AI服务帐户的安全性限制为特定子集的网\n络。当配置网络规则时，只有通过指定网络集请求数据的应用程序才能访问该帐户。您可以通过请求过滤\n限制对资源的访问，该过滤允许仅来自指定 IP 地址、IP范围或 Azure 虚拟网络中子网列表的请求。\nses, IP\n在网络规则生效时，访问 Azure AI 服务资源的应用程序需要\nauthorization。授权支持 Microsoft Entra ID 凭据或有效的 API 密钥。",
+  "explanationEn": "Configure Azure AI services virtual networks\nAzure AI services provide a layered security model. This model enables you to secure your Azure AI\nservices accounts to a specific subset of networks. When network rules are configured, only applications\nthat request data over the specified set of networks can access the account. You can limit access to your\nresources with request filtering, which allows requests that originate only from specified IP addres\nranges, or from a list of subnets in Azure Virtual Networks.\nAn application that accesses an Azure AI services resource when network rules are in effect requires\nauthorization. Authorization is supported with Microsoft Entra ID credentials or with a valid API key.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 45",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 45",
+  "pdfPage": 51,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 45
+ },
+ {
+  "id": "q049",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "multi",
+  "stem": "您有一个 Azure 订阅，其中包含一个名为 CSAccount1 的 Microsoft Foundry Service 资源和一个名为 VNet1 的虚拟网络。CSAccount1 连接到 VNet1。\n您需要确保只有特定资源可以访问 CSAccount1。解决方案必须满足以下要求：\n● 防止外部访问 CSAccount1。\n● 最小化管理工作量。\n您应该执行哪两个操作？每个正确答案都是解决方案的一部分。\n \n注意：每个正确答案值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "In CSAccount1, modify the virtual network settings",
+    "textEn": "In CSAccount1, modify the virtual network settings.",
+    "textZh": "在 CSAccount1 中，修改虚拟网络设置。"
+   },
+   {
+    "id": "B",
+    "text": "In VNet1, create a virtual subnet",
+    "textEn": "In VNet1, create a virtual subnet.",
+    "textZh": "在 VNet1 中，创建一个虚拟子网。"
+   },
+   {
+    "id": "C",
+    "text": "In VNet1, enable a service endpoint for CSAccount1",
+    "textEn": "In VNet1, enable a service endpoint for CSAccount1.",
+    "textZh": "在 VNet1 中，为 CSAccount1 启用服务端点。"
+   },
+   {
+    "id": "D",
+    "text": "In CSAccount1, configure the Access control (IAM) settings",
+    "textEn": "In CSAccount1, configure the Access control (IAM) settings.",
+    "textZh": "在 CSAccount1 中，配置访问控制 (IAM) 设置。"
+   },
+   {
+    "id": "E",
+    "text": "In VNet1, modify the virtual network settings",
+    "textEn": "In VNet1, modify the virtual network settings.",
+    "textZh": "在 VNet1 中，修改虚拟网络设置。"
+   }
+  ],
+  "answer": [
+   "A",
+   "C"
+  ],
+  "pdfAnswer": [
+   "A",
+   "C"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Azure 订阅，其中包含一个名为 CSAccount1 的 Microsoft Foundry Service 资源和一个名为 VNet1 的虚拟网络。CSAccount1 连接到 VNet1。\n您需要确保只有特定资源可以访问 CSAccount1。解决方案必须满足以下要求：\n● 防止外部访问 CSAccount1。\n● 最小化管理工作量。\n您应该执行哪两个操作？每个正确答案都是解决方案的一部分。\n \n注意：每个正确答案值为一分。",
+  "stemEn": "You have an Azure subscription that contains a Microsoft Foundry Service resource named CSAccount1\nand a virtual network named VNet1. CSAaccount1 is connected to VNet1.\nYou need to ensure that only specific resources can access CSAccount1. The solution must meet the\nfollowing requirements:\n● Prevent external access to CSAccount1.\n● Minimize administrative effort.\nWhich two actions should you perform? Each correct answer presents part of the solution.\n \nNOTE: Each correct answer is worth one point.",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 46",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 46",
+  "pdfPage": 52,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 46
+ },
+ {
+  "id": "q050",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在开发一个将使用语音和语言 API 的应用程序。\n您需要为该应用程序配置资源。解决方案必须确保每个服务通过使用单一的端点和凭据进行访问。\n您应该创建哪种类型的资源？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Language in Foundry Tools",
+    "textEn": "Azure Language in Foundry Tools",
+    "textZh": "Azure 语言在 Foundry 工具中"
+   },
+   {
+    "id": "B",
+    "text": "Microsoft Foundry service",
+    "textEn": "Microsoft Foundry service",
+    "textZh": "Microsoft Foundry 服务"
+   },
+   {
+    "id": "C",
+    "text": "Azure Speech in Foundry Tools",
+    "textEn": "Azure Speech in Foundry Tools",
+    "textZh": "Azure 语音在 Foundry 工具中"
+   },
+   {
+    "id": "D",
+    "text": "Content Safety in Foundry Control Plane",
+    "textEn": "Content Safety in Foundry Control Plane",
+    "textZh": "Foundry 控制平面的内容安全"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* Microsoft Foundry 服务\n错误：\n* Foundry 控制平面的内容安全\n* Azure 语言在 Foundry 工具中\n* Azure 语音在 Foundry 工具中\n* 内容审核员\n* 语言\n* 语音\n注意：\nAzure AI 服务帮助开发人员和组织快速创建智能、前沿、市场准备好的、负责任的应用程序，提供开箱即\n用的、预构建的和可定制的 API 和模型。示例应用程序包括用于对话、搜索、监控、翻译、语音、视觉和决\n策的自然语言处理。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在开发一个将使用语音和语言 API 的应用程序。\n您需要为该应用程序配置资源。解决方案必须确保每个服务通过使用单一的端点和凭据进行访问。\n您应该创建哪种类型的资源？",
+  "stemEn": "You are developing an app that will use the Speech and Language APIs.\nYou need to provision resources for the app. The solution must ensure that each service is accessed by\nusing a single endpoint and credential.\nWhich type of resource should you create?",
+  "explanationZh": "正确：\n* Microsoft Foundry 服务\n错误：\n* Foundry 控制平面的内容安全\n* Azure 语言在 Foundry 工具中\n* Azure 语音在 Foundry 工具中\n* 内容审核员\n* 语言\n* 语音\n注意：\nAzure AI 服务帮助开发人员和组织快速创建智能、前沿、市场准备好的、负责任的应用程序，提供开箱即\n用的、预构建的和可定制的 API 和模型。示例应用程序包括用于对话、搜索、监控、翻译、语音、视觉和决\n策的自然语言处理。",
+  "explanationEn": "Correct:\n* Microsoft Foundry service\nIncorrect:\n* Content Safety in Foundry Control Plane\n* Azure Language in Foundry Tools\n* Azure Speech in Foundry Tools\n* Content Moderator\n* Language\n* Speech\nNote:\nAzure AI services help developers and organizations rapidly create intelligent, cutting-edge, market-ready,\nand responsible applications with out-of-the-box and prebuilt and customizable APIs and models. Example\napplications include natural language processing for conversations, search, monitoring, translation,\nspeech, vision, and decision-making.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 47",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 47",
+  "pdfPage": 52,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 47
+ },
+ {
+  "id": "q051",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "drag",
+  "stem": "您正在构建一个应用程序，该应用程序将扫描机密文档，并使用 Azure Language in Foundry Tools 服务分析内容。\n您配置了一个 Microsoft Foundry Service 资源。\n \n您需要确保该应用程序可以向 Azure Language in Foundry Tools 服务端点发出请求。解决方案必须\n \n确保机密文档保持在本地。\n \n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n \n \n选择和放置：",
+  "options": [],
+  "answer": [
+   "Pull an image from Docker Hub.",
+   "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+   "Run the container and specify an API key and the Endpoint URL of the Azure AI resource."
+  ],
+  "pdfAnswer": [
+   "Pull an image from Docker Hub.",
+   "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+   "Run the container and specify an API key and the Endpoint URL of the Azure AI resource."
+  ],
+  "explanation": "步骤 1：从 Docker Hub 拉取镜像\nAzure 认知服务提供多个 Docker 容器，让您可以在本地使用与 Azure 中相同的 API。使用这些容器可\n以灵活地将认知服务更接近您的数据，以满足合规性、安全性或其他操作原因。目前，容器支持仅适用于部\n分 Azure 认知服务。\n \n \n先决条件 \n在使用 Azure 认知服务容器之前，您必须满足以下先决条件：\n \n \n* Docker 引擎：您必须在本地安装 Docker 引擎。 \n \n步骤 2：提供一个与互联网隔离的本地 Kubernetes 集群。\n解决方案必须确保机密文档保留在本地。\n认知服务容器的消费者可以通过前端组件增强容器，\n保持容器端点私密。\n不正确：\n* 提供一个具有互联网连接的本地 Kubernetes 集群\n* 提供一个 Azure Kubernetes 服务 (AKS) 资源。\n步骤 3：运行容器并指定 API 密钥和 Azure AI 资源的端点 URL\n您需要确保应用程序可以向语言服务端点发出请求。\n不正确：\n* : 运行容器并指定 AppID 和客户端密钥。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "步骤 1",
+    "labelEn": "Step 1",
+    "labelZh": "步骤 1",
+    "answer": "Pull an image from Docker Hub.",
+    "choices": [
+     {
+      "key": "Pull an image from Docker Hub.",
+      "en": "Pull an image from Docker Hub.",
+      "zh": "从 Docker Hub 拉取镜像。"
+     },
+     {
+      "key": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+      "en": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+      "zh": "运行容器并指定 API 密钥和 Azure AI 资源的端点 URL。"
+     },
+     {
+      "key": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+      "en": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+      "zh": "预配与互联网隔离的本地 Kubernetes 群集。"
+     },
+     {
+      "key": "Provision an on-premises Kubernetes cluster that has internet connectivity.",
+      "en": "Provision an on-premises Kubernetes cluster that has internet connectivity.",
+      "zh": "预配具有互联网连接的本地 Kubernetes 群集。"
+     },
+     {
+      "key": "Provision an Azure Kubernetes Service (AKS) resource.",
+      "en": "Provision an Azure Kubernetes Service (AKS) resource.",
+      "zh": "预配 Azure Kubernetes 服务 (AKS) 资源。"
+     },
+     {
+      "key": "Run the container and specify an App ID and Client Secret.",
+      "en": "Run the container and specify an App ID and Client Secret.",
+      "zh": "运行容器并指定应用 ID 和客户端机密。"
+     },
+     {
+      "key": "Pull an image from the Microsoft Container Registry (MCR).",
+      "en": "Pull an image from the Microsoft Container Registry (MCR).",
+      "zh": "从 Microsoft 容器注册表 (MCR) 拉取镜像。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "步骤 2",
+    "labelEn": "Step 2",
+    "labelZh": "步骤 2",
+    "answer": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+    "choices": [
+     {
+      "key": "Pull an image from Docker Hub.",
+      "en": "Pull an image from Docker Hub.",
+      "zh": "从 Docker Hub 拉取镜像。"
+     },
+     {
+      "key": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+      "en": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+      "zh": "运行容器并指定 API 密钥和 Azure AI 资源的端点 URL。"
+     },
+     {
+      "key": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+      "en": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+      "zh": "预配与互联网隔离的本地 Kubernetes 群集。"
+     },
+     {
+      "key": "Provision an on-premises Kubernetes cluster that has internet connectivity.",
+      "en": "Provision an on-premises Kubernetes cluster that has internet connectivity.",
+      "zh": "预配具有互联网连接的本地 Kubernetes 群集。"
+     },
+     {
+      "key": "Provision an Azure Kubernetes Service (AKS) resource.",
+      "en": "Provision an Azure Kubernetes Service (AKS) resource.",
+      "zh": "预配 Azure Kubernetes 服务 (AKS) 资源。"
+     },
+     {
+      "key": "Run the container and specify an App ID and Client Secret.",
+      "en": "Run the container and specify an App ID and Client Secret.",
+      "zh": "运行容器并指定应用 ID 和客户端机密。"
+     },
+     {
+      "key": "Pull an image from the Microsoft Container Registry (MCR).",
+      "en": "Pull an image from the Microsoft Container Registry (MCR).",
+      "zh": "从 Microsoft 容器注册表 (MCR) 拉取镜像。"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "步骤 3",
+    "labelEn": "Step 3",
+    "labelZh": "步骤 3",
+    "answer": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+    "choices": [
+     {
+      "key": "Pull an image from Docker Hub.",
+      "en": "Pull an image from Docker Hub.",
+      "zh": "从 Docker Hub 拉取镜像。"
+     },
+     {
+      "key": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+      "en": "Run the container and specify an API key and the Endpoint URL of the Azure AI resource.",
+      "zh": "运行容器并指定 API 密钥和 Azure AI 资源的端点 URL。"
+     },
+     {
+      "key": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+      "en": "Provision an on-premises Kubernetes cluster that is isolated from the internet.",
+      "zh": "预配与互联网隔离的本地 Kubernetes 群集。"
+     },
+     {
+      "key": "Provision an on-premises Kubernetes cluster that has internet connectivity.",
+      "en": "Provision an on-premises Kubernetes cluster that has internet connectivity.",
+      "zh": "预配具有互联网连接的本地 Kubernetes 群集。"
+     },
+     {
+      "key": "Provision an Azure Kubernetes Service (AKS) resource.",
+      "en": "Provision an Azure Kubernetes Service (AKS) resource.",
+      "zh": "预配 Azure Kubernetes 服务 (AKS) 资源。"
+     },
+     {
+      "key": "Run the container and specify an App ID and Client Secret.",
+      "en": "Run the container and specify an App ID and Client Secret.",
+      "zh": "运行容器并指定应用 ID 和客户端机密。"
+     },
+     {
+      "key": "Pull an image from the Microsoft Container Registry (MCR).",
+      "en": "Pull an image from the Microsoft Container Registry (MCR).",
+      "zh": "从 Microsoft 容器注册表 (MCR) 拉取镜像。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您正在构建一个应用程序，该应用程序将扫描机密文档，并使用 Azure Language in Foundry Tools 服务分析内容。\n您配置了一个 Microsoft Foundry Service 资源。\n \n您需要确保该应用程序可以向 Azure Language in Foundry Tools 服务端点发出请求。解决方案必须\n \n确保机密文档保持在本地。\n \n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n \n \n选择和放置：",
+  "stemEn": "You are building an app that will scan confidential documents and use the Azure Language in Foundry\nTools service to analyze the contents.\nYou provision a Microsoft Foundry Service resource.\n \n \nYou need to ensure that the app can make requests to the Azure Language in Foundry Tools service\nendpoint. The solution must ensure that confidential documents remain on-premises.\n \n \nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the\nlist of actions to the answer area and arrange them in the correct order.\n \nSelect and Place:",
+  "explanationZh": "步骤 1：从 Docker Hub 拉取镜像\nAzure 认知服务提供多个 Docker 容器，让您可以在本地使用与 Azure 中相同的 API。使用这些容器可\n以灵活地将认知服务更接近您的数据，以满足合规性、安全性或其他操作原因。目前，容器支持仅适用于部\n分 Azure 认知服务。\n \n \n先决条件 \n在使用 Azure 认知服务容器之前，您必须满足以下先决条件：\n \n \n* Docker 引擎：您必须在本地安装 Docker 引擎。 \n \n步骤 2：提供一个与互联网隔离的本地 Kubernetes 集群。\n解决方案必须确保机密文档保留在本地。\n认知服务容器的消费者可以通过前端组件增强容器，\n保持容器端点私密。\n不正确：\n* 提供一个具有互联网连接的本地 Kubernetes 集群\n* 提供一个 Azure Kubernetes 服务 (AKS) 资源。\n步骤 3：运行容器并指定 API 密钥和 Azure AI 资源的端点 URL\n您需要确保应用程序可以向语言服务端点发出请求。\n不正确：\n* : 运行容器并指定 AppID 和客户端密钥。",
+  "explanationEn": "Step 1: Pull an image from Docker Hub\nAzure Cognitive Services provides several Docker containers that let you use the same APIs that are\navailable in Azure, on-premises. Using these containers gives you the flexibility to bring Cognitive Services\ncloser to your data for compliance, security or other operational reasons. Container support is currently\navailable for a subset of Azure Cognitive Services.\nPrerequisites \nYou must satisfy the following prerequisites before using Azure Cognitive Services containers:\n \n* Docker Engine: You must have Docker Engine installed locally.\n* Etc. * 等等。\nStep 2: Provision an on-premises Kubernetes cluster that is isolated from the internet.\nThe solution must ensure that confidential documents remain on-premises.\nConsumers of Cognitive Services containers could augment a container with a front-facing component,\nkeeping the container endpoint private.\nIncorrect:\n* Provision an on-premises Kubernetes cluster that has internet connectivity\n* Provision an Azure Kubernets Services (AKS) resource.\nStep 3: Run the container and specify an API key and the Endpoint URL of the Azure AI resource\nYou need to ensure that the app can make requests to the Language service endpoint.\nIncorrect:\n* : Run the container and specify an AppID and Client Secret.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "drag",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 48",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 48",
+  "pdfPage": 53,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 48
+ },
+ {
+  "id": "q052",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个包含名为 ta1 的 Azure 语言服务资源和名为 vnet1 的虚拟网络的 Azure 订阅。\n您需要确保只有 vnet1 中的资源可以访问 ta1。\n您应该配置什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a network security group (NSG) for vnet1",
+    "textEn": "a network security group (NSG) for vnet1",
+    "textZh": "vnet1 的网络安全组 (NSG)"
+   },
+   {
+    "id": "B",
+    "text": "an Azure Language in Foundry Tools service container for ta1",
+    "textEn": "an Azure Language in Foundry Tools service container for ta1",
+    "textZh": "ta1 的 Azure 语言在 Foundry Tools 服务容器中"
+   },
+   {
+    "id": "C",
+    "text": "Azure Firewall for vnet1",
+    "textEn": "Azure Firewall for vnet1",
+    "textZh": "vnet1 的 Azure 防火墙"
+   },
+   {
+    "id": "D",
+    "text": "the virtual network settings for ta1",
+    "textEn": "the virtual network settings for ta1",
+    "textZh": "ta1 的虚拟网络设置"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "管理虚拟网络规则\n您可以通过 Azure 门户、PowerShell 或 Azure CLI 管理认知服务资源的虚拟网络规则。\nAzure 门户：\n1. 转到您想要保护的认知服务资源。\n2. 选择名为虚拟网络的资源管理菜单。\n3. 检查您是否选择了允许来自选定网络的访问。\n4. 要授予现有网络规则的虚拟网络访问权限，在虚拟网络下，选择添加\n现有虚拟网络。\n \n \n \n \n \n5. 选择虚拟网络和子网选项，然后选择启用。\n . 要创建一个新的虚拟网络并授予其访问权限，请选择添加新虚拟网络。\n7. 提供创建新虚拟网络所需的信息，然后选择创建。\n8. 等等。\n场景\n为了保护您的认知服务资源，您应该首先配置一条规则，默认拒绝来自所有网络（包括互联网流量）的访\n问。然后，您应该配置允许来自特定虚拟网络的流量的规则。此配置使您能够为您的应用程序构建一个\n安全的网络边界。您还可以配置规则，允许来自特定公共互联网IP地址范围的流量，从而使特定的互联\n网或本地客户端能够连接。\n网络规则适用于所有网络协议到Azure认知服务，包括REST和\nWebSocket。要使用 Azure 测试控制台等工具访问数据，必须配置明确的网络规则。您可以将网络规则\n应用于现有的认知服务资源，或在创建新的认知服务资源时应用。网络规则一旦应用，将对所有请求生效\n。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含名为 ta1 的 Azure 语言服务资源和名为 vnet1 的虚拟网络的 Azure 订阅。\n您需要确保只有 vnet1 中的资源可以访问 ta1。\n您应该配置什么？",
+  "stemEn": "You have an Azure subscription that contains an Azure Language in Foundry Tools service resource\nnamed ta1 and a virtual network named vnet1.\nYou need to ensure that only resources in vnet1 can access ta1.\nWhat should you configure?",
+  "explanationZh": "管理虚拟网络规则\n您可以通过 Azure 门户、PowerShell 或 Azure CLI 管理认知服务资源的虚拟网络规则。\nAzure 门户：\n1. 转到您想要保护的认知服务资源。\n2. 选择名为虚拟网络的资源管理菜单。\n3. 检查您是否选择了允许来自选定网络的访问。\n4. 要授予现有网络规则的虚拟网络访问权限，在虚拟网络下，选择添加\n现有虚拟网络。\n \n \n \n \n \n5. 选择虚拟网络和子网选项，然后选择启用。\n . 要创建一个新的虚拟网络并授予其访问权限，请选择添加新虚拟网络。\n7. 提供创建新虚拟网络所需的信息，然后选择创建。\n8. 等等。\n场景\n为了保护您的认知服务资源，您应该首先配置一条规则，默认拒绝来自所有网络（包括互联网流量）的访\n问。然后，您应该配置允许来自特定虚拟网络的流量的规则。此配置使您能够为您的应用程序构建一个\n安全的网络边界。您还可以配置规则，允许来自特定公共互联网IP地址范围的流量，从而使特定的互联\n网或本地客户端能够连接。\n网络规则适用于所有网络协议到Azure认知服务，包括REST和\nWebSocket。要使用 Azure 测试控制台等工具访问数据，必须配置明确的网络规则。您可以将网络规则\n应用于现有的认知服务资源，或在创建新的认知服务资源时应用。网络规则一旦应用，将对所有请求生效\n。",
+  "explanationEn": "Managing virtual network rules\nYou can manage virtual network rules for Cognitive Services resources through the Azure portal,\nPowerShell, or the Azure CLI.\nAzure portal:\n1. Go to the Cognitive Services resource you want to secure.\n2. Select the RESOURCE MANAGEMENT menu called Virtual network.\n3. Check that you've selected to allow access from Selected networks.\n4. To grant access to a virtual network with an existing network rule, under Virtual networks, select Add\nexisting virtual network.\n \n \n \n \n \n5. Select the Virtual networks and Subnets options, and then select Enable.\n . To create a new virtual network and grant it access, select Add new virtual network.\n7. Provide the information necessary to create the new virtual network, and then select Create.\n8. Etc.\nScenarios\nTo secure your Cognitive Services resource, you should first configure a rule to deny access to traffic from\nall networks (including internet traffic) by default. Then, you should configure rules that grant access to\ntraffic from specific VNets. This configuration enables you to build a secure network boundary for your\napplications. You can also configure rules to grant access to traffic from select public internet IP address\nranges, enabling connections from specific internet or on-premises clients.\nNetwork rules are enforced on all network protocols to Azure Cognitive Services, including REST and\nWebSocket. To access data using tools such as the Azure test consoles, explicit network rules must be\nconfigured. You can apply network rules to existing Cognitive Services resources, or when you create new\nCognitive Services resources. Once network rules are applied, they're enforced for all requests.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 49",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 49",
+  "pdfPage": 54,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 49
+ },
+ {
+  "id": "q053",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在构建一个 AI 解决方案，该解决方案将使用调查的情感分析结果来计算客户服务人员的奖金。\n您需要确保该解决方案符合微软负责任的 AI 原则。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add a human review and approval step before making decisions that affect the staff’s financial situation",
+    "textEn": "Add a human review and approval step before making decisions that affect the staff’s financial situation.",
+    "textZh": "在做出影响员工财务状况的决策之前，添加人工审核和批准步骤。"
+   },
+   {
+    "id": "B",
+    "text": "Include the Sentiment Analysis results when surveys return a low confidence score",
+    "textEn": "Include the Sentiment Analysis results when surveys return a low confidence score.",
+    "textZh": "在调查返回低置信度评分时，包括情感分析结果。"
+   },
+   {
+    "id": "C",
+    "text": "Use all the surveys, including surveys by customers who requested that their account be deleted and their data be removed",
+    "textEn": "Use all the surveys, including surveys by customers who requested that their account be deleted and their data be removed.",
+    "textZh": "使用所有调查，包括要求删除其账户和移除其数据的客户的调查。"
+   },
+   {
+    "id": "D",
+    "text": "Publish the raw survey data to a central location and provide the staff with access to the location",
+    "textEn": "Publish the raw survey data to a central location and provide the staff with access to the location.",
+    "textZh": "将原始调查数据发布到中央位置，并为员工提供访问该位置的权限。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "您应该在做出影响员工财务状况的决策之前，添加人工审核和批准步骤。\n \n问责制：微软负责任的 AI 原则指出，人们必须对高影响力的自动化决策保持控制。\n \n \n公平性：情感分析工具可能会误解讽刺、愤怒或复杂的客户反馈。\n \n \n保护：人工监督可以防止员工的不公平财务损失或错误的奖金计算。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个 AI 解决方案，该解决方案将使用调查的情感分析结果来计算客户服务人员的奖金。\n您需要确保该解决方案符合微软负责任的 AI 原则。\n您应该怎么做？",
+  "stemEn": "You are building an AI solution that will use Sentiment Analysis results from surveys to calculate bonuses\nfor customer service staff.\nYou need to ensure that the solution meets the Microsoft responsible AI principles.\nWhat should you do?",
+  "explanationZh": "您应该在做出影响员工财务状况的决策之前，添加人工审核和批准步骤。\n \n问责制：微软负责任的 AI 原则指出，人们必须对高影响力的自动化决策保持控制。\n \n \n公平性：情感分析工具可能会误解讽刺、愤怒或复杂的客户反馈。\n \n \n保护：人工监督可以防止员工的不公平财务损失或错误的奖金计算。",
+  "explanationEn": "You should add a human review and approval step before making decisions that affect the staff's financial\nsituation. \n \nAccountability: Microsoft Responsible AI principles state that people must remain in control of high-impact\nautomated decisions. \n \n \nFairness: Sentiment analysis tools can misinterpret sarcasm, anger, or complex customer feedback.\nProtection: Human oversight prevents unfair financial losses or incorrect bonus calculations for\nemployees.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 50",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 50",
+  "pdfPage": 56,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 50
+ },
+ {
+  "id": "q054",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个名为 Pipeline1 的 Azure DevOps 管道，用于部署应用程序。Pipeline1 包含一个将创建 Azure AI 服务帐户的步骤。\n您需要向 Pipeline1 添加一个步骤，以识别创建的 Azure AI 服务帐户。解决方案必须最小化开发工作量。\n您应该运行哪个 Azure 命令行界面 (CLI) 命令？",
+  "options": [
+   {
+    "id": "A",
+    "text": "az cognitiveservices account network-rule",
+    "textEn": "az cognitiveservices account network-rule",
+    "textZh": "一个。 az 认知服务帐户网络规则"
+   },
+   {
+    "id": "B",
+    "text": "az cognitiveservices account show",
+    "textEn": "az cognitiveservices account show",
+    "textZh": "az 认知服务帐户显示"
+   },
+   {
+    "id": "C",
+    "text": "az account list",
+    "textEn": "az account list",
+    "textZh": "帐户列表"
+   },
+   {
+    "id": "D",
+    "text": "az resource link",
+    "textEn": "az resource link",
+    "textZh": "资源链接"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "az 认知服务帐户显示\n管理 Azure 认知服务账户。\n示例\n显示账户信息。\naz 认知服务帐户显示 --name myresource --resource-group 认知服务资源-\ngroup\n不正确：\n* az cognitiveservices account network-rule\n管理网络规则。\n* az resource link\n管理资源之间的链接。\n链接是资源管理器的一个功能。它允许声明资源之间的关系，即使它们不在同一个资源组中。链接对资源使\n用、计费或基于角色的访问没有影响。它允许将跨组的多个资源作为一个单元进行管理。\n* az 账户列表\n获取已登录账户的订阅列表。默认情况下，仅显示当前云中的“启用”订阅。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 Pipeline1 的 Azure DevOps 管道，用于部署应用程序。Pipeline1 包含一个将创建 Azure AI 服务帐户的步骤。\n您需要向 Pipeline1 添加一个步骤，以识别创建的 Azure AI 服务帐户。解决方案必须最小化开发工作量。\n您应该运行哪个 Azure 命令行界面 (CLI) 命令？",
+  "stemEn": "You have an Azure DevOps pipeline named Pipeline1 that is used to deploy an app. Pipeline1 includes a\nstep that will create an Azure AI services account.\nYou need to add a step to Pipeline1 that will identify the created Azure AI services account. The solution\nmust minimize development effort.\nWhich Azure Command-Line Interface (CLI) command should you run?",
+  "explanationZh": "az 认知服务帐户显示\n管理 Azure 认知服务账户。\n示例\n显示账户信息。\naz 认知服务帐户显示 --name myresource --resource-group 认知服务资源-\ngroup\n不正确：\n* az cognitiveservices account network-rule\n管理网络规则。\n* az resource link\n管理资源之间的链接。\n链接是资源管理器的一个功能。它允许声明资源之间的关系，即使它们不在同一个资源组中。链接对资源使\n用、计费或基于角色的访问没有影响。它允许将跨组的多个资源作为一个单元进行管理。\n* az 账户列表\n获取已登录账户的订阅列表。默认情况下，仅显示当前云中的“启用”订阅。",
+  "explanationEn": "az cognitiveservices account show\nManage Azure Cognitive Services accounts.\nExample\nShow account information.\naz cognitiveservices account show --name myresource --resource-group cognitive-services-resource-\ngroup\nIncorrect:\n* az cognitiveservices account network-rule\nManage network rules.\n* az resource link\nManage links between resources.\nLinking is a feature of the Resource Manager. It enables declaring relationships between resources even if\nthey do not reside in the same resource group. Linking has no impact on resource usage, billing, or role-\nbased access. It allows for managing multiple resources across groups as a single unit.\n* az account list\nGet a list of subscriptions for the logged in account. By default, only 'Enabled' subscriptions from the\ncurrent cloud is shown.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 51",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 51",
+  "pdfPage": 56,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 51
+ },
+ {
+  "id": "q055",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您有一个名为 Agent1 的代理，它使用模型上下文协议 (MCP) 调用来检索外部数据。\n \n \n您需要实施保护措施，以确保 Agent1 不能将任何标记为 Violence 的内容发送到 MCP 服务器。\n \n您应该使用哪个干预点？",
+  "options": [
+   {
+    "id": "A",
+    "text": "tool call",
+    "textEn": "tool call",
+    "textZh": "工具调用"
+   },
+   {
+    "id": "B",
+    "text": "user input",
+    "textEn": "user input",
+    "textZh": "用户输入"
+   },
+   {
+    "id": "C",
+    "text": "tool response",
+    "textEn": "tool response",
+    "textZh": "工具响应"
+   },
+   {
+    "id": "D",
+    "text": "output",
+    "textEn": "output",
+    "textZh": "输出"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "此场景的最佳干预点是工具调用。\n目标是防止代理将特定内容（标记为“暴力”）发送到 MCP 服务器。\n直接预防：在工具调用阶段拦截可以让您检查模型生成的参数和有效负载，在它们离开您的应用环境并到\n达外部 MCP 服务器之前。\n如果检测到带有暴力标签的内容，您可以立即阻止请求。\nceb668f693bc",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 Agent1 的代理，它使用模型上下文协议 (MCP) 调用来检索外部数据。\n \n \n您需要实施保护措施，以确保 Agent1 不能将任何标记为 Violence 的内容发送到 MCP 服务器。\n \n您应该使用哪个干预点？",
+  "stemEn": "You have an agent named Agent1 that uses Model Context Protocol (MCP) calls to retrieve external data.\nYou need to implement guardrails to ensure that Agent1 cannot send any content tagged as Violence to\nthe MCP server. \nWhich intervention point should you use?",
+  "explanationZh": "此场景的最佳干预点是工具调用。\n目标是防止代理将特定内容（标记为“暴力”）发送到 MCP 服务器。\n直接预防：在工具调用阶段拦截可以让您检查模型生成的参数和有效负载，在它们离开您的应用环境并到\n达外部 MCP 服务器之前。\n如果检测到带有暴力标签的内容，您可以立即阻止请求。\nceb668f693bc",
+  "explanationEn": "The best intervention point for this scenario is tool call.\nThe goal is to prevent the agent from sending specific content (tagged as \"Violence\") to the MCP server.\nDirect Prevention: Intercepting at the tool call stage allows you to inspect the arguments and payload the\nmodel has generated before they leave your application environment and reach the external MCP server.\nIf violence-tagged content is detected, you can block the request immediately.\nceb668f693bc",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 52",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 52",
+  "pdfPage": 57,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 52
+ },
+ {
+  "id": "q056",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个名为 AI1 的 Microsoft Foundry 资源，托管了三次 GPT 3.5 模型的部署。\n每个部署都针对独特的工作负载进行了优化。\n您计划部署三个应用程序。每个应用程序将通过 REST API 访问 AI1，并将使用针对该应用程序预期工作负载优化的部署。\n您需要为每个应用程序提供对 AI1 的访问权限和适当的部署。解决方案必须确保只有这些应用程序可以访问 AI1。\n您应该使用什么来提供对 AI1 的访问权限，每个应用程序应该使用什么来连接到其适当的部署？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "A bearer token",
+   "A deployment endpoint"
+  ],
+  "pdfAnswer": [
+   "A bearer token",
+   "A deployment endpoint"
+  ],
+  "explanation": "框 1：一个持有者令牌\n通过以下方式提供对 AI1 的访问：\n获取一个持有者令牌以调用 OpenAI 资源。\n示例：\n1. 获取 Microsoft Entra 访问令牌。访问令牌在一小时内过期。您需要再获取\n一个。\nexport accessToken=$(az account get-access-token --resource https://cognitiveservices.azure.com --\n2. 进行 API 调用\n使用访问令牌通过设置 Authorization 头值来授权您的 API 调用。\n卷曲 ${endpoint%/}/openai/deployments/YOUR_DEPLOYMENT_NAME/completions?api-version=2023-05-\n15 \\\n-H“内容类型：application/json”\\\n-H \"授权: Bearer $accessToken\" \\\n-d '{ \"提示\": \"从前有一个\" }'\n框 2: 部署端点\n通过以下方式连接到部署:\n示例请求\n在此示例中，使用密码来验证服务主体。提供的令牌随后用于\n调用计算机视觉 API。\n1. 获取您的租户 ID:\n$context=获取-AzContext \n$context.Tenant.Id\n \n2. 获取令牌： \n$tenantId = $context.Tenant.Id\n \n$clientId = $app.ApplicationId \n$clientSecret =“<您的密码>”$resourceUrl\n=“https://cognitiveservices.azure.com/”$tokenEndpoi\nnt =“https://login.microsoftonline.com/$tenantId/oauth2/token”\n$body = @{\ngrant_type = \"client_credentials\"\nclient_id = $clientId\nclient_secret = $clientSecret\n资源 = $resourceUrl\n}\n$responseToken = Invoke-RestMethod -Uri $tokenEndpoint -Method Post -Body $body\n$accessToken = $responseToken.access_token\n示例：\n3. 调用计算机视觉 API：\n$url = $account.Endpoint+\"vision/v1.0/models\"\n$result = Invoke-RestMethod -Uri $url -Method Get -Headers @{\"Authorization\"=\"Bearer $accessToken\"}\n-Verbose\n$result | ConvertTo-Json",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "使用以下方式提供对 AI1 的访问：",
+    "labelEn": "Provide access to AI1 by using:",
+    "labelZh": "使用以下方式提供对 AI1 的访问：",
+    "answer": "A bearer token",
+    "choices": [
+     {
+      "key": "An API key",
+      "en": "An API key",
+      "zh": "API 密钥"
+     },
+     {
+      "key": "A bearer token",
+      "en": "A bearer token",
+      "zh": "持有者令牌"
+     },
+     {
+      "key": "A shared access signature (SAS) token",
+      "en": "A shared access signature (SAS) token",
+      "zh": "共享访问签名 (SAS) 令牌"
+     }
+    ],
+    "positionNoteEn": "Provide access to AI1 by using:",
+    "positionNoteZh": "使用以下方式提供对 AI1 的访问：",
+    "positionNote": "使用以下方式提供对 AI1 的访问："
+   },
+   {
+    "id": "box2",
+    "label": "使用以下方式连接到部署：",
+    "labelEn": "Connect to the deployment by using:",
+    "labelZh": "使用以下方式连接到部署：",
+    "answer": "A deployment endpoint",
+    "choices": [
+     {
+      "key": "An API key",
+      "en": "An API key",
+      "zh": "API 密钥"
+     },
+     {
+      "key": "A deployment endpoint",
+      "en": "A deployment endpoint",
+      "zh": "部署端点"
+     },
+     {
+      "key": "A deployment name",
+      "en": "A deployment name",
+      "zh": "部署名称"
+     },
+     {
+      "key": "A deployment type",
+      "en": "A deployment type",
+      "zh": "部署类型"
+     }
+    ],
+    "positionNoteEn": "Connect to the deployment by using:",
+    "positionNoteZh": "使用以下方式连接到部署：",
+    "positionNote": "使用以下方式连接到部署："
+   }
+  ],
+  "stemZh": "您有一个名为 AI1 的 Microsoft Foundry 资源，托管了三次 GPT 3.5 模型的部署。\n每个部署都针对独特的工作负载进行了优化。\n您计划部署三个应用程序。每个应用程序将通过 REST API 访问 AI1，并将使用针对该应用程序预期工作负载优化的部署。\n您需要为每个应用程序提供对 AI1 的访问权限和适当的部署。解决方案必须确保只有这些应用程序可以访问 AI1。\n您应该使用什么来提供对 AI1 的访问权限，每个应用程序应该使用什么来连接到其适当的部署？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry resource named AI1 that hosts three deployments of the GPT 3.5 model.\nEach deployment is optimized for a unique workload.\nYou plan to deploy three apps. Each app will access AI1 by using the REST API and will use the\ndeployment that was optimized for the app’s intended workload.\nYou need to provide each app with access to AI1 and the appropriate deployment. The solution must\nensure that only the apps can access AI1.\nWhat should you use to provide access to AI1, and what should each app use to connect to its appropriate\ndeployment? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：一个持有者令牌\n通过以下方式提供对 AI1 的访问：\n获取一个持有者令牌以调用 OpenAI 资源。\n示例：\n1. 获取 Microsoft Entra 访问令牌。访问令牌在一小时内过期。您需要再获取\n一个。\nexport accessToken=$(az account get-access-token --resource https://cognitiveservices.azure.com --\n2. 进行 API 调用\n使用访问令牌通过设置 Authorization 头值来授权您的 API 调用。\n卷曲 ${endpoint%/}/openai/deployments/YOUR_DEPLOYMENT_NAME/completions?api-version=2023-05-\n15 \\\n-H“内容类型：application/json”\\\n-H \"授权: Bearer $accessToken\" \\\n-d '{ \"提示\": \"从前有一个\" }'\n框 2: 部署端点\n通过以下方式连接到部署:\n示例请求\n在此示例中，使用密码来验证服务主体。提供的令牌随后用于\n调用计算机视觉 API。\n1. 获取您的租户 ID:\n$context=获取-AzContext \n$context.Tenant.Id\n \n2. 获取令牌： \n$tenantId = $context.Tenant.Id\n \n$clientId = $app.ApplicationId \n$clientSecret =“<您的密码>”$resourceUrl\n=“https://cognitiveservices.azure.com/”$tokenEndpoi\nnt =“https://login.microsoftonline.com/$tenantId/oauth2/token”\n$body = @{\ngrant_type = \"client_credentials\"\nclient_id = $clientId\nclient_secret = $clientSecret\n资源 = $resourceUrl\n}\n$responseToken = Invoke-RestMethod -Uri $tokenEndpoint -Method Post -Body $body\n$accessToken = $responseToken.access_token\n示例：\n3. 调用计算机视觉 API：\n$url = $account.Endpoint+\"vision/v1.0/models\"\n$result = Invoke-RestMethod -Uri $url -Method Get -Headers @{\"Authorization\"=\"Bearer $accessToken\"}\n-Verbose\n$result | ConvertTo-Json",
+  "explanationEn": "Box 1: A bearer token\nProvide access to AI1 by using:\nObtain a bearer token to call the OpenAI resource.\nExample:\n1. Acquire a Microsoft Entra access token. Access tokens expire in one hour. you'll then need to acquire\nanother one.\nexport accessToken=$(az account get-access-token --resource https://cognitiveservices.azure.com --\n2. Make an API call\nUse the access token to authorize your API call by setting the Authorization header value.\ncurl ${endpoint%/}/openai/deployments/YOUR_DEPLOYMENT_NAME/completions?api-version=2023-05-\n15 \\\n-H \"Content-Type: application/json\" \\\n-H \"Authorization: Bearer $accessToken\" \\\n-d '{ \"prompt\": \"Once upon a time\" }'\nBox 2: a deployment endpoint\nConnect to the deployment by using:\nSample request\nIn this sample, a password is used to authenticate the service principal. The token provided is then used to\ncall the Computer Vision API.\n1. Get your TenantId:\n$context=Get-AzContext \n$context.Tenant.Id\n \n2. Get a token: \n$tenantId = $context.Tenant.Id\n \n$clientId = $app.ApplicationId \n$clientSecret = \"<YOUR_PASSWORD>\"\n$resourceUrl = \"https://cognitiveservices.azure.com/\"\n$tokenEndpoint = \"https://login.microsoftonline.com/$tenantId/oauth2/token\"\n$body = @{\n grant_type = \"client_credentials\"\n client_id = $clientId\n client_secret = $clientSecret\n resource = $resourceUrl\n}\n$responseToken = Invoke-RestMethod -Uri $tokenEndpoint -Method Post -Body $body\n$accessToken = $responseToken.access_token\nExample:\n3. Call the Computer Vision API:\n$url = $account.Endpoint+\"vision/v1.0/models\"\n$result = Invoke-RestMethod -Uri $url -Method Get -Headers @{\"Authorization\"=\"Bearer $accessToken\"}\n-Verbose\n$result | ConvertTo-Json",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 53",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 53",
+  "pdfPage": 57,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 53
+ },
+ {
+  "id": "q057",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个名为 Search1 的 Azure AI Search 资源，该资源被多个托管在 Azure 中的应用使用。\n您需要保护 Search1。解决方案必须满足以下要求：\n● 防止互联网访问 Search1。\n● 限制每个应用访问特定索引的查询。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确答案值为一分。",
+  "options": [],
+  "answer": [
+   "Create a private endpoint.",
+   "Use key authentication."
+  ],
+  "pdfAnswer": [
+   "Create a private endpoint.",
+   "Use key authentication."
+  ],
+  "explanation": "框 1：创建一个私有端点\n防止互联网访问 Search1。\n入站连接到私有端点（网络隔离，无互联网流量）为了更严格的安全性，您可\n以为 Azure Cognitive Search 建立一个私有端点，使虚拟网络上的客户端能够通过私有链接安全地访问搜\n索索引中的数据。\n私有端点使用来自虚拟网络地址空间的 IP 地址与您的搜索服务进行连接。客户端与搜索服务之间的网络\n流量通过虚拟网络和 Microsoft 骨干网络上的私有链接进行传输，从而消除来自公共互联网的暴露。VNET\n允许资源之间进行安全通信，包括您的本地网络和互联网。\n框 2：使用密钥认证\n限制每个应用对特定查询的访问。\n内容管理的授权\n如果您使用基于密钥的认证，则内容操作的授权通过请求中的 API 密钥类型授予：\n管理员密钥（允许对搜索服务进行创建-读取-更新-删除操作的读写访问），\n在服务配置时创建\n查询密钥（允许对索引的文档集合进行只读访问），根据需要创建，\n并为发出查询的客户端应用程序设计\n在应用程序代码中，您指定端点和 API 密钥以允许访问内容和选项。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "防止从 Internet 访问：",
+    "labelEn": "To prevent access from the internet:",
+    "labelZh": "防止从 Internet 访问：",
+    "answer": "Create a private endpoint.",
+    "choices": [
+     {
+      "key": "Configure an IP firewall.",
+      "en": "Configure an IP firewall.",
+      "zh": "配置 IP 防火墙。"
+     },
+     {
+      "key": "Create a private endpoint.",
+      "en": "Create a private endpoint.",
+      "zh": "创建专用端点。"
+     },
+     {
+      "key": "Use Azure roles.",
+      "en": "Use Azure roles.",
+      "zh": "使用 Azure 角色。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "将访问限制为查询特定索引：",
+    "labelEn": "To limit access to query specific indexes:",
+    "labelZh": "将访问限制为查询特定索引：",
+    "answer": "Use key authentication.",
+    "choices": [
+     {
+      "key": "Create a private endpoint.",
+      "en": "Create a private endpoint.",
+      "zh": "创建专用端点。"
+     },
+     {
+      "key": "Use Azure roles.",
+      "en": "Use Azure roles.",
+      "zh": "使用 Azure 角色。"
+     },
+     {
+      "key": "Use key authentication.",
+      "en": "Use key authentication.",
+      "zh": "使用密钥身份验证。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个名为 Search1 的 Azure AI Search 资源，该资源被多个托管在 Azure 中的应用使用。\n您需要保护 Search1。解决方案必须满足以下要求：\n● 防止互联网访问 Search1。\n● 限制每个应用访问特定索引的查询。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确答案值为一分。",
+  "stemEn": "You have an Azure AI Search resource named Search1 that is used by multiple apps hosted in Azure.\nYou need to secure Search1. The solution must meet the following requirements:\n● Prevent access to Search1 from the internet.\n● Limit the access of each app to query specific indexes.\nWhat should you do? To answer, select the appropriate options in the answer area.\nNOTE: Each correct answer is worth one point.",
+  "explanationZh": "框 1：创建一个私有端点\n防止互联网访问 Search1。\n入站连接到私有端点（网络隔离，无互联网流量）为了更严格的安全性，您可\n以为 Azure Cognitive Search 建立一个私有端点，使虚拟网络上的客户端能够通过私有链接安全地访问搜\n索索引中的数据。\n私有端点使用来自虚拟网络地址空间的 IP 地址与您的搜索服务进行连接。客户端与搜索服务之间的网络\n流量通过虚拟网络和 Microsoft 骨干网络上的私有链接进行传输，从而消除来自公共互联网的暴露。VNET\n允许资源之间进行安全通信，包括您的本地网络和互联网。\n框 2：使用密钥认证\n限制每个应用对特定查询的访问。\n内容管理的授权\n如果您使用基于密钥的认证，则内容操作的授权通过请求中的 API 密钥类型授予：\n管理员密钥（允许对搜索服务进行创建-读取-更新-删除操作的读写访问），\n在服务配置时创建\n查询密钥（允许对索引的文档集合进行只读访问），根据需要创建，\n并为发出查询的客户端应用程序设计\n在应用程序代码中，您指定端点和 API 密钥以允许访问内容和选项。",
+  "explanationEn": "Box 1: Create a private endpoint\nPrevent access to Search1 from the internet.\nInbound connection to a private endpoint (network isolation, no Internet traffic)\nFor more stringent security, you can establish a private endpoint for Azure Cognitive Search allows a client\non a virtual network to securely access data in a search index over a Private Link.\nThe private endpoint uses an IP address from the virtual network address space for connections to your\nsearch service. Network traffic between the client and the search service traverses over the virtual network\nand a private link on the Microsoft backbone network, eliminating exposure from the public internet. A\nVNET allows for secure communication among resources, with your on-premises network as well as the\nInternet.\nBox 2: Use key authentication\nLimit the access of each app to specific queries.\nAuthorization for content management\nIf you're using key-based authentication, authorization on content operations is conferred through the type\nof API key on the request:\nAdmin key (allows read-write access for create-read-update-delete operations on the search service),\ncreated when the service is provisioned\nQuery key (allows read-only access to the documents collection of an index), created as-needed and are\ndesigned for client applications that issue queries\nIn application code, you specify the endpoint and an API key to allow access to content and options.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 54",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 54",
+  "pdfPage": 59,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 54
+ },
+ {
+  "id": "q058",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "drag",
+  "stem": "您有一个名为 Host1 的 Docker 主机，其中包含一个容器基础镜像。 \n您有一个 Azure 订阅，其中包含一个名为 model1 的自定义语音转文本模型。\n您需要在 Host1 上运行 model1。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Request approval to run the container.",
+   "Retrain the model.",
+   "Run the container."
+  ],
+  "pdfAnswer": [
+   "Request approval to run the container.",
+   "Retrain the model.",
+   "Run the container."
+  ],
+  "explanation": "步骤 1：请求批准以运行容器\n前提条件\n在使用语音服务容器之前，您必须满足以下前提条件。如果您没有 Azure 订阅，请在开始之前创建一个免\n费帐户。您需要：\n* 您必须请求并获得使用语音容器的批准。\n* 等等。\n \n步骤 2：重新训练模型 \n \n自定义模型必须使用语音工作室进行训练。 \n \n \n使用 docker run 命令运行服务的容器。\n一旦运行，容器将继续运行，直到您停止容器。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "步骤 1",
+    "labelEn": "Step 1",
+    "labelZh": "步骤 1",
+    "answer": "Request approval to run the container.",
+    "choices": [
+     {
+      "key": "Request approval to run the container.",
+      "en": "Request approval to run the container.",
+      "zh": "请求批准以运行容器。"
+     },
+     {
+      "key": "Export model1 to Host1.",
+      "en": "Export model1 to Host1.",
+      "zh": "将 model1 导出到 Host1。"
+     },
+     {
+      "key": "Configure disk logging.",
+      "en": "Configure disk logging.",
+      "zh": "配置磁盘日志记录。"
+     },
+     {
+      "key": "Run the container.",
+      "en": "Run the container.",
+      "zh": "运行容器。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "步骤 2",
+    "labelEn": "Step 2",
+    "labelZh": "步骤 2",
+    "answer": "Retrain the model.",
+    "choices": [
+     {
+      "key": "Request approval to run the container.",
+      "en": "Request approval to run the container.",
+      "zh": "请求批准以运行容器。"
+     },
+     {
+      "key": "Export model1 to Host1.",
+      "en": "Export model1 to Host1.",
+      "zh": "将 model1 导出到 Host1。"
+     },
+     {
+      "key": "Configure disk logging.",
+      "en": "Configure disk logging.",
+      "zh": "配置磁盘日志记录。"
+     },
+     {
+      "key": "Run the container.",
+      "en": "Run the container.",
+      "zh": "运行容器。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "步骤 3",
+    "labelEn": "Step 3",
+    "labelZh": "步骤 3",
+    "answer": "Run the container.",
+    "choices": [
+     {
+      "key": "Request approval to run the container.",
+      "en": "Request approval to run the container.",
+      "zh": "请求批准以运行容器。"
+     },
+     {
+      "key": "Export model1 to Host1.",
+      "en": "Export model1 to Host1.",
+      "zh": "将 model1 导出到 Host1。"
+     },
+     {
+      "key": "Configure disk logging.",
+      "en": "Configure disk logging.",
+      "zh": "配置磁盘日志记录。"
+     },
+     {
+      "key": "Run the container.",
+      "en": "Run the container.",
+      "zh": "运行容器。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个名为 Host1 的 Docker 主机，其中包含一个容器基础镜像。 \n您有一个 Azure 订阅，其中包含一个名为 model1 的自定义语音转文本模型。\n您需要在 Host1 上运行 model1。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stemEn": "image.\nYou have a Docker host named Host1 that contains a container base\nYou have an Azure subscription that contains a custom speech-to-text model named model1.\nYou need to run model1 on Host1.\nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the\nlist of actions to the answer area and arrange them in the correct order.\nSelect and Place:",
+  "explanationZh": "步骤 1：请求批准以运行容器\n前提条件\n在使用语音服务容器之前，您必须满足以下前提条件。如果您没有 Azure 订阅，请在开始之前创建一个免\n费帐户。您需要：\n* 您必须请求并获得使用语音容器的批准。\n* 等等。\n \n步骤 2：重新训练模型 \n \n自定义模型必须使用语音工作室进行训练。 \n \n \n使用 docker run 命令运行服务的容器。\n一旦运行，容器将继续运行，直到您停止容器。",
+  "explanationEn": "Step 1: Request approval to run the container\nPrerequisites\nYou must meet the following prerequisites before you use Speech service containers. If you don't have an\nAzure subscription, create a free account before you begin. You need:\n* You must request and get approval to use a Speech container.\n* Etc. \nStep 2: Retrain the model \nThe custom model has to have been trained by using the Speech Studio.\nStep 3: Run the container. 步骤 3：运行容器。\nRun the container with docker run 使用 docker run 运行容器\nUse the docker run command to run the container for service.\nOnce running, the container continues to run until you stop the container.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "drag",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 55",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 55",
+  "pdfPage": 61,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 55
+ },
+ {
+  "id": "q059",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有 100,000 张图片。\n您需要构建一个应用程序，该应用程序将执行以下操作：\n● 识别图片中的交通标志并提取标志上的文本。\n● 分析文本以识别知名地点。\n解决方案必须最小化开发工作量。\n您应该为每个操作使用什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Azure Vision in Foundry Tools",
+   "Azure AI Search"
+  ],
+  "pdfAnswer": [
+   "Azure Vision in Foundry Tools",
+   "Azure AI Search"
+  ],
+  "explanation": "框 1： Azure Vision 在 Foundry Tools\n提取文本：\n识别图片中的交通标志并提取标志上的文本。\n什么是 Azure AI Vision v4.0 Read OCR？\n新的 Azure AI Vision 图像分析 4.0 REST API 提供从图像中提取印刷或手写\n文本的能力，采用统一的性能增强同步 API，使您能够轻松获取所有图像\n洞察，包括在单个 API 操作中的 OCR 结果。Read OCR 引擎建立在多个\n深度学习模型之上，支持全球语言的通用脚本模型。\n框 2: Azure AI 搜索\n识别知名地点：\n分析文本以识别知名地点。\nAzure AI 搜索（以前称为“Azure 认知搜索”）是一个企业级的信息检索系统，用于处理您导入到搜索索引\n中的异构内容，并通过查询和应用程序向用户展示。它配备了一整套全面的高级搜索技术，旨在支持任何\n规模的高性能应用。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "提取文本：",
+    "labelEn": "Extract the text:",
+    "labelZh": "提取文本：",
+    "choices": [
+     {
+      "key": "Azure Document Intelligence in Foundry Tools",
+      "en": "Azure Document Intelligence in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 文档智能 (Document Intelligence)"
+     },
+     {
+      "key": "Azure Language in Foundry Tools",
+      "en": "Azure Language in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 语言 (Language)"
+     },
+     {
+      "key": "Azure AI Search",
+      "en": "Azure AI Search",
+      "zh": "Azure AI 搜索 (AI Search)"
+     },
+     {
+      "key": "Azure Vision in Foundry Tools",
+      "en": "Azure Vision in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 视觉 (Vision)"
+     }
+    ],
+    "answer": "Azure Vision in Foundry Tools"
+   },
+   {
+    "id": "2",
+    "label": "识别知名地点：",
+    "labelEn": "Identify well-known locations:",
+    "labelZh": "识别知名地点：",
+    "choices": [
+     {
+      "key": "Azure Document Intelligence in Foundry Tools",
+      "en": "Azure Document Intelligence in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 文档智能 (Document Intelligence)"
+     },
+     {
+      "key": "Azure Language in Foundry Tools",
+      "en": "Azure Language in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 语言 (Language)"
+     },
+     {
+      "key": "Azure AI Search",
+      "en": "Azure AI Search",
+      "zh": "Azure AI 搜索 (AI Search)"
+     },
+     {
+      "key": "Azure Vision in Foundry Tools",
+      "en": "Azure Vision in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 视觉 (Vision)"
+     }
+    ],
+    "answer": "Azure AI Search"
+   }
+  ],
+  "stemZh": "您有 100,000 张图片。\n您需要构建一个应用程序，该应用程序将执行以下操作：\n● 识别图片中的交通标志并提取标志上的文本。\n● 分析文本以识别知名地点。\n解决方案必须最小化开发工作量。\n您应该为每个操作使用什么？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have 100,000 images.\nYou need to build an app that will perform the following actions:\n● Identify road signs in the images and extract the text on the signs.\n● Analyze the text to identify well-known locations.\nThe solution must minimize development effort.\nWhat should you use for each action? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1： Azure Vision 在 Foundry Tools\n提取文本：\n识别图片中的交通标志并提取标志上的文本。\n什么是 Azure AI Vision v4.0 Read OCR？\n新的 Azure AI Vision 图像分析 4.0 REST API 提供从图像中提取印刷或手写\n文本的能力，采用统一的性能增强同步 API，使您能够轻松获取所有图像\n洞察，包括在单个 API 操作中的 OCR 结果。Read OCR 引擎建立在多个\n深度学习模型之上，支持全球语言的通用脚本模型。\n框 2: Azure AI 搜索\n识别知名地点：\n分析文本以识别知名地点。\nAzure AI 搜索（以前称为“Azure 认知搜索”）是一个企业级的信息检索系统，用于处理您导入到搜索索引\n中的异构内容，并通过查询和应用程序向用户展示。它配备了一整套全面的高级搜索技术，旨在支持任何\n规模的高性能应用。",
+  "explanationEn": "Box 1: Azure Vision in Foundry Tools\nExtract the text:\nIdentify road signs in the images and extract the text on the signs.\nWhat is Azure AI Vision v4.0 Read OCR?\nThe new Azure AI Vision Image Analysis 4.0 REST API offers the ability to extract printed or handwritten\ntext from images in a unified performance-enhanced synchronous API that makes it easy to get all image\ninsights including OCR results in a single API operation. The Read OCR engine is built on top of multiple\ndeep learning models supported by universal script-based models for global language support.\nBox 2: Azure AI Search\nIdentify well-known locations:\nAnalyze the text to identify well-known locations.\nAzure AI Search (formerly known as \"Azure Cognitive Search\") is an enterprise-ready information retrieval\nsystem for your heterogeneous content that you ingest into a search index, and surface to users through\nqueries and apps. It comes with a comprehensive set of advanced search technologies, built for high-\nperformance applications at any scale.",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 56",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 56",
+  "pdfPage": 62,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 56
+ },
+ {
+  "id": "q060",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您计划部署一个容器化版本的 Azure AI 语言服务，用于情感分析。\n您将 https://contoso.cognitiveservices.azure.com 配置为该服务的端点 URI。\n您需要通过 Docker 在 Azure 虚拟机上运行该容器。\n您应该如何完成该命令？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+   "http://contoso.cognitiveservices.azure.com"
+  ],
+  "pdfAnswer": [
+   "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+   "http://contoso.cognitiveservices.azure.com"
+  ],
+  "explanation": "框 1: mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment\n安装并运行情感分析容器\n使用 docker run 运行容器\n一旦容器在主机计算机上，使用 docker run 命令来运行容器。该\n容器将继续运行，直到您停止它。\n重要\n以下部分中的 docker 命令使用反斜杠 \\ 作为行续字符。\n根据您的主机操作系统的要求替换或删除此内容。\n必须指定 Eula、Billing 和 ApiKey 选项才能运行容器；否则，容器将不会启动。\n示例：\ndocker run --rm -it -p 5000:5000 --memory 8g --cpus 1 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment:{IMAGE_TAG} \\\nEula=accept \\\n计费={ENDPOINT_URI}\nApiKey={API_KEY}\n此命令：\n从容器镜像运行情感分析容器分配一个 CPU 核心和 8 吉字节 (\nGB) 的内存暴露 TCP 端口 5000 并为容器分配伪 TTY容器\n退出后自动删除。容器镜像仍然可在主机计算机上使用。\nst\n框 2: https://contoso.cognitiveservices.azure.com\nENDPOINT_URI。\ncontainers",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "--cpus 1 之后的一行",
+    "labelEn": "Line after --cpus 1",
+    "labelZh": "--cpus 1 之后的一行",
+    "answer": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+    "choices": [
+     {
+      "key": "http://contoso.blob.core.windows.net",
+      "en": "http://contoso.blob.core.windows.net",
+      "zh": "http://contoso.blob.core.windows.net"
+     },
+     {
+      "key": "http://contoso.cognitiveservices.azure.com",
+      "en": "http://contoso.cognitiveservices.azure.com",
+      "zh": "http://contoso.cognitiveservices.azure.com"
+     },
+     {
+      "key": "mcr.microsoft.com/azure-cognitive-services/textanalytics/keyphrase",
+      "en": "mcr.microsoft.com/azure-cognitive-services/textanalytics/keyphrase",
+      "zh": "mcr.microsoft.com/azure-cognitive-services/textanalytics/keyphrase"
+     },
+     {
+      "key": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+      "en": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+      "zh": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "Billing=",
+    "labelEn": "Billing=",
+    "labelZh": "Billing=",
+    "answer": "http://contoso.cognitiveservices.azure.com",
+    "choices": [
+     {
+      "key": "http://contoso.blob.core.windows.net",
+      "en": "http://contoso.blob.core.windows.net",
+      "zh": "http://contoso.blob.core.windows.net"
+     },
+     {
+      "key": "http://contoso.cognitiveservices.azure.com",
+      "en": "http://contoso.cognitiveservices.azure.com",
+      "zh": "http://contoso.cognitiveservices.azure.com"
+     },
+     {
+      "key": "mcr.microsoft.com/azure-cognitive-services/textanalytics/keyphrase",
+      "en": "mcr.microsoft.com/azure-cognitive-services/textanalytics/keyphrase",
+      "zh": "mcr.microsoft.com/azure-cognitive-services/textanalytics/keyphrase"
+     },
+     {
+      "key": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+      "en": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment",
+      "zh": "mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您计划部署一个容器化版本的 Azure AI 语言服务，用于情感分析。\n您将 https://contoso.cognitiveservices.azure.com 配置为该服务的端点 URI。\n您需要通过 Docker 在 Azure 虚拟机上运行该容器。\n您应该如何完成该命令？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You plan to deploy a containerized version of an Azure AI Language service that will be used for sentiment\nanalysis.\nYou configure https://contoso.cognitiveservices.azure.com as the endpoint URI for the\nservice.\nYou need to run the container on an Azure virtual machine by using Docker.\nHow should you complete the command? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment\n安装并运行情感分析容器\n使用 docker run 运行容器\n一旦容器在主机计算机上，使用 docker run 命令来运行容器。该\n容器将继续运行，直到您停止它。\n重要\n以下部分中的 docker 命令使用反斜杠 \\ 作为行续字符。\n根据您的主机操作系统的要求替换或删除此内容。\n必须指定 Eula、Billing 和 ApiKey 选项才能运行容器；否则，容器将不会启动。\n示例：\ndocker run --rm -it -p 5000:5000 --memory 8g --cpus 1 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment:{IMAGE_TAG} \\\nEula=accept \\\n计费={ENDPOINT_URI}\nApiKey={API_KEY}\n此命令：\n从容器镜像运行情感分析容器分配一个 CPU 核心和 8 吉字节 (\nGB) 的内存暴露 TCP 端口 5000 并为容器分配伪 TTY容器\n退出后自动删除。容器镜像仍然可在主机计算机上使用。\nst\n框 2: https://contoso.cognitiveservices.azure.com\nENDPOINT_URI。\ncontainers",
+  "explanationEn": "解释：\n \nBox 1: mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment\nInstall and run Sentiment Analysis containers\nRun the container with docker run\nOnce the container is on the host computer, use the docker run command to run the containers. The\ncontainer will continue to run until you stop it.\nImportant\nThe docker commands in the following sections use the back slash, \\, as a line continuation character.\nReplace or remove this based on your host operating system's requirements.\nThe Eula, Billing, and ApiKey options must be specified to run the container; otherwise, the container won't\nstart.\nExample:\ndocker run --rm -it -p 5000:5000 --memory 8g --cpus 1 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment:{IMAGE_TAG} \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\nThis command:\nRuns a Sentiment Analysis container from the container image\nAllocates one CPU core and 8 gigabytes (GB) of memory\nExposes TCP port 5000 and allocates a pseudo-TTY for the container\nAutomatically removes the container after it exits. The container image is still available on the ho\ncomputer.\nBox 2: https://contoso.cognitiveservices.azure.com\nThe ENDPOINT_URI.\ncontainers",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "template": "docker run --rm -it -p 5000:5000 --memory 8g --cpus 1 \\\n  {{box1}} \\\n  Eula=accept \\\n  Billing={{box2}} \\\n  ApiKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "templateEn": "docker run --rm -it -p 5000:5000 --memory 8g --cpus 1 \\\n  {{box1}} \\\n  Eula=accept \\\n  Billing={{box2}} \\\n  ApiKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "templateZh": "docker run --rm -it -p 5000:5000 --memory 8g --cpus 1 \\\n  {{box1}} \\\n  Eula=accept \\\n  Billing={{box2}} \\\n  ApiKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "templateKind": "code",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 57",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 57",
+  "pdfPage": 64,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 57
+ },
+ {
+  "id": "q061",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在构建一个名为 App1 的 Web 应用，该应用通过使用部署到 Microsoft Foundry 项目 Project1\n的模型生成响应。\nApp1 是多个客户端应用程序之一，这些应用程序将在向模型发送提示之前使用相同的 Azure AI Search 数据源配置。\n您需要整合 Project1 和 App1。解决方案必须满足以下要求：\n● 所有客户端应用程序必须使用相同的搜索配置。\n● 解决方案必须使用无密钥身份验证。\n● 必须最小化管理工作量。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Configure an Azure AI Search connection in Project1 and reference the connection in each application",
+    "textEn": "Configure an Azure AI Search connection in Project1 and reference the connection in each application.",
+    "textZh": "在 Project1 中配置 Azure AI Search 连接，并在每个应用程序中引用该连接。"
+   },
+   {
+    "id": "B",
+    "text": "Create a custom HTTP connection in Foundry and manually configure Azure AI Search endpoints per application",
+    "textEn": "Create a custom HTTP connection in Foundry and manually configure Azure AI Search endpoints per application.",
+    "textZh": "在 Foundry 中创建自定义 HTTP 连接，并根据每个应用程序手动配置 Azure AI Search 端点。"
+   },
+   {
+    "id": "C",
+    "text": "Enable a managed identity for each application and call Azure AI Search directly",
+    "textEn": "Enable a managed identity for each application and call Azure AI Search directly.",
+    "textZh": "为每个应用程序启用托管身份，并直接调用 Azure AI Search。"
+   },
+   {
+    "id": "D",
+    "text": "Call Azure AI Search directly from each application by using Microsoft Entra authentication",
+    "textEn": "Call Azure AI Search directly from each application by using Microsoft Entra authentication.",
+    "textZh": "通过使用 Microsoft Entra 身份验证，从每个应用程序直接调用 Azure AI Search。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "在 Project1 中创建一个共享的 Azure AI Search 连接，配置为使用 Microsoft Entra ID身份验\n证，并具有适当的 Azure RBAC 权限。每个应用程序引用这个集中管理的连接，确保连接设置一致，并 \n \nMicrosoft Entra ID 提供无密钥身份验证，无需存储或轮换 API 密钥。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个名为 App1 的 Web 应用，该应用通过使用部署到 Microsoft Foundry 项目 Project1\n的模型生成响应。\nApp1 是多个客户端应用程序之一，这些应用程序将在向模型发送提示之前使用相同的 Azure AI Search 数据源配置。\n您需要整合 Project1 和 App1。解决方案必须满足以下要求：\n● 所有客户端应用程序必须使用相同的搜索配置。\n● 解决方案必须使用无密钥身份验证。\n● 必须最小化管理工作量。\n您应该怎么做？",
+  "stemEn": "You are building a web app named App1 that generates responses by using a model deployed to a\nMicrosoft Foundry project named Project1.\nApp1 is one of several client applications that will use the same Azure AI Search data source configuration\nbefore sending prompts to the model.\nYou need to integrate Project1 and App1. The solution must meet the following requirements:\n● All client applications must use the same search configuration.\n● The solution must use keyless authentication.\n● Administrative effort must be minimized.\nWhat should you do?",
+  "explanationZh": "在 Project1 中创建一个共享的 Azure AI Search 连接，配置为使用 Microsoft Entra ID身份验\n证，并具有适当的 Azure RBAC 权限。每个应用程序引用这个集中管理的连接，确保连接设置一致，并 \n \nMicrosoft Entra ID 提供无密钥身份验证，无需存储或轮换 API 密钥。",
+  "explanationEn": "Create a shared Azure AI Search connection in Project1, configured to use Microsoft Entra ID\n \nauthentication with the appropriate Azure RBAC permissions. Each application references this centrally\n \nmanaged connection, ensuring consistent connection settings and minimizing administrative effort. 最小化管理工作量。\nMicrosoft Entra ID provides keyless authentication without storing or rotating API keys.",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 58",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 58",
+  "pdfPage": 66,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 58
+ },
+ {
+  "id": "q062",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您成功运行了以下 HTTP 请求。\n请求的结果是什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "A new query key was generated",
+    "textEn": "A new query key was generated.",
+    "textZh": "生成了一个新的查询密钥。"
+   },
+   {
+    "id": "B",
+    "text": "A new secondary subscription key was created",
+    "textEn": "A new secondary subscription key was created.",
+    "textZh": "创建了一个新的次级订阅密钥。"
+   },
+   {
+    "id": "C",
+    "text": "A key for Azure AI Services was generated in Azure Key Vault",
+    "textEn": "A key for Azure AI Services was generated in Azure Key Vault.",
+    "textZh": "在 Azure 密钥保管库中为 Azure AI 服务生成了一个密钥。"
+   },
+   {
+    "id": "D",
+    "text": "The primary subscription key and the secondary subscription key were rotated",
+    "textEn": "The primary subscription key and the secondary subscription key were rotated.",
+    "textZh": "主订阅密钥和次级订阅密钥已被轮换。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "regenerateKey 操作使用 \"keyName\": \"Key2\" 为\ncontoso1 重新生成次级订阅密钥。新值替换并使之前的次级密钥失效；主密钥保持不变。\n未更改。\n视图=rest-aiservices-accountmanagement-2024-10-01&tabs=HTTP",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您成功运行了以下 HTTP 请求。\n请求的结果是什么？",
+  "stemEn": "You successfully run the following HTTP request.\nWhat is the result of the request?",
+  "explanationZh": "regenerateKey 操作使用 \"keyName\": \"Key2\" 为\ncontoso1 重新生成次级订阅密钥。新值替换并使之前的次级密钥失效；主密钥保持不变。\n未更改。\n视图=rest-aiservices-accountmanagement-2024-10-01&tabs=HTTP",
+  "explanationEn": "The regenerateKey operation with \"keyName\": \"Key2\" regenerates the secondary subscription key for\ncontoso1. The new value replaces and invalidates the previous secondary key; the primary key remains\nunchanged.\nview=rest-aiservices-accountmanagement-2024-10-01&tabs=HTTP",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 59",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 59",
+  "pdfPage": 66,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 59
+ },
+ {
+  "id": "q063",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "multi",
+  "stem": "您正在构建一个将使用 Azure Speech 的 Foundry Tools 的应用程序。\n您需要确保该应用程序可以使用 Microsoft Entra ID 令牌对服务进行身份验证。\n您应该执行哪两个操作？每个正确答案都是解决方案的一部分。\n注意: 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "Enable a virtual network service endpoint",
+    "textEn": "Enable a virtual network service endpoint.",
+    "textZh": "启用虚拟网络服务端点。"
+   },
+   {
+    "id": "B",
+    "text": "Create a private endpoint",
+    "textEn": "Create a private endpoint",
+    "textZh": "创建私有端点"
+   },
+   {
+    "id": "C",
+    "text": "Configure a custom subdomain",
+    "textEn": "Configure a custom subdomain.",
+    "textZh": "配置自定义子域名。"
+   },
+   {
+    "id": "D",
+    "text": "Create a Conditional Access policy",
+    "textEn": "Create a Conditional Access policy.",
+    "textZh": "创建条件访问策略。"
+   },
+   {
+    "id": "E",
+    "text": "Request an X.509 certificate",
+    "textEn": "Request an X.509 certificate.",
+    "textZh": "请求 X.509 证书。"
+   }
+  ],
+  "answer": [
+   "B",
+   "C"
+  ],
+  "pdfAnswer": [
+   "B",
+   "C"
+  ],
+  "explanation": "根据 Microsoft Learn《How to configure Microsoft Entra authentication》，Speech/Foundry Tools 使用 Microsoft Entra ID 令牌认证需：① 创建自定义子域名；② 分配 Cognitive Services Speech User/Contributor 等 RBAC 角色。私有端点（B）仅用于私网访问，不是 Entra 认证硬性要求。本题选项未给出“分配 RBAC”，因此可选答案中只能确定 C。参考：https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-configure-azure-ad-auth",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个将使用 Azure Speech 的 Foundry Tools 的应用程序。\n您需要确保该应用程序可以使用 Microsoft Entra ID 令牌对服务进行身份验证。\n您应该执行哪两个操作？每个正确答案都是解决方案的一部分。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You are building an app that will use the Azure Speech in Foundry Tools.\nYou need to ensure that the app can authenticate to the service by using a Microsoft Entra ID token.\nWhich two actions should you perform? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "预期配置结合了一个支持 Microsoft Entra 身份验证的自定义子域名，\n以及一个用于私有网络访问语音资源的私有端点。\n \n \n澄清：该问题已过时或不完整。当前的语音文档要求使用自定义 \n子域名和适当的 Azure RBAC 角色分配以进行 Microsoft Entra 身份验证；私有\n \n端点是可选的。所需的角色分配操作在选项中缺失。\n \n \n选项卡=门户枢轴=编程语言-c Sharp\\https://learn\n.microsoft.com/en-us/azure/ai-services/speech-service/speech-services-private-link？\n选项卡=门户",
+  "explanationEn": "The intended configuration combines a custom subdomain, which supports Microsoft Entra authentication,\nwith a private endpoint for private network access to the Speech resource.\n \nClarification: The question is outdated or incomplete. Current Speech documentation requires a custom\nsubdomain and appropriate Azure RBAC role assignments for Microsoft Entra authentication; a private\nendpoint is optional. The required role-assignment action is missing from the choices.\n \ntabs=portal&pivots=programming-language-csharp\ntabs=portal",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 60",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 60",
+  "pdfPage": 67,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 60
+ },
+ {
+  "id": "q064",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "single",
+  "stem": "您正在构建一个图像共享应用程序，该应用程序将使用 Azure AI 防止用户共享色情图像。\n您需要确保不当图像被正确识别。解决方案必须最小化开发工作量。您应该使用什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Vision Studio in Azure Vision in Foundry Tools",
+    "textEn": "Vision Studio in Azure Vision in Foundry Tools",
+    "textZh": "Azure Vision in Foundry Tools 中的 Vision Studio"
+   },
+   {
+    "id": "B",
+    "text": "Microsoft Foundry",
+    "textEn": "Microsoft Foundry",
+    "textZh": "Microsoft Foundry"
+   },
+   {
+    "id": "C",
+    "text": "Visual Studio",
+    "textEn": "Visual Studio",
+    "textZh": "Visual Studio"
+   },
+   {
+    "id": "D",
+    "text": "Content Safety in Foundry Control Plane Studio",
+    "textEn": "Content Safety in Foundry Control Plane Studio",
+    "textZh": "Foundry Control Plane Studio 中的 Content Safety"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "内容安全工作室提供预构建的图像审核，能够检测性内容并分配严重性\n级别。您可以测试代表性图像，调整拒绝阈值，并导出集成代码，\n在不训练自定义模型的情况下最小化开发工作量。\n2Cwindows&pivots=programming-language-foundry-portal",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个图像共享应用程序，该应用程序将使用 Azure AI 防止用户共享色情图像。\n您需要确保不当图像被正确识别。解决方案必须最小化开发工作量。您应该使用什么？",
+  "stemEn": "You are building an image sharing app that will use Azure AI to prevent users from sharing sexually\nexplicit images.\nYou need to ensure that inappropriate images are identified correctly. The solution must minimize\ndevelopment effort. What should you use?",
+  "explanationZh": "内容安全工作室提供预构建的图像审核，能够检测性内容并分配严重性\n级别。您可以测试代表性图像，调整拒绝阈值，并导出集成代码，\n在不训练自定义模型的情况下最小化开发工作量。\n2Cwindows&pivots=programming-language-foundry-portal",
+  "explanationEn": "Content Safety Studio provides prebuilt image moderation that detects sexual content and assigns severity\nlevels. You can test representative images, adjust rejection thresholds, and export integration code,\nminimizing development effort without training a custom model.\n2Cwindows&pivots=programming-language-foundry-portal",
+  "boxes": [],
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 61",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 61",
+  "pdfPage": 67,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 61
+ },
+ {
+  "id": "q065",
+  "domain": "plan",
+  "domainLabel": "规划和管理 Azure AI 解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Azure 订阅，具有以下配置：\n● 订阅 ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n● 租户 ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n您计划创建一个将执行情感分析和光学字符识别 (OCR) 的资源。\n您需要使用 HTTP 请求在订阅中创建该资源。解决方案必须使用一个单一的密钥和端点。\n您应该如何完成请求？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "subscriptions/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+   "Microsoft.CognitiveServices"
+  ],
+  "pdfAnswer": [
+   "subscriptions/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+   "Microsoft.CognitiveServices"
+  ],
+  "explanation": "资源创建 URL 使用订阅 ID 来识别目标订阅，并且\nMicrosoft.CognitiveServices 作为资源提供者。一个多服务的 Azure AI 资源通过单个密钥和端点支持\n情感分析和 OCR。资源创建使用 HTTP PUT\n方法。\n查看=rest-microsoftfoundry-accountmanagement-2025-06-01&tabs=HTTP\n \n \n \n \n \n实施生成性人工智能和代理解决方案\n测试题 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过…",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "https://management.azure.com/ [ ] /resourceGroups/OCRProject/providers/",
+    "labelEn": "https://management.azure.com/ [ ] /resourceGroups/OCRProject/providers/",
+    "labelZh": "https://management.azure.com/ [ ] /resourceGroups/OCRProject/providers/",
+    "choices": [
+     {
+      "key": "subscriptions/3edfe572-cb54-3ced-ae12-c5c177f39a12",
+      "en": "subscriptions/3edfe572-cb54-3ced-ae12-c5c177f39a12",
+      "zh": "subscriptions/3edfe572-cb54-3ced-ae12-c5c177f39a12"
+     },
+     {
+      "key": "subscriptions/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+      "en": "subscriptions/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+      "zh": "subscriptions/8d3591aa-96b8-4737-ad09-00f9b1ed35ad"
+     },
+     {
+      "key": "tenant/3edfe572-cb54-3ced-ae12-c5c177f39a12",
+      "en": "tenant/3edfe572-cb54-3ced-ae12-c5c177f39a12",
+      "zh": "tenant/3edfe572-cb54-3ced-ae12-c5c177f39a12"
+     },
+     {
+      "key": "tenant/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+      "en": "tenant/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+      "zh": "tenant/8d3591aa-96b8-4737-ad09-00f9b1ed35ad"
+     }
+    ],
+    "answer": "subscriptions/8d3591aa-96b8-4737-ad09-00f9b1ed35ad",
+    "positionNoteEn": "https://management.azure.com/ [ ] /resourceGroups/OCRProject/providers/",
+    "positionNoteZh": "https://management.azure.com/ [ ] /resourceGroups/OCRProject/providers/",
+    "positionNote": "https://management.azure.com/ [ ] /resourceGroups/OCRProject/providers/"
+   },
+   {
+    "id": "2",
+    "label": "[ ] /accounts/CS1?api-version=2021-10-01",
+    "labelEn": "[ ] /accounts/CS1?api-version=2021-10-01",
+    "labelZh": "[ ] /accounts/CS1?api-version=2021-10-01",
+    "choices": [
+     {
+      "key": "Microsoft.ApiManagement",
+      "en": "Microsoft.ApiManagement",
+      "zh": "Microsoft.ApiManagement"
+     },
+     {
+      "key": "Microsoft.CognitiveServices",
+      "en": "Microsoft.CognitiveServices",
+      "zh": "Microsoft.CognitiveServices"
+     },
+     {
+      "key": "Microsoft.ContainerService",
+      "en": "Microsoft.ContainerService",
+      "zh": "Microsoft.ContainerService"
+     },
+     {
+      "key": "Microsoft.KeyVault",
+      "en": "Microsoft.KeyVault",
+      "zh": "Microsoft.KeyVault"
+     }
+    ],
+    "answer": "Microsoft.CognitiveServices",
+    "positionNoteEn": "[ ] /accounts/CS1?api-version=2021-10-01",
+    "positionNoteZh": "[ ] /accounts/CS1?api-version=2021-10-01",
+    "positionNote": "[ ] /accounts/CS1?api-version=2021-10-01"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered from PDF Hot Area (p68).",
+  "stemZh": "您有一个 Azure 订阅，具有以下配置：\n● 订阅 ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n● 租户 ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n您计划创建一个将执行情感分析和光学字符识别 (OCR) 的资源。\n您需要使用 HTTP 请求在订阅中创建该资源。解决方案必须使用一个单一的密钥和端点。\n您应该如何完成请求？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have an Azure subscription that has the following configurations:\n● Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n● Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\nYou plan to create a resource that will perform sentiment analysis and optical character recognition (OCR).\nYou need to use an HTTP request to create the resource in the subscription. The solution must use a\nsingle key and endpoint.\nHow should you complete the request? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "资源创建 URL 使用订阅 ID 来识别目标订阅，并且\nMicrosoft.CognitiveServices 作为资源提供者。一个多服务的 Azure AI 资源通过单个密钥和端点支持\n情感分析和 OCR。资源创建使用 HTTP PUT\n方法。\n查看=rest-microsoftfoundry-accountmanagement-2025-06-01&tabs=HTTP\n \n \n \n \n \n实施生成性人工智能和代理解决方案\n测试题 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "explanationEn": "The resource creation URL uses the subscription ID to identify the target subscription and\nMicrosoft.CognitiveServices as the resource provider. A multi-service Azure AI resource supports\nsentiment analysis and OCR through a single key and endpoint. Resource creation uses the HTTP PUT\nmethod.\nview=rest-microsoftfoundry-accountmanagement-2025-06-01&tabs=HTTP\n \n \n \n \n \nImplement generative AI and agentic solutions\nTestlet 1\nCase Study\nThis is a case study. Case studies are not timed separately from other exam sections. You can use as\nmuch exam time as you would like to complete each case study. However, there might be additional case\nstudies or other exam sections. Manage your time to ensure that you can complete all the exam sections\nin the time provided. Pay attention to the Exam Progress at the top of the screen so you have sufficient\ntime to complete any exam sections that follow this case study.\nTo answer the case study questions, you will bed to reference information that is provided in the case.\nCase studies and associated questions might contain exhibits or other resources that provide more\ninformation about the scenario described in the case. Information provided in an individual question\ndoes not apply to the other questions in the case study.\nA Review Screen will appear at the end of this case study. From the Review Screen, you can review and\nchange your answers before you move to the next exam section. After you leave this case study, you will\nNOT be able to return to it.\nTo start the case study\nTo display the first question in this case study, select the “Next” button. To the left of the question, a menu\nprovides links to information such as business requirements, the existing environment, and problem\nstatements. Please read through all this information before answering any questions. When you are ready\nto answer a question, select the “Question” button to return to the question.\nOverview\n \nCompany Information \nContoso, Ltd is a multinational retail company that builds, deploys, and manages generative AI and agent-\nbased solutions by using Microsoft Foundry. \nExisting Environment\n \nIdentity Environment\nContoso uses Microsoft Entra ID for identity management, authentication, and authorization capabilities\nthat enable agents to access organizational resources and services.\nContoso recently formed a new AI engineering team named Agent1Dev Team to optimize and maintain\nexisting AI solutions.\nThe team collaborates with solution architects, DevOps engineers, and security engineers to design,\nimplement. monitor, and secure AI applications.\nContoso also has a team named Agent1Test Team that is responsible for validating AI solutions before the\nsolution deployments.\nGenerative Environment\nContoso has a Microsoft Foundry deployment that contains two projects named Project1 and Project2.\nProject1\nProject1 contains a customer support agent named Agent1 that assists customers with product inquiries\nand troubleshooting requests.\nAgent1 has the following configurations:\n Agent1 uses a base model deployment.\n A safety evaluation pipeline is NOT enabled.\n Tool invocation approval workflows are NOT enabled.\n Conversation memory constraints are NOT configured.\nAgent1 interacts with customers by using digital support channels and answers general questions about\nContoso products.\nProject1 is deployed to an Azure region located in the European Union (EU).\nAgent1Dev Team will use Project1 to optimize and maintain Agent1.\nProject2\nProject2 contains ",
+  "domainLabelZh": "规划和管理 Azure AI 解决方案",
+  "domainLabelEn": "Plan and manage an Azure AI solution",
+  "control": "select",
+  "template": "https://management.azure.com/{{1}}/resourceGroups/OCRProject/providers/{{2}}/accounts/CS1?api-version=2021-10-01",
+  "templateEn": "https://management.azure.com/{{1}}/resourceGroups/OCRProject/providers/{{2}}/accounts/CS1?api-version=2021-10-01",
+  "templateZh": "https://management.azure.com/{{1}}/resourceGroups/OCRProject/providers/{{2}}/accounts/CS1?api-version=2021-10-01",
+  "templateKind": "code",
+  "pdfRef": "规划和管理 Azure AI 解决方案 · 问题集 2 · 问题 62",
+  "pdfRefEn": "Plan and manage an Azure AI solution · Question Set 2 · Question 62",
+  "pdfPage": 68,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 62
+ },
+ {
+  "id": "q066",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您需要为 Agent1 配置个性化用户交互。该解决方案必须满足业务需求。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "knowledge",
+    "textEn": "knowledge",
+    "textZh": "知识"
+   },
+   {
+    "id": "B",
+    "text": "memory",
+    "textEn": "memory",
+    "textZh": "记忆"
+   },
+   {
+    "id": "C",
+    "text": "guardrails",
+    "textEn": "guardrails",
+    "textZh": "保护措施"
+   },
+   {
+    "id": "D",
+    "text": "tools",
+    "textEn": "tools",
+    "textZh": "工具"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确:\n* 记忆\n错误:\n* 保护措施\n* 指令\n* 知识\n* 工具\n场景，业务需求:\n*-> 与 Agent1 互动的用户必须在未来的互动中拥有个性化的体验，包括\nAgent1 能够保留对话上下文并回忆之前的相关信息\n互动。\nAgent1 只能回答有关 Contoso 销售的产品的问题。\n要配置保留上下文并回忆之前信息的个性化用户互动，您应该\n使用 Foundry Agent Service 中的内存。\n管理长期记忆：这允许代理从用户对话中提取有意义的信息，并将其存储为持久知识（例如，用\n户偏好或历史细节），以便在未来的互动中回忆。\n范围内存存储：通过在创建内存存储时使用范围参数，您可以对记忆进行分段\n以确保为不同用户提供安全、个性化的体验。\n自动注入：代理将在新的互动之前自动将这些学习到的事实和用户档案细节注入到\n提示中，消除手动重新注入上下文的需要。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要为 Agent1 配置个性化用户交互。该解决方案必须满足业务需求。\n您应该在解决方案中包含什么？",
+  "stemEn": "You need to configure personalized user interactions for Agent1. The solution must meet the business\nrequirements.\nWhat should you include in the solution?",
+  "explanationZh": "正确:\n* 记忆\n错误:\n* 保护措施\n* 指令\n* 知识\n* 工具\n场景，业务需求:\n*-> 与 Agent1 互动的用户必须在未来的互动中拥有个性化的体验，包括\nAgent1 能够保留对话上下文并回忆之前的相关信息\n互动。\nAgent1 只能回答有关 Contoso 销售的产品的问题。\n要配置保留上下文并回忆之前信息的个性化用户互动，您应该\n使用 Foundry Agent Service 中的内存。\n管理长期记忆：这允许代理从用户对话中提取有意义的信息，并将其存储为持久知识（例如，用\n户偏好或历史细节），以便在未来的互动中回忆。\n范围内存存储：通过在创建内存存储时使用范围参数，您可以对记忆进行分段\n以确保为不同用户提供安全、个性化的体验。\n自动注入：代理将在新的互动之前自动将这些学习到的事实和用户档案细节注入到\n提示中，消除手动重新注入上下文的需要。",
+  "explanationEn": "Correct:\n* memory\nIncorrect:\n* guardrails\n* instructions\n* knowledge\n* tools\nScenario, Business Requirements:\n*-> Users that interact with Agent1 must have a personalized experience in future interactions, including\nthe ability for Agent1 to retain conversation context and recall relevant information from previous\ninteractions.\nAgent1 must answer questions only about the products sold by Contoso.\nTo configure personalized user interactions that retain context and recall previous information, you should\nuse the Memory in Foundry Agent Service.\nManaged Long-Term Memory: This allows the agent to extract meaningful information from user\nconversations and store it as durable knowledge (e.g., user preferences or historical details) to be recalled\nacross future interactions.\nScoped Memory Stores: By using the scope parameter when creating memory stores, you can segment\nmemories to ensure a secure, personalized experience for distinct users.\nAutomatic Injection: The agent will automatically inject these learned facts and user profile details into the\nprompt before new interactions, eliminating the need to rehydrate context manually.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 案例研究 · 问题 1",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Case Study · Question 1",
+  "pdfPage": 72,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q067",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您需要确保 Agent1Dev 团队可以访问 Agent1。解决方案必须满足安全和合规要求。\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "DefaultAzureCredential()",
+   "get"
+  ],
+  "pdfAnswer": [
+   "DefaultAzureCredential()",
+   "get"
+  ],
+  "explanation": "场景：\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n \n \nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n安全和合规要求： \nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n \n访问 Azure 资源必须遵循最小权限原则。\n \n \nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n \n框 1：DefaultAzureCredential\n团队使用的正确凭证类型是 DefaultAzureCredential。\n强制无密钥访问：DefaultAzureCredential 通过使用基于令牌的身份验证满足第一个安全要求。这完\n全消除了对硬编码 API 密钥的需求。\n启用最小权限：它与 Microsoft Entra ID 基于角色的访问控制（RBAC）无缝集成。这允许管理员分\n配精确的细粒度角色（例如 Azure AI 开发者或 Foundry 用户角色）。\n原生 Entra 集成：它在运行时自动管理从 Microsoft Entra ID 获取令牌，满足原生 Microsoft Entra\n身份验证的要求。\n框 2：get\nget 方法使用其唯一名称参数（agent_name）获取现有的面向消费者的代理定义。相比之下，cre\nate_version 将尝试构建一个全新的快照运行时配置，而 get_version 需要传递特定的版本标识符，\n而不是友好的代理名称。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "AzureKeyCredential()",
+      "en": "AzureKeyCredential()",
+      "zh": "AzureKeyCredential()"
+     },
+     {
+      "key": "DefaultAzureCredential()",
+      "en": "DefaultAzureCredential()",
+      "zh": "DefaultAzureCredential()"
+     },
+     {
+      "key": "None",
+      "en": "None",
+      "zh": "None"
+     }
+    ],
+    "answer": "DefaultAzureCredential()"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "create_version",
+      "en": "create_version",
+      "zh": "create_version"
+     },
+     {
+      "key": "get",
+      "en": "get",
+      "zh": "get"
+     },
+     {
+      "key": "get_version",
+      "en": "get_version",
+      "zh": "get_version"
+     }
+    ],
+    "answer": "get"
+   }
+  ],
+  "stemZh": "您需要确保 Agent1Dev 团队可以访问 Agent1。解决方案必须满足安全和合规要求。\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "stemEn": "You need to ensure that Agent1Dev Team can access Agent1. The solution must meet the security and\ncompliance requirements.\nHow should you complete the Python code? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "场景：\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n \n \nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n安全和合规要求： \nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n \n访问 Azure 资源必须遵循最小权限原则。\n \n \nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n \n框 1：DefaultAzureCredential\n团队使用的正确凭证类型是 DefaultAzureCredential。\n强制无密钥访问：DefaultAzureCredential 通过使用基于令牌的身份验证满足第一个安全要求。这完\n全消除了对硬编码 API 密钥的需求。\n启用最小权限：它与 Microsoft Entra ID 基于角色的访问控制（RBAC）无缝集成。这允许管理员分\n配精确的细粒度角色（例如 Azure AI 开发者或 Foundry 用户角色）。\n原生 Entra 集成：它在运行时自动管理从 Microsoft Entra ID 获取令牌，满足原生 Microsoft Entra\n身份验证的要求。\n框 2：get\nget 方法使用其唯一名称参数（agent_name）获取现有的面向消费者的代理定义。相比之下，cre\nate_version 将尝试构建一个全新的快照运行时配置，而 get_version 需要传递特定的版本标识符，\n而不是友好的代理名称。",
+  "explanationEn": "Scenario:\nContoso recently formed a new AI engineering team named Agent1Dev Team to optimize and maintain\nexisting AI solutions.\nAgent1Dev Team will use Project1 to optimize and maintain Agent1.\nSecurity and Compliance Requirements: \nAPI keys must NOT be used to access Foundry-deployed models.\nAccess to the Azure resources must follow the principle of least privilege.\n \nThe developers at Contoso must authenticate to Microsoft Foundry resources by using Microsoft Entra\nauthentication. \nBox 1: DefaultAzureCredential\nThe correct credential type to use for the team is DefaultAzureCredential.\nEnforces Keyless Access: DefaultAzureCredential fulfills the first security requirement by using token-\nbased authentication. This completely eliminates the need for hardcoded API keys.\nEnables Least Privilege: It integrates seamlessly with Microsoft Entra ID Role-Based Access Control\n(RBAC). This allows administrators to assign exact granular roles (such as the Azure AI Developer or\nFoundry User role).\nNative Entra Integration: It automatically manages token acquisition from Microsoft Entra ID during\nruntime, satisfying the requirement for native Microsoft Entra authentication.\nBox 2: get\nThe get method fetches the existing, consumer-facing definition of an agent using its unique name\nargument (agent_name). In contrast, create_version would attempt to build a brand new snapshotted\nruntime configuration, and get_version requires passing a specific version identifier rather than a friendly\nagent name",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "template": "from azure.identity import DefaultAzureCredential\nfrom azure.ai.projects import AIProjectClient\nfrom azure.core.credentials import AzureKeyCredential\n\nmyEndpoint = \"https://contoso.services.ai.azure.com/api/projects/project1\"\nproject_client = AIProjectClient(\n    endpoint=myEndpoint,\n    credential={{1}},\n)\nmyAgent = \"Agent1\"\nagent = project_client.agents.{{2}}(agent_name=myAgent)\n\nprint(f\"Retrieved agent: {agent.name}\")",
+  "templateEn": "from azure.identity import DefaultAzureCredential\nfrom azure.ai.projects import AIProjectClient\nfrom azure.core.credentials import AzureKeyCredential\n\nmyEndpoint = \"https://contoso.services.ai.azure.com/api/projects/project1\"\nproject_client = AIProjectClient(\n    endpoint=myEndpoint,\n    credential={{1}},\n)\nmyAgent = \"Agent1\"\nagent = project_client.agents.{{2}}(agent_name=myAgent)\n\nprint(f\"Retrieved agent: {agent.name}\")",
+  "templateZh": "from azure.identity import DefaultAzureCredential\nfrom azure.ai.projects import AIProjectClient\nfrom azure.core.credentials import AzureKeyCredential\n\nmyEndpoint = \"https://contoso.services.ai.azure.com/api/projects/project1\"\nproject_client = AIProjectClient(\n    endpoint=myEndpoint,\n    credential={{1}},\n)\nmyAgent = \"Agent1\"\nagent = project_client.agents.{{2}}(agent_name=myAgent)\n\nprint(f\"Retrieved agent: {agent.name}\")",
+  "templateKind": "code",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 案例研究 · 问题 2",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Case Study · Question 2",
+  "pdfPage": 73,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q068",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您需要推荐一种解决方案，以评估 Agent1 在使用存储于 storage1 中的产品信息时生成的响应。该解决方案必须满足技术要求。\n您应该在推荐中包含什么内容？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a Retrieval Augmented Generation (RAG) evaluator",
+    "textEn": "a Retrieval Augmented Generation (RAG) evaluator",
+    "textZh": "检索增强生成（RAG）评估器"
+   },
+   {
+    "id": "B",
+    "text": "a custom guardrail",
+    "textEn": "a custom guardrail",
+    "textZh": "自定义护栏"
+   },
+   {
+    "id": "C",
+    "text": "model fine-tuning",
+    "textEn": "model fine-tuning",
+    "textZh": "模型微调"
+   },
+   {
+    "id": "D",
+    "text": "a groundedness evaluator",
+    "textEn": "a groundedness evaluator",
+    "textZh": "真实性评估器"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要推荐一种解决方案，以评估 Agent1 在使用存储于 storage1 中的产品信息时生成的响应。该解决方案必须满足技术要求。\n您应该在推荐中包含什么内容？",
+  "stemEn": "You need to recommend a solution to assess the responses generated by Agent1 when the agent uses\nthe product information stored in storage1. The solution must meet the technical requirements.\nWhat should you include in the recommendation?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 案例研究 · 问题 3",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Case Study · Question 3",
+  "pdfPage": 74,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q069",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您需要配置 Agent1，仅回答有关 Contoso 产品的客户问题。该解决方案必须满足业务需求。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Modify the system message instructions",
+    "textEn": "Modify the system message instructions.",
+    "textZh": "修改系统消息指令。"
+   },
+   {
+    "id": "B",
+    "text": "Add few-shot examples",
+    "textEn": "Add few-shot examples.",
+    "textZh": "添加少量示例。"
+   },
+   {
+    "id": "C",
+    "text": "Apply top-p sampling",
+    "textEn": "Apply top-p sampling.",
+    "textZh": "应用 top-p 采样。"
+   },
+   {
+    "id": "D",
+    "text": "Increase the value of the temperature parameter",
+    "textEn": "Increase the value of the temperature parameter.",
+    "textZh": "增加 temperature 参数的值。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "场景：Contoso 确定了以下业务需求：\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。 \n \n系统消息指令：这决定了代理的角色、边界和规则。通过明确配置系统提示（例如，指示代理：“你 \n是一个产品助手。仅使用提供的产品详细信息表回答问题。如果你根据提供的文件不知道答案，请说\n明你不知道”），你可以防止模型使用其一般预训练知识进行回答。\n不正确：\n[不是 B]\n少量示例：虽然对强制输出格式或响应语气有用，但这并不会明确阻止模型在不熟悉的主题上检索外部\n知识。\n[不是 C，不是 D]\n温度和 top-p：这些参数控制模型响应的创造力和随机性。\n降低它们会使模型的输出更加确定和事实，但它们并不会主动\n限制模型生成超出预期领域的信息。\nazure-ai-studio-and-azure-openai-studio/4146991",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要配置 Agent1，仅回答有关 Contoso 产品的客户问题。该解决方案必须满足业务需求。\n您应该怎么做？",
+  "stemEn": "You need to configure Agent1 to answer customer questions about only the Contoso products. The\nsolution must meet the business requirements.\nWhat should you do?",
+  "explanationZh": "场景：Contoso 确定了以下业务需求：\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。 \n \n系统消息指令：这决定了代理的角色、边界和规则。通过明确配置系统提示（例如，指示代理：“你 \n是一个产品助手。仅使用提供的产品详细信息表回答问题。如果你根据提供的文件不知道答案，请说\n明你不知道”），你可以防止模型使用其一般预训练知识进行回答。\n不正确：\n[不是 B]\n少量示例：虽然对强制输出格式或响应语气有用，但这并不会明确阻止模型在不熟悉的主题上检索外部\n知识。\n[不是 C，不是 D]\n温度和 top-p：这些参数控制模型响应的创造力和随机性。\n降低它们会使模型的输出更加确定和事实，但它们并不会主动\n限制模型生成超出预期领域的信息。\nazure-ai-studio-and-azure-openai-studio/4146991",
+  "explanationEn": "Scenario: Contoso identifies the following business requirements:\nAgent1 must answer questions only about the products sold by Contoso.\n \n \nSystem Message Instructions: This dictates the agent's persona, boundaries, and rules. By explicitly\nconfiguring the system prompt (e.g., instructing the agent: \"You are a product assistant. Only answer\nquestions using the provided product detail sheets. If you do not know the answer based on the provided\ndocuments, state that you do not know\"), you prevent the model from answering with its general pre-\ntrained knowledge.\nIncorrect:\n[Not B]\nFew-shot examples: While useful for enforcing output formats or response tone, this does not explicitly\nstop a model from retrieving outside knowledge on unfamiliar topics.\n[Not C, Not D]\nTemperature & top-p: These parameters control the creativity and randomness of the model's responses.\nDecreasing them makes the model's outputs more deterministic and factual, but they do not actively\nrestrict the model from generating information outside of the intended domain.\nazure-ai-studio-and-azure-openai-studio/4146991",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 案例研究 · 问题 4",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Case Study · Question 4",
+  "pdfPage": 75,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 4
+ },
+ {
+  "id": "q070",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您需要根据业务需求为 Agent1 配置个性化用户交互。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "instructions",
+    "textEn": "instructions",
+    "textZh": "指令"
+   },
+   {
+    "id": "B",
+    "text": "memory",
+    "textEn": "memory",
+    "textZh": "记忆"
+   },
+   {
+    "id": "C",
+    "text": "tools",
+    "textEn": "tools",
+    "textZh": "工具"
+   },
+   {
+    "id": "D",
+    "text": "guardrails",
+    "textEn": "guardrails",
+    "textZh": "保护措施"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确:\n* 记忆\n错误:\n* 保护措施\n* 指令\n* 知识\n* 工具\n场景，业务需求:\n*-> 与 Agent1 互动的用户必须在未来的互动中拥有个性化的体验，包括\nAgent1 能够保留对话上下文并回忆之前的相关信息\n互动。\nAgent1 只能回答有关 Contoso 销售的产品的问题。\n要配置保留上下文并回忆之前信息的个性化用户互动，您应该\n使用 Foundry Agent Service 中的内存。\n管理长期记忆：这允许代理从用户对话中提取有意义的信息，并将其存储为持久知识（例如，用\n户偏好或历史细节），以便在未来的互动中回忆。\n \n范围内存存储：通过在创建内存存储时使用范围参数，您可以对记忆进行分段 \n以确保为不同用户提供安全、个性化的体验。 \n \n自动注入：代理将在新的互动之前自动将这些学习到的事实和用户档案细节注入到",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要根据业务需求为 Agent1 配置个性化用户交互。\n您应该在解决方案中包含什么？",
+  "stemEn": "You need to configure personalized user interactions for Agent1 based on the business requirements.\nWhat should you include in the solution?",
+  "explanationZh": "正确:\n* 记忆\n错误:\n* 保护措施\n* 指令\n* 知识\n* 工具\n场景，业务需求:\n*-> 与 Agent1 互动的用户必须在未来的互动中拥有个性化的体验，包括\nAgent1 能够保留对话上下文并回忆之前的相关信息\n互动。\nAgent1 只能回答有关 Contoso 销售的产品的问题。\n要配置保留上下文并回忆之前信息的个性化用户互动，您应该\n使用 Foundry Agent Service 中的内存。\n管理长期记忆：这允许代理从用户对话中提取有意义的信息，并将其存储为持久知识（例如，用\n户偏好或历史细节），以便在未来的互动中回忆。\n \n范围内存存储：通过在创建内存存储时使用范围参数，您可以对记忆进行分段 \n以确保为不同用户提供安全、个性化的体验。 \n \n自动注入：代理将在新的互动之前自动将这些学习到的事实和用户档案细节注入到 \n \n参考：",
+  "explanationEn": "Correct:\n* memory\nIncorrect:\n* guardrails\n* instructions\n* knowledge\n* tools\nScenario, Business Requirements:\n*-> Users that interact with Agent1 must have a personalized experience in future interactions, including\nthe ability for Agent1 to retain conversation context and recall relevant information from previous\ninteractions.\nAgent1 must answer questions only about the products sold by Contoso.\nTo configure personalized user interactions that retain context and recall previous information, you should\nuse the Memory in Foundry Agent Service.\nManaged Long-Term Memory: This allows the agent to extract meaningful information from user\nconversations and store it as durable knowledge (e.g., user preferences or historical details) to be recalled\nacross future interactions.\nScoped Memory Stores: By using the scope parameter when creating memory stores, you can segment\n \nmemories to ensure a secure, personalized experience for distinct users.\nAutomatic Injection: The agent will automatically inject these learned facts and user profile details into the\n \nprompt before new interactions, eliminating the need to rehydrate context manually. 提示中，消除手动重新注入上下文的需要。",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 案例研究 · 问题 5",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Case Study · Question 5",
+  "pdfPage": 75,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 5
+ },
+ {
+  "id": "q071",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您需要推荐一种解决方案，以评估 Agent1 在使用存储于 storage1 中的产品信息时生成的响应。该解决方案必须满足技术要求。\n您应该在推荐中包含什么内容？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a Retrieval Augmented Generation (RAG) evaluator",
+    "textEn": "a Retrieval Augmented Generation (RAG) evaluator",
+    "textZh": "检索增强生成（RAG）评估器"
+   },
+   {
+    "id": "B",
+    "text": "a custom guardrail",
+    "textEn": "a custom guardrail",
+    "textZh": "自定义护栏"
+   },
+   {
+    "id": "C",
+    "text": "a coherence evaluator",
+    "textEn": "a coherence evaluator",
+    "textZh": "一种连贯性评估器"
+   },
+   {
+    "id": "D",
+    "text": "model fine-tuning",
+    "textEn": "model fine-tuning",
+    "textZh": "模型微调"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "RAG 评估器评估 Agent1 的响应是否与问题相关，是否基于\n检索到的产品说明书，并与预期答案相比是否完整。这些检查直接满足\n基于存储信息的相关、完整和准确响应的要求。\n实施生成性 AI 和代理解决方案\n问题集 2",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要推荐一种解决方案，以评估 Agent1 在使用存储于 storage1 中的产品信息时生成的响应。该解决方案必须满足技术要求。\n您应该在推荐中包含什么内容？",
+  "stemEn": "You need to recommend a solution to assess the responses generated by Agent1 when the agent uses\nthe product information stored in storage1. The solution must meet the technical requirements.\nWhat should you include in the recommendation?",
+  "explanationZh": "RAG 评估器评估 Agent1 的响应是否与问题相关，是否基于\n检索到的产品说明书，并与预期答案相比是否完整。这些检查直接满足\n基于存储信息的相关、完整和准确响应的要求。\n实施生成性 AI 和代理解决方案\n问题集 2",
+  "explanationEn": "RAG evaluators assess whether Agent1’s responses are relevant to the question, grounded in the\nretrieved product sheets, and complete compared with expected answers. These checks directly address\nthe requirements for relevant, complete, and accurate responses based on the information in storage1.\nImplement generative AI and agentic solutions\nQuestion Set 2",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 案例研究 · 问题 6",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Case Study · Question 6",
+  "pdfPage": 76,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 6
+ },
+ {
+  "id": "q072",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目。\n您计划构建一个包含代理的客户支持解决方案。该解决方案必须满足以下要求：\n提供准确、上下文相关的响应，基于存储在Azure AI Search中的内部产品文档。\n需要在长上下文中进行深度、多步骤推理。\n生成详细的自然语言响应。\n您应该使用哪种类型的模型来驱动代理？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a multimodal model",
+    "textEn": "a multimodal model",
+    "textZh": "多模态模型"
+   },
+   {
+    "id": "B",
+    "text": "a small language model (SLM)",
+    "textEn": "a small language model (SLM)",
+    "textZh": "小型语言模型 (SLM)"
+   },
+   {
+    "id": "C",
+    "text": "a key phrase extraction model",
+    "textEn": "a key phrase extraction model",
+    "textZh": "关键短语提取模型"
+   },
+   {
+    "id": "D",
+    "text": "a large language model (LLM)",
+    "textEn": "a large language model (LLM)",
+    "textZh": "大型语言模型 (LLM)"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "对于需要深度多步骤推理、长上下文处理和严格基于内部文档的支持代理，Azure AI Foundry 模型目录中\n \n的 GPT-5.5（或 GPT-5.5-Pro）模型是最佳选择。 \n \n \n以下是 GPT-5.5 如何直接满足这些要求： \n深度多步骤推理：这些前沿模型在生成响应之前使用深思熟虑的推理和迭代规划。这使得代理能够分解复 \n杂的支持查询，分析替代方案，并防止幻觉，而无需大量定制提示工程。 \n基于事实的准确响应：\n与其单独完成此任务，不如将模型与连接到您的 Azure AI 搜索索引的 Foundry IQ 配对。\nFoundry IQ 的代理检索引擎将提取确切的上下文，使 GPT-5.5 能够综合答案并引用原始文档。\n长上下文处理：\nGPT-5.5 模型支持大规模上下文窗口，允许它们在单次处理过程中摄取大量先前的对话轮次以\n及详细的内部文档，而不会丢失重要规则。\n注意：\nGPT-5.5 是一个大型语言模型（LLM）。虽然它是基于 OpenAI 的先进变换器架构构建的旗舰 LL\nM，但它还具有原生的全模态能力，允许它在单一统一框架内无缝处理文本和图像。然而，在提供的特定\n类别中，它的主要核心分类是大型语言模型（LLM）。\n关于 GPT-5.5 的关键细节\n核心架构：由 OpenAI 构建的大型语言模型（LLM）。\n主要关注：高度优化以进行复杂推理、多步骤问题解决、编码和\n自主代理工作流。\n输入/输出能力：支持文本和图像输入，并提供基于文本的输出。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个 Microsoft Foundry 项目。\n您计划构建一个包含代理的客户支持解决方案。该解决方案必须满足以下要求：\n提供准确、上下文相关的响应，基于存储在Azure AI Search中的内部产品文档。\n需要在长上下文中进行深度、多步骤推理。\n生成详细的自然语言响应。\n您应该使用哪种类型的模型来驱动代理？",
+  "stemEn": "You have a Microsoft Foundry project.\nYou plan to build a customer support solution that contains an agent. The solution must meet the following\nrequirements:\nProvide accurate, context-aware responses grounded in internal product documentation stored in\nAzure AI Search.\nRequire deep, multi-step reasoning across long contexts.\nGenerate detailed natural language responses.\nWhich type of model should you use to power the agent?",
+  "explanationZh": "对于需要深度多步骤推理、长上下文处理和严格基于内部文档的支持代理，Azure AI Foundry 模型目录中\n \n的 GPT-5.5（或 GPT-5.5-Pro）模型是最佳选择。 \n \n \n以下是 GPT-5.5 如何直接满足这些要求： \n深度多步骤推理：这些前沿模型在生成响应之前使用深思熟虑的推理和迭代规划。这使得代理能够分解复 \n杂的支持查询，分析替代方案，并防止幻觉，而无需大量定制提示工程。 \n基于事实的准确响应：\n与其单独完成此任务，不如将模型与连接到您的 Azure AI 搜索索引的 Foundry IQ 配对。\nFoundry IQ 的代理检索引擎将提取确切的上下文，使 GPT-5.5 能够综合答案并引用原始文档。\n长上下文处理：\nGPT-5.5 模型支持大规模上下文窗口，允许它们在单次处理过程中摄取大量先前的对话轮次以\n及详细的内部文档，而不会丢失重要规则。\n注意：\nGPT-5.5 是一个大型语言模型（LLM）。虽然它是基于 OpenAI 的先进变换器架构构建的旗舰 LL\nM，但它还具有原生的全模态能力，允许它在单一统一框架内无缝处理文本和图像。然而，在提供的特定\n类别中，它的主要核心分类是大型语言模型（LLM）。\n关于 GPT-5.5 的关键细节\n核心架构：由 OpenAI 构建的大型语言模型（LLM）。\n主要关注：高度优化以进行复杂推理、多步骤问题解决、编码和\n自主代理工作流。\n输入/输出能力：支持文本和图像输入，并提供基于文本的输出。",
+  "explanationEn": "For a support agent requiring deep multi-step reasoning, long context processing, and strict grounding in\ninternal documents, the GPT-5.5 (or GPT-5.5-Pro) model from the Azure AI Foundry model catalog is the\nbest choice. \nHere is how GPT-5.5 directly addresses the requirements:\n \nDeep Multi-Step Reasoning: These frontier models use deliberate reasoning and iterative planning before\n \ngenerating a response. This allows the agent to decompose complex support queries, analyze\nalternatives, and prevent hallucinations without requiring heavy custom prompt engineering.\nGrounded, Accurate Responses:\nRather than doing this alone, pair the model with Foundry IQ connected to your Azure AI Search indices.\nFoundry IQ's agentic retrieval engine will pull exactly the right context, allowing GPT-5.5 to synthesize the\nanswer and cite the original documentation.\nLong Context Handling:\nGPT-5.5 models support massive context windows, allowing them to ingest extensive previous\nconversational turns alongside detailed internal documentation in a single pass without losing track of\nimportant rules.\nNote:\nGPT-5.5 is a large language model (LLM).While it is a flagship LLM built on OpenAI's advanced\ntransformer architecture, it also features natively omnimodal capabilities that allow it to process both text\nand images seamlessly within a single unified framework. However, when choosing between the specific\ncategories provided, its primary core classification is a Large Language Model (LLM).\nKey Details About GPT-5.5\nCore Architecture: Large Language Model (LLM) built by OpenAI.\nPrimary Focus: Highly optimized for complex reasoning, multi-step problem solving, coding, and\nautonomous agentic workflows.\nInput/Output Capabilities: Supports text and image inputs with text-based outputs.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 1",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 1",
+  "pdfPage": 77,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q073",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "drag",
+  "stem": "您有一个包含已部署的票务分类代理的 Microsoft Foundry 项目。\n您发现有时代理在没有调用任何工具的情况下响应，即使需要工具时也是如此。\n您需要确保代理在执行期间调用工具。\n您应该如何完成 Python 代码？要回答，请将适当的值拖到正确的目标。\n每个值可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "\"tool_choice\"",
+   "\"required\""
+  ],
+  "pdfAnswer": [
+   "\"tool_choice\"",
+   "\"required\""
+  ],
+  "explanation": "框 1: \"tool_choice\"\n要解决此问题并确保代理在执行期间始终调用工具，您需要在 run_payload 中配置 tool_choice 参数。\n框 2: \"必需\"\n在 Microsoft Foundry 的代理服务中（类似于底层的 Azure OpenAI / Assistants API 架构），\n设置 \"tool_choice\": \"必需\" 强制模型在返回响应之前选择并执行一个或多个工具。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-genai-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "JSON 键",
+    "labelEn": "JSON key",
+    "labelZh": "JSON 键",
+    "answer": "\"tool_choice\"",
+    "choices": [
+     {
+      "key": "\"auto\"",
+      "en": "\"auto\"",
+      "zh": "\"auto\""
+     },
+     {
+      "key": "\"required\"",
+      "en": "\"required\"",
+      "zh": "\"required\""
+     },
+     {
+      "key": "\"response_format\"",
+      "en": "\"response_format\"",
+      "zh": "\"response_format\""
+     },
+     {
+      "key": "\"tool_choice\"",
+      "en": "\"tool_choice\"",
+      "zh": "\"tool_choice\""
+     },
+     {
+      "key": "\"tools\"",
+      "en": "\"tools\"",
+      "zh": "\"tools\""
+     },
+     {
+      "key": "\"type\"",
+      "en": "\"type\"",
+      "zh": "\"type\""
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "JSON 值",
+    "labelEn": "JSON value",
+    "labelZh": "JSON 值",
+    "answer": "\"required\"",
+    "choices": [
+     {
+      "key": "\"auto\"",
+      "en": "\"auto\"",
+      "zh": "\"auto\""
+     },
+     {
+      "key": "\"required\"",
+      "en": "\"required\"",
+      "zh": "\"required\""
+     },
+     {
+      "key": "\"response_format\"",
+      "en": "\"response_format\"",
+      "zh": "\"response_format\""
+     },
+     {
+      "key": "\"tool_choice\"",
+      "en": "\"tool_choice\"",
+      "zh": "\"tool_choice\""
+     },
+     {
+      "key": "\"tools\"",
+      "en": "\"tools\"",
+      "zh": "\"tools\""
+     },
+     {
+      "key": "\"type\"",
+      "en": "\"type\"",
+      "zh": "\"type\""
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含已部署的票务分类代理的 Microsoft Foundry 项目。\n您发现有时代理在没有调用任何工具的情况下响应，即使需要工具时也是如此。\n您需要确保代理在执行期间调用工具。\n您应该如何完成 Python 代码？要回答，请将适当的值拖到正确的目标。\n每个值可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that contains a deployed ticket-triage agent.\nYou discover that sometimes the agent responds without calling any tools, even when a tool is required.\nYou need to ensure that the agent calls a tool during execution.\nHow should you complete the Python code? To answer, drag the appropriate values to the correct targets.\nEach value may be used once, more than once, or not at all. You may need to drag the split bar between\npanes or scroll to view content.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1: \"tool_choice\"\n要解决此问题并确保代理在执行期间始终调用工具，您需要在 run_payload 中配置 tool_choice 参数。\n框 2: \"必需\"\n在 Microsoft Foundry 的代理服务中（类似于底层的 Azure OpenAI / Assistants API 架构），\n设置 \"tool_choice\": \"必需\" 强制模型在返回响应之前选择并执行一个或多个工具。",
+  "explanationEn": "Box 1: \"tool_choice\"\nTo fix this issue and ensure that the agent always calls a tool during execution, you need to configure the\ntool_choice parameter in the run_payload.\nBox 2: \"required\"\nIn Microsoft Foundry's Agent Service (similar to the underlying Azure OpenAI / Assistants API\narchitecture), setting \"tool_choice\": \"required\" forces the model to select and execute one or more tools\nbefore returning its response.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 2",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 2",
+  "pdfPage": 77,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 2,
+  "template": "run_payload = {\n    \"assistant_id\": agent_id,\n    {{box1}} : {{box2}} ,\n    \"metadata\": {\n        \"scenario\": \"ticket-triage\"\n    }\n}",
+  "templateEn": "run_payload = {\n    \"assistant_id\": agent_id,\n    {{box1}} : {{box2}} ,\n    \"metadata\": {\n        \"scenario\": \"ticket-triage\"\n    }\n}",
+  "templateZh": "run_payload = {\n    \"assistant_id\": agent_id,\n    {{box1}} : {{box2}} ,\n    \"metadata\": {\n        \"scenario\": \"ticket-triage\"\n    }\n}",
+  "templateKind": "code"
+ },
+ {
+  "id": "q074",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您正在构建一个名为 App1 的 Web 应用，该应用通过使用部署到 Microsoft Foundry 项目 Project1\n的模型生成响应。\n在将提示发送给模型之前，App1 必须使用 Azure AI Search 检索文档。\n您需要整合 Project1 和 App1。解决方案必须满足以下要求：\n多个客户端应用程序必须使用相同的搜索配置。\n安全策略必须防止基于密钥的身份验证。\n必须最小化管理工作量。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Create a custom HTTP connection in Foundry and manually configure Azure AI Search endpoints per application",
+    "textEn": "Create a custom HTTP connection in Foundry and manually configure Azure AI Search endpoints per application.",
+    "textZh": "在 Foundry 中创建自定义 HTTP 连接，并根据每个应用程序手动配置 Azure AI Search 端点。"
+   },
+   {
+    "id": "B",
+    "text": "Configure an Azure AI Search connection in Project1 and reference the connection in each application",
+    "textEn": "Configure an Azure AI Search connection in Project1 and reference the connection in each application.",
+    "textZh": "在 Project1 中配置 Azure AI Search 连接，并在每个应用程序中引用该连接。"
+   },
+   {
+    "id": "C",
+    "text": "Call Azure AI Search directly from each application by using Microsoft Entra authentication",
+    "textEn": "Call Azure AI Search directly from each application by using Microsoft Entra authentication.",
+    "textZh": "通过使用 Microsoft Entra 身份验证直接从每个应用程序调用 Azure AI Search。"
+   },
+   {
+    "id": "D",
+    "text": "Enable a managed identity for each application and call Azure AI Search directly",
+    "textEn": "Enable a managed identity for each application and call Azure AI Search directly.",
+    "textZh": "为每个应用启用托管身份，并直接调用 Azure AI Search。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "为了满足您的安全性和架构要求，您必须将 Azure AI Search 实例添加为连接到您的 Azure AI Foundry\n项目，并为基于角色的访问控制 (RBAC) 配置托管身份。\n \n \n要安全地统一您的搜索配置而不使用 API 密钥，请将 Azure AI Search 实例添加为您的 Azure AI Foun\n \n \ndry 项目中的共享连接，禁用搜索服务上的密钥身份验证，并使用 Azure RBAC 和托管身份验证授权您的应\n \n注意：\n \n*-> 1. 创建项目连接\n在 Azure AI Foundry 中心或项目内直接连接 Azure AI Search。\n*-> 自动在所有连接的客户端应用程序中共享相同的搜索服务配置。\n集中管理您的搜索端点详细信息，以减少管理开销。\n2. 禁用密钥身份验证\n3. 启用托管身份验证\n4. 更新 Web 应用程序代码",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个名为 App1 的 Web 应用，该应用通过使用部署到 Microsoft Foundry 项目 Project1\n的模型生成响应。\n在将提示发送给模型之前，App1 必须使用 Azure AI Search 检索文档。\n您需要整合 Project1 和 App1。解决方案必须满足以下要求：\n多个客户端应用程序必须使用相同的搜索配置。\n安全策略必须防止基于密钥的身份验证。\n必须最小化管理工作量。\n您应该怎么做？",
+  "stemEn": "You are building a web app named App1 that generates responses by using a model deployed to a\nMicrosoft Foundry project named Project1.\nBefore sending the prompts to the model, App1 must retrieve documents by using Azure AI Search.\nYou need to integrate Project1 and App1. The solution must meet the following requirements:\nMultiple client applications must use the same search configuration.\nA security policy must prevent key-based authentication.\nAdministrative effort must be minimized.\nWhat should you do?",
+  "explanationZh": "为了满足您的安全性和架构要求，您必须将 Azure AI Search 实例添加为连接到您的 Azure AI Foundry\n项目，并为基于角色的访问控制 (RBAC) 配置托管身份。\n \n \n要安全地统一您的搜索配置而不使用 API 密钥，请将 Azure AI Search 实例添加为您的 Azure AI Foun\n \n \ndry 项目中的共享连接，禁用搜索服务上的密钥身份验证，并使用 Azure RBAC 和托管身份验证授权您的应\n \n注意：\n \n*-> 1. 创建项目连接\n在 Azure AI Foundry 中心或项目内直接连接 Azure AI Search。\n*-> 自动在所有连接的客户端应用程序中共享相同的搜索服务配置。\n集中管理您的搜索端点详细信息，以减少管理开销。\n2. 禁用密钥身份验证\n3. 启用托管身份验证\n4. 更新 Web 应用程序代码",
+  "explanationEn": "To meet your security and architecture requirements, you must add the Azure AI Search instance as a\nConnection within your Azure AI Foundry project and configure Managed Identities for role-based access\ncontrol (RBAC). \n \nTo securely unify your search configuration without API keys, add the Azure AI Search instance as a\nshared Connection in your Azure AI Foundry project, disable key authentication on the search service, and\n \nauthorize your applications using Azure RBAC and Managed Identities. 用程序。\nNote:\n \n*-> 1. Create a Project Connection\nConnect Azure AI Search directly inside the Azure AI Foundry hub or project.\n*-> Share the same search service configuration across all connected client applications automatically.\nCentralize your search endpoint details to reduce administrative overhead.\n2. Disable Key Authentication\n3. Enable Managed Identities\n4. Update the Web App Code",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 3",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 3",
+  "pdfPage": 79,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q075",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "drag",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个由您公司的金融分析师使用的代理。\n您需要通过提供额外的数据访问和处理能力来优化代理工作流程。\n解决方案必须满足以下要求：\n确保代理在对话中能够进行计算。\n确保代理能够访问来自公共网站的最新信息。\n确保代理能够从直接上传到代理的文档中检索信息。\n您应该为每个要求使用什么？要回答，请将适当的工具拖到正确的要求上。每个工具可以使用一次、使用多次或根本不使用。您可能需要拖动分隔条在窗格之间或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Grounding with Bing Search",
+   "Code interpreter",
+   "File search"
+  ],
+  "pdfAnswer": [
+   "Grounding with Bing Search",
+   "Code interpreter",
+   "File search"
+  ],
+  "explanation": "框 1：与必应搜索的基础\n确保代理能够访问来自公共网站的最新信息。\n您应该使用与必应搜索的基础来优化您的 Microsoft Foundry 代理工作流程。\n大型语言模型（LLMs）受到固定知识截止日期的限制，无法本地访问实时\n信息。将与必应搜索的基础集成使您的代理能够自主获取最新的、\n公共网络数据，合成事实，并以准确的内联 URL 引用进行响应。\n框 2：代码解释器\n确保代理在对话中能够进行计算。\n要在 Microsoft Foundry 代理服务项目中满足此要求，您应该使用代理工具\n（特别是函数调用或代码解释器工具）。\n在 Microsoft 代理框架和 Foundry 代理服务中，工具是用于\n扩展代理推理能力的本地机制，超越文本生成，使其能够访问实时数据\n并在对话中执行精确的数学计算。\n框 3：文件搜索\n确保代理能够从直接上传到代理的文档中检索信息。\n为了使您的 Microsoft AI Foundry 代理能够直接引用和检索上传文档中的信息，您应该启用并配置文件\n搜索工具（通过 Foundry 代理服务）。该工具与代理的系统提示一起工作，直接在您的数据上执行\n检索增强生成（RAG）。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "从公共网站访问最新信息",
+    "labelEn": "Access up-to-date information from public websites",
+    "labelZh": "从公共网站访问最新信息",
+    "answer": "Grounding with Bing Search",
+    "choices": [
+     {
+      "key": "Code interpreter",
+      "en": "Code interpreter",
+      "zh": "代码解释器（Code interpreter）"
+     },
+     {
+      "key": "Computer use",
+      "en": "Computer use",
+      "zh": "计算机使用（Computer use）"
+     },
+     {
+      "key": "File search",
+      "en": "File search",
+      "zh": "文件搜索（File search）"
+     },
+     {
+      "key": "Grounding with Bing Search",
+      "en": "Grounding with Bing Search",
+      "zh": "Grounding with Bing Search（必应搜索落地）"
+     },
+     {
+      "key": "Microsoft Fabric",
+      "en": "Microsoft Fabric",
+      "zh": "Microsoft Fabric"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "在对话期间执行计算",
+    "labelEn": "Perform calculations during conversations",
+    "labelZh": "在对话期间执行计算",
+    "answer": "Code interpreter",
+    "choices": [
+     {
+      "key": "Code interpreter",
+      "en": "Code interpreter",
+      "zh": "代码解释器（Code interpreter）"
+     },
+     {
+      "key": "Computer use",
+      "en": "Computer use",
+      "zh": "计算机使用（Computer use）"
+     },
+     {
+      "key": "File search",
+      "en": "File search",
+      "zh": "文件搜索（File search）"
+     },
+     {
+      "key": "Grounding with Bing Search",
+      "en": "Grounding with Bing Search",
+      "zh": "Grounding with Bing Search（必应搜索落地）"
+     },
+     {
+      "key": "Microsoft Fabric",
+      "en": "Microsoft Fabric",
+      "zh": "Microsoft Fabric"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "从直接上传到代理的文档中检索信息",
+    "labelEn": "Retrieve information from documents uploaded directly to the agent",
+    "labelZh": "从直接上传到代理的文档中检索信息",
+    "answer": "File search",
+    "choices": [
+     {
+      "key": "Code interpreter",
+      "en": "Code interpreter",
+      "zh": "代码解释器（Code interpreter）"
+     },
+     {
+      "key": "Computer use",
+      "en": "Computer use",
+      "zh": "计算机使用（Computer use）"
+     },
+     {
+      "key": "File search",
+      "en": "File search",
+      "zh": "文件搜索（File search）"
+     },
+     {
+      "key": "Grounding with Bing Search",
+      "en": "Grounding with Bing Search",
+      "zh": "Grounding with Bing Search（必应搜索落地）"
+     },
+     {
+      "key": "Microsoft Fabric",
+      "en": "Microsoft Fabric",
+      "zh": "Microsoft Fabric"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个由您公司的金融分析师使用的代理。\n您需要通过提供额外的数据访问和处理能力来优化代理工作流程。\n解决方案必须满足以下要求：\n确保代理在对话中能够进行计算。\n确保代理能够访问来自公共网站的最新信息。\n确保代理能够从直接上传到代理的文档中检索信息。\n您应该为每个要求使用什么？要回答，请将适当的工具拖到正确的要求上。每个工具可以使用一次、使用多次或根本不使用。您可能需要拖动分隔条在窗格之间或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent used by the financial analysts at your\ncompany.\nYou need to optimize the agent workflow by providing additional data access and processing capabilities.\nThe solution must meet the following requirements:\nEnsure that the agent can perform calculations during conversations.\nEnsure that the agent can access up-to-date information from public websites.\nEnsure that the agent can retrieve information from documents uploaded directly to the agent.\nWhat should you use for each requirement? To answer, drag the appropriate tools to the correct\nrequirements. Each tool may be used once, more than once, or not at all. You may need to drag the split\nbar between panes or scroll to view content.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1：与必应搜索的基础\n确保代理能够访问来自公共网站的最新信息。\n您应该使用与必应搜索的基础来优化您的 Microsoft Foundry 代理工作流程。\n大型语言模型（LLMs）受到固定知识截止日期的限制，无法本地访问实时\n信息。将与必应搜索的基础集成使您的代理能够自主获取最新的、\n公共网络数据，合成事实，并以准确的内联 URL 引用进行响应。\n框 2：代码解释器\n确保代理在对话中能够进行计算。\n要在 Microsoft Foundry 代理服务项目中满足此要求，您应该使用代理工具\n（特别是函数调用或代码解释器工具）。\n在 Microsoft 代理框架和 Foundry 代理服务中，工具是用于\n扩展代理推理能力的本地机制，超越文本生成，使其能够访问实时数据\n并在对话中执行精确的数学计算。\n框 3：文件搜索\n确保代理能够从直接上传到代理的文档中检索信息。\n为了使您的 Microsoft AI Foundry 代理能够直接引用和检索上传文档中的信息，您应该启用并配置文件\n搜索工具（通过 Foundry 代理服务）。该工具与代理的系统提示一起工作，直接在您的数据上执行\n检索增强生成（RAG）。",
+  "explanationEn": "Box 1: Grounding with Bing Search\nEnsure that the agent can access up-to-date information from public websites.\nYou should use Grounding with Bing Search to optimize your Microsoft Foundry agent workflow.\nLarge Language Models (LLMs) suffer from fixed knowledge cutoffs and cannot natively access real-time\ninformation. Integrating Grounding with Bing Search enables your agent to autonomously fetch up-to-date,\npublic web data, synthesize facts, and respond with exact inline URL citations.\nBox 2: Code interpreter\nEnsure that the agent can perform calculations during conversations.\nTo fulfill this requirement in a Microsoft Foundry Agent Service project, you should use Agent Tools\n(specifically Function Calling or a Code Interpreter tool).\nIn the Microsoft Agent Framework and Foundry Agent Service, tools are the native mechanism used to\nextend an agent's reasoning capabilities beyond text generation, allowing them to access real-time data\nand perform exact mathematical computations during a conversation.\nBox 3: File Search\nEnsure that the agent can retrieve information from documents uploaded directly to the agent.\nTo give your Microsoft AI Foundry agent the capability to directly reference and retrieve information from\nuploaded documents, you should enable and configure the File Search tool (via the Foundry Agent\nService). This tool functions alongside the agent's system prompts to perform Retrieval-Augmented\nGeneration (RAG) directly on your data.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "drag",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 4",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 4",
+  "pdfPage": 79,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 4
+ },
+ {
+  "id": "q076",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "multi",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个用于客户支持网页应用的提示代理。\n该代理是从一个不在 Foundry 门户中运行的 Python 服务中调用的。\n您需要实现端到端追踪，以捕获代理运行中的延迟细分和异常。\n您可以使用哪两个组件？每个正确答案都提供一个完整的解决方案。\n注意： 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "a Log Analytics workspace",
+    "textEn": "a Log Analytics workspace",
+    "textZh": "Log Analytics 工作区"
+   },
+   {
+    "id": "B",
+    "text": "Application Insights",
+    "textEn": "Application Insights",
+    "textZh": "Application Insights"
+   },
+   {
+    "id": "C",
+    "text": "OpenTelemetry",
+    "textEn": "OpenTelemetry",
+    "textZh": "OpenTelemetry"
+   },
+   {
+    "id": "D",
+    "text": "the Azure Monitor Agent",
+    "textEn": "the Azure Monitor Agent",
+    "textZh": "Azure Monitor 代理（Azure Monitor Agent）"
+   },
+   {
+    "id": "E",
+    "text": "Microsoft Sentinel",
+    "textEn": "Microsoft Sentinel",
+    "textZh": "Microsoft Sentinel"
+   }
+  ],
+  "answer": [
+   "B",
+   "C"
+  ],
+  "pdfAnswer": [
+   "B",
+   "C"
+  ],
+  "explanation": "要为从外部 Python 服务调用的 Microsoft Foundry 提示代理实现端到端追踪，您应该使用 Azure 应用\n程序洞察、Azure AI 项目 SDK 和 OpenTelemetry 的组合。 \n \n \nAzure 应用程序洞察：这作为集中式遥测存储。您必须通过 Foundry 门户中的追踪选项卡将应 \n用程序洞察资源连接到您的 Foundry 项目，以启用数据摄取。\nAzure AI 项目 SDK (azure-ai-projects)：在您的 Python 服务中使用，以创建一个 AIProjectClient，该客\n户端用于验证和与 Foundry 代理进行通信。\nOpenTelemetry Python SDK：Foundry 跟踪基于 OpenTelemetry 标准构建。您需要\nopentelemetry-sdk 和 azure-monitor-opentelemetry 来对您的外部服务进行监控。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个用于客户支持网页应用的提示代理。\n该代理是从一个不在 Foundry 门户中运行的 Python 服务中调用的。\n您需要实现端到端追踪，以捕获代理运行中的延迟细分和异常。\n您可以使用哪两个组件？每个正确答案都提供一个完整的解决方案。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains a prompt agent used by a customer support web app.\nThe agent is invoked from a Python service that does NOT run in the Foundry portal.\nYou need to implement end-to-end tracing to capture latency breakdowns and exceptions across agent\nruns.\nWhich two components can you use? Each correct answer presents a complete solution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "要为从外部 Python 服务调用的 Microsoft Foundry 提示代理实现端到端追踪，您应该使用 Azure 应用\n程序洞察、Azure AI 项目 SDK 和 OpenTelemetry 的组合。 \n \n \nAzure 应用程序洞察：这作为集中式遥测存储。您必须通过 Foundry 门户中的追踪选项卡将应 \n用程序洞察资源连接到您的 Foundry 项目，以启用数据摄取。\nAzure AI 项目 SDK (azure-ai-projects)：在您的 Python 服务中使用，以创建一个 AIProjectClient，该客\n户端用于验证和与 Foundry 代理进行通信。\nOpenTelemetry Python SDK：Foundry 跟踪基于 OpenTelemetry 标准构建。您需要\nopentelemetry-sdk 和 azure-monitor-opentelemetry 来对您的外部服务进行监控。",
+  "explanationEn": "To implement end-to-end tracing for a Microsoft Foundry prompt agent invoked from an external Python\n \nservice, you should use a combination of Azure Application Insights, the Azure AI Projects SDK, and\nOpenTelemetry.\n \nCore Components 核心组件\n \nAzure Application Insights: This serves as the centralized telemetry store. You must connect an\nApplication Insights resource to your Foundry project via the Tracing tab in the Foundry portal to enable\ningestion.\nAzure AI Projects SDK (azure-ai-projects): Used in your Python service to create an AIProjectClient, which\nauthenticates and communicates with the Foundry agent.\nOpenTelemetry Python SDK: Foundry tracing is built on the OpenTelemetry standard. You will need\nopentelemetry-sdk and azure-monitor-opentelemetry to instrument your external service.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 5",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 5",
+  "pdfPage": 81,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 5
+ },
+ {
+  "id": "q077",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个使用 Microsoft Foundry Agent Service 的客户支持代理。\n有时，客户在几天后返回会话以继续相同的支持案例，代理必须恢复完整的历史上下文。代理必须提供以下内容：\n会话中的多轮连续性同一案件的跨会话连续性访问完整的交互历史，包括用户消息、代理消息、工具调用和工具输出您需要确保代理在每个新回合自动重新加载完整的历史记录。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Create and reuse a conversation by storing the conversation’s ID and supplying the ID on subsequent requests",
+    "textEn": "Create and reuse a conversation by storing the conversation’s ID and supplying the ID on subsequent requests.",
+    "textZh": "通过存储对话的 ID 并在后续提供该 ID 来创建和重用对话 请求。"
+   },
+   {
+    "id": "B",
+    "text": "Persist only the final model response stored in the client application and prepend the response to future prompts",
+    "textEn": "Persist only the final model response stored in the client application and prepend the response to future prompts.",
+    "textZh": "仅在客户端应用程序中保留最终模型响应，并将该响应添加到 未来的提示中。"
+   },
+   {
+    "id": "C",
+    "text": "Enable memory summarization on the agent definition to persist the context automatically",
+    "textEn": "Enable memory summarization on the agent definition to persist the context automatically.",
+    "textZh": "在代理定义中启用记忆摘要，以自动保存上下文。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "要实现完整的多轮和跨会话的连续性，并具备完整的历史上下文（包括用户消息、代理消息、工具调用\n和工具输出），您必须利用 Microsoft Foundry Agent Service 运行时提供的持久会话生命周期。\n由于底层的代理服务在推理层可以是无状态的，因此在跨天管理连续性需要将您的代理交互链接到一个\n持久的服务器端会话 ID。\n以下是满足您要求的具体步骤：\n*-> 1. 维护一个持久的对话 ID\n您的应用程序必须在用户返回时，不是每次都创建一个全新的对话会话，而是\n在您的外部数据库中持久化并映射唯一的支持案例到 Microsoft Foundry 对话 ID（通常以\nresp_* 或 conv_* 为前缀）。\n新案例：创建一个新会话并捕获生成的 ConversationId。\n返回案例：从您的数据库中检索与该客户支持案例关联的先前保存的 ConversationId。\n2. 通过 SDK 恢复会话\n \n \n当客户在几天后返回时，通过将现有的对话 ID 传递到会话创建方法中来初始化代理的会话。这会强制 Mi\ncrosoft Foundry 代理服务在处理下一轮之前，自动重新加载后端完整的、未总结的线程历史。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个使用 Microsoft Foundry Agent Service 的客户支持代理。\n有时，客户在几天后返回会话以继续相同的支持案例，代理必须恢复完整的历史上下文。代理必须提供以下内容：\n会话中的多轮连续性同一案件的跨会话连续性访问完整的交互历史，包括用户消息、代理消息、工具调用和工具输出您需要确保代理在每个新回合自动重新加载完整的历史记录。\n您应该怎么做？",
+  "stemEn": "You have a customer support agent that uses the Microsoft Foundry Agent Service.\nSometimes, customers return to a session days later to continue the same support case, and the agent\nmust resume with the full historical context. The agent must provide the following:\nMulti-turn continuity within the session\nCross-session continuity for the same case\nAccess to the full interaction history, including user messages, agent messages, tool calls, and tool\noutputs\nYou need to ensure that the agent automatically reloads the complete history on each new turn.\nWhat should you do?",
+  "explanationZh": "要实现完整的多轮和跨会话的连续性，并具备完整的历史上下文（包括用户消息、代理消息、工具调用\n和工具输出），您必须利用 Microsoft Foundry Agent Service 运行时提供的持久会话生命周期。\n由于底层的代理服务在推理层可以是无状态的，因此在跨天管理连续性需要将您的代理交互链接到一个\n持久的服务器端会话 ID。\n以下是满足您要求的具体步骤：\n*-> 1. 维护一个持久的对话 ID\n您的应用程序必须在用户返回时，不是每次都创建一个全新的对话会话，而是\n在您的外部数据库中持久化并映射唯一的支持案例到 Microsoft Foundry 对话 ID（通常以\nresp_* 或 conv_* 为前缀）。\n新案例：创建一个新会话并捕获生成的 ConversationId。\n返回案例：从您的数据库中检索与该客户支持案例关联的先前保存的 ConversationId。\n2. 通过 SDK 恢复会话\n \n \n当客户在几天后返回时，通过将现有的对话 ID 传递到会话创建方法中来初始化代理的会话。这会强制 Mi\ncrosoft Foundry 代理服务在处理下一轮之前，自动重新加载后端完整的、未总结的线程历史。",
+  "explanationEn": "To achieve full, multi-turn, and cross-session continuity with complete historical context (including user\nmessages, agent messages, tool calls, and tool outputs), you must leverage the durable Conversation\nlifecycle provided by the Microsoft Foundry Agent Service runtime.\nBecause the underlying Agent Service can be stateless at the inference tier, managing continuity across\ndays requires linking your agent interactions to a persistent, server-side conversation ID.\nHere is exactly what must be done to meet your requirements:\n*-> 1. Maintain a Durable Conversation ID\nInstead of creating a brand-new conversation session every time a user returns, your application must\npersist and map the unique support case to a Microsoft Foundry Conversation ID (typically prefixed with\nresp_* or conv_*) in your external database.\nNew Case: Create a new session and capture the generated ConversationId.\nReturning Case: Retrieve the previously saved ConversationId associated with that customer's support\ncase from your database.\n2. Resume Sessions via the SDK\nWhen the customer returns days later, initialize the agent's session by passing the existing Conversation\nID into the session creation method. This forces the Microsoft Foundry Agent Service to automatically\n \nreload the complete, un-summarized thread history on the backend before processing the next turn.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 6",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 6",
+  "pdfPage": 81,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 6
+ },
+ {
+  "id": "q078",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含已部署聊天模型的 Microsoft Foundry 项目。\n您有一个 Python 服务，该服务向模型发送 API 请求。该服务与一个自动化验证系统集成，该系统将生成的输出与批准的响应模式进行比较。\n利益相关者报告说，小的措辞差异导致验证不匹配。\n您需要更新请求参数以提高输出稳定性。解决方案必须最大化推理质量。\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "0",
+   "\"high\""
+  ],
+  "pdfAnswer": [
+   "0",
+   "\"high\""
+  ],
+  "explanation": "框 1: 0\n最佳温度配置为 0。\n为什么温度 0 是最佳选择\n最大化可预测性：将温度设置为 0 使模型确定性。减少不匹配：它始终选择最可能的标记。这最小化了导\n致您验证失败的小措辞差异。\n保持推理能力：降低温度不会降低模型的核心推理能力；它\n只是消除了推理措辞中的随机变化。\n为什么其他选项失败\n温度 1：这是默认的创造性平衡。它允许标准标记变异，这将继续\n触发您的模式匹配不匹配。\n温度 2：这会产生最大随机性。输出将变得混乱、无意义，并\n完全破坏您的验证系统和推理质量。\n框 2: \"高\"\n高输出努力是此场景的最佳配置。\n为什么高努力是最佳选择\n最大化推理：高努力为内部思维链处理分配更多计算令牌。\n提高一致性：更好的推理帮助模型严格遵循您定义的复杂规则和批准的\n响应模式。\n \n \n减少边缘情况：微妙的措辞偏差通常发生在模型在没有充分规划的情况下匆忙生成时。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "0",
+      "en": "0",
+      "zh": "0"
+     },
+     {
+      "key": "1",
+      "en": "1",
+      "zh": "1"
+     },
+     {
+      "key": "2",
+      "en": "2",
+      "zh": "2"
+     }
+    ],
+    "answer": "0",
+    "positionNoteEn": "after `tokens=800,     temperature=` before `,     thinking={\"typ`",
+    "positionNoteZh": "空位在：`tokens=800,     temperature=` 之后",
+    "positionNote": "空位在：`tokens=800,     temperature=` 之后"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "\"high\"",
+      "en": "\"high\"",
+      "zh": "\"high\""
+     },
+     {
+      "key": "\"low\"",
+      "en": "\"low\"",
+      "zh": "\"low\""
+     },
+     {
+      "key": "\"medium\"",
+      "en": "\"medium\"",
+      "zh": "\"medium\""
+     }
+    ],
+    "answer": "\"high\""
+   }
+  ],
+  "stemZh": "您有一个包含已部署聊天模型的 Microsoft Foundry 项目。\n您有一个 Python 服务，该服务向模型发送 API 请求。该服务与一个自动化验证系统集成，该系统将生成的输出与批准的响应模式进行比较。\n利益相关者报告说，小的措辞差异导致验证不匹配。\n您需要更新请求参数以提高输出稳定性。解决方案必须最大化推理质量。\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains a deployed chat model.\nYou have a Python service that sends API requests to the model. The service is integrated with an\nautomated validation system that compares generated outputs against approved response patterns.\nStakeholders report that small wording differences are causing validation mismatches.\nYou need to update the request parameters to improve output stability. The solution must maximize\nreasoning quality.\nHow should you complete the Python code? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: 0\n最佳温度配置为 0。\n为什么温度 0 是最佳选择\n最大化可预测性：将温度设置为 0 使模型确定性。减少不匹配：它始终选择最可能的标记。这最小化了导\n致您验证失败的小措辞差异。\n保持推理能力：降低温度不会降低模型的核心推理能力；它\n只是消除了推理措辞中的随机变化。\n为什么其他选项失败\n温度 1：这是默认的创造性平衡。它允许标准标记变异，这将继续\n触发您的模式匹配不匹配。\n温度 2：这会产生最大随机性。输出将变得混乱、无意义，并\n完全破坏您的验证系统和推理质量。\n框 2: \"高\"\n高输出努力是此场景的最佳配置。\n为什么高努力是最佳选择\n最大化推理：高努力为内部思维链处理分配更多计算令牌。\n提高一致性：更好的推理帮助模型严格遵循您定义的复杂规则和批准的\n响应模式。\n \n \n减少边缘情况：微妙的措辞偏差通常发生在模型在没有充分规划的情况下匆忙生成时。",
+  "explanationEn": "Box 1: 0\nThe best configuration for the temperature is 0.\nWhy Temperature 0 is Best\nMaximizes Predictability: Setting temperature to 0 makes the model deterministic.Reduces Mismatches: It\nalways selects the most likely tokens. This minimizes the small wording differences causing your validation\nfailures.\nPreserves Reasoning: Lowering temperature does not degrade the core reasoning capability of a model; it\nsimply eliminates random variations in how that reasoning is phrased.\nWhy Other Options Fail\nTemperature 1: This is the default creative balance. It allows standard token variance, which will continue\nto trigger your pattern-matching mismatches.\nTemperature 2: This creates maximum randomness. The output will become chaotic, nonsensical, and\ncompletely break both your validation system and reasoning quality.\nBox 2: \"high\"\nHigh output effort is the best configuration for this scenario.\nWhy High Effort is Best\nMaximizes Reasoning: High effort allocates more computational tokens for internal chain-of-thought\nprocessing.\nImproves Consistency: Better reasoning helps the model strictly adhere to the complex rules and approved\nresponse patterns you have defined.\nReduces Edge Cases: Subtle wording deviations usually happen when a model rushes its generation\nwithout sufficient planning.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "template": "message = client.messages.create(\n    model=\"deployment-name\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Summarize the release notes in 3 bullet points.\"}\n    ],\n    max_tokens=800,\n    temperature={{1}},\n    thinking={\"type\": \"enabled\"},\n    output_config={\"effort\": {{2}}}\n)",
+  "templateEn": "message = client.messages.create(\n    model=\"deployment-name\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Summarize the release notes in 3 bullet points.\"}\n    ],\n    max_tokens=800,\n    temperature={{1}},\n    thinking={\"type\": \"enabled\"},\n    output_config={\"effort\": {{2}}}\n)",
+  "templateZh": "message = client.messages.create(\n    model=\"deployment-name\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Summarize the release notes in 3 bullet points.\"}\n    ],\n    max_tokens=800,\n    temperature={{1}},\n    thinking={\"type\": \"enabled\"},\n    output_config={\"effort\": {{2}}}\n)",
+  "templateKind": "code",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 7",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 7",
+  "pdfPage": 82,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 7
+ },
+ {
+  "id": "q079",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您在 Microsoft Foundry 项目中有一个聊天应用程序和一个 Azure AI Search 向量化索引。\n您需要连接到索引以满足以下要求：\n复杂问题必须从多个块中检索信息。\n多轮对话必须影响检索规划。\n检索必须并行运行以减少延迟。\n您应该使用哪种检索方法？",
+  "options": [
+   {
+    "id": "A",
+    "text": "iterative retrieval",
+    "textEn": "iterative retrieval",
+    "textZh": "迭代检索"
+   },
+   {
+    "id": "B",
+    "text": "agentic Retrieval Augmented Generation (RAG)",
+    "textEn": "agentic Retrieval Augmented Generation (RAG)",
+    "textZh": "代理检索增强生成 (RAG)"
+   },
+   {
+    "id": "C",
+    "text": "chain of thought",
+    "textEn": "chain of thought",
+    "textZh": "思维链"
+   },
+   {
+    "id": "D",
+    "text": "classic Retrieval Augmented Generation (RAG)",
+    "textEn": "classic Retrieval Augmented Generation (RAG)",
+    "textZh": "经典检索增强生成 (RAG)"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "一种代理式增强检索生成（RAG）架构最适合您的需求。\n传统的线性RAG管道在处理复杂的多轮依赖时表现不佳，而代理式方法通过迭代推理和工具协调本质\n上解决了这些问题。\n以下是代理式RAG模式如何具体满足三个技术要求的：\n1. 复杂问题与多块检索\n挑战：复杂问题通常需要聚合散布在不同文档或部分中的不同信息片段。\n代理式解决方案：代理使用推理与行动（ReAct）循环。它评估用户的查询，将其分解为子问题，并执行\n多个不同的搜索查询。然后，它综合来自这些不同块的信息，生成最终的响应。\n2. 多轮对话与检索规划\n挑战：标准的 RAG 通常只将最新的用户消息或简单的聊天历史摘要\n传递给搜索索引，这可能会丢失上下文或误解用户在长对话中的真实意图。\n代理解决方案：代理充当查询规划者。它维护对话的状态，并动态决定是否需要检索，基于过去的轮次\n确定特定的关键词或向量，并重新构建查询以弥补上下文差距。\n3. 低延迟的并行检索\n挑战：顺序查找会大幅增加首次令牌时间（TTFT），损害聊天用户\n体验。\n代理解决方案：现代 AI 代理框架允许 LLM 同时发出多个工具调用。应用层可以拦截这些调\n用，并对您的 Azure AI Search 向量化索引执行并行异步查询，极大地减少延迟。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您在 Microsoft Foundry 项目中有一个聊天应用程序和一个 Azure AI Search 向量化索引。\n您需要连接到索引以满足以下要求：\n复杂问题必须从多个块中检索信息。\n多轮对话必须影响检索规划。\n检索必须并行运行以减少延迟。\n您应该使用哪种检索方法？",
+  "stemEn": "You have a chat app in a Microsoft Foundry project and an Azure AI Search vectorized index.\nYou need to connect to the index to meet the following requirements:\nComplex questions must retrieve information from multiple chunks.\nMulti-turn conversations must influence retrieval planning.\nRetrievals must run in parallel to reduce latency.\nWhich retrieval approach should you use?",
+  "explanationZh": "一种代理式增强检索生成（RAG）架构最适合您的需求。\n传统的线性RAG管道在处理复杂的多轮依赖时表现不佳，而代理式方法通过迭代推理和工具协调本质\n上解决了这些问题。\n以下是代理式RAG模式如何具体满足三个技术要求的：\n1. 复杂问题与多块检索\n挑战：复杂问题通常需要聚合散布在不同文档或部分中的不同信息片段。\n代理式解决方案：代理使用推理与行动（ReAct）循环。它评估用户的查询，将其分解为子问题，并执行\n多个不同的搜索查询。然后，它综合来自这些不同块的信息，生成最终的响应。\n2. 多轮对话与检索规划\n挑战：标准的 RAG 通常只将最新的用户消息或简单的聊天历史摘要\n传递给搜索索引，这可能会丢失上下文或误解用户在长对话中的真实意图。\n代理解决方案：代理充当查询规划者。它维护对话的状态，并动态决定是否需要检索，基于过去的轮次\n确定特定的关键词或向量，并重新构建查询以弥补上下文差距。\n3. 低延迟的并行检索\n挑战：顺序查找会大幅增加首次令牌时间（TTFT），损害聊天用户\n体验。\n代理解决方案：现代 AI 代理框架允许 LLM 同时发出多个工具调用。应用层可以拦截这些调\n用，并对您的 Azure AI Search 向量化索引执行并行异步查询，极大地减少延迟。",
+  "explanationEn": "An agentic Retrieval-Augmented Generation (RAG) architecture is the best fit for your requirements.\nTraditional, linear RAG pipelines struggle with complex, multi-turn dependencies, whereas an agentic\napproach natively solves them through iterative reasoning and tool orchestration.\nHere is how an agentic RAG pattern specifically satisfies each the three technical requirements:\n1. Complex Questions & Multi-Chunk Retrieval\nThe Challenge: Complex questions often require aggregating distinct pieces of information scattered\nacross different documents or sections.\nThe Agentic Solution: An agent uses a Reasoning and Acting (ReAct) loop. It evaluates the user's query,\nbreaks it down into sub-questions, and executes multiple distinct search queries. It then synthesizes the\ninformation from these diverse chunks before generating a final response.\n2. Multi-Turn Conversations & Retrieval Planning\nThe Challenge: Standard RAG often just passes the latest user message or a simple chat history summary\nto the search index, which can lose context or misinterpret the user's true intent in long conversations.\nThe Agentic Solution: The agent acts as a query planner. It maintains the state of the conversation and\ndynamically decides if a retrieval is needed, what specific keywords or vectors to target based on past\nturns, and how to reformulate the query to bridge context gaps.\n3. Parallel Retrievals for Low Latency\nThe Challenge: Sequential lookups drastically increase time-to-first-token (TTFT), harming the chat user\nexperience.\nThe Agentic Solution: Modern AI agent frameworks allow the LLM to emit multiple tool calls\nsimultaneously. The application layer can intercept these calls and execute parallel asynchronous queries\nagainst your Azure AI Search vectorized index, drastically minimizing latency.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 8",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 8",
+  "pdfPage": 84,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 8
+ },
+ {
+  "id": "q080",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您需要推荐一个计划，通过使用 Microsoft Foundry Agent\nService 创建一个客户支持代理。该代理必须满足以下要求：\n \n \n在多次对话中保留用户偏好。\n允许用户在聊天过程中通过直接上传文档提供上下文支持。\n \n \n您应该为每个需求推荐哪个 Foundry 功能？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Agent memory that uses persistent storage",
+   "File search tool"
+  ],
+  "pdfAnswer": [
+   "Agent memory that uses persistent storage",
+   "File search tool"
+  ],
+  "explanation": "框 1：使用持久存储的代理记忆\n在多次对话中保留用户偏好。\n要使基于 Microsoft Foundry Agent Service 构建的客户支持代理在多次不同对话中保留用户偏\n好，您必须实现平台的本地托管长期记忆系统。\n解决方案架构必须包括以下特定组件和配置：\n*-> 1. 专用长期记忆存储\n代理到存储映射：为您的客户支持代理提供一个专用的记忆存储，以建立清晰的知识边界。\n \n \n \n托管生命周期操作：依赖服务运行时自动管理偏好的异步提取、合并（合并重复项和解决冲突事实）和\n \n \n \n2. 用户范围分区（记忆范围）\n \n隔离库：为每次交互定义一个强制性的记忆范围。\n唯一标识符：将范围参数绑定到持久标识符，如客户的 Microsoft Entra\nID 或自定义系统 UUID。这确保用户偏好被安全隔离，不会泄漏到\n其他客户的会话中。\n3. 双重内存类型\n框 2：文件搜索工具\n为了使用户能够在聊天过程中直接上传文档以实现实时上下文支持，您应该\n包含文件搜索工具。\n该内置工具专门设计用于增强代理从上传的文件或专有文档中获取知识。当用户在聊天线程中上传\n文档时，Foundry Agent Service文件搜索工具会自动处理该文件的提取、分块、嵌入和向量搜索，以动\n态支持代理的响应。\n不正确：\n* Azure AI 搜索\n虽然它是一个知识支持工具，但 Azure AI 搜索工具旨在将代理连接到一个预先存在的集中式企业搜索\n索引。它不直接处理在聊天会话中临时用户文件的上传。\n* 代码解释器\n代码解释器工具用于在沙盒环境中执行 Python 代码，以进行高级数学计算、数据分析和图表生成，\n而不是文档向量检索。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "若要跨对话保留用户首选项，请使用：",
+    "labelEn": "To retain user preferences across conversations, use:",
+    "labelZh": "若要跨对话保留用户首选项，请使用：",
+    "answer": "Agent memory that uses persistent storage",
+    "choices": [
+     {
+      "key": "Agent memory that uses persistent storage",
+      "en": "Agent memory that uses persistent storage",
+      "zh": "使用持久存储的代理记忆"
+     },
+     {
+      "key": "Conversation history",
+      "en": "Conversation history",
+      "zh": "对话历史记录"
+     },
+     {
+      "key": "Orchestration-managed session context",
+      "en": "Orchestration-managed session context",
+      "zh": "业务流程托管的会话上下文"
+     }
+    ],
+    "positionNoteEn": "To retain user preferences across conversations, use:",
+    "positionNoteZh": "若要跨对话保留用户首选项，请使用：",
+    "positionNote": "若要跨对话保留用户首选项，请使用："
+   },
+   {
+    "id": "box2",
+    "label": "若要使用户能够在聊天期间提供上下文基础，请使用：",
+    "labelEn": "To enable users to provide contextual grounding during chats, use the:",
+    "labelZh": "若要使用户能够在聊天期间提供上下文基础，请使用：",
+    "answer": "File search tool",
+    "choices": [
+     {
+      "key": "Azure AI Search tool",
+      "en": "Azure AI Search tool",
+      "zh": "Azure AI 搜索工具"
+     },
+     {
+      "key": "Code interpreter tool",
+      "en": "Code interpreter tool",
+      "zh": "代码解释器工具"
+     },
+     {
+      "key": "File search tool",
+      "en": "File search tool",
+      "zh": "文件搜索工具"
+     }
+    ],
+    "positionNoteEn": "To enable users to provide contextual grounding during chats, use the:",
+    "positionNoteZh": "若要使用户能够在聊天期间提供上下文基础，请使用：",
+    "positionNote": "若要使用户能够在聊天期间提供上下文基础，请使用："
+   }
+  ],
+  "stemZh": "您需要推荐一个计划，通过使用 Microsoft Foundry Agent\nService 创建一个客户支持代理。该代理必须满足以下要求：\n \n \n在多次对话中保留用户偏好。\n允许用户在聊天过程中通过直接上传文档提供上下文支持。\n \n \n您应该为每个需求推荐哪个 Foundry 功能？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You need to recommend a plan to create a customer support agent by using the Microsoft Foundry Agent\nService. The agent must meet the following requirements:\n \nRetain user preferences across multiple conversations.\n \nEnable users to provide contextual grounding by directly uploading documents during a chat.\n \nWhich Foundry capability should you recommend for each requirement? To answer, select the appropriate\noptions in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：使用持久存储的代理记忆\n在多次对话中保留用户偏好。\n要使基于 Microsoft Foundry Agent Service 构建的客户支持代理在多次不同对话中保留用户偏\n好，您必须实现平台的本地托管长期记忆系统。\n解决方案架构必须包括以下特定组件和配置：\n*-> 1. 专用长期记忆存储\n代理到存储映射：为您的客户支持代理提供一个专用的记忆存储，以建立清晰的知识边界。\n \n \n \n托管生命周期操作：依赖服务运行时自动管理偏好的异步提取、合并（合并重复项和解决冲突事实）和\n \n \n \n2. 用户范围分区（记忆范围）\n \n隔离库：为每次交互定义一个强制性的记忆范围。\n唯一标识符：将范围参数绑定到持久标识符，如客户的 Microsoft Entra\nID 或自定义系统 UUID。这确保用户偏好被安全隔离，不会泄漏到\n其他客户的会话中。\n3. 双重内存类型\n框 2：文件搜索工具\n为了使用户能够在聊天过程中直接上传文档以实现实时上下文支持，您应该\n包含文件搜索工具。\n该内置工具专门设计用于增强代理从上传的文件或专有文档中获取知识。当用户在聊天线程中上传\n文档时，Foundry Agent Service文件搜索工具会自动处理该文件的提取、分块、嵌入和向量搜索，以动\n态支持代理的响应。\n不正确：\n* Azure AI 搜索\n虽然它是一个知识支持工具，但 Azure AI 搜索工具旨在将代理连接到一个预先存在的集中式企业搜索\n索引。它不直接处理在聊天会话中临时用户文件的上传。\n* 代码解释器\n代码解释器工具用于在沙盒环境中执行 Python 代码，以进行高级数学计算、数据分析和图表生成，\n而不是文档向量检索。",
+  "explanationEn": "Box 1: Agent memory that uses persistent storage\nRetain user preferences across multiple conversations.\nTo enable a customer support agent built on the Microsoft Foundry Agent Service to retain user\npreferences across multiple distinct conversations, you must implement the platform's native managed\nlong-term memory system.\nThe solution architecture must include the following specific components and configurations:\n*-> 1. Dedicated Long-Term Memory Store\nAgent-to-Store Mapping: Provision one dedicated memory store attached directly to your customer support\nagent to establish a clear knowledge boundary.\n \nManaged Lifecycle Operations: Rely on the service runtime to automatically manage the asynchronous\nextraction of preferences, consolidation (merging duplicates and resolving conflicting facts), and hybrid 混合搜索检索。\nsearch retrieval. \n2. User-Scoped Partitioning (Memory Scope)\n \nIsolation Vaults: Define a mandatory Memory Scope for every interaction.\nUnique Identifiers: Bind the scope parameter to a persistent identifier like the customer’s Microsoft Entra\nID or a custom system UUID. This ensures user preferences are securely isolated and do not leak into\nother customers' sessions.\n3. Dual Memory Types\nBox 2: File Search tool\nTo enable users to directly upload documents during a chat for real-time contextual grounding, you should\ninclude the File Search tool.\nThis built-in tool is specifically designed to augment agents with knowledge from uploaded files or\nproprietary documents. When users upload a document during a chat thread, the Foundry Agent Service\nFile Search Tool automatically handles the extraction, chunking, embedding, and vector searching of that\nfile to ground the agent's responses dynamically.\nIncorrect:\n* Azure AI Search\nWhile it is a knowledge grounding tool, the Azure AI Search Tool is built to connect an agent to a pre-\nexisting, centralized corporate search index. It does not handle ad-hoc user file uploads directly inside a\nchat session.\n* Code Interpreter\nThe Code Interpreter Tool is used for executing Python code in a sandboxed environment to perform\nadvanced mathematical calculations, data analysis, and chart generation, rather than document vector\nretrieval.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 9",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 9",
+  "pdfPage": 85,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 9
+ },
+ {
+  "id": "q081",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add a retry evaluation before the responses are returned",
+    "textEn": "Add a retry evaluation before the responses are returned.",
+    "textZh": "在返回响应之前添加重试评估。"
+   },
+   {
+    "id": "B",
+    "text": "Decrease the value of the max_tokens parameter",
+    "textEn": "Decrease the value of the max_tokens parameter.",
+    "textZh": "减少 max_tokens 参数的值。"
+   },
+   {
+    "id": "C",
+    "text": "Switch to Retrieval Augmented Generation (RAG)",
+    "textEn": "Switch to Retrieval Augmented Generation (RAG).",
+    "textZh": "切换到检索增强生成（RAG）。"
+   },
+   {
+    "id": "D",
+    "text": "Replace the model with a smaller deployment",
+    "textEn": "Replace the model with a smaller deployment.",
+    "textZh": "用更小的部署替换模型。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确：\n* 在返回响应之前添加反思过程。\n反思过程作为您应用程序逻辑中的内部验证步骤。它指示代理evaluate其草拟响应与检索到的政策文件，\n以确保没有遗漏任何强制性监管条款。如果它检测到关键文本缺失，它会在发送给用户之前重新生成或修\n正答案。这直接满足了提高响应完整性的核心要求。\nss.\n \n* 在返回响应之前添加重试评估。 \n您应该在应用程序代码中实现评估和重试循环。\n \n您必须将代理调用包装在一个条件代码循环中，该循环根据所需标准（例如监管条款的检查清单）评\n估输出，并在信息遗漏时程序性地强制重试。\n \n \n不正确：\n* 减少 max_tokens 参数的值。\n* 降低 temperature 参数的值。\n* 启用响应流。\n* 增加 presence_penalty 参数的值\n* 用更小的部署替换模型。\n* 切换到检索增强生成 (RAG)。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nYou need to improve response completeness. The solution must be implemented in the logic of the\napplication code before responses are returned.\nWhat should you do?",
+  "explanationZh": "正确：\n* 在返回响应之前添加反思过程。\n反思过程作为您应用程序逻辑中的内部验证步骤。它指示代理evaluate其草拟响应与检索到的政策文件，\n以确保没有遗漏任何强制性监管条款。如果它检测到关键文本缺失，它会在发送给用户之前重新生成或修\n正答案。这直接满足了提高响应完整性的核心要求。\nss.\n \n* 在返回响应之前添加重试评估。 \n您应该在应用程序代码中实现评估和重试循环。\n \n您必须将代理调用包装在一个条件代码循环中，该循环根据所需标准（例如监管条款的检查清单）评\n估输出，并在信息遗漏时程序性地强制重试。\n \n \n不正确：\n* 减少 max_tokens 参数的值。\n* 降低 temperature 参数的值。\n* 启用响应流。\n* 增加 presence_penalty 参数的值\n* 用更小的部署替换模型。\n* 切换到检索增强生成 (RAG)。",
+  "explanationEn": "Correct:\n* Add a reflection pass before the responses are returned.\nA reflection pass acts as an internal verification step within your application's logic. It directs the agent to\nevaluate its own draft response against the retrieved policy documents to ensure no mandatory regulatory\nclauses were left out. If it detects that critical text is missing, it regenerates or amends the answer before\nsending it to the user. This directly fulfills the core requirement of improving response completene\n \n \n* Add a retry evaluation before the responses are returned.\nYou should implement an evaluation and retry loop in your application code.\n \n \nYou must wrap the agent call inside a conditional code loop that evaluates the output against required\nomitted.\n \ncriteria (such as a checklist of regulatory clauses), and programmatically forces a retry if information is\nIncorrect:\n* Decrease the value of the max_tokens parameter.\n* Decrease the value of the temperature paramerer.\n* Enable response streaming.\n* Increase the value of the presence_penalty parameter\n* Replace the model with a smaller deployment.\n* Switch to Retrieval Augmented Generation (RAG).",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 10",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 10",
+  "pdfPage": 87,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 10
+ },
+ {
+  "id": "q082",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个使用 Microsoft Foundry Agent Service 构建的客户支持代理。该代理调用一个\nAzure OpenAI 模型部署。\n在负载测试期间，调用间歇性失败并返回 HTTP 429 超出速率限制错误。\n您需要处理限流以减少调用失败并提高负载下的可靠性。解决方案必须保持在服务和模型的限制内。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Create a new thread and retry the calls immediately",
+    "textEn": "Create a new thread and retry the calls immediately.",
+    "textZh": "创建一个新线程并立即重试调用。"
+   },
+   {
+    "id": "B",
+    "text": "Reduce the number of registered tools",
+    "textEn": "Reduce the number of registered tools.",
+    "textZh": "减少注册的工具数量。"
+   },
+   {
+    "id": "C",
+    "text": "Implement a retry policy that uses exponential backoff and jitter",
+    "textEn": "Implement a retry policy that uses exponential backoff and jitter.",
+    "textZh": "实施使用指数退避和抖动的重试策略。"
+   },
+   {
+    "id": "D",
+    "text": "Split uploaded content into smaller files",
+    "textEn": "Split uploaded content into smaller files.",
+    "textZh": "将上传的内容拆分为较小的文件。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了处理 HTTP 429 限流并提高 Microsoft Foundry AgentService 的负载测试可靠性，请在客户端\n实现带有抖动的指数退避，跨多个 Azure OpenAI 区域部署负载均衡网关，或将您的部署升级到预配\n吞吐量单位(PTU)。\n*-> 1. 实施客户端重试逻辑配置您的代理的 HTTP 客户端或 SDK，以优雅地处理 429 错误，而不是立即失\n败。\n指数退避：在后续重试尝试之间指数性地增加等待时间。\n抖动：在退避时间中添加少量随机延迟（抖动），以防止“雷鸣效应”\n即所有被限制的请求同时重试。\n头部检查：以编程方式从 HTTP 429\n响应头中读取 Retry-After 或 x-ratelimit-reset 值，以暂停执行 Azure 请求的确切持续时间。\n2. 设置多区域负载均衡\n3. 切换到预配吞吐量 (PTU)\n4. 优化令牌消耗",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个使用 Microsoft Foundry Agent Service 构建的客户支持代理。该代理调用一个\nAzure OpenAI 模型部署。\n在负载测试期间，调用间歇性失败并返回 HTTP 429 超出速率限制错误。\n您需要处理限流以减少调用失败并提高负载下的可靠性。解决方案必须保持在服务和模型的限制内。\n您应该怎么做？",
+  "stemEn": "You have a customer support agent built by using the Microsoft Foundry Agent Service. The agent calls an\nAzure OpenAI model deployment.\nDuring load testing, calls intermittently fail and return an HTTP 429 rate limit exceeded error.\nYou need to handle throttling to reduce call failures and improve reliability under load. The solution must\nremain within the service and model limits.\nWhat should you do?",
+  "explanationZh": "为了处理 HTTP 429 限流并提高 Microsoft Foundry AgentService 的负载测试可靠性，请在客户端\n实现带有抖动的指数退避，跨多个 Azure OpenAI 区域部署负载均衡网关，或将您的部署升级到预配\n吞吐量单位(PTU)。\n*-> 1. 实施客户端重试逻辑配置您的代理的 HTTP 客户端或 SDK，以优雅地处理 429 错误，而不是立即失\n败。\n指数退避：在后续重试尝试之间指数性地增加等待时间。\n抖动：在退避时间中添加少量随机延迟（抖动），以防止“雷鸣效应”\n即所有被限制的请求同时重试。\n头部检查：以编程方式从 HTTP 429\n响应头中读取 Retry-After 或 x-ratelimit-reset 值，以暂停执行 Azure 请求的确切持续时间。\n2. 设置多区域负载均衡\n3. 切换到预配吞吐量 (PTU)\n4. 优化令牌消耗",
+  "explanationEn": "To handle HTTP 429 throttling and improve load testing reliability for your Microsoft Foundry Agent\nService, implement exponential backoff with jitter on the client side, deploy a load-balancing gateway\nacross multiple Azure OpenAI regions, or upgrade your deployment to Provisioned Throughput Units\n(PTU).\n*-> 1. Implement Client-Side Retry LogicConfigure your agent's HTTP client or SDK to handle 429 errors\ngracefully rather than failing immediately.\nExponential Backoff: Increase the wait time between subsequent retry attempts exponentially .\nJitter: Add a small amount of random delay (jitter) to the backoff time to prevent a \"thundering herd\" effect\nwhere all throttled requests retry simultaneously.\nHeader Inspection: Programmatically read the Retry-After or x-ratelimit-reset values from the HTTP 429\nresponse headers to pause execution for the exact duration requested by Azure.\n2. Set Up Multi-Region Load Balancing\n3. Switch to Provisioned Throughput (PTU)\n4. Optimize Token Consumption",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 11",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 11",
+  "pdfPage": 87,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 11
+ },
+ {
+  "id": "q083",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n \n您使用 GitHub Actions 工作流进行 CI/CD。\n您需要配置工作流，以便在创建拉取请求 (PR) 时自动评估代理，并在评估结果未达到定义的阈值时阻止分支合并。\n您应该如何配置工作流？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "An Azure Login action that uses OpenID Connect (OIDC)",
+   "Fail"
+  ],
+  "pdfAnswer": [
+   "An Azure Login action that uses OpenID Connect (OIDC)",
+   "Fail"
+  ],
+  "explanation": "框 1：一个使用 OpenID Connect(OIDC) 的 Azure 登录操作。\n此场景最合适的身份验证方法是使用 OpenID Connect (OIDC) 的 Microsoft Entra ID 身份验证。\n使用 OIDC 和 azure/login GitHub Action 消除了在 GitHub 秘密中存储长期凭据（如密码或客户端密\n钥）的需要，提供了高度安全且无密码的集成。\n为什么 OIDC 是推荐的选择\n短期令牌：GitHub Actions 为每个工作流运行动态请求来自 Microsoft Entra ID 的临时范围令牌\n。\n无秘密轮换：消除了与管理长期存在的 Azure 服务主体秘密相关的管理开销和安全风险。\n细粒度 RBAC：通过将 Azure AI 用户角色分配给特定的存储库/工作流身份，可以严格限制权限，达到\nMicrosoft Foundry 资源级别。\n框 2：失败\n配置 GitHub Actions 工作流以在未满足阈值时以非零状态代码（失败）退出是阻止拉取请求的标准机制。\n要强制执行此限制，您必须将工作流配置与 GitHub 存储库设置配对。\n示例代码：\n- 名称：强制阈值\n运行：|\n# 使用 node、python 或 bash 读取 JSON 并验证\npython -c \"\n导入 json, sys\nwith open('results.json') as f:\ndata = json.load(f)\n如果 data['groundedness'] < 0.85:\nprint('错误：基础分数低于 0.85 阈值。')\nsys.exit(1)",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "身份验证方法",
+    "labelEn": "Authentication method",
+    "labelZh": "身份验证方法",
+    "answer": "An Azure Login action that uses OpenID Connect (OIDC)",
+    "choices": [
+     {
+      "key": "A personal access token (PAT)",
+      "en": "A personal access token (PAT)",
+      "zh": "个人访问令牌 (PAT)"
+     },
+     {
+      "key": "A user-assigned managed identity",
+      "en": "A user-assigned managed identity",
+      "zh": "用户分配的托管身份"
+     },
+     {
+      "key": "An Azure Login action that uses OpenID Connect (OIDC)",
+      "en": "An Azure Login action that uses OpenID Connect (OIDC)",
+      "zh": "使用 OpenID Connect (OIDC) 的 Azure 登录 (Azure Login) 操作"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "如果未满足评估结果，请将工作流配置为",
+    "labelEn": "If the evaluation results are NOT met, configure the workflow to",
+    "labelZh": "如果未满足评估结果，请将工作流配置为",
+    "answer": "Fail",
+    "choices": [
+     {
+      "key": "Lock the target branch",
+      "en": "Lock the target branch",
+      "zh": "锁定目标分支"
+     },
+     {
+      "key": "Send an alert",
+      "en": "Send an alert",
+      "zh": "发送警报"
+     },
+     {
+      "key": "Fail",
+      "en": "Fail",
+      "zh": "失败 (Fail)"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n \n您使用 GitHub Actions 工作流进行 CI/CD。\n您需要配置工作流，以便在创建拉取请求 (PR) 时自动评估代理，并在评估结果未达到定义的阈值时阻止分支合并。\n您应该如何配置工作流？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "HOTSPOT 热点\nYou have a Microsoft Foundry project that contains an agent.\n \nYou use a GitHub Actions workflow for CI/CD.\nYou need to configure the workflow to automatically evaluate the agent when a pull request (PR) is\ncreated and prevent branches from merging if the evaluation results do NOT meet the defined thresholds.\nHow should you configure the workflow? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：一个使用 OpenID Connect(OIDC) 的 Azure 登录操作。\n此场景最合适的身份验证方法是使用 OpenID Connect (OIDC) 的 Microsoft Entra ID 身份验证。\n使用 OIDC 和 azure/login GitHub Action 消除了在 GitHub 秘密中存储长期凭据（如密码或客户端密\n钥）的需要，提供了高度安全且无密码的集成。\n为什么 OIDC 是推荐的选择\n短期令牌：GitHub Actions 为每个工作流运行动态请求来自 Microsoft Entra ID 的临时范围令牌\n。\n无秘密轮换：消除了与管理长期存在的 Azure 服务主体秘密相关的管理开销和安全风险。\n细粒度 RBAC：通过将 Azure AI 用户角色分配给特定的存储库/工作流身份，可以严格限制权限，达到\nMicrosoft Foundry 资源级别。\n框 2：失败\n配置 GitHub Actions 工作流以在未满足阈值时以非零状态代码（失败）退出是阻止拉取请求的标准机制。\n要强制执行此限制，您必须将工作流配置与 GitHub 存储库设置配对。\n示例代码：\n- 名称：强制阈值\n运行：|\n# 使用 node、python 或 bash 读取 JSON 并验证\npython -c \"\n导入 json, sys\nwith open('results.json') as f:\ndata = json.load(f)\n如果 data['groundedness'] < 0.85:\nprint('错误：基础分数低于 0.85 阈值。')\nsys.exit(1)",
+  "explanationEn": "Box 1: An Azure Login action that uses OpenID Connect(OIDC).\nThe most appropriate authentication method for this scenario is Microsoft Entra ID authentication using\nOpenID Connect (OIDC).\nUsing OIDC with the azure/login GitHub Action eliminates the need to store long-lived credentials (like\npasswords or client secrets) inside GitHub secrets, offering a highly secure and passwordless integration.\nWhy OIDC Is the Recommended Choice\nShort-Lived Tokens: GitHub Actions requests a temporary, scoped token from Microsoft Entra ID\ndynamically for each workflow run.\nNo Secret Rotations: Eliminates administrative overhead and safety risks associated with managing long-\nlived Azure Service Principal secrets.\nGranular RBAC: Permissions can be tightly scoped by assigning the Azure AI User role to the specific\nrepository/workflow identity at the Microsoft Foundry resource level.\nBox 2: Fail\nConfiguring the GitHub Actions workflow to exit with a non-zero status code (fail) when thresholds are not\nmet is the standard mechanism to block pull requests.To enforce this restriction, you must pair the\nworkflow configuration with GitHub repository settings.\nExample code:\n- name: Enforce Thresholds\n run: |\n # Use node, python, or bash to read JSON and validate\n python -c \"\n import json, sys\n with open('results.json') as f:\n data = json.load(f)\n if data['groundedness'] < 0.85:\n print('Error: Groundedness score below 0.85 threshold.')\n sys.exit(1)",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "templateEn": "Authentication method: {{box1}}\n\nIf the evaluation results are NOT met, configure the workflow to: {{box2}}",
+  "templateZh": "身份验证方法：{{box1}}\n\n如果评估结果未达到要求，将工作流配置为：{{box2}}",
+  "template": "Authentication method: {{box1}}\n\nIf the evaluation results are NOT met, configure the workflow to: {{box2}}",
+  "templateKind": "prose",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 12",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 12",
+  "pdfPage": 88,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 12
+ },
+ {
+  "id": "q084",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n \n您需要提高响应的完整性。 \n \n解决方案：您需要增加 max_tokens 参数的值。 \n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。\n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。\nefore\n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n \n您需要提高响应的完整性。 \n \n解决方案：您需要增加 max_tokens 参数的值。 \n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nUsers report that some responses omit required regulatory clauses, even when the clauses are present in\nthe retrieved content.\n \nYou need to improve response completeness. \nSolution: You increase the value of the max_tokens parameter.\n \nDoes this meet the goal?",
+  "explanationZh": "正确：\n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。\n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。\nefore\n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "explanationEn": "Correct:\n* You add a reflection pass that regenerates the response if the required clauses are missing.\nThis is Self-Correction Strategy: A reflection pass allows an agent to evaluate its own initial output against\nspecified constraints (e.g., checking for the presence of mandatory regulatory clauses). If the required text\nis missing, the agent triggers a programmatic self-correction or regeneration loop to include them b\nfinal delivery.\nIncorrect:\n* You increase the value of the max_tokens parameter.\nIncreasing the max_tokens parameter prevents the response from being cut off mid-sentence due to\nlength constraints. However, it does not force the model's logic to explicitly include missing information that\nit chose to leave out earlier in the text.\n* You increase the value of the temperature parameter.\nRaising the temperature parameter increases randomness and creativity. For rigid compliance tasks like\nsummarizing regulatory documents, higher temperature actually increases the risk of hallucination and\nomission.\n* You run an evaluation flow that scores responses for completeness and blocks responses that fall below\na defined threshold.\nEvaluation Flow Block: Running an evaluation flow to score completeness and blocking bad responses\nidentifies and stops low-quality outputs, but it does not fix or actively improve the response completeness.\nIt simply filters failures out of the system.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 13",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 13",
+  "pdfPage": 90,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 13
+ },
+ {
+  "id": "q085",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您添加一个反射过程，如果缺少所需的条款，则重新生成响应。\n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确：\n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。\n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。\nefore\n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您添加一个反射过程，如果缺少所需的条款，则重新生成响应。\n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nUsers report that some responses omit required regulatory clauses, even when the clauses are present in\nthe retrieved content.\nYou need to improve response completeness.\nSolution: You add a reflection pass that regenerates the response if the required clauses are missing.\nDoes this meet the goal?",
+  "explanationZh": "正确：\n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。\n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。\nefore\n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "explanationEn": "Correct:\n* You add a reflection pass that regenerates the response if the required clauses are missing.\nThis is Self-Correction Strategy: A reflection pass allows an agent to evaluate its own initial output against\nspecified constraints (e.g., checking for the presence of mandatory regulatory clauses). If the required text\nis missing, the agent triggers a programmatic self-correction or regeneration loop to include them b\nfinal delivery.\nIncorrect:\n* You increase the value of the max_tokens parameter.\nIncreasing the max_tokens parameter prevents the response from being cut off mid-sentence due to\nlength constraints. However, it does not force the model's logic to explicitly include missing information that\nit chose to leave out earlier in the text.\n* You increase the value of the temperature parameter.\nRaising the temperature parameter increases randomness and creativity. For rigid compliance tasks like\nsummarizing regulatory documents, higher temperature actually increases the risk of hallucination and\nomission.\n* You run an evaluation flow that scores responses for completeness and blocks responses that fall below\na defined threshold.\nEvaluation Flow Block: Running an evaluation flow to score completeness and blocking bad responses\nidentifies and stops low-quality outputs, but it does not fix or actively improve the response completeness.\nIt simply filters failures out of the system.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 14",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 14",
+  "pdfPage": 91,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 14
+ },
+ {
+  "id": "q086",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您增加 temperature 参数的值。\n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。 \n \n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。\nefore\n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您增加 temperature 参数的值。\n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nUsers report that some responses omit required regulatory clauses, even when the clauses are present in\nthe retrieved content.\nYou need to improve response completeness.\nSolution: You increase the value of the temperature parameter.\nDoes this meet the goal?",
+  "explanationZh": "正确：\n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。 \n \n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。\nefore\n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "explanationEn": "Correct:\n \n* You add a reflection pass that regenerates the response if the required clauses are missing.\n \nThis is Self-Correction Strategy: A reflection pass allows an agent to evaluate its own initial output against\nspecified constraints (e.g., checking for the presence of mandatory regulatory clauses). If the required text\nis missing, the agent triggers a programmatic self-correction or regeneration loop to include them b\nfinal delivery.\nIncorrect:\n* You increase the value of the max_tokens parameter.\nIncreasing the max_tokens parameter prevents the response from being cut off mid-sentence due to\nlength constraints. However, it does not force the model's logic to explicitly include missing information that\nit chose to leave out earlier in the text.\n* You increase the value of the temperature parameter.\nRaising the temperature parameter increases randomness and creativity. For rigid compliance tasks like\nsummarizing regulatory documents, higher temperature actually increases the risk of hallucination and\nomission.\n* You run an evaluation flow that scores responses for completeness and blocks responses that fall below\na defined threshold.\nEvaluation Flow Block: Running an evaluation flow to score completeness and blocking bad responses\nidentifies and stops low-quality outputs, but it does not fix or actively improve the response completeness.\nIt simply filters failures out of the system.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 15",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 15",
+  "pdfPage": 92,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 15
+ },
+ {
+  "id": "q087",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题为该问题提供了独特的解决方案。您必须确定该解决方案是否满足所述目标。集合中的多个解决方案可能解决该问题。也可能集合中的解决方案都无法解决该问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您运行一个评估流程，对响应的完整性进行评分，并阻止那些低于定义阈值的响应。\n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n \n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。 \n \n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n \n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。 \nefore\n \n \n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题为该问题提供了独特的解决方案。您必须确定该解决方案是否满足所述目标。集合中的多个解决方案可能解决该问题。也可能集合中的解决方案都无法解决该问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您运行一个评估流程，对响应的完整性进行评分，并阻止那些低于定义阈值的响应。\n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nUsers report that some responses omit required regulatory clauses, even when the clauses are present in\nthe retrieved content.\nYou need to improve response completeness.\nSolution: You run an evaluation flow that scores responses for completeness and blocks responses that\nfall below a defined threshold.\nDoes this meet the goal?",
+  "explanationZh": "正确：\n \n* 你添加了一个反思环节，如果缺少必要的条款，则重新生成响应。 \n \n这是自我修正策略：反思环节允许代理评估其初始输出是否符合指定的约束（例如，检查强制性监管条款\n \n的存在）。如果缺少所需文本，代理会触发程序化的自我修正或再生循环，以在最终交付之前包含它们。 \nefore\n \n \n不正确：\n* 你增加了 max_tokens 参数的值。\n增加 max_tokens 参数可以防止响应因长度限制而在句子中途被截断。然而，这并不强制模型的逻辑\n明确包含它之前选择省略的缺失信息。\n* 你增加了 temperature 参数的值。\n提高温度参数会增加随机性和创造力。对于像总结监管文件这样的严格合规任务，较高的温度实际上增\n加了幻觉和遗漏的风险。\n* 你运行了一个评估流程，对响应的完整性进行评分，并阻止低于\n定义阈值的响应。\n评估流程阻止：运行评估流程以评分完整性并阻止不良响应，\n识别并停止低质量输出，但它并不修复或主动改善响应的完整性。\n它只是将失败从系统中过滤掉。",
+  "explanationEn": "Correct:\n* You add a reflection pass that regenerates the response if the required clauses are missing.\n \nThis is Self-Correction Strategy: A reflection pass allows an agent to evaluate its own initial output against\nspecified constraints (e.g., checking for the presence of mandatory regulatory clauses). If the required text\nis missing, the agent triggers a programmatic self-correction or regeneration loop to include them b\nfinal delivery. \n \nIncorrect:\n* You increase the value of the max_tokens parameter.\nIncreasing the max_tokens parameter prevents the response from being cut off mid-sentence due to\nlength constraints. However, it does not force the model's logic to explicitly include missing information that\nit chose to leave out earlier in the text.\n* You increase the value of the temperature parameter.\nRaising the temperature parameter increases randomness and creativity. For rigid compliance tasks like\nsummarizing regulatory documents, higher temperature actually increases the risk of hallucination and\nomission.\n* You run an evaluation flow that scores responses for completeness and blocks responses that fall below\na defined threshold.\nEvaluation Flow Block: Running an evaluation flow to score completeness and blocking bad responses\nidentifies and stops low-quality outputs, but it does not fix or actively improve the response completeness.\nIt simply filters failures out of the system.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 16",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 16",
+  "pdfPage": 92,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 16
+ },
+ {
+  "id": "q088",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "multi",
+  "stem": "您有一个包含检索增强生成（RAG）聊天解决方案的 Microsoft Foundry 项目，该解决方案由客户支持代理使用。\n您正在向名为 Pipeline1 的 CI/CD 管道添加一个自动化的预生产评估步骤。该评估将针对一个包含支持问题和预期背景的标记测试数据集进行。\n您需要确保如果不支持的内容或检索不匹配超过定义的阈值，Pipeline1 将失败：\n响应包括未被检索源内容支持的声明检索源内容与标记的预期背景不一致您应该在 Pipeline1 中使用哪两个内置评估器？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "Retrieval",
+    "textEn": "Retrieval",
+    "textZh": "检索"
+   },
+   {
+    "id": "B",
+    "text": "Fluency",
+    "textEn": "Fluency",
+    "textZh": "流畅性"
+   },
+   {
+    "id": "C",
+    "text": "Coherence",
+    "textEn": "Coherence",
+    "textZh": "连贯性"
+   },
+   {
+    "id": "D",
+    "text": "Groundedness",
+    "textEn": "Groundedness",
+    "textZh": "可靠性"
+   },
+   {
+    "id": "E",
+    "text": "Response Completeness",
+    "textEn": "Response Completeness",
+    "textZh": "响应完整性"
+   }
+  ],
+  "answer": [
+   "A",
+   "D"
+  ],
+  "pdfAnswer": [
+   "A",
+   "D"
+  ],
+  "explanation": "可靠性评估器验证模型的响应仅包含由检索源内容支持的声明\n它标记不可靠的内容或幻觉。如果平均分数低于您定义的阈值，它\n会触发管道失败。\n适合该管道的正确额外内置评估器是检索（具体来说，\n \nhe\n检索评估器或文档检索评估器）。\n \n \n标准的RAG评估管道评估生成器（生成答案的LLM）和\n \n检索器（提取文档的搜索系统）。CI/CD要求指定两个不同的失败\n \n \n \n响应中包含未被检索源内容支持的声明：这检查模型\n幻觉，由可靠性评估器处理。\n检索的源内容与标记的预期上下文不一致：这明确衡量您的搜索步骤与您的真实数据的\n表现。内置的检索评估器映射到\n此要求。它计算诸如上下文召回率等指标，以确保您的系统成功检索到\n您标记的测试数据集中指定的确切参考文档",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含检索增强生成（RAG）聊天解决方案的 Microsoft Foundry 项目，该解决方案由客户支持代理使用。\n您正在向名为 Pipeline1 的 CI/CD 管道添加一个自动化的预生产评估步骤。该评估将针对一个包含支持问题和预期背景的标记测试数据集进行。\n您需要确保如果不支持的内容或检索不匹配超过定义的阈值，Pipeline1 将失败：\n响应包括未被检索源内容支持的声明检索源内容与标记的预期背景不一致您应该在 Pipeline1 中使用哪两个内置评估器？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains a Retrieval Augmented Generation (RAG) chat\nsolution used by customer support agents.\nYou are adding an automated pre-production evaluation step to a CI/CD pipeline named Pipeline1. The\nevaluation will run against a labeled test dataset that contains support questions and the expected\ngrounding context.\nYou need to ensure that Pipeline1 fails if unsupported content or a retrieval mismatch exceeds a defined\nthreshold:\nresponses include claims not supported by the retrieved source content\nretrieved source content does not align with the labeled expected context\nWhich two built-in evaluators should you use in Pipeline1? Each correct answer presents pat of the\nsolution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "可靠性评估器验证模型的响应仅包含由检索源内容支持的声明\n它标记不可靠的内容或幻觉。如果平均分数低于您定义的阈值，它\n会触发管道失败。\n适合该管道的正确额外内置评估器是检索（具体来说，\n \nhe\n检索评估器或文档检索评估器）。\n \n \n标准的RAG评估管道评估生成器（生成答案的LLM）和\n \n检索器（提取文档的搜索系统）。CI/CD要求指定两个不同的失败\n \n \n \n响应中包含未被检索源内容支持的声明：这检查模型\n幻觉，由可靠性评估器处理。\n检索的源内容与标记的预期上下文不一致：这明确衡量您的搜索步骤与您的真实数据的\n表现。内置的检索评估器映射到\n此要求。它计算诸如上下文召回率等指标，以确保您的系统成功检索到\n您标记的测试数据集中指定的确切参考文档",
+  "explanationEn": "The Groundedness Evaluator evaluator validates that the model's responses include only claims\nsupported by the retrieved source content\nIt flags ungrounded content or hallucinations. If the average score drops below your defined threshold, it\ntriggers a pipeline failure.\nThe correct additional built-in evaluator appropriate for the pipeline is Retrieval (specifically, t\nRetrievalEvaluator or DocumentRetrievalEvaluator).\n \nA standard RAG evaluation pipeline assesses both the generator (the LLM producing the answer) and the\nretriever (the search system pulling documentation). The CI/CD requirements specify two distinct failure\nthresholds: 阈值：\n \nResponses including claims not supported by the retrieved source content: This checks for model\nhallucinations and is handled by the Groundedness Evaluator.\nRetrieved source content not aligning with the labeled expected context: This explicitly measures the\nperformance of your search step against your ground-truth data. The built-in Retrieval evaluator maps to\nthis requirement. It computes metrics like context recall to ensure your system successfully retrieves the\nexact reference documents specified in your labeled test dataset",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 17",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 17",
+  "pdfPage": 93,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 17
+ },
+ {
+  "id": "q089",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个使用 FoundryAgent Service 构建的支持工单分类代理。\n该代理使用工具对工单类型进行分类并设置工单优先级。\n有时，相同的支持案例会在几天内跨多个会话持续进行。\n您需要通过使用持久 ID 来保持状态，以确保代理能够自动重用完整的交互历史。解决方案必须在回合和会话之间保留先前的用户消息、工具调用和工具输出。\n您应该使用哪个运行时组件？",
+  "options": [
+   {
+    "id": "A",
+    "text": "output item",
+    "textEn": "output item",
+    "textZh": "输出项"
+   },
+   {
+    "id": "B",
+    "text": "agent",
+    "textEn": "agent",
+    "textZh": "代理"
+   },
+   {
+    "id": "C",
+    "text": "conversation",
+    "textEn": "conversation",
+    "textZh": "会话"
+   },
+   {
+    "id": "D",
+    "text": "response",
+    "textEn": "response",
+    "textZh": "响应"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了实现状态持久性并确保代理自动重用完整的多会话\n交互历史（包括先前的用户消息、工具调用和工具输出），您必须包含一个\n会话组件。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个使用 FoundryAgent Service 构建的支持工单分类代理。\n该代理使用工具对工单类型进行分类并设置工单优先级。\n有时，相同的支持案例会在几天内跨多个会话持续进行。\n您需要通过使用持久 ID 来保持状态，以确保代理能够自动重用完整的交互历史。解决方案必须在回合和会话之间保留先前的用户消息、工具调用和工具输出。\n您应该使用哪个运行时组件？",
+  "stemEn": "You have a Microsoft Foundry project that contains a support-ticket triage agent built by using the Foundry\nAgent Service.\nThe agent uses tools to classify the ticket type and set the ticket priority.\nSometimes, the same support case continues across multiple sessions over several days.\nYou need to persist state by using a durable ID to ensure that the agent can automatically reuse the full\ninteraction history. The solution must preserve previous user messages, tool calls and tool outputs across\nturns and sessions.\nWhich runtime component should you use?",
+  "explanationZh": "为了实现状态持久性并确保代理自动重用完整的多会话\n交互历史（包括先前的用户消息、工具调用和工具输出），您必须包含一个\n会话组件。",
+  "explanationEn": "To achieve state persistence and ensure that the agent automatically reuses the full multi-session\ninteraction history (including previous user messages, tool calls, and tool outputs), you must include a\nconversation component.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 18",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 18",
+  "pdfPage": 94,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 18
+ },
+ {
+  "id": "q090",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Microsoft Founcy 项目，其中包含一个检索增强生成（RAG）解决方案。\n您需要使用包含查询、上下文、响应和真实值的标记 CSV 数据集进行预生产评估。评估必须测量以下内容：\n响应是否解决了用户查询响应是否得到提供的上下文支持响应是否包含敏感或专有信息您应该使用哪些AI质量评估指标？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Groundedness and Relevance",
+   "Protected material"
+  ],
+  "pdfAnswer": [
+   "Groundedness and Relevance",
+   "Protected material"
+  ],
+  "explanation": "框 1：基础性和相关性\n在 Microsoft Foundry 中，您进行预生产评估的两个最佳 AI 质量评估指标是\n相关性和基础性。\nMicrosoft Foundry 提供内置的、AI 辅助的质量评估工具，专门设计用于衡量这\n \ntwo 个关键维度的检索增强生成 (RAG) 系统： \n相关性：该指标直接针对您的第一个要求：响应是否解决了用户\n \n \n查询。它评估生成的响应与初始用户查询的对齐程度和回答质量。 \n基础性：该指标直接针对您的第二个要求：响应是否得到提供的上下文支持。它评估生成的响应在多大程度\n \n上是基于检索到的上下文，且严格来源于该上下文，这有助于捕捉模型的幻觉。 \n框 2：受保护材料\n此场景的最佳 AI 质量评估指标是受保护材料。\n直接对齐：受保护材料指标专门检查 AI 模型是否输出\n与其训练数据或内部上下文匹配的受版权保护的文本、专有数据或敏感信息。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "衡量响应是否得到所提供上下文的支持并解决了用户查询：",
+    "labelEn": "To measure whether the responses are supported by the provided context and address the user query:",
+    "labelZh": "衡量响应是否得到所提供上下文的支持并解决了用户查询：",
+    "choices": [
+     {
+      "key": "Coherence and Fluency",
+      "en": "Coherence and Fluency",
+      "zh": "连贯性 (Coherence) 和流畅性 (Fluency)"
+     },
+     {
+      "key": "GPT similarity and F1 score",
+      "en": "GPT similarity and F1 score",
+      "zh": "GPT 相似度 (GPT similarity) 和 F1 分数"
+     },
+     {
+      "key": "Groundedness and Relevance",
+      "en": "Groundedness and Relevance",
+      "zh": "基础性 (Groundedness) 和相关性 (Relevance)"
+     },
+     {
+      "key": "Groundedness and ROUGE score",
+      "en": "Groundedness and ROUGE score",
+      "zh": "基础性 (Groundedness) 和 ROUGE 分数"
+     }
+    ],
+    "answer": "Groundedness and Relevance"
+   },
+   {
+    "id": "2",
+    "label": "衡量响应是否包含敏感或专有信息：",
+    "labelEn": "To measure whether responses contain sensitive or proprietary information:",
+    "labelZh": "衡量响应是否包含敏感或专有信息：",
+    "choices": [
+     {
+      "key": "Hateful and unfair content",
+      "en": "Hateful and unfair content",
+      "zh": "仇恨和不公平内容 (Hateful and unfair content)"
+     },
+     {
+      "key": "Indirect attack",
+      "en": "Indirect attack",
+      "zh": "间接攻击 (Indirect attack)"
+     },
+     {
+      "key": "Protected material",
+      "en": "Protected material",
+      "zh": "受保护材料 (Protected material)"
+     },
+     {
+      "key": "Violent content",
+      "en": "Violent content",
+      "zh": "暴力内容 (Violent content)"
+     }
+    ],
+    "answer": "Protected material"
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Founcy 项目，其中包含一个检索增强生成（RAG）解决方案。\n您需要使用包含查询、上下文、响应和真实值的标记 CSV 数据集进行预生产评估。评估必须测量以下内容：\n响应是否解决了用户查询响应是否得到提供的上下文支持响应是否包含敏感或专有信息您应该使用哪些AI质量评估指标？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Founcy project that contains a Retrieval Augmented Generation (RAG) solution.\nYou need to run a pre-production evaluation by using labeled CSV dataset that contains the query,\ncontext, response and ground truth. The evaluation must measure the following:\nWhether responses address the user query\nWhether responses are supported by the provided context\nWhether responses contain sensitive or proprietary information\nWhich AI quality evaluation metrics should you use? To answer, select the appropriate options in the\nanswer area. \n \nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：基础性和相关性\n在 Microsoft Foundry 中，您进行预生产评估的两个最佳 AI 质量评估指标是\n相关性和基础性。\nMicrosoft Foundry 提供内置的、AI 辅助的质量评估工具，专门设计用于衡量这\n \ntwo 个关键维度的检索增强生成 (RAG) 系统： \n相关性：该指标直接针对您的第一个要求：响应是否解决了用户\n \n \n查询。它评估生成的响应与初始用户查询的对齐程度和回答质量。 \n基础性：该指标直接针对您的第二个要求：响应是否得到提供的上下文支持。它评估生成的响应在多大程度\n \n上是基于检索到的上下文，且严格来源于该上下文，这有助于捕捉模型的幻觉。 \n框 2：受保护材料\n此场景的最佳 AI 质量评估指标是受保护材料。\n直接对齐：受保护材料指标专门检查 AI 模型是否输出\n与其训练数据或内部上下文匹配的受版权保护的文本、专有数据或敏感信息。",
+  "explanationEn": "Box 1: Groundedness and Relevance\nThe two best AI quality evaluation metrics for your pre-production evaluation in Microsoft Foundry are\nRelevance and Groundedness.\nMicrosoft Foundry provides built-in, AI-assisted quality evaluators specifically designed to measure these\ntwo critical dimensions of a Retrieval-Augmented Generation (RAG) system:\n \nRelevance: This metric directly addresses your first requirement: whether responses address the user\nquery. It evaluates how well the gens.nerated response aligns with and answers the initial user query.\n \nGroundedness: This metric directly addresses your second requirement: whether responses are supported\n \nby the provided context. It evaluates the degree to which the generated response is factually supported by\nand derived strictly from the retrieved context, which helps capture model hallucinatio\nBox 2: Protected material\nThe best AI quality evaluation metric for this scenario is Protected material.\nDirect alignment: The Protected material metric specifically checks whether an AI model outputs\ncopyrighted text, proprietary data, or sensitive information that matches its training data or internal context.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 19",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 19",
+  "pdfPage": 95,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 19
+ },
+ {
+  "id": "q091",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "multi",
+  "stem": "您计划在 Microsoft Foundry 中为检索增强生成 (RAG)聊天应用程序配置评估。\n您需要为基础性、相关性和有害内容类别提供评分。\n您可以使用哪两个评估类别？每个正确答案都提供了完整的解决方案。\n注意： 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "risk and safety metrics",
+    "textEn": "risk and safety metrics",
+    "textZh": "风险和安全指标"
+   },
+   {
+    "id": "B",
+    "text": "fluency evaluator",
+    "textEn": "fluency evaluator",
+    "textZh": "流畅性评估器"
+   },
+   {
+    "id": "C",
+    "text": "similarity evaluators",
+    "textEn": "similarity evaluators",
+    "textZh": "相似性评估器"
+   },
+   {
+    "id": "D",
+    "text": "AI quality (NLP) metrics",
+    "textEn": "AI quality (NLP) metrics",
+    "textZh": "AI 质量（NLP）指标"
+   },
+   {
+    "id": "E",
+    "text": "AI quality (AI assisted) metrics",
+    "textEn": "AI quality (AI assisted) metrics",
+    "textZh": "AI 质量（AI 辅助）指标"
+   }
+  ],
+  "answer": [
+   "A",
+   "E"
+  ],
+  "pdfAnswer": [
+   "A",
+   "E"
+  ],
+  "explanation": "有用的两个评估类别是 AI 质量（AI 辅助）指标和风险与安全\n指标\n风险和安全指标：对有害内容类别（如暴力、色情内容、仇恨言论和自残）的评分由该类别内的专\n门安全评估器直接处理。\nAI 质量（AI 辅助）指标：在 Microsoft Foundry 中，评估 RAG 特定标准如基础性\n和相关性需要大型语言模型（LLMs）作为评判者来评估语义上下文。\n这些明确归类于 AI 辅助质量指标，而不是标准自然语言\n处理 (NLP) 规则。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您计划在 Microsoft Foundry 中为检索增强生成 (RAG)聊天应用程序配置评估。\n您需要为基础性、相关性和有害内容类别提供评分。\n您可以使用哪两个评估类别？每个正确答案都提供了完整的解决方案。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You plan to configure an evaluation in Microsoft Foundry for a Retrieval Augmented Generation (RAG)\nchat app.\nYou need to provide scores for groundedness, relevance, and harmful content categories.\nWhich two evaluation categories can you use? Each correct answer presents a complete solution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "有用的两个评估类别是 AI 质量（AI 辅助）指标和风险与安全\n指标\n风险和安全指标：对有害内容类别（如暴力、色情内容、仇恨言论和自残）的评分由该类别内的专\n门安全评估器直接处理。\nAI 质量（AI 辅助）指标：在 Microsoft Foundry 中，评估 RAG 特定标准如基础性\n和相关性需要大型语言模型（LLMs）作为评判者来评估语义上下文。\n这些明确归类于 AI 辅助质量指标，而不是标准自然语言\n处理 (NLP) 规则。",
+  "explanationEn": "The two evaluation categories that would be of use are AI quality (AI assisted) metrics and risk and safety\nmetrics\nRisk and safety metrics: Scoring harmful content categories (such as violence, sexual content, hate\nspeech, and self-harm) is handled directly by the specialized safety evaluators contained within this\ncategory.\nAI quality (AI assisted) metrics: In Microsoft Foundry, evaluating RAG-specific criteria like groundedness\nand relevance requires large language models (LLMs) acting as a judge to assess semantic context.\nThese are explicitly categorized under AI-assisted quality metrics rather than standard natural language\nprocessing (NLP) rules.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 20",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 20",
+  "pdfPage": 96,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 20
+ },
+ {
+  "id": "q092",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含基于已部署聊天模型构建的客户支持代理。\n代理的响应通过使用自动化测试系统进行验证，该系统将生成的答案与存储的预期输出进行比较。相同的提示必须返回一致的响应，以防止自动化测试失败。 \n \n您需要减少响应的可变性，而不修改提示或降低事实准确性。",
+  "options": [
+   {
+    "id": "A",
+    "text": "Increase the max_tokens parameter",
+    "textEn": "Increase the max_tokens parameter.",
+    "textZh": "增加 max_tokens 参数。"
+   },
+   {
+    "id": "B",
+    "text": "Remove stop sequences from the requests",
+    "textEn": "Remove stop sequences from the requests.",
+    "textZh": "从请求中移除停止序列。"
+   },
+   {
+    "id": "C",
+    "text": "Decrease the temperature parameter",
+    "textEn": "Decrease the temperature parameter.",
+    "textZh": "减少 temperature 参数。"
+   },
+   {
+    "id": "D",
+    "text": "Increase the temperature parameter",
+    "textEn": "Increase the temperature parameter.",
+    "textZh": "增加 temperature 参数。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了减少响应的可变性并确保相同的提示返回一致的答案，您应该\n减少温度参数。\n温度控制模型输出的随机性。将温度设置得更接近 0 会使模型变得确定性。它迫使模型每次选择最高概\n率的单词，确保相同的提示始终产生相同或近似相同的响应，以通过您的自动化测试。\ned",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含基于已部署聊天模型构建的客户支持代理。\n代理的响应通过使用自动化测试系统进行验证，该系统将生成的答案与存储的预期输出进行比较。相同的提示必须返回一致的响应，以防止自动化测试失败。 \n \n您需要减少响应的可变性，而不修改提示或降低事实准确性。",
+  "stemEn": "You have a Microsoft Foundry project that contains a customer support agent built on a deployed chat\nmodel.\nThe agent responses are validated by using an automated testing system that compares generated\nanswers to stored expected outputs. Identical prompts must return consistent response to prevent\nautomated test failures. \n \nYou need to reduce response variability, without modifying the prompt or reducing factual accuracy.\n \nWhat should you do for the model? 您应该为模型做什么？",
+  "explanationZh": "为了减少响应的可变性并确保相同的提示返回一致的答案，您应该\n减少温度参数。\n温度控制模型输出的随机性。将温度设置得更接近 0 会使模型变得确定性。它迫使模型每次选择最高概\n率的单词，确保相同的提示始终产生相同或近似相同的响应，以通过您的自动化测试。\ned",
+  "explanationEn": "To reduce response variability and ensure identical prompts return consistent answers, you should\ndecrease the temperature parameter.\nTemperature controls the randomness of the model's output. Setting the temperature closer to 0 makes\nthe model deterministic. It forces the model to choose the highest-probability words every time, ensuring\nthat identical prompts consistently yield identical or near-identical responses to pass your automat\ntesting.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 21",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 21",
+  "pdfPage": 97,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 21
+ },
+ {
+  "id": "q093",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您正在为一个 Microsoft Foundry 项目开发提示，该项目按类别对 incoming 支持票据进行分类。\n您需要通过向模型展示正确分类的样子来提高准确性，而不保留模型或永久存储知识。\n您应该使用哪种提示工程方法？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Retrieval Augmented Generation (RAG)",
+    "textEn": "Retrieval Augmented Generation (RAG)",
+    "textZh": "检索增强生成（RAG）"
+   },
+   {
+    "id": "B",
+    "text": "zero-shot learning",
+    "textEn": "zero-shot learning",
+    "textZh": "零样本学习"
+   },
+   {
+    "id": "C",
+    "text": "chain of thought",
+    "textEn": "chain of thought",
+    "textZh": "思维链"
+   },
+   {
+    "id": "D",
+    "text": "few-shot learning",
+    "textEn": "few-shot learning",
+    "textZh": "少样本学习"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "少样本提示是这个项目的最佳方法。这种技术通过在提示中直接包含几个高质量的示例来提高分类准确性\n，给模型提供一个清晰的模式，以便在不修改其权重或永久存储数据的情况下进行跟随。\n零重训练：在 API 调用期间完全通过上下文学习工作。\n无永久存储：知识在推理请求完成后立即消失。\n即时准确性提升：直接向模型展示格式、细微差别和边缘案例。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在为一个 Microsoft Foundry 项目开发提示，该项目按类别对 incoming 支持票据进行分类。\n您需要通过向模型展示正确分类的样子来提高准确性，而不保留模型或永久存储知识。\n您应该使用哪种提示工程方法？",
+  "stemEn": "You are developing prompts for a Microsoft Foundry project that classifies incoming support tickets by\ncategory.\nYou need to improve accuracy by showing the model how correct classifications look, without retaining the\nmodel or storing knowledge permanently.\nWhich prompt engineering approach should you use?",
+  "explanationZh": "少样本提示是这个项目的最佳方法。这种技术通过在提示中直接包含几个高质量的示例来提高分类准确性\n，给模型提供一个清晰的模式，以便在不修改其权重或永久存储数据的情况下进行跟随。\n零重训练：在 API 调用期间完全通过上下文学习工作。\n无永久存储：知识在推理请求完成后立即消失。\n即时准确性提升：直接向模型展示格式、细微差别和边缘案例。",
+  "explanationEn": "Few-shot prompting is the best approach for this project. This technique improves classification accuracy\nby including a few high-quality examples directly inside the prompt, giving the model a clear pattern to\nfollow without modifying its weights or storing data permanently.\nZero retraining: Works entirely through in-context learning during the API call.\nNo permanent storage: The knowledge disappears as soon as the inference request is completed.\nImmediate accuracy boost: Demonstrates formatting, nuances, and edge cases directly to the model.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 22",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 22",
+  "pdfPage": 97,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 22
+ },
+ {
+  "id": "q094",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个客户支持聊天应用的代理。\n \n该代理使用内存存储和内存搜索工具。 \n您需要确保对话历史 不 在不同会话之间持续存在。\n \n \n您应该将内存工具的范围设置为什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "session",
+    "textEn": "session",
+    "textZh": "session"
+   },
+   {
+    "id": "B",
+    "text": "{{$conversationId}}",
+    "textEn": "{{$conversationId}}",
+    "textZh": "{{$conversationId}}"
+   },
+   {
+    "id": "C",
+    "text": "{{$userId}}",
+    "textEn": "{{$userId}}",
+    "textZh": "{{$userId}}"
+   },
+   {
+    "id": "D",
+    "text": "global",
+    "textEn": "global",
+    "textZh": "global"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "为了确保对话历史不会在不同会话之间持续存在，您必须将范围设置为\n会话。\n会话范围限制数据访问仅限于当前活动的聊天实例。当新会话开始时，它会自动清除或\n忽略之前的数据。\n不正确：\n[不 C]\n用户或 {{$userId}} 范围：在多个会话中为该特定用户保留数据。这将导致您想要避免的确切问题，因为\n它将历史上下文带入新的对话中。\nJ = 屁股 Khidf 15 中",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个客户支持聊天应用的代理。\n \n该代理使用内存存储和内存搜索工具。 \n您需要确保对话历史 不 在不同会话之间持续存在。\n \n \n您应该将内存工具的范围设置为什么？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent for a customer support chat app. The agent\nuses a memory store and a memory search tool.\n \nYou need to ensure that the conversation history does NOT persist across separate sessions.\n \nTo what should you set the scope of the memory tool?",
+  "explanationZh": "为了确保对话历史不会在不同会话之间持续存在，您必须将范围设置为\n会话。\n会话范围限制数据访问仅限于当前活动的聊天实例。当新会话开始时，它会自动清除或\n忽略之前的数据。\n不正确：\n[不 C]\n用户或 {{$userId}} 范围：在多个会话中为该特定用户保留数据。这将导致您想要避免的确切问题，因为\n它将历史上下文带入新的对话中。\nJ = 屁股 Khidf 15 中",
+  "explanationEn": "To ensure that conversation history does not persist across separate sessions, you must set the scope to\nsession.\nThe session scope restricts data access to the current active chat instance. It automatically wipes or\nignores previous data when a new session starts.\nIncorrect:\n[Not C]\nuser or {{$userId}} scope: Persists data across multiple sessions for that specific user. This would cause\nthe exact issue you want to avoid by carrying historical context into new conversations.\ngi=a9aa95df15c6",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 23",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 23",
+  "pdfPage": 98,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 23
+ },
+ {
+  "id": "q095",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "drag",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n您需要启用长期记忆，以确保代理能够在不同对话中回忆用户偏好。存储的记忆必须针对每个经过身份验证的用户进行隔离，而不需要客户端应用程序手动生成用户 ID。\n您应该如何完成 Python 代码？要回答，请将适当的值拖到正确的目标。\n每个值可以使用一次、使用多次或根本不使用。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "\"{{$userId}}\"",
+   "[memory_tool]"
+  ],
+  "pdfAnswer": [
+   "\"{{$userId}}\"",
+   "[memory_tool]"
+  ],
+  "explanation": "框 1: \"{{$userId}}\"\n用户隔离（范围）\n设置范围=\"{{$userId}}\" 指示 Microsoft Foundry Agent Service 自动映射和\n划分内存给使用其 Microsoft Entra 用户身份模板的登录个体。该平台\n动态处理请求头，从而消除手动客户端用户 ID\n管理的需要。\n框 2: [memory_tool]\n工具列表: 工具配置参数期望一个包含实例化工具对象的可迭代对象。\n将 memory_tool 包裹在 Python 列表中 ([memory_tool]) 使该能力暴露给代理定义。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "scope",
+    "labelEn": "scope",
+    "labelZh": "scope",
+    "answer": "\"{{$userId}}\"",
+    "choices": [
+     {
+      "key": "\"session\"",
+      "en": "\"session\"",
+      "zh": "\"session\""
+     },
+     {
+      "key": "\"{{$conversationId}}\"",
+      "en": "\"{{$conversationId}}\"",
+      "zh": "\"{{$conversationId}}\""
+     },
+     {
+      "key": "\"{{$userId}}\"",
+      "en": "\"{{$userId}}\"",
+      "zh": "\"{{$userId}}\""
+     },
+     {
+      "key": "[mem_store_name]",
+      "en": "[mem_store_name]",
+      "zh": "[mem_store_name]"
+     },
+     {
+      "key": "[memory_tool]",
+      "en": "[memory_tool]",
+      "zh": "[memory_tool]"
+     },
+     {
+      "key": "MemorySearchTool(\"support_mem_store\")",
+      "en": "MemorySearchTool(\"support_mem_store\")",
+      "zh": "MemorySearchTool(\"support_mem_store\")"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "tools",
+    "labelEn": "tools",
+    "labelZh": "tools",
+    "answer": "[memory_tool]",
+    "choices": [
+     {
+      "key": "\"session\"",
+      "en": "\"session\"",
+      "zh": "\"session\""
+     },
+     {
+      "key": "\"{{$conversationId}}\"",
+      "en": "\"{{$conversationId}}\"",
+      "zh": "\"{{$conversationId}}\""
+     },
+     {
+      "key": "\"{{$userId}}\"",
+      "en": "\"{{$userId}}\"",
+      "zh": "\"{{$userId}}\""
+     },
+     {
+      "key": "[mem_store_name]",
+      "en": "[mem_store_name]",
+      "zh": "[mem_store_name]"
+     },
+     {
+      "key": "[memory_tool]",
+      "en": "[memory_tool]",
+      "zh": "[memory_tool]"
+     },
+     {
+      "key": "MemorySearchTool(\"support_mem_store\")",
+      "en": "MemorySearchTool(\"support_mem_store\")",
+      "zh": "MemorySearchTool(\"support_mem_store\")"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n您需要启用长期记忆，以确保代理能够在不同对话中回忆用户偏好。存储的记忆必须针对每个经过身份验证的用户进行隔离，而不需要客户端应用程序手动生成用户 ID。\n您应该如何完成 Python 代码？要回答，请将适当的值拖到正确的目标。\n每个值可以使用一次、使用多次或根本不使用。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nYou need to enable long-term memory to ensure that the agent can recall user preferences across\nseparate conversations. Stored memories must be isolated per authenticated user without the client\napplication manually generating user IDs.\nHow should you complete the Python code? To answer, drag the appropriate values to the correct targets.\nEach value may be used once, more than once, or not at all.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1: \"{{$userId}}\"\n用户隔离（范围）\n设置范围=\"{{$userId}}\" 指示 Microsoft Foundry Agent Service 自动映射和\n划分内存给使用其 Microsoft Entra 用户身份模板的登录个体。该平台\n动态处理请求头，从而消除手动客户端用户 ID\n管理的需要。\n框 2: [memory_tool]\n工具列表: 工具配置参数期望一个包含实例化工具对象的可迭代对象。\n将 memory_tool 包裹在 Python 列表中 ([memory_tool]) 使该能力暴露给代理定义。",
+  "explanationEn": "Box 1: \"{{$userId}}\"\nUser Isolation (Scope)\nSetting scope=\"{{$userId}}\" instructs the Microsoft Foundry Agent Service to automatically map and\npartition memory to the logged-in individual using their Microsoft Entra user identity template. The platform\nhandles this dynamically from request headers, removing the need for manual client-side user ID\nmanagement\nBox 2: [memory_tool]\nTool List: The tools configuration parameter expects an iterable containing instantiated tool objects.\nWrapping memory_tool inside a Python list ([memory_tool]) exposes the capability to the agent definition.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 24",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 24",
+  "pdfPage": 98,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 24,
+  "template": "from azure.ai.projects.models import MemorySearchTool, PromptAgentDefinition\nmem_store_name = \"agent_mem_store\"\nmemory_tool = MemorySearchTool(\n    memory_store_name=mem_store_name,\n    scope= {{box1}} ,\n)\nagent_def = PromptAgentDefinition(\n    model=\"gpt-5.2\",\n    instructions=\"You are a customer support assistant.\",\n    tools= {{box2}}\n)",
+  "templateEn": "from azure.ai.projects.models import MemorySearchTool, PromptAgentDefinition\nmem_store_name = \"agent_mem_store\"\nmemory_tool = MemorySearchTool(\n    memory_store_name=mem_store_name,\n    scope= {{box1}} ,\n)\nagent_def = PromptAgentDefinition(\n    model=\"gpt-5.2\",\n    instructions=\"You are a customer support assistant.\",\n    tools= {{box2}}\n)",
+  "templateZh": "from azure.ai.projects.models import MemorySearchTool, PromptAgentDefinition\nmem_store_name = \"agent_mem_store\"\nmemory_tool = MemorySearchTool(\n    memory_store_name=mem_store_name,\n    scope= {{box1}} ,\n)\nagent_def = PromptAgentDefinition(\n    model=\"gpt-5.2\",\n    instructions=\"You are a customer support assistant.\",\n    tools= {{box2}}\n)",
+  "templateKind": "code"
+ },
+ {
+  "id": "q096",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个名为 App1 的 Web 应用程序，通过与名为 Project1 的 Microsoft Foundry\n项目集成来处理用户提示。App1 执行以下操作：\n通过使用 Azure OpenAI Responses API 直接将提示发送到模型通过在同一请求中使用 Foundry 连接调用 Azure AI 内容安全工具您需要配置对请求工作流每个步骤的端到端可见性。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Enable logging by using the client SDK for Content Safety",
+    "textEn": "Enable logging by using the client SDK for Content Safety.",
+    "textZh": "使用内容安全的客户端 SDK 启用日志记录。"
+   },
+   {
+    "id": "B",
+    "text": "Enable logging by using Foundry Local",
+    "textEn": "Enable logging by using Foundry Local.",
+    "textZh": "通过使用 Foundry Local 启用日志记录。"
+   },
+   {
+    "id": "C",
+    "text": "Enable application tracing in Project1",
+    "textEn": "Enable application tracing in Project1.",
+    "textZh": "在 Project1 中启用应用程序跟踪。"
+   },
+   {
+    "id": "D",
+    "text": "Route requests through the Azure OpenAI endpoint",
+    "textEn": "Route requests through the Azure OpenAI endpoint.",
+    "textZh": "通过 Azure OpenAI 端点路由请求。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "要配置对请求工作流每个步骤的端到端可见性，您应该在项目中启用应用程序\n跟踪。 \n项目级可观察性：启用应用程序跟踪允许 Microsoft Foundry 原生跟踪、追踪，\n \n \n并监控工作流的每个组件——包括对 Azure OpenAI 响应 API 的调用和 \n相关工具如 Azure AI 内容安全——在同一请求中，无需复杂的、 \n \n集中跟踪：跟踪捕获项目端点之间的确切执行路径，使您能够顺序查看模型调用和内容安全检查的指标、延\n迟和输入/输出。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 App1 的 Web 应用程序，通过与名为 Project1 的 Microsoft Foundry\n项目集成来处理用户提示。App1 执行以下操作：\n通过使用 Azure OpenAI Responses API 直接将提示发送到模型通过在同一请求中使用 Foundry 连接调用 Azure AI 内容安全工具您需要配置对请求工作流每个步骤的端到端可见性。\n您应该怎么做？",
+  "stemEn": "You have a web app named App1 that processes user prompts by integrating with a Microsoft Foundry\nproject named Project1. App1 performs the following actions:\nSends prompts directly to a model by using the Azure OpenAI Responses API\nInvokes the Azure AI Content Safety tool by using a Foundry connection within the same request\nYou need to configure end-to-end visibility into each step of the request workflow.\nWhat should you do?",
+  "explanationZh": "要配置对请求工作流每个步骤的端到端可见性，您应该在项目中启用应用程序\n跟踪。 \n项目级可观察性：启用应用程序跟踪允许 Microsoft Foundry 原生跟踪、追踪，\n \n \n并监控工作流的每个组件——包括对 Azure OpenAI 响应 API 的调用和 \n相关工具如 Azure AI 内容安全——在同一请求中，无需复杂的、 \n \n集中跟踪：跟踪捕获项目端点之间的确切执行路径，使您能够顺序查看模型调用和内容安全检查的指标、延\n迟和输入/输出。",
+  "explanationEn": "To configure end-to-end visibility into each step of the request workflow, you should Enable application\ntracing in the project. \n \nProject-Level Observability: Enabling application tracing allows Microsoft Foundry to natively track, trace,\nand monitor every component of the workflow—including calls to the Azure OpenAI Responses API and\n \nassociated tools like Azure AI Content Safety—within the same request without requiring complex,\nseparate SDK configurations. 单独的 SDK 配置。\nCentralized Tracking: Tracing captures the exact execution path across the project endpoints, allowing you\nto see metrics, latency, and inputs/outputs sequentially for both the model invocation and the content\nsafety check.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 25",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 25",
+  "pdfPage": 100,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 25
+ },
+ {
+  "id": "q097",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "drag",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理使用线程和文件上传，并调用 Azure OpenAI 模型部署。\n在负载测试期间，调用间歇性失败并返回 HTTP 429 速率限制超出错误。一些用户上传失败并生成 HTTP 400 文件大小超出错误。\n您需要减轻错误并减少调用失败。解决方案必须保持在服务和模型限制内。\n您应该如何解决每个错误？要回答，请将适当的操作拖动到正确的错误上。\n每个操作可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个彗星选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Implement exponential backoff and jitter in the retry logic.",
+   "Split content into smaller files before uploading the files."
+  ],
+  "pdfAnswer": [
+   "Implement exponential backoff and jitter in the retry logic.",
+   "Split content into smaller files before uploading the files."
+  ],
+  "explanation": "框 1：在重试逻辑中实现指数退避和抖动为了在保持服务限制的\n同时解决间歇性的 HTTP 429 速率限制错误，您必须实现一个使用指数退避和抖动的重试策略。\n由于代理使用线程和文件上传，负载测试会触发短时间窗口的并发峰值（突发）。Azure OpenAI 在小时\n间段内（如 1 到 10 秒的窗口）评估速率限制，这意味着重叠的文件处理或并发线程步骤将触发 429，\n即使您的总每分钟令牌数（TPM）或每分钟请求数（RPM）看起来总体安全。\n框 2：在上传文件之前将内容拆分为较小的文件。\n与其在单个标准 files.create 请求中上传大型文档，不如利用分块上传 REST API 路径。这会在您的\n客户端应用程序层拆分文件负载，然后再将其流式传输到 Azure。\n注意：要解决 Microsoft Foundry 代理中的 HTTP 400 文件大小超出错误，您需要绕过标准单请求上\n传的严格负载限制。在 Azure OpenAI 和 Microsoft Foundry 代理架构中，多部分标准上传有一个严格的\n请求体限制（通常为 30 MB 或 50 MB）。\nazure-ai-f\nfor-batc",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "HTTP 429",
+    "labelEn": "HTTP 429",
+    "labelZh": "HTTP 429",
+    "answer": "Implement exponential backoff and jitter in the retry logic.",
+    "choices": [
+     {
+      "key": "Increase tenant-wide quotas.",
+      "en": "Increase tenant-wide quotas.",
+      "zh": "增加租户范围配额。"
+     },
+     {
+      "key": "Move large content to files and use file search.",
+      "en": "Move large content to files and use file search.",
+      "zh": "将大型内容移动到文件并使用文件搜索。"
+     },
+     {
+      "key": "Use additional agent tools to reduce the message size.",
+      "en": "Use additional agent tools to reduce the message size.",
+      "zh": "使用其他代理工具以减小消息大小。"
+     },
+     {
+      "key": "Implement exponential backoff and jitter in the retry logic.",
+      "en": "Implement exponential backoff and jitter in the retry logic.",
+      "zh": "在重试逻辑中实现指数退避和抖动。"
+     },
+     {
+      "key": "Split content into smaller files before uploading the files.",
+      "en": "Split content into smaller files before uploading the files.",
+      "zh": "在上传文件之前将内容拆分为较小的文件。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "HTTP 400",
+    "labelEn": "HTTP 400",
+    "labelZh": "HTTP 400",
+    "answer": "Split content into smaller files before uploading the files.",
+    "choices": [
+     {
+      "key": "Increase tenant-wide quotas.",
+      "en": "Increase tenant-wide quotas.",
+      "zh": "增加租户范围配额。"
+     },
+     {
+      "key": "Move large content to files and use file search.",
+      "en": "Move large content to files and use file search.",
+      "zh": "将大型内容移动到文件并使用文件搜索。"
+     },
+     {
+      "key": "Use additional agent tools to reduce the message size.",
+      "en": "Use additional agent tools to reduce the message size.",
+      "zh": "使用其他代理工具以减小消息大小。"
+     },
+     {
+      "key": "Implement exponential backoff and jitter in the retry logic.",
+      "en": "Implement exponential backoff and jitter in the retry logic.",
+      "zh": "在重试逻辑中实现指数退避和抖动。"
+     },
+     {
+      "key": "Split content into smaller files before uploading the files.",
+      "en": "Split content into smaller files before uploading the files.",
+      "zh": "在上传文件之前将内容拆分为较小的文件。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理使用线程和文件上传，并调用 Azure OpenAI 模型部署。\n在负载测试期间，调用间歇性失败并返回 HTTP 429 速率限制超出错误。一些用户上传失败并生成 HTTP 400 文件大小超出错误。\n您需要减轻错误并减少调用失败。解决方案必须保持在服务和模型限制内。\n您应该如何解决每个错误？要回答，请将适当的操作拖动到正确的错误上。\n每个操作可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个彗星选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent uses threads and file uploads and\ncalls an Azure OpenAI model deployment.\nDuring load testing, calls intermittently fall and return an HTTP 429 rate limit exceeded error. Some user\nuploads fail and generate an HTTP 400 file size exceeded error.\nYou need to mitigate the errors and reduce call failures. The solution must remain within the service and\nmodel limits.\nWhat should you do to resolve each error? To answer, drag the appropriate actions to the correct errors.\nEach action may be used once, more than once or not at all. You may need to drag the split bar between\npanes or scroll to view content.\nNOTE: Each comet selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1：在重试逻辑中实现指数退避和抖动为了在保持服务限制的\n同时解决间歇性的 HTTP 429 速率限制错误，您必须实现一个使用指数退避和抖动的重试策略。\n由于代理使用线程和文件上传，负载测试会触发短时间窗口的并发峰值（突发）。Azure OpenAI 在小时\n间段内（如 1 到 10 秒的窗口）评估速率限制，这意味着重叠的文件处理或并发线程步骤将触发 429，\n即使您的总每分钟令牌数（TPM）或每分钟请求数（RPM）看起来总体安全。\n框 2：在上传文件之前将内容拆分为较小的文件。\n与其在单个标准 files.create 请求中上传大型文档，不如利用分块上传 REST API 路径。这会在您的\n客户端应用程序层拆分文件负载，然后再将其流式传输到 Azure。\n注意：要解决 Microsoft Foundry 代理中的 HTTP 400 文件大小超出错误，您需要绕过标准单请求上\n传的严格负载限制。在 Azure OpenAI 和 Microsoft Foundry 代理架构中，多部分标准上传有一个严格的\n请求体限制（通常为 30 MB 或 50 MB）。\nazure-ai-f\nfor-batc",
+  "explanationEn": "Box 1: Implement exponential backoff and jitter in the retry logic\nTo remedy intermittent HTTP 429 rate limit errors while staying within service limits, you must implement a\nretry policy that uses exponential backoff and jitter.\nBecause the agent uses threads and file uploads, load testing triggers short-window concurrency spikes\n(bursting). Azure OpenAI evaluates rate limits in small slices (like 1- to 10-second windows), meaning\noverlapping file processing or concurrent thread steps will trigger a 429 even if your total Tokens-Per-\nMinute (TPM) or Requests-Per-Minute (RPM) look safe overall.\nBox 2: Split content into smaller files before uploading the files.\nInstead of uploading a large document in a single standard files.create request, utilize the Chunked\nUploads REST API path. This splits the file payload on your client application layer before streaming it to\nAzure.\nNote: To resolve the HTTP 400 file size exceeded error in your Microsoft Foundry agent, you need to\nbypass the strict payload constraints of standard single-request uploads. In Azure OpenAI and Microsoft\nFoundry Agent architectures, a multipart standard upload has a rigid request body limit (typically 30 MB or\n50 MB.\nazure-ai-f\nfor-batc",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "drag",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 26",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 26",
+  "pdfPage": 100,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 26
+ },
+ {
+  "id": "q098",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add a retry evaluation before the responses are returned",
+    "textEn": "Add a retry evaluation before the responses are returned.",
+    "textZh": "在返回响应之前添加重试评估。"
+   },
+   {
+    "id": "B",
+    "text": "Decrease the value of the temperature parameter",
+    "textEn": "Decrease the value of the temperature parameter.",
+    "textZh": "降低 temperature 参数的值。"
+   },
+   {
+    "id": "C",
+    "text": "Increase the value of the presence_penalty parameter",
+    "textEn": "Increase the value of the presence_penalty parameter",
+    "textZh": "增加 presence_penalty 参数的值"
+   },
+   {
+    "id": "D",
+    "text": "Replace the model with a smaller deployment",
+    "textEn": "Replace the model with a smaller deployment.",
+    "textZh": "用更小的部署替换模型。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确：\n* 在返回响应之前添加反思过程。\n反思过程作为您应用程序逻辑中的内部验证步骤。它指示代理evaluate其草拟响应与检索到的政策文件，\n以确保没有遗漏任何强制性监管条款。如果它检测到关键文本缺失，它会在发送给用户之前重新生成或修\n正答案。这直接满足了提高响应完整性的核心要求。\nss.\n* 在返回响应之前添加重试评估。\n您应该在应用程序代码中实现评估和重试循环。\n您必须将代理调用包装在一个条件代码循环中，该循环根据所需标准（例如监管条款的检查清单）评\n估输出，并在信息遗漏时程序性地强制重试。\n不正确：\n* 减少 max_tokens 参数的值。\n* 降低 temperature 参数的值。\n* 启用响应流。\n* 增加 presence_penalty 参数的值\n* 用更小的部署替换模型。\n* 切换到检索增强生成 (RAG)。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nYou need to improve response completeness. The solution must be implemented in the logic of the\napplication code before responses are returned.\nWhat should you do?",
+  "explanationZh": "正确：\n* 在返回响应之前添加反思过程。\n反思过程作为您应用程序逻辑中的内部验证步骤。它指示代理evaluate其草拟响应与检索到的政策文件，\n以确保没有遗漏任何强制性监管条款。如果它检测到关键文本缺失，它会在发送给用户之前重新生成或修\n正答案。这直接满足了提高响应完整性的核心要求。\nss.\n* 在返回响应之前添加重试评估。\n您应该在应用程序代码中实现评估和重试循环。\n您必须将代理调用包装在一个条件代码循环中，该循环根据所需标准（例如监管条款的检查清单）评\n估输出，并在信息遗漏时程序性地强制重试。\n不正确：\n* 减少 max_tokens 参数的值。\n* 降低 temperature 参数的值。\n* 启用响应流。\n* 增加 presence_penalty 参数的值\n* 用更小的部署替换模型。\n* 切换到检索增强生成 (RAG)。",
+  "explanationEn": "说明：\nCorrect:\n* Add a reflection pass before the responses are returned.\nA reflection pass acts as an internal verification step within your application's logic. It directs the agent to\nevaluate its own draft response against the retrieved policy documents to ensure no mandatory regulatory\nclauses were left out. If it detects that critical text is missing, it regenerates or amends the answer before\nsending it to the user. This directly fulfills the core requirement of improving response completene\n* Add a retry evaluation before the responses are returned.\nYou should implement an evaluation and retry loop in your application code.\nYou must wrap the agent call inside a conditional code loop that evaluates the output against required\ncriteria (such as a checklist of regulatory clauses), and programmatically forces a retry if information is\nomitted.\nIncorrect:\n* Decrease the value of the max_tokens parameter.\n* Decrease the value of the temperature paramerer.\n* Enable response streaming.\n* Increase the value of the presence_penalty parameter\n* Replace the model with a smaller deployment.\n* Switch to Retrieval Augmented Generation (RAG).",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 27",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 27",
+  "pdfPage": 102,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 27
+ },
+ {
+  "id": "q099",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理有一个名为 kbsearch 的模型上下文协议\n(MCP) 工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要确定性地强制代理在每次运行时调用 kbsearch。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add the response_format parameter to the create_and_process() method call",
+    "textEn": "Add the response_format parameter to the create_and_process() method call.",
+    "textZh": "在 create_and_process() 方法调用中添加 response_format 参数。"
+   },
+   {
+    "id": "B",
+    "text": "Replace create_and_process() method with the create_thread_and_process_run() method",
+    "textEn": "Replace create_and_process() method with the create_thread_and_process_run() method.",
+    "textZh": "用 create_thread_and_process_run()方法替换 create_and_process() 方法。"
+   },
+   {
+    "id": "C",
+    "text": "Add the toolset parameter to the create_and_process() method call",
+    "textEn": "Add the toolset parameter to the create_and_process() method call.",
+    "textZh": "在 create_and_process() 方法调用中添加 toolset 参数。"
+   },
+   {
+    "id": "D",
+    "text": "Add the tool_choice parameter to the create_and_process() method call",
+    "textEn": "Add the tool_choice parameter to the create_and_process() method call.",
+    "textZh": "在 create_and_process() 方法调用中添加 tool_choice 参数。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "要确定性地强制代理在每次运行时调用您的模型上下文协议 (MCP) 工具，您 \n必须在 create_and_process 执行调用中添加 tool_choice=\"required\" 参数。\n \n默认情况下，模型动态自动选择是否使用工具或回退到其基础知识库。设置 tool_choice=\"required\" \n会覆盖此行为，确保代理在调用至少一个配置的工具之前无法回复。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理有一个名为 kbsearch 的模型上下文协议\n(MCP) 工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要确定性地强制代理在每次运行时调用 kbsearch。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent has a Model Context Protocol\n(MCP) tool named kbsearch that queries a knowledge base stored in Azure AI Search.\nSome agent runs return answers from the base model without invoking the knowledge base, which results\nin responses without grounded citations.\nYou are provided with the following code snippet that runs the agent.\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\nYou need to deterministically force the agent to invoke kbsearch on each run.\nWhat should you do?",
+  "explanationZh": "要确定性地强制代理在每次运行时调用您的模型上下文协议 (MCP) 工具，您 \n必须在 create_and_process 执行调用中添加 tool_choice=\"required\" 参数。\n \n默认情况下，模型动态自动选择是否使用工具或回退到其基础知识库。设置 tool_choice=\"required\" \n会覆盖此行为，确保代理在调用至少一个配置的工具之前无法回复。",
+  "explanationEn": "To deterministically force the agent to invoke your Model Context Protocol (MCP) tool on every run, you\nmust add the tool_choice=\"required\" parameter inside the create_and_process execution call.\n \nBy default, the model dynamically auto-selects whether to use a \n tool or fallback to its base knowledge\nbase. Setting tool_choice=\"required\" overrides this behavior, ensuring the agent cannot reply until it calls\nat least one configured tool.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 28",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 28",
+  "pdfPage": 102,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 28
+ },
+ {
+  "id": "q100",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您拥有一个 Azure 订阅。\n您需要构建一个应用程序，用于比较文档的语义相似性。该解决方案必须满足以下要求：\n● 返回表示每个文档的标记的数值向量。\n● 最小化开发工作量。\n您应该使用哪个 Azure OpenAI 模型？",
+  "options": [
+   {
+    "id": "A",
+    "text": "GPT-3.5",
+    "textEn": "GPT-3.5",
+    "textZh": "GPT-3.5"
+   },
+   {
+    "id": "B",
+    "text": "embeddings",
+    "textEn": "embeddings",
+    "textZh": "embeddings"
+   },
+   {
+    "id": "C",
+    "text": "GPT-4",
+    "textEn": "GPT-4",
+    "textZh": "GPT-4"
+   },
+   {
+    "id": "D",
+    "text": "DALL-E",
+    "textEn": "DALL-E",
+    "textZh": "DALL-E"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "了解 Azure OpenAI 服务中的嵌入\n嵌入是一种特殊的数据表示格式，机器学习模型和算法可以轻松使用。嵌入是文本语义意义的信息密集表\n示。每个嵌入都是一个浮点数向量，在向量空间中两个嵌入之间的距离与原始格式中两个输入之间的语义\n相似性相关。例如，如果两个文本相似，则它们的向量表示也应该相似。\ninal\nlar.\n嵌入模型\n不同的 Azure OpenAI 嵌入模型被创建为在特定任务上表现良好：\n*-> 相似性嵌入擅长捕捉两个或多个文本片段之间的语义相似性。\n文本搜索嵌入帮助衡量长文档是否与短查询相关。\n代码搜索嵌入对于嵌入代码片段和嵌入自然语言搜索查询非常有用。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个 Azure 订阅。\n您需要构建一个应用程序，用于比较文档的语义相似性。该解决方案必须满足以下要求：\n● 返回表示每个文档的标记的数值向量。\n● 最小化开发工作量。\n您应该使用哪个 Azure OpenAI 模型？",
+  "stemEn": "You have an Azure subscription.\nYou need to build an app that will compare documents for semantic similarity. The solution must meet the\nfollowing requirements:\n● Return numeric vectors that represent the tokens of each document.\n● Minimize development effort.\nWhich Azure OpenAI model should you use?",
+  "explanationZh": "了解 Azure OpenAI 服务中的嵌入\n嵌入是一种特殊的数据表示格式，机器学习模型和算法可以轻松使用。嵌入是文本语义意义的信息密集表\n示。每个嵌入都是一个浮点数向量，在向量空间中两个嵌入之间的距离与原始格式中两个输入之间的语义\n相似性相关。例如，如果两个文本相似，则它们的向量表示也应该相似。\ninal\nlar.\n嵌入模型\n不同的 Azure OpenAI 嵌入模型被创建为在特定任务上表现良好：\n*-> 相似性嵌入擅长捕捉两个或多个文本片段之间的语义相似性。\n文本搜索嵌入帮助衡量长文档是否与短查询相关。\n代码搜索嵌入对于嵌入代码片段和嵌入自然语言搜索查询非常有用。",
+  "explanationEn": "Understand embeddings in Azure OpenAI Service\nAn embedding is a special format of data representation that machine learning models and algorithms can\neasily use. The embedding is an information dense representation of the semantic meaning of a piece of\ntext. Each embedding is a vector of floating-point numbers, such that the distance between two\nembeddings in the vector space is correlated with semantic similarity between two inputs in the orig\nformat. For example, if two texts are similar, then their vector representations should also be simi\nEmbedding models\nDifferent Azure OpenAI embedding models are created to be good at a particular task:\n*-> Similarity embeddings are good at capturing semantic similarity between two or more pieces of text.\nText search embeddings help measure whether long documents are relevant to a short query.\nCode search embeddings are useful for embedding code snippets and embedding natural language\nsearch queries.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 29",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 29",
+  "pdfPage": 103,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 29
+ },
+ {
+  "id": "q101",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您正在构建一个应用程序，为用户提供常见人工智能术语的定义。\n您创建了以下 Python 代码。\n```\n...\nopenai.api_key = key\nopenai.api_base = endpoint\nresponse = openai.ChatCompletion.create(\n    engine=deployment_name\n    messages=[\n        {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n        {\"role\": \"user\", \"content\": \"What is an LLM?\"}\n    ]\n)\n\nprint(response['choices'][0]['message']['content'])\n...\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意：每个正确的选择值为一点。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "系统消息有助于设置助手的行为。例如，您可以修改助手的个性\n或提供关于它在整个对话中应如何行为的具体指示。\n但是，请注意，系统消息是可选的，模型在没有系统消息的情况下的行为\n可能与使用诸如“您是一个乐于助人的助手”这样的通用消息相似。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "响应将包含对大型语言模型（LLM）的解释，且确定性很高。",
+    "labelEn": "The response will contain an explanation of large language models (LLMs) that has a high degree of certainty.",
+    "labelZh": "响应将包含对大型语言模型（LLM）的解释，且确定性很高。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "将 \"What is an LLM?\" 更改为 \"What is an LLM in the context of AI models?\" 将产生预期的响应。",
+    "labelEn": "Changing \"What is an LLM?\" to \"What is an LLM in the context of AI models?\" will produce the intended response.",
+    "labelZh": "将 \"What is an LLM?\" 更改为 \"What is an LLM in the context of AI models?\" 将产生预期的响应。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "将 \"You are a helpful assistant.\" 更改为 \"You must answer only within the context of AI language models.\" 将更有可能产生预期的响应。",
+    "labelEn": "Changing \"You are a helpful assistant.\" to \"You must answer only within the context of AI language models.\" will give a higher likelihood of producing the intended response.",
+    "labelZh": "将 \"You are a helpful assistant.\" 更改为 \"You must answer only within the context of AI language models.\" 将更有可能产生预期的响应。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered Yes/No from PDF Correct Answer (p105).",
+  "stemZh": "您正在构建一个应用程序，为用户提供常见人工智能术语的定义。\n您创建了以下 Python 代码。\n```\n...\nopenai.api_key = key\nopenai.api_base = endpoint\nresponse = openai.ChatCompletion.create(\n    engine=deployment_name\n    messages=[\n        {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n        {\"role\": \"user\", \"content\": \"What is an LLM?\"}\n    ]\n)\n\nprint(response['choices'][0]['message']['content'])\n...\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意：每个正确的选择值为一点。",
+  "stemEn": "You are building an app that will provide users with definitions of common AI terms.\nYou create the following Python code.\n```\n...\nopenai.api_key = key\nopenai.api_base = endpoint\nresponse = openai.ChatCompletion.create(\n    engine=deployment_name\n    messages=[\n        {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n        {\"role\": \"user\", \"content\": \"What is an LLM?\"}\n    ]\n)\n\nprint(response['choices'][0]['message']['content'])\n...\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth point.",
+  "explanationZh": "系统消息有助于设置助手的行为。例如，您可以修改助手的个性\n或提供关于它在整个对话中应如何行为的具体指示。\n但是，请注意，系统消息是可选的，模型在没有系统消息的情况下的行为\n可能与使用诸如“您是一个乐于助人的助手”这样的通用消息相似。",
+  "explanationEn": "The system message helps set the behavior of the assistant. For example, you can modify the personality\nof the assistant or provide specific instructions about how it should behave throughout the conversation.\nHowever, note that the system message is optional and the model’s behavior without a system message is\nlikely to be similar to using a generic message such as \"You are a helpful assistant.\"",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "yn",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 30",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 30",
+  "pdfPage": 104,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 30
+ },
+ {
+  "id": "q102",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n \n在您回答本节中的问题后，您将无法返回到该问题。因此，这些\n \n问题将不会出现在复习屏幕中。 \n \n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容\n \n安全控制平面资源的 Azure 订阅。 \n \n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n这符合要求吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值\n和阻止列表。\n不正确：\n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。\n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n \n在您回答本节中的问题后，您将无法返回到该问题。因此，这些\n \n问题将不会出现在复习屏幕中。 \n \n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容\n \n安全控制平面资源的 Azure 订阅。 \n \n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n这符合要求吗？",
+  "stemEn": "Note: This question is part of a series of questions that present the same scenario. Each question\nin the series contains a unique solution that might meet the stated goals. Some question sets\nmight have more than one correct solution, while others might not have a correct solution.\nAfter you answer a question in this section, you will NOT be able to return to it. As a result, these\nquestions will not appear in the review screen. \nYou have an Azure subscription that contains a Microsoft Foundry resource named AI1 and a Content\nSafety in Foundry Control Plane resource named CS1. \n \nYou build an agent that uses AI1 to provide generative answers to specific questions and CS1 to check\ninput and output for objectionable content.\nYou need to optimize the content filter configurations by running tests on sample questions.\nSolution: From Content Safety Studio, you use the Moderate text content feature to run the tests.\nDoes this meet the requirement?",
+  "explanationZh": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值\n和阻止列表。\n不正确：\n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。\n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "explanationEn": "Correct:\n* From Content Safety Studio, you use the Moderate text content feature to run the tests.\nYou should use Moderate text from the Content Safety Studio to run the tests and optimize the content\nfilter configurations.\nDetects Harmful Content: The Moderate text feature specifically identifies harmful, offensive, or\nobjectionable text in inputs and outputs.\nTests Configurations: It allows you to run sample prompts and text through filter setups to verify thresholds\nand block lists.\nIncorrect:\n* From Content Safety Studio, you use the Monitor online activity feature to run the tests.\n* From Content Safety Studio, you use the Protected material detection feature to run the tests.\n* From Content Safety Studio, you use the Safety metaprompt feature to run the tests.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 31",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 31",
+  "pdfPage": 105,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 31
+ },
+ {
+  "id": "q103",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n在您回答本节中的问题后，您将无法返回到该问题。因此，这些问题将不会出现在复习屏幕中。\n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容安全控制平面资源的 Azure 订阅。\n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用安全元提示功能来运行测试。\n这符合要求吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值\n和阻止列表。\n不正确：\n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。\n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n在您回答本节中的问题后，您将无法返回到该问题。因此，这些问题将不会出现在复习屏幕中。\n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容安全控制平面资源的 Azure 订阅。\n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用安全元提示功能来运行测试。\n这符合要求吗？",
+  "stemEn": "Note: This question is part of a series of questions that present the same scenario. Each question\nin the series contains a unique solution that might meet the stated goals. Some question sets\nmight have more than one correct solution, while others might not have a correct solution.\nAfter you answer a question in this section, you will NOT be able to return to it. As a result, these\nquestions will not appear in the review screen.\nYou have an Azure subscription that contains a Microsoft Foundry resource named AI1 and a Content\nSafety in Foundry Control Plane resource named CS1.\nYou build an agent that uses AI1 to provide generative answers to specific questions and CS1 to check\ninput and output for objectionable content.\nYou need to optimize the content filter configurations by running tests on sample questions.\nSolution: From Content Safety Studio, you use the Safety metaprompt feature to run the tests.\nDoes this meet the requirement?",
+  "explanationZh": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值\n和阻止列表。\n不正确：\n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。\n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "explanationEn": "Correct:\n* From Content Safety Studio, you use the Moderate text content feature to run the tests.\nYou should use Moderate text from the Content Safety Studio to run the tests and optimize the content\nfilter configurations.\nDetects Harmful Content: The Moderate text feature specifically identifies harmful, offensive, or\nobjectionable text in inputs and outputs.\nTests Configurations: It allows you to run sample prompts and text through filter setups to verify thresholds\nand block lists.\nIncorrect:\n* From Content Safety Studio, you use the Monitor online activity feature to run the tests.\n* From Content Safety Studio, you use the Protected material detection feature to run the tests.\n* From Content Safety Studio, you use the Safety metaprompt feature to run the tests.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 32",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 32",
+  "pdfPage": 106,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 32
+ },
+ {
+  "id": "q104",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n在您回答本节中的问题后，您将无法返回到该问题。因此，这些问题将不会出现在复习屏幕中。\n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容安全控制平面资源的 Azure 订阅。\n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用受保护材料检测功能来运行测试。\n这符合要求吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n \n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值 \n和阻止列表。\n \n不正确： \n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。 \n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n在您回答本节中的问题后，您将无法返回到该问题。因此，这些问题将不会出现在复习屏幕中。\n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容安全控制平面资源的 Azure 订阅。\n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用受保护材料检测功能来运行测试。\n这符合要求吗？",
+  "stemEn": "Note: This question is part of a series of questions that present the same scenario. Each question\nin the series contains a unique solution that might meet the stated goals. Some question sets\nmight have more than one correct solution, while others might not have a correct solution.\nAfter you answer a question in this section, you will NOT be able to return to it. As a result, these\nquestions will not appear in the review screen.\nYou have an Azure subscription that contains a Microsoft Foundry resource named AI1 and a Content\nSafety in Foundry Control Plane resource named CS1.\nYou build an agent that uses AI1 to provide generative answers to specific questions and CS1 to check\ninput and output for objectionable content.\nYou need to optimize the content filter configurations by running tests on sample questions.\nSolution: From Content Safety Studio, you use the Protected material detection feature to run the tests.\nDoes this meet the requirement?",
+  "explanationZh": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n \n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值 \n和阻止列表。\n \n不正确： \n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。 \n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "explanationEn": "Correct:\n* From Content Safety Studio, you use the Moderate text content feature to run the tests.\nYou should use Moderate text from the Content Safety Studio to run the tests and optimize the content\nfilter configurations.\nDetects Harmful Content: The Moderate text feature specifically identifies harmful, offensive, or\nobjectionable text in inputs and outputs.\nTests Configurations: It allows you to run sample prompts and text through filter setups to verify thresholds\nand block lists.\n \nIncorrect: \n* From Content Safety Studio, you use the Monitor online activity feature to run the tests.\n \n* From Content Safety Studio, you use the Protected material detection feature to run the tests.\n \n* From Content Safety Studio, you use the Safety metaprompt feature to run the tests.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 33",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 33",
+  "pdfPage": 106,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 33
+ },
+ {
+  "id": "q105",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n在您回答本节中的问题后，您将无法返回到该问题。因此，这些问题将不会出现在复习屏幕中。\n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容安全控制平面资源的 Azure 订阅。\n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用监控在线活动功能来运行测试。\n这符合要求吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值\n和阻止列表。\n不正确：\n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。\n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：此问题是一个系列问题的一部分，这些问题呈现相同的场景。系列中的每个问题包含一个独特的解决方案，可能满足所述目标。一些问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。\n在您回答本节中的问题后，您将无法返回到该问题。因此，这些问题将不会出现在复习屏幕中。\n您拥有一个包含名为 AI1 的 Microsoft Foundry 资源和一个名为 CS1 的内容安全控制平面资源的 Azure 订阅。\n您构建了一个代理，使用 AI1 为特定问题提供生成性答案，并使用 CS1 检查输入和输出是否包含不当内容。\n您需要通过对样本问题进行测试来优化内容过滤器配置。\n解决方案：在内容安全工作室中，您使用监控在线活动功能来运行测试。\n这符合要求吗？",
+  "stemEn": "Note: This question is part of a series of questions that present the same scenario. Each question\nin the series contains a unique solution that might meet the stated goals. Some question sets\nmight have more than one correct solution, while others might not have a correct solution.\nAfter you answer a question in this section, you will NOT be able to return to it. As a result, these\nquestions will not appear in the review screen.\nYou have an Azure subscription that contains a Microsoft Foundry resource named AI1 and a Content\nSafety in Foundry Control Plane resource named CS1.\nYou build an agent that uses AI1 to provide generative answers to specific questions and CS1 to check\ninput and output for objectionable content.\nYou need to optimize the content filter configurations by running tests on sample questions.\nSolution: From Content Safety Studio, you use the Monitor online activity feature to run the tests.\nDoes this meet the requirement?",
+  "explanationZh": "正确：\n* 在内容安全工作室中，您使用“适度文本内容”功能来运行测试。\n您应该使用内容安全工作室中的适度文本来运行测试并优化内容\n过滤器配置。\n检测有害内容：适度文本功能专门识别输入和输出中的有害、冒犯或\n令人反感的文本。\n测试配置：它允许您通过过滤器设置运行样本提示和文本，以验证阈值\n和阻止列表。\n不正确：\n* 在内容安全工作室中，您使用“监控在线活动”功能来运行测试。\n* 在内容安全工作室中，您使用“受保护材料检测”功能来运行测试。\n* 在内容安全工作室中，您使用“安全元提示”功能来运行测试。",
+  "explanationEn": "Correct:\n* From Content Safety Studio, you use the Moderate text content feature to run the tests.\nYou should use Moderate text from the Content Safety Studio to run the tests and optimize the content\nfilter configurations.\nDetects Harmful Content: The Moderate text feature specifically identifies harmful, offensive, or\nobjectionable text in inputs and outputs.\nTests Configurations: It allows you to run sample prompts and text through filter setups to verify thresholds\nand block lists.\nIncorrect:\n* From Content Safety Studio, you use the Monitor online activity feature to run the tests.\n* From Content Safety Studio, you use the Protected material detection feature to run the tests.\n* From Content Safety Studio, you use the Safety metaprompt feature to run the tests.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 34",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 34",
+  "pdfPage": 107,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 34
+ },
+ {
+  "id": "q106",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您拥有一个包含 Microsoft Foundry 资源的 Azure 订阅。\n您需要构建一个应用程序，该应用程序将根据给定的产品描述建议产品名称。\n您应该使用哪个 Foundry 模型？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Whisper",
+    "textEn": "Whisper",
+    "textZh": "Whisper"
+   },
+   {
+    "id": "B",
+    "text": "DALL-E",
+    "textEn": "DALL-E",
+    "textZh": "DALL-E"
+   },
+   {
+    "id": "C",
+    "text": "embeddings",
+    "textEn": "embeddings",
+    "textZh": "embeddings"
+   },
+   {
+    "id": "D",
+    "text": "GPT-4",
+    "textEn": "GPT-4",
+    "textZh": "GPT-4"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "为了根据给定的产品描述建议产品名称，理想的模型是 GPT-4。GPT-4 是一个强大的语言模型，可\n以根据给定的输入理解和生成类人文本，使其非常适合生成创意建议，如从描述中生成产品名称等\n任务。\n不正确：\nWhisper 用于语音转文本转换，而不是生成文本建议。\nDALL-E 旨在根据文本提示生成图像，而不是用于命名产品等文本生成任务。\nEmbeddings 用于涉及相似性搜索和语义理解的任务，但不用于\n生成新文本，如产品名称。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个包含 Microsoft Foundry 资源的 Azure 订阅。\n您需要构建一个应用程序，该应用程序将根据给定的产品描述建议产品名称。\n您应该使用哪个 Foundry 模型？",
+  "stemEn": "You have an Azure subscription that contains Microsoft Foundry resource.\nYou need to build an app that will suggest product names from a given product description.\nWhich Foundry model should you use?",
+  "explanationZh": "为了根据给定的产品描述建议产品名称，理想的模型是 GPT-4。GPT-4 是一个强大的语言模型，可\n以根据给定的输入理解和生成类人文本，使其非常适合生成创意建议，如从描述中生成产品名称等\n任务。\n不正确：\nWhisper 用于语音转文本转换，而不是生成文本建议。\nDALL-E 旨在根据文本提示生成图像，而不是用于命名产品等文本生成任务。\nEmbeddings 用于涉及相似性搜索和语义理解的任务，但不用于\n生成新文本，如产品名称。",
+  "explanationEn": "To suggest product names from a given product description, the ideal model is GPT-4. GPT-4 is a\npowerful language model that can understand and generate human-like text based on given inputs,\nmaking it well-suited for tasks such as generating creative suggestions like product names from\ndescriptions.\nIncorrect:\nWhisper is used for speech-to-text conversion, not for generating text suggestions.\nDALL-E is designed for generating images from text prompts, not for text generation tasks like naming\nproducts.\nEmbeddings are used for tasks involving similarity search and semantic understanding but not for\ngenerating new text like product names.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 35",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 35",
+  "pdfPage": 108,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 35
+ },
+ {
+  "id": "q107",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "drag",
+  "stem": "您有一个生产食品产品纸板包装的工厂。该工厂的互联网连接不稳定。\n包装要求包含每种产品的四个样本。\n您需要构建一个 Azure 自定义视觉模型，以识别包装中的缺陷并提供缺陷的位置通知给操作员。模型必须确保每个包裹包含四个产品。\n您应该使用哪种项目类型和领域？要回答这个问题，请将适当的选项移动到正确的目标。您可以每个选项使用一次、使用多次或根本不使用。您可能需要移动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Object detection",
+   "General (compact)"
+  ],
+  "pdfAnswer": [
+   "Object detection",
+   "General (compact)"
+  ],
+  "explanation": "框 1：目标检测\n此场景的最佳项目类型是使用通用（紧凑型）领域的目标检测。\n项目类型：目标检测是必需的，因为您必须识别缺陷在包装上的存在和具体位置（坐标），并且还要计\n算单个物品以验证每个包装中是否包含所需数量的产品。\n定位缺陷：与图像分类（仅将整个图像标记为好或坏）不同，目标检测在单个缺陷和物品周围绘制边\n界框。\n计数物品：边界坐标允许系统验证包装边界内是否存在所有所需的产品样本。\n处理边缘约束：导出紧凑型模型允许在现场执行，而无需依赖持续的云连接。\n框 2：通用（紧凑型）\n通用（紧凑型）是必不可少的，因为工厂的互联网连接不稳定。紧凑型领域可以导出并在边缘设备\n上本地运行，以进行离线实时推理。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "项目类型",
+    "labelEn": "Project type",
+    "labelZh": "项目类型",
+    "answer": "Object detection",
+    "choices": [
+     {
+      "key": "Food",
+      "en": "Food",
+      "zh": "食品"
+     },
+     {
+      "key": "General",
+      "en": "General",
+      "zh": "常规"
+     },
+     {
+      "key": "General (compact)",
+      "en": "General (compact)",
+      "zh": "常规（精简）"
+     },
+     {
+      "key": "Image classification",
+      "en": "Image classification",
+      "zh": "图像分类"
+     },
+     {
+      "key": "Logo",
+      "en": "Logo",
+      "zh": "徽标"
+     },
+     {
+      "key": "Object detection",
+      "en": "Object detection",
+      "zh": "对象检测"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "域",
+    "labelEn": "Domain",
+    "labelZh": "域",
+    "answer": "General (compact)",
+    "choices": [
+     {
+      "key": "Food",
+      "en": "Food",
+      "zh": "食品"
+     },
+     {
+      "key": "General",
+      "en": "General",
+      "zh": "常规"
+     },
+     {
+      "key": "General (compact)",
+      "en": "General (compact)",
+      "zh": "常规（精简）"
+     },
+     {
+      "key": "Image classification",
+      "en": "Image classification",
+      "zh": "图像分类"
+     },
+     {
+      "key": "Logo",
+      "en": "Logo",
+      "zh": "徽标"
+     },
+     {
+      "key": "Object detection",
+      "en": "Object detection",
+      "zh": "对象检测"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个生产食品产品纸板包装的工厂。该工厂的互联网连接不稳定。\n包装要求包含每种产品的四个样本。\n您需要构建一个 Azure 自定义视觉模型，以识别包装中的缺陷并提供缺陷的位置通知给操作员。模型必须确保每个包裹包含四个产品。\n您应该使用哪种项目类型和领域？要回答这个问题，请将适当的选项移动到正确的目标。您可以每个选项使用一次、使用多次或根本不使用。您可能需要移动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a factory that produces cardboard packaging for food products. The factory has intermittent\ninternet connectivity.\nThe packages are required to include four samples of each product.\nYou need to build an Azure Custom Vision model that will identify defects in packaging and provide the\nlocation of the defects to an operator. The model must ensure that each package contains the four\nproducts.\nWhich project type and domain should you use? To answer, move the appropriate options to the correct\ntargets. You may use each option once, more than once, or not at all. You may need to move the split bar\nbetween panes or scroll to view content.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1：目标检测\n此场景的最佳项目类型是使用通用（紧凑型）领域的目标检测。\n项目类型：目标检测是必需的，因为您必须识别缺陷在包装上的存在和具体位置（坐标），并且还要计\n算单个物品以验证每个包装中是否包含所需数量的产品。\n定位缺陷：与图像分类（仅将整个图像标记为好或坏）不同，目标检测在单个缺陷和物品周围绘制边\n界框。\n计数物品：边界坐标允许系统验证包装边界内是否存在所有所需的产品样本。\n处理边缘约束：导出紧凑型模型允许在现场执行，而无需依赖持续的云连接。\n框 2：通用（紧凑型）\n通用（紧凑型）是必不可少的，因为工厂的互联网连接不稳定。紧凑型领域可以导出并在边缘设备\n上本地运行，以进行离线实时推理。",
+  "explanationEn": "Box 1: Object Detection\nThe best project type for this scenario is Object Detection using the General (compact) domain.\nProject Type: Object Detection is required because you must identify both the presence and the specific\nlocation (coordinates) of the defects on the packaging, as well as count the individual items to verify that\neach package contains the required number of products.\nLocates Defects: Unlike image classification (which only tags an entire image as good or bad), object\ndetection draws bounding boxes around individual defects and items.\nCounts Items: Bounding coordinates allow the system to verify if all required product samples are present\ninside the package bounds.\nHandles Edge Constraints: Exporting the compact model allows on-site execution without relying on a\ncontinuous cloud connection.\nBox 2: General (compact)\nGeneral (compact) is essential because the factory has intermittent internet connectivity. Compact\ndomains can be exported and run locally on edge devices for offline, real-time inference.",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "drag",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 36",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 36",
+  "pdfPage": 108,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 36
+ },
+ {
+  "id": "q108",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "在 Microsoft Foundry 中，您使用带有 GPT-35 Turbo 模型的聊天游乐场。\n您有一个包含以下代码的提示。\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\n您需要模型创建代码的解释。解决方案必须尽量降低成本。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add // what does function F do? to the prompt",
+    "textEn": "Add // what does function F do? to the prompt.",
+    "textZh": "在提示中添加 // function F 的作用是什么？。"
+   },
+   {
+    "id": "B",
+    "text": "Set the temperature parameter to 1",
+    "textEn": "Set the temperature parameter to 1.",
+    "textZh": "将温度参数设置为 1。"
+   },
+   {
+    "id": "C",
+    "text": "Change the model to GPT-4-32k",
+    "textEn": "Change the model to GPT-4-32k.",
+    "textZh": "将模型更改为 GPT-4-32k。"
+   },
+   {
+    "id": "D",
+    "text": "Add function F(explanation) to the prompt",
+    "textEn": "Add function F(explanation) to the prompt.",
+    "textZh": "在提示中添加 function F(explanation)。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "通过在提示中添加类似 // function F 是做什么的？的注释，您指示 GPT 模型提供对该函数行为的解释。这\n种方法直接要求模型解释代码，这将有助于生成解释，而无需对模型进行更改或额外的资源密集型配\n置。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "在 Microsoft Foundry 中，您使用带有 GPT-35 Turbo 模型的聊天游乐场。\n您有一个包含以下代码的提示。\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\n您需要模型创建代码的解释。解决方案必须尽量降低成本。\n您应该怎么做？",
+  "stemEn": "In Microsoft Foundry, you use the Chat playground with the GPT-35 Turbo model.\nYou have a prompt that contains the following code.\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\nYou need the model to create an explanation of the code. The solution must minimize costs.\nWhat should you do?",
+  "explanationZh": "通过在提示中添加类似 // function F 是做什么的？的注释，您指示 GPT 模型提供对该函数行为的解释。这\n种方法直接要求模型解释代码，这将有助于生成解释，而无需对模型进行更改或额外的资源密集型配\n置。",
+  "explanationEn": "By adding a comment like // what does function F do? to the prompt, you are instructing the GPT model to\nprovide an explanation of the function's behavior. This approach directly asks the model to explain the\ncode, which will help generate an explanation without requiring changes to the model or additional\nresource-intensive configurations.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 37",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 37",
+  "pdfPage": 110,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 37
+ },
+ {
+  "id": "q109",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add a reflection pass before the responses are returned",
+    "textEn": "Add a reflection pass before the responses are returned.",
+    "textZh": "在返回响应之前添加反思过程。"
+   },
+   {
+    "id": "B",
+    "text": "Enable response streaming",
+    "textEn": "Enable response streaming.",
+    "textZh": "启用响应流。"
+   },
+   {
+    "id": "C",
+    "text": "Increase the value of the presence_penalty parameter",
+    "textEn": "Increase the value of the presence_penalty parameter.",
+    "textZh": "增加 presence_penalty 参数的值。"
+   },
+   {
+    "id": "D",
+    "text": "Decrease the value of the max_tokens parameter",
+    "textEn": "Decrease the value of the max_tokens parameter.",
+    "textZh": "减少 max_tokens 参数的值。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "正确：\n* 在返回响应之前添加反思过程。\n反思过程作为您应用程序逻辑中的内部验证步骤。它指示代理evaluate其草拟响应与检索到的政策文件，\n以确保没有遗漏任何强制性监管条款。如果它检测到关键文本缺失，它会在发送给用户之前重新生成或修\n正答案。这直接满足了提高响应完整性的核心要求。\nss.\n* 在返回响应之前添加重试评估。\n您应该在应用程序代码中实现评估和重试循环。\n您必须将代理调用包装在一个条件代码循环中，该循环根据所需标准（例如监管条款的检查清单）评\n估输出，并在信息遗漏时程序性地强制重试。\n不正确：\n* 减少 max_tokens 参数的值。\n* 降低 temperature 参数的值。\n* 启用响应流。\n* 增加 presence_penalty 参数的值\n* 用更小的部署替换模型。\n* 切换到检索增强生成 (RAG)。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nYou need to improve response completeness. The solution must be implemented in the logic of the\napplication code before responses are returned.\nWhat should you do?",
+  "explanationZh": "正确：\n* 在返回响应之前添加反思过程。\n反思过程作为您应用程序逻辑中的内部验证步骤。它指示代理evaluate其草拟响应与检索到的政策文件，\n以确保没有遗漏任何强制性监管条款。如果它检测到关键文本缺失，它会在发送给用户之前重新生成或修\n正答案。这直接满足了提高响应完整性的核心要求。\nss.\n* 在返回响应之前添加重试评估。\n您应该在应用程序代码中实现评估和重试循环。\n您必须将代理调用包装在一个条件代码循环中，该循环根据所需标准（例如监管条款的检查清单）评\n估输出，并在信息遗漏时程序性地强制重试。\n不正确：\n* 减少 max_tokens 参数的值。\n* 降低 temperature 参数的值。\n* 启用响应流。\n* 增加 presence_penalty 参数的值\n* 用更小的部署替换模型。\n* 切换到检索增强生成 (RAG)。",
+  "explanationEn": "Correct:\n* Add a reflection pass before the responses are returned.\nA reflection pass acts as an internal verification step within your application's logic. It directs the agent to\nevaluate its own draft response against the retrieved policy documents to ensure no mandatory regulatory\nclauses were left out. If it detects that critical text is missing, it regenerates or amends the answer before\nsending it to the user. This directly fulfills the core requirement of improving response completene\n* Add a retry evaluation before the responses are returned.\nYou should implement an evaluation and retry loop in your application code.\nYou must wrap the agent call inside a conditional code loop that evaluates the output against required\ncriteria (such as a checklist of regulatory clauses), and programmatically forces a retry if information is\nomitted.\nIncorrect:\n* Decrease the value of the max_tokens parameter.\n* Decrease the value of the temperature paramerer.\n* Enable response streaming.\n* Increase the value of the presence_penalty parameter\n* Replace the model with a smaller deployment.\n* Switch to Retrieval Augmented Generation (RAG).",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 38",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 38",
+  "pdfPage": 110,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 38
+ },
+ {
+  "id": "q110",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您正在设计一个解决方案，以回答存储在 PDF 格式中的人力资源（HR）政策相关问题。\n \n您需要确保每次都返回对特定问题的相同答案。该解决方案必须最小化开发工作量。\n \n \n您应该在解决方案中包含哪个服务？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure OpenAI",
+    "textEn": "Azure OpenAI",
+    "textZh": "Azure OpenAI"
+   },
+   {
+    "id": "B",
+    "text": "Azure Language in Foundry Tools",
+    "textEn": "Azure Language in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Language"
+   },
+   {
+    "id": "C",
+    "text": "Azure Machine Learning",
+    "textEn": "Azure Machine Learning",
+    "textZh": "Azure Machine Learning"
+   },
+   {
+    "id": "D",
+    "text": "Azure Document Intelligence in Foundry Tools",
+    "textEn": "Azure Document Intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Document Intelligence"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "题干要求对 HR 政策 PDF 问答，且每次对同一问题返回相同答案，并尽量少开发。Azure Language Custom Question Answering 官方写明：“When you want to provide the same answer… the same answer is returned”，并可从 PDF 导入。Azure OpenAI 默认非确定性；Document Intelligence 不做 FAQ；AML 开发量大。正确答案：B Azure Language in Foundry Tools。参考：https://learn.microsoft.com/en-us/azure/ai-services/language-service/question-answering/overview",
+  "caseStudy": false,
+  "answerConfidence": "high",
+  "answerFixed": false,
+  "stemZh": "您正在设计一个解决方案，以回答存储在 PDF 格式中的人力资源（HR）政策相关问题。\n \n您需要确保每次都返回对特定问题的相同答案。该解决方案必须最小化开发工作量。\n \n \n您应该在解决方案中包含哪个服务？",
+  "stemEn": "You are designing a solution that will answer questions about human resources (HR) policies stored in the\nPDF format. \n \nmust minimize development effort.\n \nYou need to ensure that the identical answer to a specific question is returned every time. The solution\nWhich service should you include in the solution?",
+  "explanationZh": "您可以创建一个由 Azure OpenAI 提供支持的自定义常见问题解答 PDF 解决方案，并引用来自 GroundedData 的信息\n。\n商业问题\n想象一个经常处理常见问题解答、法律文件或报告的组织。他们希望有一个\n自动化系统，可以：\n从现有 PDF 文档中找到的信息生成问题的答案。\n确保在响应中包含这些文档的引用。\n输出一个结构化的 PDF，其中的问答和引用以专业且易读的方式格式化。\n解决方案概述\n通过利用 Azure OpenAI 处理您的数据和 Azure Cognitive Search，我们可以将 OpenAI GPT\n模型与自定义文档（如 PDF）结合。当被查询时，模型从文档中检索最相关的响应\n并包括引用，如文档标题或页码，并创建一个\n问答格式的 JSON 文件。系统随后生成一个结构化、专业外观的 PDF\n，包含加粗的问题、清晰的答案和引用。\nx9gse",
+  "explanationEn": "You can create a Custom FAQs PDF Solution Powered by Azure OpenAI with Citations from Grounded\nData.\nBusiness Problem\nImagine an organization that frequently deals with FAQs, legal documents, or reports. They want an\nautomated system that can:\nGenerate answers from questions using the information found in existing PDF documents.\nEnsure citations from those documents are included in the responses.\nOutput a structured PDF with the Q&A and citations formatted in a professional and readable way.\nSolution Overview\nBy leveraging Azure OpenAI on your data and Azure Cognitive Search, we can ground the OpenAI GPT\nmodel with custom documents like PDFs. When queried, the model retrieves the most relevant responses\nfrom the documents and includes citations such as document titles or page numbers and create a\nquestion-and-answer format JSON file. The system then generates a structured, professional-looking PDF\nwith bold questions, clear answers, and citations.\nx9gse",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 39",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 39",
+  "pdfPage": 111,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 39
+ },
+ {
+  "id": "q111",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Python 应用程序，使用 Azure OpenAI 结构化输出从非结构化收据文本和支持票据文本中提取字段。该应用程序使用以下架构。\n```\nreceipt_response_format = {\n    \"type\": \"json_schema\",\n    \"json_schema\": {\n        \"name\": \"ReceiptExtraction\",\n        \"strict\": True,\n        \"schema\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"merchant\": {\"type\": \"string\"},\n                \"order_number\": {\"type\": \"integer\"},\n                \"discount_code\": {\n                    \"anyOf\": [\n                        {\"type\": \"string\"},\n                        {\"type\": \"null\"}\n                    ]\n                },\n                \"line_items\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"product\": {\"type\": \"string\"},\n                            \"quantity\": {\"type\": \"integer\"},\n                            \"unit_price\": {\"type\": \"number\"}\n                        },\n                        \"required\": [\"product\", \"quantity\", \"unit_price\"],\n                        \"additionalProperties\": False\n                    }\n                },\n                \"total\": {\"type\": \"number\"}\n            },\n            \"required\": [\"merchant\", \"order_number\", \"discount_code\", \"line_items\", \"total\"],\n            \"additionalProperties\": False\n        }\n    }\n}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "discount_code 属性必须出现在输出中，因为它是必需的，但其 anyOf 定义 \n \n允许为 null，因此收据不需要实际的折扣代码。 \n该模式对于 Azure OpenAI 结构化输出是有效的：所有属性都是必需的，两个对象 \n \ndefinitions 将 additionalProperties 设置为 False，嵌套的 anyOf 使用支持的类型。\n结构化输出保留模式的属性顺序：merchant、order_number、discount_code、\nline_items 和 total。\n2Cdotnet-entra-id%2Cjavascript-secure&pivots=programming-language-python",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "该架构要求收据必须包含 discount_code 值。",
+    "labelEn": "The schema requires that a receipt has a discount_code value.",
+    "labelZh": "该架构要求收据必须包含 discount_code 值。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "该架构可以直接用于 Azure OpenAI 结构化输出（structured outputs）。",
+    "labelEn": "The schema can be used as is for Azure OpenAI structured outputs.",
+    "labelZh": "该架构可以直接用于 Azure OpenAI 结构化输出（structured outputs）。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "生成的 JSON 对象将保留架构中 merchant、order_number、discount_code、line_items 和 total 的属性顺序。",
+    "labelEn": "The generated JSON object will preserve the schema property order of merchant, order_number, discount_code, line_items, and total.",
+    "labelZh": "生成的 JSON 对象将保留架构中 merchant、order_number、discount_code、line_items 和 total 的属性顺序。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered Yes/No from PDF Correct Answer (p113).",
+  "stemZh": "您有一个 Python 应用程序，使用 Azure OpenAI 结构化输出从非结构化收据文本和支持票据文本中提取字段。该应用程序使用以下架构。\n```\nreceipt_response_format = {\n    \"type\": \"json_schema\",\n    \"json_schema\": {\n        \"name\": \"ReceiptExtraction\",\n        \"strict\": True,\n        \"schema\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"merchant\": {\"type\": \"string\"},\n                \"order_number\": {\"type\": \"integer\"},\n                \"discount_code\": {\n                    \"anyOf\": [\n                        {\"type\": \"string\"},\n                        {\"type\": \"null\"}\n                    ]\n                },\n                \"line_items\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"product\": {\"type\": \"string\"},\n                            \"quantity\": {\"type\": \"integer\"},\n                            \"unit_price\": {\"type\": \"number\"}\n                        },\n                        \"required\": [\"product\", \"quantity\", \"unit_price\"],\n                        \"additionalProperties\": False\n                    }\n                },\n                \"total\": {\"type\": \"number\"}\n            },\n            \"required\": [\"merchant\", \"order_number\", \"discount_code\", \"line_items\", \"total\"],\n            \"additionalProperties\": False\n        }\n    }\n}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You have a Python application that uses Azure OpenAI structured outputs to extract fields from\nunstructured receipt text and support ticket text. The application uses the following schema.\n```\nreceipt_response_format = {\n    \"type\": \"json_schema\",\n    \"json_schema\": {\n        \"name\": \"ReceiptExtraction\",\n        \"strict\": True,\n        \"schema\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"merchant\": {\"type\": \"string\"},\n                \"order_number\": {\"type\": \"integer\"},\n                \"discount_code\": {\n                    \"anyOf\": [\n                        {\"type\": \"string\"},\n                        {\"type\": \"null\"}\n                    ]\n                },\n                \"line_items\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"product\": {\"type\": \"string\"},\n                            \"quantity\": {\"type\": \"integer\"},\n                            \"unit_price\": {\"type\": \"number\"}\n                        },\n                        \"required\": [\"product\", \"quantity\", \"unit_price\"],\n                        \"additionalProperties\": False\n                    }\n                },\n                \"total\": {\"type\": \"number\"}\n            },\n            \"required\": [\"merchant\", \"order_number\", \"discount_code\", \"line_items\", \"total\"],\n            \"additionalProperties\": False\n        }\n    }\n}\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "discount_code 属性必须出现在输出中，因为它是必需的，但其 anyOf 定义 \n \n允许为 null，因此收据不需要实际的折扣代码。 \n该模式对于 Azure OpenAI 结构化输出是有效的：所有属性都是必需的，两个对象 \n \ndefinitions 将 additionalProperties 设置为 False，嵌套的 anyOf 使用支持的类型。\n结构化输出保留模式的属性顺序：merchant、order_number、discount_code、\nline_items 和 total。\n2Cdotnet-entra-id%2Cjavascript-secure&pivots=programming-language-python",
+  "explanationEn": "The discount_code property must appear in the output because it is required, but its anyOf definition\npermits null, so the receipt does not need an actual discount code.\n \nThe schema is valid for Azure OpenAI structured outputs: all properties are required, both object\n \ndefinitions set additionalProperties to False, and the nested anyOf uses supported types.\nStructured outputs preserve the schema’s property order: merchant, order_number, discount_code,\nline_items, and total.\n2Cdotnet-entra-id%2Cjavascript-secure&pivots=programming-language-python",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "yn",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 40",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 40",
+  "pdfPage": 112,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 40
+ },
+ {
+  "id": "q112",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Increase the value of the presence_penalty parameter",
+    "textEn": "Increase the value of the presence_penalty parameter.",
+    "textZh": "增加 presence_penalty 参数的值。"
+   },
+   {
+    "id": "B",
+    "text": "Decrease the value of the max_tokens parameter",
+    "textEn": "Decrease the value of the max_tokens parameter.",
+    "textZh": "减少 max_tokens 参数的值。"
+   },
+   {
+    "id": "C",
+    "text": "Add a reflection pass before the responses are returned",
+    "textEn": "Add a reflection pass before the responses are returned.",
+    "textZh": "在返回响应之前添加反思步骤。"
+   },
+   {
+    "id": "D",
+    "text": "Replace the model with a smaller deployment",
+    "textEn": "Replace the model with a smaller deployment.",
+    "textZh": "用更小的部署替换模型。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "反思步骤在返回响应之前在应用程序代码中添加了审查和修订步骤。它\n检查草稿摘要与检索到的政策文件，识别缺失的信息，并\n修订摘要以提高完整性，同时保持与源材料的关联。\nmcp-driven-patterns-in-agent-framework/4462150",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nYou need to improve response completeness. The solution must be implemented in the logic of the\napplication code before responses are returned.\nWhat should you do?",
+  "explanationZh": "反思步骤在返回响应之前在应用程序代码中添加了审查和修订步骤。它\n检查草稿摘要与检索到的政策文件，识别缺失的信息，并\n修订摘要以提高完整性，同时保持与源材料的关联。\nmcp-driven-patterns-in-agent-framework/4462150",
+  "explanationEn": "A reflection pass adds a review-and-revision step in the application code before returning the response. It\nchecks the draft summary against the retrieved policy documents, identifies missing information, and\nrevises the summary to improve completeness while remaining grounded in the source material.\nmcp-driven-patterns-in-agent-framework/4462150",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 41",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 41",
+  "pdfPage": 113,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 41
+ },
+ {
+  "id": "q113",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Enable response streaming",
+    "textEn": "Enable response streaming.",
+    "textZh": "启用响应流式传输。"
+   },
+   {
+    "id": "B",
+    "text": "Add a retry evaluation before the responses are returned",
+    "textEn": "Add a retry evaluation before the responses are returned.",
+    "textZh": "在返回响应之前添加重试评估。"
+   },
+   {
+    "id": "C",
+    "text": "Replace the model with a smaller deployment",
+    "textEn": "Replace the model with a smaller deployment.",
+    "textZh": "用更小的部署替换模型。"
+   },
+   {
+    "id": "D",
+    "text": "Decrease the value of the max_tokens parameter",
+    "textEn": "Decrease the value of the max_tokens parameter.",
+    "textZh": "减少 max_tokens 参数的值。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "在应用程序代码中添加一个评估和重试步骤，以检查生成的摘要是否涵盖了检索到的政策文件中的相关信\n \n息。如果摘要不完整，请在返回响应之前，使用识别遗漏的反馈重试生成。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n您需要提高响应的完整性。解决方案必须在响应返回之前在应用程序代码的逻辑中实现。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nYou need to improve response completeness. The solution must be implemented in the logic of the\napplication code before responses are returned.\nWhat should you do?",
+  "explanationZh": "在应用程序代码中添加一个评估和重试步骤，以检查生成的摘要是否涵盖了检索到的政策文件中的相关信\n \n息。如果摘要不完整，请在返回响应之前，使用识别遗漏的反馈重试生成。",
+  "explanationEn": "Add an evaluation-and-retry step in the application code to check whether the generated summary covers\nthe relevant information in the retrieved policy documents. If the summary is incomplete, retry generation\n \nwith feedback identifying the omissions before returning the response.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 42",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 42",
+  "pdfPage": 114,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 42
+ },
+ {
+  "id": "q114",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您有一个应用程序，通过在 Microsoft Foundry 中使用 Azure OpenAI 处理支持案例笔记。该应用程序具有以下请求定义。\n```\nsource_text = \"Case 4817: Customer reports intermittent checkout failures.\"\n\nrequest_a = {\n    \"method\": \"POST\",\n    \"url\": \"https://contoso-openai.openai.azure.com/openai/v1/embeddings?api-version=preview\",\n    \"headers\": {\n        \"api-key\": \"<key>\",\n        \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n        \"model\": \"text-embedding-ada-002\",\n        \"input\": [source_text]\n    }\n}\n\nrequest_b = {\n    \"method\": \"POST\",\n    \"url\": \"https://contoso-openai.openai.azure.com/openai/v1/chat/completions?api-version=preview\",\n    \"headers\": {\n        \"api-key\": \"<key>\",\n        \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n        \"messages\": [\n            {\"role\": \"system\", \"content\": \"Summarize support cases as structured output.\"},\n            {\"role\": \"user\", \"content\": source_text}\n        ],\n        \"response_format\": {\n            \"type\": \"json_schema\",\n            \"json_schema\": {\n                \"name\": \"case_summary\",\n                \"strict\": true,\n                \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"summary\": {\"type\": \"string\"},\n                        \"keyRisks\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                        \"nextActions\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}\n                    },\n                    \"required\": [\"summary\", \"keyRisks\", \"nextActions\"]\n                }\n            }\n        }\n    }\n}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Yes",
+   "Yes",
+   "No"
+  ],
+  "pdfAnswer": [
+   "Yes",
+   "Yes",
+   "No"
+  ],
+  "explanation": "request_a 使用嵌入端点返回表示输入文本的数值向量。\nrequest_b 指定 json_schema 以请求与提供结构匹配的 JSON 输出。虽然\nkeyRisks 是必需的，但其数组可以为空，因此响应不需要包含任何实际风险。\n技术警告：这些是预期的答案，假设请求有效。如所示，request_b 缺少\n所需的模型字段和其严格模式中的 \"additionalProperties\": false，因此它会失败而不是\n生成预期的响应。\n \n \n \n2Cdotnet-entra-id%2Cjavascript-secure&pivots=programming-language-python",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "request_a 返回向量化的响应。",
+    "labelEn": "request_a returns a vectorized response.",
+    "labelZh": "request_a 返回向量化的响应。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "2",
+    "label": "request_b 返回 JSON 格式的响应。",
+    "labelEn": "request_b returns a JSON-formatted response.",
+    "labelZh": "request_b 返回 JSON 格式的响应。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "request_b 始终返回包含风险的案例摘要。",
+    "labelEn": "request_b always returns a case summary that includes risks.",
+    "labelZh": "request_b 始终返回包含风险的案例摘要。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Statements from PDF Hot Area (p115); Yes/Yes/No from explanation (embeddings + json_schema; keyRisks array may be empty).",
+  "stemZh": "您有一个应用程序，通过在 Microsoft Foundry 中使用 Azure OpenAI 处理支持案例笔记。该应用程序具有以下请求定义。\n```\nsource_text = \"Case 4817: Customer reports intermittent checkout failures.\"\n\nrequest_a = {\n    \"method\": \"POST\",\n    \"url\": \"https://contoso-openai.openai.azure.com/openai/v1/embeddings?api-version=preview\",\n    \"headers\": {\n        \"api-key\": \"<key>\",\n        \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n        \"model\": \"text-embedding-ada-002\",\n        \"input\": [source_text]\n    }\n}\n\nrequest_b = {\n    \"method\": \"POST\",\n    \"url\": \"https://contoso-openai.openai.azure.com/openai/v1/chat/completions?api-version=preview\",\n    \"headers\": {\n        \"api-key\": \"<key>\",\n        \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n        \"messages\": [\n            {\"role\": \"system\", \"content\": \"Summarize support cases as structured output.\"},\n            {\"role\": \"user\", \"content\": source_text}\n        ],\n        \"response_format\": {\n            \"type\": \"json_schema\",\n            \"json_schema\": {\n                \"name\": \"case_summary\",\n                \"strict\": true,\n                \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"summary\": {\"type\": \"string\"},\n                        \"keyRisks\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                        \"nextActions\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}\n                    },\n                    \"required\": [\"summary\", \"keyRisks\", \"nextActions\"]\n                }\n            }\n        }\n    }\n}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "stemEn": " \nYou have an application that processes support case notes by using Azure OpenAI in Microsoft Foundry\nModels. The application has the following request definitions.\n```\nsource_text = \"Case 4817: Customer reports intermittent checkout failures.\"\n\nrequest_a = {\n    \"method\": \"POST\",\n    \"url\": \"https://contoso-openai.openai.azure.com/openai/v1/embeddings?api-version=preview\",\n    \"headers\": {\n        \"api-key\": \"<key>\",\n        \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n        \"model\": \"text-embedding-ada-002\",\n        \"input\": [source_text]\n    }\n}\n\nrequest_b = {\n    \"method\": \"POST\",\n    \"url\": \"https://contoso-openai.openai.azure.com/openai/v1/chat/completions?api-version=preview\",\n    \"headers\": {\n        \"api-key\": \"<key>\",\n        \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n        \"messages\": [\n            {\"role\": \"system\", \"content\": \"Summarize support cases as structured output.\"},\n            {\"role\": \"user\", \"content\": source_text}\n        ],\n        \"response_format\": {\n            \"type\": \"json_schema\",\n            \"json_schema\": {\n                \"name\": \"case_summary\",\n                \"strict\": true,\n                \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"summary\": {\"type\": \"string\"},\n                        \"keyRisks\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                        \"nextActions\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}\n                    },\n                    \"required\": [\"summary\", \"keyRisks\", \"nextActions\"]\n                }\n            }\n        }\n    }\n}\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "request_a 使用嵌入端点返回表示输入文本的数值向量。\nrequest_b 指定 json_schema 以请求与提供结构匹配的 JSON 输出。虽然\nkeyRisks 是必需的，但其数组可以为空，因此响应不需要包含任何实际风险。\n技术警告：这些是预期的答案，假设请求有效。如所示，request_b 缺少\n所需的模型字段和其严格模式中的 \"additionalProperties\": false，因此它会失败而不是\n生成预期的响应。\n \n \n \n2Cdotnet-entra-id%2Cjavascript-secure&pivots=programming-language-python",
+  "explanationEn": "request_a uses the embeddings endpoint to return a numerical vector representing the input text.\nrequest_b specifies json_schema to request JSON output matching the supplied structure. Although\nkeyRisks is required, its array can be empty, so the response need not contain any actual risks.\nTechnical caveat: These are the intended answers, assuming valid requests. As shown, request_b lacks\nthe required model field and \"additionalProperties\": false in its strict schema, so it would fail rather than\ngenerate the intended response.\n \n2Cdotnet-entra-id%2Cjavascript-secure&pivots=programming-language-python",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "yn",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 43",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 43",
+  "pdfPage": 114,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 43
+ },
+ {
+  "id": "q115",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "hotspot",
+  "stem": "您正在构建一个代理，通过使用自定义 API 检索给定位置的当前时间。\n您需要测试自定义 API 的功能。\n您应该如何完成该命令？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "assistants",
+   "tools=[{"
+  ],
+  "pdfAnswer": [
+   "assistants",
+   "tools=[{"
+  ],
+  "explanation": "assistants 端点使用其模型和指令创建代理。工具数组将 get_current_time 注册为一个函数，包括\n其描述和所需的位置参数。在测试期间，应用程序执行请求的函数并将其结果提交给代理；仅注册该函\n数并不会执行自定义 API。\nagents&pivots=python",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "curl https://cu1.services.ai.azure.com/[ ]?api-version=2024-12-01-preview",
+    "labelEn": "curl https://cu1.services.ai.azure.com/[ ]?api-version=2024-12-01-preview",
+    "labelZh": "curl https://cu1.services.ai.azure.com/[ ]?api-version=2024-12-01-preview",
+    "choices": [
+     {
+      "key": "assistants",
+      "en": "assistants",
+      "zh": "assistants"
+     },
+     {
+      "key": "completions",
+      "en": "completions",
+      "zh": "completions"
+     },
+     {
+      "key": "embeddings",
+      "en": "embeddings",
+      "zh": "embeddings"
+     },
+     {
+      "key": "threads",
+      "en": "threads",
+      "zh": "threads"
+     }
+    ],
+    "answer": "assistants",
+    "positionNoteEn": "curl https://cu1.services.ai.azure.com/[ ]?api-version=2024-12-01-preview",
+    "positionNoteZh": "curl https://cu1.services.ai.azure.com/[ ]?api-version=2024-12-01-preview",
+    "positionNote": "curl https://cu1.services.ai.azure.com/[ ]?api-version=2024-12-01-preview"
+   },
+   {
+    "id": "2",
+    "label": "\"model\": \"gpt-4o-mini\", [ ] \"type\": \"function\", ...",
+    "labelEn": "\"model\": \"gpt-4o-mini\", [ ] \"type\": \"function\", ...",
+    "labelZh": "\"model\": \"gpt-4o-mini\", [ ] \"type\": \"function\", ...",
+    "choices": [
+     {
+      "key": "content=[{",
+      "en": "content=[{",
+      "zh": "content=[{"
+     },
+     {
+      "key": "functions=[{",
+      "en": "functions=[{",
+      "zh": "functions=[{"
+     },
+     {
+      "key": "tool_resources=[{",
+      "en": "tool_resources=[{",
+      "zh": "tool_resources=[{"
+     },
+     {
+      "key": "tools=[{",
+      "en": "tools=[{",
+      "zh": "tools=[{"
+     }
+    ],
+    "answer": "tools=[{",
+    "positionNoteEn": "\"model\": \"gpt-4o-mini\", [ ] \"type\": \"function\", ...",
+    "positionNoteZh": "\"model\": \"gpt-4o-mini\", [ ] \"type\": \"function\", ...",
+    "positionNote": "\"model\": \"gpt-4o-mini\", [ ] \"type\": \"function\", ..."
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered from PDF Hot Area (p117); answers from explanation (assistants endpoint + tools array).",
+  "stemZh": "您正在构建一个代理，通过使用自定义 API 检索给定位置的当前时间。\n您需要测试自定义 API 的功能。\n您应该如何完成该命令？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "HOTSPOT 热点\nYou are building an agent that will retrieve the current time at a given location by using a custom API.\nYou need to test the functionality of the custom API.\nHow should you complete the command? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "assistants 端点使用其模型和指令创建代理。工具数组将 get_current_time 注册为一个函数，包括\n其描述和所需的位置参数。在测试期间，应用程序执行请求的函数并将其结果提交给代理；仅注册该函\n数并不会执行自定义 API。\nagents&pivots=python",
+  "explanationEn": "The assistants endpoint creates the agent with its model and instructions. The tools array registers\nget_current_time as a function, including its description and required location parameter. During testing,\nthe application executes the requested function and submits its result to the agent; registering the function\nalone does not execute the custom API.\nagents&pivots=python",
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "control": "select",
+  "template": "curl https://cu1.services.ai.azure.com/{{1}}?api-version=2024-12-01-preview \\\n  -H \"Authorization: Bearer $AZURE_AI_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"instructions\": \"You are a weather bot. Use the provided functions to answer questions.\",\n    \"model\": \"gpt-4o-mini\",\n    {{2}}\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"get_current_time\",\n        \"description\": \"Get the current time in location\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"location\": {\"type\": \"string\", \"description\": \"The city name, for example Seattle\"}\n          },\n          \"required\": [\"location\"]\n        }\n      }\n    }]\n  }'",
+  "templateEn": "curl https://cu1.services.ai.azure.com/{{1}}?api-version=2024-12-01-preview \\\n  -H \"Authorization: Bearer $AZURE_AI_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"instructions\": \"You are a weather bot. Use the provided functions to answer questions.\",\n    \"model\": \"gpt-4o-mini\",\n    {{2}}\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"get_current_time\",\n        \"description\": \"Get the current time in location\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"location\": {\"type\": \"string\", \"description\": \"The city name, for example Seattle\"}\n          },\n          \"required\": [\"location\"]\n        }\n      }\n    }]\n  }'",
+  "templateZh": "curl https://cu1.services.ai.azure.com/{{1}}?api-version=2024-12-01-preview \\\n  -H \"Authorization: Bearer $AZURE_AI_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"instructions\": \"You are a weather bot. Use the provided functions to answer questions.\",\n    \"model\": \"gpt-4o-mini\",\n    {{2}}\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"get_current_time\",\n        \"description\": \"Get the current time in location\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"location\": {\"type\": \"string\", \"description\": \"The city name, for example Seattle\"}\n          },\n          \"required\": [\"location\"]\n        }\n      }\n    }]\n  }'",
+  "templateKind": "code",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 44",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 44",
+  "pdfPage": 116,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 44
+ },
+ {
+  "id": "q116",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您拥有一个 Azure 订阅和 10,000 个 ASCII 文件。\n您需要识别包含特定短语的文件。解决方案必须使用余弦相似度。\n您应该使用哪个 Azure OpenAI 模型？",
+  "options": [
+   {
+    "id": "A",
+    "text": "text-embedding-ada-002",
+    "textEn": "text-embedding-ada-002",
+    "textZh": "text-embedding-ada-002"
+   },
+   {
+    "id": "B",
+    "text": "GPT-4",
+    "textEn": "GPT-4",
+    "textZh": "GPT-4"
+   },
+   {
+    "id": "C",
+    "text": "GPT-35 Turbo",
+    "textEn": "GPT-35 Turbo",
+    "textZh": "GPT-35 Turbo"
+   },
+   {
+    "id": "D",
+    "text": "GPT-4-32k",
+    "textEn": "GPT-4-32k",
+    "textZh": "GPT-4-32k"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "text-embedding-ada-002 将文本转换为表示其语义含义的数值向量。\n为文件内容和搜索短语生成嵌入，然后使用余弦相似度进行比较，以对最相关的文件进行排名。在生成嵌\n入之前，将长文件拆分为块。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个 Azure 订阅和 10,000 个 ASCII 文件。\n您需要识别包含特定短语的文件。解决方案必须使用余弦相似度。\n您应该使用哪个 Azure OpenAI 模型？",
+  "stemEn": "You have an Azure subscription and 10,000 ASCII files.\nYou need to identify files that contain specific phrases. The solution must use cosine similarity.\nWhich Azure OpenAI model should you use?",
+  "explanationZh": "text-embedding-ada-002 将文本转换为表示其语义含义的数值向量。\n为文件内容和搜索短语生成嵌入，然后使用余弦相似度进行比较，以对最相关的文件进行排名。在生成嵌\n入之前，将长文件拆分为块。",
+  "explanationEn": "text-embedding-ada-002 converts text into numerical vectors that represent its semantic meaning.\nGenerate embeddings for the file contents and search phrases, then compare them using cosine similarity\nto rank the most relevant files. Split long files into chunks before generating embeddings.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 45",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 45",
+  "pdfPage": 118,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 45
+ },
+ {
+  "id": "q117",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您拥有一个 Azure 订阅。该订阅包含一个 Microsoft Foundry 资源，托管一个名为 Model1 的\nGPT-3.5 Turbo 模型。\n您配置 Model1 使用以下系统消息：“您是一个帮助人们解决数学难题的 AI 助手。请像对一个 4 岁的小孩解释您的答案。”\n这是什么类型的提示工程技术的例子？",
+  "options": [
+   {
+    "id": "A",
+    "text": "affordance",
+    "textEn": "affordance",
+    "textZh": "可用性"
+   },
+   {
+    "id": "B",
+    "text": "chain of thought",
+    "textEn": "chain of thought",
+    "textZh": "思维链"
+   },
+   {
+    "id": "C",
+    "text": "few-shot learning",
+    "textEn": "few-shot learning",
+    "textZh": "少量学习"
+   },
+   {
+    "id": "D",
+    "text": "priming",
+    "textEn": "priming",
+    "textZh": "预热"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "引导确定了模型的角色、上下文和响应风格，然后它才会接收用户的请求。这个系统消息分配了一个数学\n难题助手的角色，并指示它用适合四岁儿童的语言解释答案。\npivots=编程语言-聊天-完成",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个 Azure 订阅。该订阅包含一个 Microsoft Foundry 资源，托管一个名为 Model1 的\nGPT-3.5 Turbo 模型。\n您配置 Model1 使用以下系统消息：“您是一个帮助人们解决数学难题的 AI 助手。请像对一个 4 岁的小孩解释您的答案。”\n这是什么类型的提示工程技术的例子？",
+  "stemEn": "You have an Azure subscription. The subscription contains a Microsoft Foundry resource that hosts a\nGPT-3.5 Turbo model named Model1.\nYou configure Model1 to use the following system message: “You are an AI assistant that helps people\nsolve mathematical puzzles. Explain your answers as if the request is by a 4-year-old.”\nWhich type of prompt engineering technique is this an example of?",
+  "explanationZh": "引导确定了模型的角色、上下文和响应风格，然后它才会接收用户的请求。这个系统消息分配了一个数学\n难题助手的角色，并指示它用适合四岁儿童的语言解释答案。\npivots=编程语言-聊天-完成",
+  "explanationEn": "解释：\nPriming establishes the model’s role, context, and response style before it receives a user’s request. This\nsystem message assigns the role of a mathematical-puzzle assistant and directs it to explain answers in\nlanguage suitable for a four-year-old.\npivots=programming-language-chat-completions",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 46",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 46",
+  "pdfPage": 119,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 46
+ },
+ {
+  "id": "q118",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理和图像生成模型部署的 Microsoft Foundry 项目。\n该代理从用户提供的产品照片生成原创图像。目前，当您要求代理将产品的图片放置在不同环境中时\n，代理返回的图像中产品本身被更改，违反了您公司的使用指南。\n您需要最小化生成图像中产品身份和视觉特征变化的可能性。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Apply a groundedness detection filter",
+    "textEn": "Apply a groundedness detection filter.",
+    "textZh": "应用一个基础检测过滤器。"
+   },
+   {
+    "id": "B",
+    "text": "Set the input_fidelity parameter to high",
+    "textEn": "Set the input_fidelity parameter to high.",
+    "textZh": "将 input_fidelity 参数设置为 high。"
+   },
+   {
+    "id": "C",
+    "text": "Include a prompt and input image in the request",
+    "textEn": "Include a prompt and input image in the request.",
+    "textZh": "在请求中包含提示和输入图像。"
+   },
+   {
+    "id": "D",
+    "text": "Decrease the value of the top_p parameter",
+    "textEn": "Decrease the value of the top_p parameter.",
+    "textZh": "降低 top_p 参数的值。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "将 input_fidelity 设置为高可以改善输入图像中独特细节的保留，例如产品的外观、标志和纹理，同时改\n变其周围环境。这减少了不必要的产品更改的可能性，尽管它并不能保证完全保留。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理和图像生成模型部署的 Microsoft Foundry 项目。\n该代理从用户提供的产品照片生成原创图像。目前，当您要求代理将产品的图片放置在不同环境中时\n，代理返回的图像中产品本身被更改，违反了您公司的使用指南。\n您需要最小化生成图像中产品身份和视觉特征变化的可能性。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent and an image generation model deployment.\nThe agent generates original images from user-supplied product photos. Currently, when you ask the\nagent to place a picture of product in different environments, the agent returns images where the product\nitself is altered and violates your company usage guidelines.\nYou need to minimize the likelihood of changes to the product identity and visual characteristics in the\ngenerated image.\nWhat should you do?",
+  "explanationZh": "将 input_fidelity 设置为高可以改善输入图像中独特细节的保留，例如产品的外观、标志和纹理，同时改\n变其周围环境。这减少了不必要的产品更改的可能性，尽管它并不能保证完全保留。",
+  "explanationEn": "Setting input_fidelity to high improves preservation of distinctive details from the input image, such as the\nproduct’s appearance, logos, and textures, while changing its surroundings. This reduces the likelihood of\nunwanted product alterations, although it does not guarantee exact preservation.",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 47",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 47",
+  "pdfPage": 119,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 47
+ },
+ {
+  "id": "q119",
+  "domain": "genai",
+  "domainLabel": "实现生成式 AI 与智能体解决方案",
+  "type": "single",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您增加 top_p 参数的值。\n这达到了目标吗？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Yes",
+    "textEn": "Yes",
+    "textZh": "是"
+   },
+   {
+    "id": "B",
+    "text": "No",
+    "textEn": "No",
+    "textZh": "否"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "增加 top_p 扩大了生成过程中考虑的标记，影响响应的多样性，而不是确保所需条款的覆盖。它不会检\n查遗漏或强制与检索到的文档的完整性。\n实现计算机视觉解决方案\n测试集 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐…",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个包含代理的 Microsoft Foundry 项目。该代理从检索到的政策文档中生成摘要。\n用户报告称，一些响应省略了所需的监管条款，即使这些条款在检索的内容中存在。\n您需要提高响应的完整性。\n解决方案：您增加 top_p 参数的值。\n这达到了目标吗？",
+  "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem.\nEach question presents a unique solution to the problem. You must determine whether the\nsolution meets the stated goals. More than one solution in the set might solve the problem. It is\nalso possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these\nquestions do not appear on the Review Screen.\nYou have a Microsoft Foundry project that contains an agent. The agent generates summaries from\nretrieved policy documents.\nUsers report that some responses omit required regulatory clauses, even when the clauses are present in\nthe retrieved content.\nYou need to improve response completeness.\nSolution: You increase the value of the top_p parameter.\nDoes this meet the goal?",
+  "explanationZh": "增加 top_p 扩大了生成过程中考虑的标记，影响响应的多样性，而不是确保所需条款的覆盖。它不会检\n查遗漏或强制与检索到的文档的完整性。\n实现计算机视觉解决方案\n测试集 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "explanationEn": "Increasing top_p broadens the tokens considered during generation, affecting response diversity rather\nthan ensuring coverage of required clauses. It does not check for omissions or enforce completeness\nagainst the retrieved documents.\nImplement computer vision solutions\nTestlet 1\nCase Study\nThis is a case study. Case studies are not timed separately from other exam sections. You can use as\nmuch exam time as you would like to complete each case study. However, there might be additional case\nstudies or other exam sections. Manage your time to ensure that you can complete all the exam sections\nin the time provided. Pay attention to the Exam Progress at the top of the screen so you have sufficient\ntime to complete any exam sections that follow this case study.\nTo answer the case study questions, you will bed to reference information that is provided in the case.\nCase studies and associated questions might contain exhibits or other resources that provide more\ninformation about the scenario described in the case. Information provided in an individual question\ndoes not apply to the other questions in the case study.\nA Review Screen will appear at the end of this case study. From the Review Screen, you can review and\nchange your answers before you move to the next exam section. After you leave this case study, you will\nNOT be able to return to it.\nTo start the case study\nTo display the first question in this case study, select the “Next” button. To the left of the question, a menu\nprovides links to information such as business requirements, the existing environment, and problem\nstatements. Please read through all this information before answering any questions. When you are ready\nto answer a question, select the “Question” button to return to the question.\nOverview\n \nCompany Information \nContoso, Ltd is a multinational retail company that builds, deploys, and manages generative AI and agent-\nbased solutions by using Microsoft Foundry. \nExisting Environment\n \nIdentity Environment\nContoso uses Microsoft Entra ID for identity management, authentication, and authorization capabilities\nthat enable agents to access organizational resources and services.\nContoso recently formed a new AI engineering team named Agent1Dev Team to optimize and maintain\nexisting AI solutions.\nThe team collaborates with solution architects, DevOps engineers, and security engineers to design,\nimplement. monitor, and secure AI applications.\nContoso also has a team named Agent1Test Team that is responsible for validating AI solutions before the\nsolution deployments.\nGenerative Environment\nContoso has a Microsoft Foundry deployment that contains two projects named Project1 and Project2.\nProject1\nProject1 contains a customer support agent named Agent1 that assists customers with product inquiries\nand troubleshooting requests.\nAgent1 has the following configurations:\n Agent1 uses a base model deployment.\n A safety evaluation pipeline is NOT enabled.\n Tool invocation approval workflows are NOT enabled.\n Conversation memory constraints are NOT configured.\nAgent1 interacts with customers by using digital support channels and answers general questions about\nContoso products.\nProject1 is deployed to an Azure region located in the European Union (EU).\nAgent1Dev Team will use Project1 to optimize and maintain Agent1.\nProject2\nProject2 contains a deployed video generation model. The marketing department at Contoso has access\nto Project2 and plans to use the model to develop a video crea",
+  "boxes": [],
+  "domainLabelZh": "实现生成式 AI 与智能体解决方案",
+  "domainLabelEn": "Implement generative AI and agentic solutions",
+  "pdfRef": "实现生成式 AI 与智能体解决方案 · 问题集 2 · 问题 48",
+  "pdfRefEn": "Implement generative AI and agentic solutions · Question Set 2 · Question 48",
+  "pdfPage": 120,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 48
+ },
+ {
+  "id": "q120",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "hotspot",
+  "stem": "您需要确保市场部门能够使用部署到Project2 的模型生成视频。\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "create",
+   "retrieve"
+  ],
+  "pdfAnswer": [
+   "create",
+   "retrieve"
+  ],
+  "explanation": "client.videos.create(...) 初始化生成任务。这将返回一个视频对象，包含唯一的 id 和\n状态为 \"排队\" 或 \"进行中\"。\n框 2：检索\nclient.videos.retrieve(video.id) 从服务器刷新视频对象状态，通过获取其更新的\n完成进度和状态，直到它完成。\n \n \n \n \n \n实现计算机视觉解决方案\n问题集 2",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "create",
+      "en": "create",
+      "zh": "create"
+     },
+     {
+      "key": "download_content",
+      "en": "download_content",
+      "zh": "download_content"
+     },
+     {
+      "key": "list",
+      "en": "list",
+      "zh": "list"
+     },
+     {
+      "key": "retrieve",
+      "en": "retrieve",
+      "zh": "retrieve"
+     }
+    ],
+    "answer": "create"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "create",
+      "en": "create",
+      "zh": "create"
+     },
+     {
+      "key": "download_content",
+      "en": "download_content",
+      "zh": "download_content"
+     },
+     {
+      "key": "list",
+      "en": "list",
+      "zh": "list"
+     },
+     {
+      "key": "retrieve",
+      "en": "retrieve",
+      "zh": "retrieve"
+     }
+    ],
+    "answer": "retrieve"
+   }
+  ],
+  "stemZh": "您需要确保市场部门能够使用部署到Project2 的模型生成视频。\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You need to ensure that the marketing department can generate videos by using the model deployed to\nProject2.\nHow should you complete the Python code? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "client.videos.create(...) 初始化生成任务。这将返回一个视频对象，包含唯一的 id 和\n状态为 \"排队\" 或 \"进行中\"。\n框 2：检索\nclient.videos.retrieve(video.id) 从服务器刷新视频对象状态，通过获取其更新的\n完成进度和状态，直到它完成。\n \n \n \n \n \n实现计算机视觉解决方案\n问题集 2",
+  "explanationEn": "解释：\nBox 1: create 框 1：创建\nclient.videos.create(...) initializes the generation job. This returns a video object containing a unique id and\na status of \"queued\" or \"in_progress\".\nBox 2: retrieve\nclient.videos.retrieve(video.id) refreshes the video object state from the server by fetching its updated\ncompletion progress and status until it finishes\n \n \n \n \n \nImplement computer vision solutions\nQuestion Set 2",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "select",
+  "template": "import time\nfrom openai import OpenAI\n\nclient = OpenAI(\n    base_url=\"https://Contoso.openai.azure.com/openai/v1/\",\n    api_key=...,\n)\nvideo = client.videos.{{1}}(\n    model=deployment_name,\n    prompt=\"A video of our products\",\n)\nwhile video.status not in [\"completed\", \"failed\", \"cancelled\"]:\n    time.sleep(20)\n    video = client.videos.{{2}}(video.id)\nprint(video.status)",
+  "templateEn": "import time\nfrom openai import OpenAI\n\nclient = OpenAI(\n    base_url=\"https://Contoso.openai.azure.com/openai/v1/\",\n    api_key=...,\n)\nvideo = client.videos.{{1}}(\n    model=deployment_name,\n    prompt=\"A video of our products\",\n)\nwhile video.status not in [\"completed\", \"failed\", \"cancelled\"]:\n    time.sleep(20)\n    video = client.videos.{{2}}(video.id)\nprint(video.status)",
+  "templateZh": "import time\nfrom openai import OpenAI\n\nclient = OpenAI(\n    base_url=\"https://Contoso.openai.azure.com/openai/v1/\",\n    api_key=...,\n)\nvideo = client.videos.{{1}}(\n    model=deployment_name,\n    prompt=\"A video of our products\",\n)\nwhile video.status not in [\"completed\", \"failed\", \"cancelled\"]:\n    time.sleep(20)\n    video = client.videos.{{2}}(video.id)\nprint(video.status)",
+  "templateKind": "code",
+  "pdfRef": "实现计算机视觉解决方案 · 案例研究 · 问题 1",
+  "pdfRefEn": "Implement computer vision solutions · Case Study · Question 1",
+  "pdfPage": 123,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q121",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在 Microsoft Foundry 项目中创建一个图像编辑工作流。\n该工作流必须满足以下要求：\n确保可以通过应用基于掩膜的修复编辑来移除背景对象。\n保留编辑图像的原始光照和风格。\n使用内置的图像编辑控件，而不是自定义模型。\n您需要确保图像编辑仅应用于被遮罩区域内。\n您应该如何配置工作流程？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Set generation mode to image_variation and provide the original image as a reference",
+    "textEn": "Set generation mode to image_variation and provide the original image as a reference.",
+    "textZh": "将生成模式设置为image_variation，并提供原始图像作为参考。"
+   },
+   {
+    "id": "B",
+    "text": "Enable text_to_image mode and a prompt describing the desired background removal",
+    "textEn": "Enable text_to_image mode and a prompt describing the desired background removal.",
+    "textZh": "启用text_to_image模式，并提供描述所需背景去除的提示。"
+   },
+   {
+    "id": "C",
+    "text": "Enable image_to_image mode and a high-strength value to regenerate the full image based on the prompt",
+    "textEn": "Enable image_to_image mode and a high-strength value to regenerate the full image based on the prompt.",
+    "textZh": "启用image_to_image模式，并设置高强度值以根据提示重新生成完整图像。"
+   },
+   {
+    "id": "D",
+    "text": "Enable mask_inpainting and supply both the input image and a mask indicating which part of the image to modify",
+    "textEn": "Enable mask_inpainting and supply both the input image and a mask indicating which part of the image to modify.",
+    "textZh": "启用 mask_inpainting 并提供输入图像和一个掩码，指示要修改的图像部分。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "您应该启用 mask_inpainting，并提供输入图像和掩码，以满足您 Microsoft Foundry 图像编辑工作流程\n的所有标准。\n \n通过利用 Microsoft Foundry 内置的图像生成工具参数，以这种方式配置工作流程可确保所需的编辑完美 \n \n工作流程配置要求\n基于掩码的对象移除：传递掩码参数明确标记了目标移除的确切背景对象区域，能够无缝替换它们。\n保持风格和光照：启用 mask_inpainting 会提示底层内置模型（如 gpt-image-2）继承并保持周围未掩\n盖环境的确切光照、纹理和风格。\n仅限内置控制：这完全通过 Foundry Agent Service API 变量本地处理，无需部署一行自定义代码或第三方\n模型检查点。\n目标区域强制执行：系统依赖提供的掩码数组，以确保标记坐标之外的像素保持完全不变，并受到 VAE\n降解的保护。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您正在 Microsoft Foundry 项目中创建一个图像编辑工作流。\n该工作流必须满足以下要求：\n确保可以通过应用基于掩膜的修复编辑来移除背景对象。\n保留编辑图像的原始光照和风格。\n使用内置的图像编辑控件，而不是自定义模型。\n您需要确保图像编辑仅应用于被遮罩区域内。\n您应该如何配置工作流程？",
+  "stemEn": "You are creating an image-editing workflow in a Microsoft Foundry project.\nThe workflow must meet the following requirements:\nEnsure that background objects can be removed by applying a mask-based inpainting edit.\nPreserve the original lighting and style of the edited images.\nUse the built-in image editing controls, NOT a custom model.\nYou need to ensure that image edits apply exclusively inside the masked area.\nHow should you configure the workflow?",
+  "explanationZh": "您应该启用 mask_inpainting，并提供输入图像和掩码，以满足您 Microsoft Foundry 图像编辑工作流程\n的所有标准。\n \n通过利用 Microsoft Foundry 内置的图像生成工具参数，以这种方式配置工作流程可确保所需的编辑完美 \n \n工作流程配置要求\n基于掩码的对象移除：传递掩码参数明确标记了目标移除的确切背景对象区域，能够无缝替换它们。\n保持风格和光照：启用 mask_inpainting 会提示底层内置模型（如 gpt-image-2）继承并保持周围未掩\n盖环境的确切光照、纹理和风格。\n仅限内置控制：这完全通过 Foundry Agent Service API 变量本地处理，无需部署一行自定义代码或第三方\n模型检查点。\n目标区域强制执行：系统依赖提供的掩码数组，以确保标记坐标之外的像素保持完全不变，并受到 VAE\n降解的保护。",
+  "explanationEn": "You should enable mask_inpainting and supply both the input image and the mask to meet all the criteria\nfor your Microsoft Foundry image-editing workflow.\n \n \nBy utilizing Microsoft Foundry’s built-in Image Generation Tool parameters, configuring the workflow this\nway ensures the desired edits are perfectly executed. 执行。\nWorkflow Configuration Requirements\nMask-Based Object Removal: Passing the mask parameter explicitly flags the exact background object\nregions targeted for removal, replacing them seamlessly.\nPreserving Style and Lighting: Enabling mask_inpainting prompts the underlying built-in model (such as\ngpt-image-2) to inherit and maintain the exact lighting, textures, and style of the surrounding unmasked\nenvironment.\nBuilt-In Controls Only: This is entirely handled natively via the Foundry Agent Service API variables without\ndeploying a single line of custom code or third-party model checkpoints.\nTargeted Area Enforcement: The system relies on the provided mask array to ensure pixels outside the\nmarked coordinates are kept completely untouched and protected from VAE degradation.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 1",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 1",
+  "pdfPage": 126,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q122",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，该项目根据文本提示生成产品营销图像。\n在发布几张图像后，您公司的法律团队在一张图像的背景中发现了竞争对手的标志。\n您需要仅删除该标志，同时保留图像的其余部分。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Apply a mask-based inpainting edit to the part of the image that contains the logo",
+    "textEn": "Apply a mask-based inpainting edit to the part of the image that contains the logo.",
+    "textZh": "对包含标志的图像部分应用基于掩膜的修复编辑。"
+   },
+   {
+    "id": "B",
+    "text": "Increase the prompt guidance strength",
+    "textEn": "Increase the prompt guidance strength.",
+    "textZh": "增加提示引导强度。"
+   },
+   {
+    "id": "C",
+    "text": "Modify the original prompt to exclude brand names",
+    "textEn": "Modify the original prompt to exclude brand names.",
+    "textZh": "修改原始提示以排除品牌名称。"
+   },
+   {
+    "id": "D",
+    "text": "Rerun the prompt by using a different random seed",
+    "textEn": "Rerun the prompt by using a different random seed.",
+    "textZh": "使用不同的随机种子重新运行提示。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "要从生成的图像中删除标志，同时保留其余内容，您应该使用 AI 驱动的修复工具或专业图像编辑软件\n中的标准物体移除功能。\nMicrosoft Designer 或 Azure AI（引擎内修复）\n如果您的 Foundry 项目是基于 Azure OpenAI 服务或 Dall-E 构建的，您通常可以通过编程或相关的\n第一方工具来处理此问题。\n生成性擦除 / 修复：使用 Microsoft Designer 的“擦除”工具。刷过标志，AI 将\n通过无缝融合背景来替换它。\nAPI 修复：如果您可以访问底层图像生成 API（如 DALL-E 3 或 StableDiffusion），请使用修复 API\n。传递原始图像以及突出显示标志的黑白掩码，并提示它“自然填充背景”。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个 Microsoft Foundry 项目，该项目根据文本提示生成产品营销图像。\n在发布几张图像后，您公司的法律团队在一张图像的背景中发现了竞争对手的标志。\n您需要仅删除该标志，同时保留图像的其余部分。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that generates product marketing images from text prompts.\nAfter publishing several images, the legal team at your company identifies a competitor’s logo on a sign in\nthe background of an image.\nYou need to remove only the logo, while preserving the rest of the image.\nWhat should you do?",
+  "explanationZh": "要从生成的图像中删除标志，同时保留其余内容，您应该使用 AI 驱动的修复工具或专业图像编辑软件\n中的标准物体移除功能。\nMicrosoft Designer 或 Azure AI（引擎内修复）\n如果您的 Foundry 项目是基于 Azure OpenAI 服务或 Dall-E 构建的，您通常可以通过编程或相关的\n第一方工具来处理此问题。\n生成性擦除 / 修复：使用 Microsoft Designer 的“擦除”工具。刷过标志，AI 将\n通过无缝融合背景来替换它。\nAPI 修复：如果您可以访问底层图像生成 API（如 DALL-E 3 或 StableDiffusion），请使用修复 API\n。传递原始图像以及突出显示标志的黑白掩码，并提示它“自然填充背景”。",
+  "explanationEn": "To remove a logo from a generated image while preserving the rest of the content, you should use AI-\npowered inpainting tools or standard object removal features in professional image editing software.\nMicrosoft Designer or Azure AI (In-Engine Fixes)\nIf your Foundry project is built on top of Azure OpenAI Service or Dall-E, you can often handle this\nprogrammatically or through related first-party tools.\nGenerative Erase / Inpainting: Use Microsoft Designer's \"Erase\" tool. Brush over the logo, and the AI will\nreplace it by seamlessly blending the background.\nAPI Inpainting: If you have access to the underlying image generation API (like DALL-E 3 or Stable\nDiffusion), use the Inpainting API. Pass the original image along with a black-and-white mask highlighting\nthe logo, and prompt it to \"fill the background naturally.\"",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 2",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 2",
+  "pdfPage": 126,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q123",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。 \n代理程序接收包含表格和嵌入式二维码的扫描PDF供应商发票。\n \n \n代理程序必须在提取的输出中保留PDF布局，以确保后续处理 \n可以引用部分和表格。\n \n您计划在Foundry Tools中调用Azure内容理解。\n您需要提取内容和布局元素，并检测二维码，而无需部署语言模型\n。\n您应该使用哪个内置分析器？",
+  "options": [
+   {
+    "id": "A",
+    "text": "prebuilt-documentFieldSchema",
+    "textEn": "prebuilt-documentFieldSchema",
+    "textZh": "一个。预建文档字段架构"
+   },
+   {
+    "id": "B",
+    "text": "prebuilt-read",
+    "textEn": "prebuilt-read",
+    "textZh": "预建读"
+   },
+   {
+    "id": "C",
+    "text": "prebuilt-documentSearch",
+    "textEn": "prebuilt-documentSearch",
+    "textZh": "预建文档搜索"
+   },
+   {
+    "id": "D",
+    "text": "prebuilt-layout",
+    "textEn": "prebuilt-layout",
+    "textZh": "预建布局"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "为了提取内容、保留表格和文档布局，并检测嵌入的二维码，而无需\n部署大型语言模型（LLM），您应该使用内置的prebuilt-layout分析器。\n注意：\n与利用生成性人工智能编排的内容理解中的模式驱动提取模型不同，\n布局分析器是一个高效的基于机器学习的模型。它本地输出结构\n几何图形，并解码条形码，而无需主动部署大型语言模型或提供吞吐量。\n结构保留：它提取标题、段落和嵌套部分，返回每个元素的精确空间\n边界框。下游代理可以利用这些几何元数据来\n准确地锚定或交叉引用部分。\n高级表格映射：它映射复杂的多页发票表格，捕捉文本以及行和\n列索引。您可以将输出结构格式原生配置为Markdown或HTML表格，以\n保持格式的整洁。\n内置二维码和条形码解码：默认情况下，配置参数enableBarcode设置为true。\n分析器扫描扫描的PDF图像，隔离2D代码区域，并将解码的字符串\n有效载荷附加到输出JSON中，与文本块一起。\n零LLM依赖性：它不将文本路由到像GPT-4o这样的基础模型进行提取，保持\n处理延迟低，并显著降低运营成本。\nunderstanding-studio",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。 \n代理程序接收包含表格和嵌入式二维码的扫描PDF供应商发票。\n \n \n代理程序必须在提取的输出中保留PDF布局，以确保后续处理 \n可以引用部分和表格。\n \n您计划在Foundry Tools中调用Azure内容理解。\n您需要提取内容和布局元素，并检测二维码，而无需部署语言模型\n。\n您应该使用哪个内置分析器？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\n \nThe agent ingests scanned PDF vendor invoices that contain tables and embedded QR codes.\n \n \nThe agent must preserve the PDF layout in the extracted output to ensure that downstream processing\ncan reference sections and tables.\n \nYou plan to call Azure Content Understanding in Foundry Tools.\nYou need to extract content and layout elements and detect QR codes without requiring a language model\ndeployment.\nWhich built-in analyzer should you use?",
+  "explanationZh": "为了提取内容、保留表格和文档布局，并检测嵌入的二维码，而无需\n部署大型语言模型（LLM），您应该使用内置的prebuilt-layout分析器。\n注意：\n与利用生成性人工智能编排的内容理解中的模式驱动提取模型不同，\n布局分析器是一个高效的基于机器学习的模型。它本地输出结构\n几何图形，并解码条形码，而无需主动部署大型语言模型或提供吞吐量。\n结构保留：它提取标题、段落和嵌套部分，返回每个元素的精确空间\n边界框。下游代理可以利用这些几何元数据来\n准确地锚定或交叉引用部分。\n高级表格映射：它映射复杂的多页发票表格，捕捉文本以及行和\n列索引。您可以将输出结构格式原生配置为Markdown或HTML表格，以\n保持格式的整洁。\n内置二维码和条形码解码：默认情况下，配置参数enableBarcode设置为true。\n分析器扫描扫描的PDF图像，隔离2D代码区域，并将解码的字符串\n有效载荷附加到输出JSON中，与文本块一起。\n零LLM依赖性：它不将文本路由到像GPT-4o这样的基础模型进行提取，保持\n处理延迟低，并显著降低运营成本。\nunderstanding-studio",
+  "explanationEn": "To extract content, preserve tables and document layout, and detect embedded QR codes without\ndeploying a large language model (LLM), you should use the built-in prebuilt-layout analyzer.\nNote:\nUnlike schema-driven extraction models in Content Understanding that utilize generative AI orchestration,\nthe Layout analyzer is a highly efficient machine-learning-based model. It natively outputs structural\ngeometry and decodes barcodes without requiring an active LLM deployment or provisioned throughput.\nStructural Preservation: It extracts headers, paragraphs, and nested sections, returning precise spatial\nbounding boxes for every single element. Downstream agents can utilize this geometric metadata to\nanchor or cross-reference sections accurately.\nAdvanced Table Mapping: It maps intricate, multi-page invoice tables, capturing text alongside row and\ncolumn indices. You can configure the output structure format natively into Markdown or HTML tables to\nmaintain formatting cleanliness.\nBuilt-in QR and Barcode Decoding: By default, the configuration parameter enableBarcode is set to true.\nThe analyzer scans the scanned PDF image, isolates 2D code regions, and appends the decoded string\npayload into the output JSON alongside text blocks.\nZero LLM Dependency: It does not route text to foundational models like GPT-4o for its extraction, keeping\nprocessing latency low and lowering operational costs significantly.\nunderstanding-studio",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 3",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 3",
+  "pdfPage": 127,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q124",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理和图像生成模型部署的 Microsoft Foundry 项目。\n代理从用户提供的产品照片生成原始图像。\n您需要确保生成的图像保持提供照片的产品身份和视觉特征。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Set the input_fidelity parameter to high",
+    "textEn": "Set the input_fidelity parameter to high.",
+    "textZh": "将input_fidelity参数设置为high。"
+   },
+   {
+    "id": "B",
+    "text": "Apply a groundedness detection filter",
+    "textEn": "Apply a groundedness detection filter.",
+    "textZh": "应用一个基础检测过滤器。"
+   },
+   {
+    "id": "C",
+    "text": "Include a prompt and input image in the request",
+    "textEn": "Include a prompt and input image in the request.",
+    "textZh": "在请求中包含提示和输入图像。"
+   },
+   {
+    "id": "D",
+    "text": "Decrease the value of the temperature parameter",
+    "textEn": "Decrease the value of the temperature parameter.",
+    "textZh": "降低temperature参数的值。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "在这种情况下，您应该将input_fidelity参数设置为“high”。\n在 Microsoft Foundry（基于 Azure AI Foundry 构建）中，input_fidelity 参数专门规定了图像生成模\n型在多大程度上遵循源图像的视觉特征、布局和风格。\n为什么“高”是正确的选择\n保持产品身份：设置 input_fidelity=\"high\" 确保关键品牌细节、标志、结构和产品轮廓与原始照片\n中的表现完全一致。\n为电子商务设计：微软明确为电子商务、商业营销资产和产品摄影设计了此设置，以防止模型产\n生幻觉或改变关键产品特征。\n模型支持：在配置代理图像生成工具（如 Foundry Agent Service 中的 ImageGenerationTool 或 ImageG\nenTool 类）时，原生支持此参数，利用像 GPT-image-1 或 GPT-image-2 这样的高级模型。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个包含代理和图像生成模型部署的 Microsoft Foundry 项目。\n代理从用户提供的产品照片生成原始图像。\n您需要确保生成的图像保持提供照片的产品身份和视觉特征。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent and an image generation model deployment.\nThe agent generates original images from user-supplied product photos.\nYou need to ensure that the generated images maintain the product identity and visual characteristics of\nthe provided photo.\nWhat should you do?",
+  "explanationZh": "在这种情况下，您应该将input_fidelity参数设置为“high”。\n在 Microsoft Foundry（基于 Azure AI Foundry 构建）中，input_fidelity 参数专门规定了图像生成模\n型在多大程度上遵循源图像的视觉特征、布局和风格。\n为什么“高”是正确的选择\n保持产品身份：设置 input_fidelity=\"high\" 确保关键品牌细节、标志、结构和产品轮廓与原始照片\n中的表现完全一致。\n为电子商务设计：微软明确为电子商务、商业营销资产和产品摄影设计了此设置，以防止模型产\n生幻觉或改变关键产品特征。\n模型支持：在配置代理图像生成工具（如 Foundry Agent Service 中的 ImageGenerationTool 或 ImageG\nenTool 类）时，原生支持此参数，利用像 GPT-image-1 或 GPT-image-2 这样的高级模型。",
+  "explanationEn": "You should set the input_fidelity parameter to \"high\" in this scenario.\nIn Microsoft Foundry (built on Azure AI Foundry), the input_fidelity parameter specifically dictates how\nstrictly the image generation model adheres to the visual features, layout, and style of the source image.\nWhy \"high\" is the Correct Choice\nPreserves Product Identity: Setting input_fidelity=\"high\" ensures that critical branding details, logos,\nstructures, and product contours are preserved exactly as they appear in the original photo.\nDesigned for E-commerce: Microsoft explicitly designed this setting for e-commerce, commercial\nmarketing assets, and product photography to prevent the model from hallucinating or altering key product\ncharacteristics.\nModel Support: This parameter is natively supported when configuring agent image generation tools (such\nas the ImageGenerationTool or ImageGenTool classes in the Foundry Agent Service) leveraging\nadvanced models like GPT-image-1 or GPT-image-2.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 4",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 4",
+  "pdfPage": 128,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 4
+ },
+ {
+  "id": "q125",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "hotspot",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理接受用户上传的截图，并使用多模态聊天模型。\n一些截图可能包含恶意嵌入文本。\n您需要防止提示注入攻击，并确保第三方内容被视为低信任。\n您应该如何配置文档攻击的提示保护？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Set action to block.",
+   "Enable Spotlighting."
+  ],
+  "pdfAnswer": [
+   "Set action to block.",
+   "Enable Spotlighting."
+  ],
+  "explanation": "为了防止用户上传的截图中恶意嵌入文本的间接提示注入，提示保护操作必须设置为“阻止”，并应\n启用聚焦功能。\n框 1：将操作设置为阻止\n提示屏蔽操作\n推荐的 Azure AI Foundry 配置\n要在使用多模态聊天模型的 Microsoft Foundry 代理中处理不受信任的第三方内容，\n请按如下方式配置您的护栏和内容过滤器：\n1. 风险下拉选择：选择文档攻击。文档攻击针对嵌入在外部内容（如文档、图像或文件）中的隐藏\n指令。\n*-> 2. 提示屏蔽操作：将操作设置为阻止。虽然“注释”会标记漏洞以供后续处理，但“阻止\n”会在文本到达模型会话之前实时停止注入尝试。\n框 2：启用聚焦\n额外缓解措施\n3. 聚焦切换：启用聚焦。该技术转换不受信任的文本，以便为模型提供\n其来源的持续信号。它将提取的屏幕截图文本视为相对于系统\n提示的低信任，从而防止隐藏命令的执行。\nintroducing/4458404",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "提示屏蔽操作",
+    "labelEn": "Prompt shields action",
+    "labelZh": "提示屏蔽操作",
+    "answer": "Set action to block.",
+    "choices": [
+     {
+      "key": "Disable the shield.",
+      "en": "Disable the shield.",
+      "zh": "禁用屏蔽。"
+     },
+     {
+      "key": "Set action to block.",
+      "en": "Set action to block.",
+      "zh": "将操作设置为“阻止”(block)。"
+     },
+     {
+      "key": "Set action to annotate.",
+      "en": "Set action to annotate.",
+      "zh": "将操作设置为“注释”(annotate)。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "其他缓解措施",
+    "labelEn": "Additional mitigation",
+    "labelZh": "其他缓解措施",
+    "answer": "Enable Spotlighting.",
+    "choices": [
+     {
+      "key": "Enable Spotlighting.",
+      "en": "Enable Spotlighting.",
+      "zh": "启用聚焦 (Spotlighting)。"
+     },
+     {
+      "key": "Create a custom blocklist.",
+      "en": "Create a custom blocklist.",
+      "zh": "创建自定义阻止列表。"
+     },
+     {
+      "key": "Use optical character recognition (OCR) to extract the text from the images first.",
+      "en": "Use optical character recognition (OCR) to extract the text from the images first.",
+      "zh": "先使用光学字符识别 (OCR) 从图像中提取文本。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理接受用户上传的截图，并使用多模态聊天模型。\n一些截图可能包含恶意嵌入文本。\n您需要防止提示注入攻击，并确保第三方内容被视为低信任。\n您应该如何配置文档攻击的提示保护？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent accepts user-uploaded screenshots and uses a multimodal chat model.\nSome screenshots contain potentially malicious embedded text.\nYou need to prevent a prompt injection attack and ensure that third-party content is treated as lower trust.\nHow should you configure prompt shields for document attacks? To answer, select the appropriate options\nin the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "为了防止用户上传的截图中恶意嵌入文本的间接提示注入，提示保护操作必须设置为“阻止”，并应\n启用聚焦功能。\n框 1：将操作设置为阻止\n提示屏蔽操作\n推荐的 Azure AI Foundry 配置\n要在使用多模态聊天模型的 Microsoft Foundry 代理中处理不受信任的第三方内容，\n请按如下方式配置您的护栏和内容过滤器：\n1. 风险下拉选择：选择文档攻击。文档攻击针对嵌入在外部内容（如文档、图像或文件）中的隐藏\n指令。\n*-> 2. 提示屏蔽操作：将操作设置为阻止。虽然“注释”会标记漏洞以供后续处理，但“阻止\n”会在文本到达模型会话之前实时停止注入尝试。\n框 2：启用聚焦\n额外缓解措施\n3. 聚焦切换：启用聚焦。该技术转换不受信任的文本，以便为模型提供\n其来源的持续信号。它将提取的屏幕截图文本视为相对于系统\n提示的低信任，从而防止隐藏命令的执行。\nintroducing/4458404",
+  "explanationEn": "To prevent indirect prompt injection from malicious embedded text in user-uploaded screenshots, the\nPrompt Shield action must be set to \"block\" and Spotlighting should be enabled.\nBox 1: Set action to block\nPrompt shield action\nRecommended Azure AI Foundry Configuration\nTo handle untrusted, third-party content within a Microsoft Foundry agent using a multimodal chat model,\nconfigure your Guardrails and Content Filters as follows:\n1. Risk Dropdown Selection: Select Document attack. Document attacks target hidden instructions\nembedded in external content like documents, images, or files.\n*-> 2. Prompt Shield Action: Set the action to Block. While \"Annotate\" flags the vulnerability for\ndownstream handling, \"Block\" stops the injection attempt in real-time before the text reaches the model\nsession.\nBox 2: Enable spotlighting\nAdditional mitigation\n3. Spotlighting Toggle: Enable Spotlighting. This technique transforms untrusted text to give the model a\ncontinuous signal of its source. It treats the extracted screenshot text as lower trust relative to the system\nprompt, preventing hidden commands from executing.\nintroducing/4458404",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "select",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 5",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 5",
+  "pdfPage": 128,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 5
+ },
+ {
+  "id": "q126",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在部署一个支持代理，使用户能够上传照片。\n您需要自动分类上传的图像以检测有害内容。该解决方案必须根据严重性级别阻止内容\n。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Apply keyword scanning to optical character recognition (OCR) output by using Azure Vision in Foundry Tools",
+    "textEn": "Apply keyword scanning to optical character recognition (OCR) output by using Azure Vision in Foundry Tools.",
+    "textZh": "通过在 Foundry Tools 中使用 Azure Vision 对光学字符识别 (OCR) 输出应用关键字扫描。"
+   },
+   {
+    "id": "B",
+    "text": "Enable prompt shields",
+    "textEn": "Enable prompt shields.",
+    "textZh": "启用提示保护。"
+   },
+   {
+    "id": "C",
+    "text": "Use blocklists",
+    "textEn": "Use blocklists.",
+    "textZh": "使用黑名单。"
+   },
+   {
+    "id": "D",
+    "text": "Implement image moderation",
+    "textEn": "Implement image moderation.",
+    "textZh": "实施图像审核。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "在这种情况下，最佳解决方案是实施图像审核。\n \nAzure AI 内容安全提供专门的图像审核功能，能够自动检测、 \n分类和评分有害的视觉内容（如暴力、仇恨言论、色情内容和自残）。 \n它本地允许您根据四个严重性级别（低、中、高）配置阈值黑名单，\n完美匹配要求。 \n不正确：\n \n[不适用]\n \n光学字符识别（OCR）仅提取嵌入图像中的文本。如果用户上传一张\n不包含文本的有害照片（例如，暴力图像），OCR 和关键字扫描将完全无法\ndetect it.\n[不是 B]\n提示保护功能旨在保护生成性 AI 模型免受基于文本的攻击，例如\n越狱或提示注入。它不分析或分类上传照片的视觉像素以查找\n有害内容。\n[不 C]\n虽然 Azure AI 内容安全使用黑名单，但标准文本黑名单匹配特定的确切术语或正则表达式\n模式。它们用于文本审核，而不是用于评估原始视觉图像的严重性级别。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-vision-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您正在部署一个支持代理，使用户能够上传照片。\n您需要自动分类上传的图像以检测有害内容。该解决方案必须根据严重性级别阻止内容\n。\n您应该怎么做？",
+  "stemEn": "You are deploying a support agent that enables users to upload photos.\nYou need to automatically classify uploaded images for harmful content. The solution must block content\nbased on severity levels.\nWhat should you do?",
+  "explanationZh": "在这种情况下，最佳解决方案是实施图像审核。\n \nAzure AI 内容安全提供专门的图像审核功能，能够自动检测、 \n分类和评分有害的视觉内容（如暴力、仇恨言论、色情内容和自残）。 \n它本地允许您根据四个严重性级别（低、中、高）配置阈值黑名单，\n完美匹配要求。 \n不正确：\n \n[不适用]\n \n光学字符识别（OCR）仅提取嵌入图像中的文本。如果用户上传一张\n不包含文本的有害照片（例如，暴力图像），OCR 和关键字扫描将完全无法\ndetect it.\n[不是 B]\n提示保护功能旨在保护生成性 AI 模型免受基于文本的攻击，例如\n越狱或提示注入。它不分析或分类上传照片的视觉像素以查找\n有害内容。\n[不 C]\n虽然 Azure AI 内容安全使用黑名单，但标准文本黑名单匹配特定的确切术语或正则表达式\n模式。它们用于文本审核，而不是用于评估原始视觉图像的严重性级别。",
+  "explanationEn": "The best solution in this scenario is to implement image moderation.\nAzure AI Content Safety provides dedicated image moderation capabilities that automatically detect,\n \nclassify, and score harmful visual content (such as violence, hate speech, sexual content, and self-harm).\nIt natively allows you to configure threshold blocklists based on four severity levels (Low, Medium, High),\nperfectly matching the requirements. \n \nIncorrect:\n[Not A]\n \nOptical Character Recognition (OCR) only extracts text embedded within an image. If a user uploads a\nharmful photo that contains no text (e.g., a violent image), OCR and keyword scanning will completely fail\nto detect it.\n[Not B]\nThe Prompt shields feature is designed to protect generative AI models from text-based attacks, such as\njailbreaking or prompt injection. It does not analyze or classify the visual pixels of an uploaded photo for\nharmful content.\n[Not C]\nWhile Azure AI Content Safety uses blocklists, standard text blocklists match specific exact terms or regex\npatterns. They are used for text moderation, not for evaluating the severity levels of raw visual imagery.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 6",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 6",
+  "pdfPage": 130,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 6
+ },
+ {
+  "id": "q127",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个名为 App1 的应用程序，它使用 Microsoft Foundry 多模态模型部署。\nApp1 对上传的图像进行光学字符识别 (OCR)，并将 OCR 输出附加到提示中作为额外的上下文。\n一些上传的图像包含嵌入的文本。\n您需要防止潜在的恶意指令被模型处理。\n你应该使用什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "image moderation",
+    "textEn": "image moderation",
+    "textZh": "图像审核"
+   },
+   {
+    "id": "B",
+    "text": "prompt shields for documents",
+    "textEn": "prompt shields for documents",
+    "textZh": "文档的提示保护"
+   },
+   {
+    "id": "C",
+    "text": "protected material text",
+    "textEn": "protected material text",
+    "textZh": "受保护材料文本"
+   },
+   {
+    "id": "D",
+    "text": "prompt shields for user prompts",
+    "textEn": "prompt shields for user prompts",
+    "textZh": "用户提示的提示保护"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "为了防止潜在的恶意指令嵌入在不受信任的外部来源中（例如通过 OCR 从上传的图像提取的文本）被\n模型处理，您应该使用文档的提示保护（专门设计用于间接提示攻击或跨域提示注入）。\n实施的关键特性\n文档的提示保护：Azure AI 内容安全 / 提示保护的这个特定组件分析附加到提示的外部数据——如从\n文件、电子邮件或 OCR 输出中提取的文本。它识别并中和试图欺骗模型以覆盖其系统协议的隐藏对抗\n性指令。\n聚焦：Microsoft Foundry 的提示保护中的一种原生能力，聚焦使用先进的文本格式化技术将有效的用\n户命令与不受信任的文档文本分开。这防止模型将嵌入在 OCR 输出中的恶意指令误认为是开发者或\n最终用户的指令。\nga/4236033",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 App1 的应用程序，它使用 Microsoft Foundry 多模态模型部署。\nApp1 对上传的图像进行光学字符识别 (OCR)，并将 OCR 输出附加到提示中作为额外的上下文。\n一些上传的图像包含嵌入的文本。\n您需要防止潜在的恶意指令被模型处理。\n你应该使用什么？",
+  "stemEn": "You have an app named App1 that uses a Microsoft Foundry multimodal model deployment.\nApp1 runs optical character recognition (OCR) on uploaded images and appends the OCR output to the\nprompt as additional context.\nSome uploaded images contain embedded text.\nYou need to prevent potentially malicious instructions from being processed by the model.\nWhat should you use?",
+  "explanationZh": "为了防止潜在的恶意指令嵌入在不受信任的外部来源中（例如通过 OCR 从上传的图像提取的文本）被\n模型处理，您应该使用文档的提示保护（专门设计用于间接提示攻击或跨域提示注入）。\n实施的关键特性\n文档的提示保护：Azure AI 内容安全 / 提示保护的这个特定组件分析附加到提示的外部数据——如从\n文件、电子邮件或 OCR 输出中提取的文本。它识别并中和试图欺骗模型以覆盖其系统协议的隐藏对抗\n性指令。\n聚焦：Microsoft Foundry 的提示保护中的一种原生能力，聚焦使用先进的文本格式化技术将有效的用\n户命令与不受信任的文档文本分开。这防止模型将嵌入在 OCR 输出中的恶意指令误认为是开发者或\n最终用户的指令。\nga/4236033",
+  "explanationEn": "To prevent potentially malicious instructions embedded within untrusted external sources (such as text\nextracted from uploaded images via OCR) from being processed by the model, you should use Prompt\nShields for Documents (specifically designed for Indirect Prompt Attacks or Cross-Domain Prompt\nInjections).\nKey Features to Implement\nPrompt Shields for Documents: This specific component of Azure AI Content Safety / Prompt Shields\nanalyzes external data—like text pulled from files, emails, or OCR outputs—appended to the prompt. It\nidentifies and neutralizes hidden adversarial instructions trying to trick the model into overriding its system\nprotocols.\nSpotlighting: A native capability within Microsoft Foundry's Prompt Shields, Spotlighting uses advanced\ntext-formatting techniques to separate valid user commands from the untrusted document text. This\nprevents the model from mistaking malicious instructions embedded inside the OCR output for instructions\nfrom the developer or end-user.\nga/4236033",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 7",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 7",
+  "pdfPage": 130,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 7
+ },
+ {
+  "id": "q128",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "问题 8\n \n \n您有一个包含代理的 Microsoft Foundry 项目。 \n您需要处理包含扫描文本、表格和多列布局的混合格式文档。\n \ns.\n提取的内容必须保留文档结构，并转换为Markdown格式\n \n以便后续推理。\n您应该首先配置什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "an Azure Language in Foundry Tools text analysis model deployment",
+    "textEn": "an Azure Language in Foundry Tools text analysis model deployment",
+    "textZh": "在Foundry Tools中部署Azure语言文本分析模型"
+   },
+   {
+    "id": "B",
+    "text": "a generative chat completion request",
+    "textEn": "a generative chat completion request",
+    "textZh": "生成聊天完成请求"
+   },
+   {
+    "id": "C",
+    "text": "an Azure OpenAI Responses API call that uses a multimodal model",
+    "textEn": "an Azure OpenAI Responses API call that uses a multimodal model",
+    "textZh": "使用多模态模型的Azure OpenAI响应API调用"
+   },
+   {
+    "id": "D",
+    "text": "an Azure Content Understanding in Foundry Tools analyzer",
+    "textEn": "an Azure Content Understanding in Foundry Tools analyzer",
+    "textZh": "在Foundry Tools中分析Azure内容理解"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "第一步应该是在Microsoft Foundry Tools中使用Azure内容理解分析器。\n这个特定工具旨在处理这种场景中的复杂性——扫描文本、复杂表格，\n和多列布局——通过将非结构化文档转换为结构化的Markdown格式。这\n保留了文档的原始层次结构和结构关系，这对于代理的准确\n后续推理至关重要。\n不正确：\n[不是A]\nAzure语言旨在进行基于文本的自然语言处理（NLP），如情感分析或\n对原始文本字符串的个人身份信息（PII）编辑。它无法解析扫描图像、光学字符识别（OCR）、\n表格或复杂的多列视觉布局。\n[不 C]\n在此特定的 Microsoft Foundry 代理配置中，第一步不应是 Azure OpenAIResponses API 调用。虽\n然多模态模型可以读取图像，但它们经常会产生虚假数据，无法捕捉复杂的多列阅读顺序，并在处理密\n集的、混合格式的文档时降低表格结构的质量。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "问题 8\n \n \n您有一个包含代理的 Microsoft Foundry 项目。 \n您需要处理包含扫描文本、表格和多列布局的混合格式文档。\n \ns.\n提取的内容必须保留文档结构，并转换为Markdown格式\n \n以便后续推理。\n您应该首先配置什么？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\n \n \nYou need to process mixed-format documents that contain scanned text, tables, and multicolumn layout\nThe extracted content must preserve the document structure and be converted into the Markdown format\nfor downstream reasoning.\nWhat should you configure first?",
+  "explanationZh": "第一步应该是在Microsoft Foundry Tools中使用Azure内容理解分析器。\n这个特定工具旨在处理这种场景中的复杂性——扫描文本、复杂表格，\n和多列布局——通过将非结构化文档转换为结构化的Markdown格式。这\n保留了文档的原始层次结构和结构关系，这对于代理的准确\n后续推理至关重要。\n不正确：\n[不是A]\nAzure语言旨在进行基于文本的自然语言处理（NLP），如情感分析或\n对原始文本字符串的个人身份信息（PII）编辑。它无法解析扫描图像、光学字符识别（OCR）、\n表格或复杂的多列视觉布局。\n[不 C]\n在此特定的 Microsoft Foundry 代理配置中，第一步不应是 Azure OpenAIResponses API 调用。虽\n然多模态模型可以读取图像，但它们经常会产生虚假数据，无法捕捉复杂的多列阅读顺序，并在处理密\n集的、混合格式的文档时降低表格结构的质量。",
+  "explanationEn": "The first step should be an Azure Content Understanding analyzer within Microsoft Foundry Tools.\nThis specific tool is designed to handle the complexities in this scenario—scanned text, complex tables,\nand multi-column layouts—by converting unstructured documents into a structured Markdown format. This\npreserves the document's original hierarchy and structural relationships, which is critical for accurate\ndownstream reasoning by an agent.\nIncorrect:\n[Not A]\nAzure Language is designed for text-based natural language processing (NLP) like sentiment analysis or\nPII redaction on raw text strings. It cannot parse scanned images, optical character recognition (OCR),\ntables, or complex multi-column visual layouts.\n[Not C]\nThe first step in this specific Microsoft Foundry agent configuration should not be an Azure OpenAI\nResponses API call.While multimodal models can read images, they frequently hallucinate data, fail to\ncapture complex multi-column reading orders, and degrade table structures when processing dense,\nmixed-format documents.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 8",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 8",
+  "pdfPage": 131,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 8
+ },
+ {
+  "id": "q129",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个处理扫描 PDF 发票的应用程序。这些发票具有不同的布局，并包括多页表格。\n您有一个使用光学字符识别 (OCR) 的管道，并提取总计和发票号码。由于忽略了文档结构，结果通常是不正确的。\n您需要实施一个提供 OCR、布局分析和模板通用字段提取的解决方案。该解决方案必须不需要训练自定义模型。该解决方案必须最小化管理工作。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Language in Foundry Tools",
+    "textEn": "Azure Language in Foundry Tools",
+    "textZh": "Foundry 工具中的 Azure 语言"
+   },
+   {
+    "id": "B",
+    "text": "Azure Content Understanding in Foundry Tools",
+    "textEn": "Azure Content Understanding in Foundry Tools",
+    "textZh": "Foundry 工具中的 Azure 内容理解"
+   },
+   {
+    "id": "C",
+    "text": "an Azure Machine Learning model",
+    "textEn": "an Azure Machine Learning model",
+    "textZh": "一个 Azure 机器学习模型"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "最合适的解决方案是 Foundry 工具中的 Azure 内容理解。\n \nAzure 内容理解服务本地结合了先进的光学字符识别 \n(OCR)、深度布局分析和预构建的生成能力。它处理各种文档结构、\n多页表格和模板通用字段提取，而无需自定义机器学习\n模型训练。它作为一个低管理、开箱即用的解决方案，完美契合文档\n智能需求。\n不正确：\n[不是A]\nAzure 语言在 Foundry 工具中：Azure AI 语言主要集中于非结构化文本分析、情感分析、文本摘要和对\n话能力。它缺乏内置的文档布局分析、表格解析和视觉 OCR 能力，无法处理复杂的扫描 PDF 发票结\n构。\n[不 C]\nAzure 机器学习模型：在 Azure 机器学习中构建、训练、部署和管理自定义模型需要显著的数据科学\n专业知识。这种方法引入了高管理开销、复杂的基础设施管理和手动管道维护，违反了低管理的要求。\nunderstand",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个处理扫描 PDF 发票的应用程序。这些发票具有不同的布局，并包括多页表格。\n您有一个使用光学字符识别 (OCR) 的管道，并提取总计和发票号码。由于忽略了文档结构，结果通常是不正确的。\n您需要实施一个提供 OCR、布局分析和模板通用字段提取的解决方案。该解决方案必须不需要训练自定义模型。该解决方案必须最小化管理工作。\n您应该在解决方案中包含什么？",
+  "stemEn": "You have an application that processes scanned PDF invoices. The invoices have varied layouts and\ninclude multipage tables.\nYou have a pipeline that uses optical character recognition (OCR) and extracts totals and invoice\nnumbers. The results are often incorrect because the document structure is ignored.\nYou need to implement a solution that provides OCR, layout analysis, and template-generalizing field\nextraction. The solution must NOT require training a custom model. The solution must minimize\nadministrative effort.\nWhat should you include in the solution?",
+  "explanationZh": "最合适的解决方案是 Foundry 工具中的 Azure 内容理解。\n \nAzure 内容理解服务本地结合了先进的光学字符识别 \n(OCR)、深度布局分析和预构建的生成能力。它处理各种文档结构、\n多页表格和模板通用字段提取，而无需自定义机器学习\n模型训练。它作为一个低管理、开箱即用的解决方案，完美契合文档\n智能需求。\n不正确：\n[不是A]\nAzure 语言在 Foundry 工具中：Azure AI 语言主要集中于非结构化文本分析、情感分析、文本摘要和对\n话能力。它缺乏内置的文档布局分析、表格解析和视觉 OCR 能力，无法处理复杂的扫描 PDF 发票结\n构。\n[不 C]\nAzure 机器学习模型：在 Azure 机器学习中构建、训练、部署和管理自定义模型需要显著的数据科学\n专业知识。这种方法引入了高管理开销、复杂的基础设施管理和手动管道维护，违反了低管理的要求。\nunderstand",
+  "explanationEn": "The most appropriate solution is Azure Content Understanding in Foundry Tools.\n \n \nThe Azure Content Understanding service natively combines advanced Optical Character Recognition\n(OCR), deep layout analysis, and pre-built generative capabilities. It handles varied document structures,\nmulti-page tables, and template-generalizing field extraction without requiring custom machine learning\nmodel training. It operates as a low-administration, out-of-the-box solution perfectly aligned with document\nintelligence needs.\nIncorrect:\n[Not A]\nAzure Language in Foundry Tools: Azure AI Language focuses primarily on unstructured text analytics,\nsentiment analysis, text summarization, and conversational capabilities. It lacks the built-in document\nlayout analysis, table parsing, and visual OCR capabilities necessary to process complex scanned PDF\ninvoice structures.\n[Not C]\nAzure Machine Learning model: Building, training, deploying, and managing a custom model in Azure\nMachine Learning requires significant data science expertise. This approach introduces high administrative\noverhead, complex infrastructure management, and manual pipeline maintenance, which violates the\nrequirement for low administration.\nunderstand",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 9",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 9",
+  "pdfPage": 132,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 9
+ },
+ {
+  "id": "q130",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用从存储在 Azure Blob 存储中的文档构建的知识源。这些文档包括包含多页表格的数字扫描 PDF\n。\n您有一个提取仅包含纯文本的摄取作业，这导致表格结构、标题和页码元数据的丢失。\n用户经常提出需要跨页面检索特定表格行的问题。\n您需要为执行光学字符识别（OCR）在扫描 PDF 上的检索增强生成（RAG）管道配置一个摄取作业，该作业将表格和标题作为结构感知块进行保留，并将页码元数据与每个块一起存储。\n您应该如何配置数据摄取作业？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Use advanced data parsing to reingest the documents",
+    "textEn": "Use advanced data parsing to reingest the documents.",
+    "textZh": "使用高级数据解析重新摄取文档。"
+   },
+   {
+    "id": "B",
+    "text": "Use OCR and page-level chunking",
+    "textEn": "Use OCR and page-level chunking.",
+    "textZh": "使用光学字符识别（OCR）和页面级分块。"
+   },
+   {
+    "id": "C",
+    "text": "Use page-level OCR extraction and store each page as a single chunk",
+    "textEn": "Use page-level OCR extraction and store each page as a single chunk.",
+    "textZh": "使用页面级OCR提取，并将每个页面存储为一个单独的块。"
+   },
+   {
+    "id": "D",
+    "text": "Use basic parsing and fixed-size chunking",
+    "textEn": "Use basic parsing and fixed-size chunking.",
+    "textZh": "使用基本解析和固定大小的分块。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用从存储在 Azure Blob 存储中的文档构建的知识源。这些文档包括包含多页表格的数字扫描 PDF\n。\n您有一个提取仅包含纯文本的摄取作业，这导致表格结构、标题和页码元数据的丢失。\n用户经常提出需要跨页面检索特定表格行的问题。\n您需要为执行光学字符识别（OCR）在扫描 PDF 上的检索增强生成（RAG）管道配置一个摄取作业，该作业将表格和标题作为结构感知块进行保留，并将页码元数据与每个块一起存储。\n您应该如何配置数据摄取作业？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses a knowledge source built from documents stored in Azure Blob Storage. The documents\ninclude digitally scanned PDFs that contain multipage tables.\nYou have an ingestion job that extracts only plain text, causing loss of table structure, headings, and page-\nnumber metadata.\nUsers frequently ask questions that require the retrieval of specific table rows across the pages.\nYou need to configure an ingestion job for a Retrieval Augmented Generation (RAG) pipeline that performs\noptical character recognition (OCR) on scanned PDFs, preserves tables and headings as structure-aware\nchunks, and stores page-number metadata with each chunk.\nHow should you configure the ingestion job?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 10",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 10",
+  "pdfPage": 132,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 10
+ },
+ {
+  "id": "q131",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用Azure AI搜索作为检索器。\n您计划将PDF摄取到Azure AI搜索索引中，以确保代理能够在文档和嵌入图像中的文本中提供基于内容的\n \n响应。 \n用户需要链接到源文件的引用。\n \n \n您需要确保在索引期间，图像被提取为可以用作内置光学字符识别（OCR）技能输入的结构。 \n \n您应该使用哪种索引方法？",
+  "options": [
+   {
+    "id": "A",
+    "text": "an indexer to extract image data into a normalized_images collection",
+    "textEn": "an indexer to extract image data into a normalized_images collection",
+    "textZh": "一个索引器，用于将图像数据提取到 normalized_images 集合中"
+   },
+   {
+    "id": "B",
+    "text": "a Shaper skill to restructure the OCR input",
+    "textEn": "a Shaper skill to restructure the OCR input",
+    "textZh": "一个 Shaper 技能，用于重构 OCR 输入"
+   },
+   {
+    "id": "C",
+    "text": "a skillset to run the OCR skill directly against the content field of the index",
+    "textEn": "a skillset to run the OCR skill directly against the content field of the index",
+    "textZh": "一个技能集，直接在索引的内容字段上运行 OCR 技能"
+   },
+   {
+    "id": "D",
+    "text": "the outputFieldMappings parameter to write image data to a searchable field",
+    "textEn": "the outputFieldMappings parameter to write image data to a searchable field",
+    "textZh": "outputFieldMappings 参数，用于将图像数据写入可搜索字段"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "最佳配置步骤是一个索引器，用于将图像数据提取到 normalized_images 集合中。\n文档破解：在 Azure AI Search 中，文档破解会自动将文本数据与\n视觉内容分离。为了使嵌入的图像可用于像 OCR 这样的图像处理技能，索引器\n必须明确配置图像操作配置属性（例如\ngenerateNormalizedImages 或 generateNormalizedImagePerPage）。\nOCR 输入结构：此索引步骤从 PDF 中提取嵌入的图像，并将其重构为内部 normalized_images 数组（通\n过路径 /document/normalized_images/* 访问）。内置的 OCR 技能严格要求此规范化图像集合格式\n作为其输入负载。\n不正确：\n[不 C]\n内容字段限制：在文档破解过程中生成的 /document/content 字段仅包含从文件中提取的原始文本。\n它不包含嵌入图像的二进制数据或结构属性。\n目标错误：将 OCR 技能直接指向原始文本内容字段将无法分析实际图像，使代理无法在视觉元素（如图表\n或嵌入的信息图）中提供答案。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用Azure AI搜索作为检索器。\n您计划将PDF摄取到Azure AI搜索索引中，以确保代理能够在文档和嵌入图像中的文本中提供基于内容的\n \n响应。 \n用户需要链接到源文件的引用。\n \n \n您需要确保在索引期间，图像被提取为可以用作内置光学字符识别（OCR）技能输入的结构。 \n \n您应该使用哪种索引方法？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses Azure AI Search as the retriever.\nYou plan to ingest PDF into an Azure AI Search index to ensure that the agent can ground responses in\ntexts in both documents and embedded images.\n \nUsers require citations that link to the source files.\n \n \nYou need to ensure that during indexing, the images are extracted into a structure that can be used as\ninput for the built-in optical character recognition (OCR) skill. \nWhich indexing approach should you use?",
+  "explanationZh": "最佳配置步骤是一个索引器，用于将图像数据提取到 normalized_images 集合中。\n文档破解：在 Azure AI Search 中，文档破解会自动将文本数据与\n视觉内容分离。为了使嵌入的图像可用于像 OCR 这样的图像处理技能，索引器\n必须明确配置图像操作配置属性（例如\ngenerateNormalizedImages 或 generateNormalizedImagePerPage）。\nOCR 输入结构：此索引步骤从 PDF 中提取嵌入的图像，并将其重构为内部 normalized_images 数组（通\n过路径 /document/normalized_images/* 访问）。内置的 OCR 技能严格要求此规范化图像集合格式\n作为其输入负载。\n不正确：\n[不 C]\n内容字段限制：在文档破解过程中生成的 /document/content 字段仅包含从文件中提取的原始文本。\n它不包含嵌入图像的二进制数据或结构属性。\n目标错误：将 OCR 技能直接指向原始文本内容字段将无法分析实际图像，使代理无法在视觉元素（如图表\n或嵌入的信息图）中提供答案。",
+  "explanationEn": "The best configuration step an indexer to extract image data into a normalized_images collection.\nCracking Foundation: In Azure AI Search, document cracking automatically separates textual data from\nvisual content. To make embedded images available to image-processing skills like OCR, the indexer\nmust be explicitly configured with an imageAction configuration property (such as\ngenerateNormalizedImages or generateNormalizedImagePerPage).\nInput Structure for OCR: This indexer step extracts embedded images from the PDF and restructures them\ninto an internal normalized_images array (accessed via the path /document/normalized_images/*). The\nbuilt-in OCR skill strictly requires this normalized image collection format as its input payload.\nIncorrect:\n[Not C]\nContent Field Limitations: The /document/content field generated during document cracking holds only the\nraw text extracted from the file. It does not contain the binary data or structural properties of embedded\nimages.\nTargeting Errors: Pointing an OCR skill directly at the raw text content field would fail to analyze the actual\nimages, leaving the agent unable to ground answers in visual elements like diagrams or embedded\ninfographics.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 11",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 11",
+  "pdfPage": 133,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 11
+ },
+ {
+  "id": "q132",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在构建一个名为 Pipeline1 的 Azure AI 搜索索引管道，该管道处理存储在 Azure Blob 存储中的发票。这些发票以扫描图像的形式存储。\n您需要使用户能够在发票字段中搜索发票数据。\n您应该向 Pipeline1 的技能集添加哪个内置技能？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Text Split",
+    "textEn": "Text Split",
+    "textZh": "文本拆分"
+   },
+   {
+    "id": "B",
+    "text": "Text Translation",
+    "textEn": "Text Translation",
+    "textZh": "文本翻译"
+   },
+   {
+    "id": "C",
+    "text": "optical character recognition (OCR)",
+    "textEn": "optical character recognition (OCR)",
+    "textZh": "光学字符识别 (OCR)"
+   },
+   {
+    "id": "D",
+    "text": "Image Analysis",
+    "textEn": "Image Analysis",
+    "textZh": "图像分析"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "您应该将 Azure 机器学习 OCR 技能（历史上称为 Microsoft.Skills.Vision.OcrSkil\nl）添加到您的技能集管道中。 \n \n文本提取：扫描的图像包含不可搜索的像素而不是文本。 \n数据摄取：OCR 技能从图像中提取打印文本和布局信息。\n \n \n下游处理：它将原始文本输入到后续技能（如实体识别）或直接输入到\nyour 搜索索引字段中。\nactionable-data-reusable-pipelines-with-adi-a/4474054",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个名为 Pipeline1 的 Azure AI 搜索索引管道，该管道处理存储在 Azure Blob 存储中的发票。这些发票以扫描图像的形式存储。\n您需要使用户能够在发票字段中搜索发票数据。\n您应该向 Pipeline1 的技能集添加哪个内置技能？",
+  "stemEn": "You are building an Azure AI Search indexing pipeline named Pipeline1 that ingests invoices stored in\nAzure Blob Storage. The invoices are stored as scanned images.\nYou need to enable users to search invoice data across the invoice fields.\nWhich built-in skill should you add to the skillset of Pipeline1?",
+  "explanationZh": "您应该将 Azure 机器学习 OCR 技能（历史上称为 Microsoft.Skills.Vision.OcrSkil\nl）添加到您的技能集管道中。 \n \n文本提取：扫描的图像包含不可搜索的像素而不是文本。 \n数据摄取：OCR 技能从图像中提取打印文本和布局信息。\n \n \n下游处理：它将原始文本输入到后续技能（如实体识别）或直接输入到\nyour 搜索索引字段中。\nactionable-data-reusable-pipelines-with-adi-a/4474054",
+  "explanationEn": "You should add the Azure Machine Learning OCR skill (historically known as the\n \nMicrosoft.Skills.Vision.OcrSkill) to your skillset pipeline.\nText Extraction: Scanned images contain unsearchable pixels rather than text.\n \n \nData Ingestion: The OCR skill extracts the printed text and layout information from the images.\nDownstream Processing: It feeds raw text into subsequent skills (like Entity Recognition) or directly into\nyour search index fields.\nactionable-data-reusable-pipelines-with-adi-a/4474054",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 12",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 12",
+  "pdfPage": 134,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 12
+ },
+ {
+  "id": "q133",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "drag",
+  "stem": "您有一个 Microsoft Foundry 项目，使用 Azure 内容理解在 Foundry 工具中分析营销视频。\n视频分割已启用。\n您需要配置一个分析器，以输出描述每个视频片段颜色方案的生成 JSON 字段。\n您应该如何配置分析器？要回答，请将适当的值拖到正确的目标。\n每个值可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "string",
+   "generate"
+  ],
+  "pdfAnswer": [
+   "string",
+   "generate"
+  ],
+  "explanation": "框 1：字符串\n类型（字符串）：虽然您希望输出模式包含颜色调色板或样式的描述，Azure 内容理解模式使用基本类型\n（如字符串、数字或数组）映射底层数据类型。该字段将在 JSON 响应中以类似 \"valueString\" 的键输出最\n终结果。框 2：生成\n方法（生成）：提取方法仅用于精确提取内容中出现的文字（例如语音转文本的转录或 OCR）。因为\n分析视觉美学和合成关于“颜色方案”的描述性文本需要多模态 AI 推理，您必须使用生成方法。这指示底\n层模型分析该片段并合成全新的描述性见解。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "字段值类型",
+    "labelEn": "Field value type",
+    "labelZh": "字段值类型",
+    "answer": "string",
+    "choices": [
+     {
+      "key": "classify",
+      "en": "classify",
+      "zh": "classify"
+     },
+     {
+      "key": "generate",
+      "en": "generate",
+      "zh": "generate"
+     },
+     {
+      "key": "group",
+      "en": "group",
+      "zh": "group"
+     },
+     {
+      "key": "string",
+      "en": "string",
+      "zh": "string"
+     },
+     {
+      "key": "table",
+      "en": "table",
+      "zh": "table"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "字段方法",
+    "labelEn": "Field method",
+    "labelZh": "字段方法",
+    "answer": "generate",
+    "choices": [
+     {
+      "key": "classify",
+      "en": "classify",
+      "zh": "classify"
+     },
+     {
+      "key": "generate",
+      "en": "generate",
+      "zh": "generate"
+     },
+     {
+      "key": "group",
+      "en": "group",
+      "zh": "group"
+     },
+     {
+      "key": "string",
+      "en": "string",
+      "zh": "string"
+     },
+     {
+      "key": "table",
+      "en": "table",
+      "zh": "table"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个 Microsoft Foundry 项目，使用 Azure 内容理解在 Foundry 工具中分析营销视频。\n视频分割已启用。\n您需要配置一个分析器，以输出描述每个视频片段颜色方案的生成 JSON 字段。\n您应该如何配置分析器？要回答，请将适当的值拖到正确的目标。\n每个值可以使用一次、使用多次或根本不使用。您可能需要拖动窗格之间的分隔条或滚动以查看内容。\n注意： 每个正确的选择值为一分。\n选择和放置：",
+  "stemEn": "You have a Microsoft Foundry project that uses Azure Content Understanding in Foundry Tools to analyze\nmarketing videos.\nVideo segmentation is enabled.\nYou need to configure an analyzer to output a generated JSON field that describes the color scheme of\neach video segment.\nHow should you configure the analyzer? To answer, drag the appropriate values to the correct targets.\nEach value may be used once, more than once, or not at all. You may need to drag the split bar between\npanes or scroll to view content.\nNOTE: Each correct selection is worth one point.\nSelect and Place:",
+  "explanationZh": "框 1：字符串\n类型（字符串）：虽然您希望输出模式包含颜色调色板或样式的描述，Azure 内容理解模式使用基本类型\n（如字符串、数字或数组）映射底层数据类型。该字段将在 JSON 响应中以类似 \"valueString\" 的键输出最\n终结果。框 2：生成\n方法（生成）：提取方法仅用于精确提取内容中出现的文字（例如语音转文本的转录或 OCR）。因为\n分析视觉美学和合成关于“颜色方案”的描述性文本需要多模态 AI 推理，您必须使用生成方法。这指示底\n层模型分析该片段并合成全新的描述性见解。",
+  "explanationEn": "Box 1: string\nThe Type (string): While you want the output schema to contain a description of the color palette or style,\nAzure Content Understanding schemas map the underlying data types using fundamental types like string,\nnumber, or array. The field will output the final result in the JSON response under a key like \"valueString\"\nBox 2: generate\nThe Method (generate): The extract method is only used for pulling literal text exactly as it appears in\ncontent (such as speech-to-text transcripts or OCR). Because analyzing visual aesthetics and synthesizing\ndescriptive text about a \"color scheme\" requires multimodal AI reasoning, you must use the generate\nmethod. This instructs the underlying model to analyze the segment and synthesize a completely new\ndescriptive insight.",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "drag",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 13",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 13",
+  "pdfPage": 134,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 13
+ },
+ {
+  "id": "q134",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，用于生成短促销产品视频。\n在几个剪辑获得批准后，审阅者注意到某些视频的右上角有一个小水印。\n您需要在不重新生成视频的情况下去除水印。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Modify the original prompt to exclude watermarks",
+    "textEn": "Modify the original prompt to exclude watermarks.",
+    "textZh": "修改原始提示以排除水印。"
+   },
+   {
+    "id": "B",
+    "text": "Crop the video by using the size parameter",
+    "textEn": "Crop the video by using the size parameter.",
+    "textZh": "使用 size 参数裁剪视频。"
+   },
+   {
+    "id": "C",
+    "text": "Increase the guidance scale",
+    "textEn": "Increase the guidance scale.",
+    "textZh": "增加引导比例。"
+   },
+   {
+    "id": "D",
+    "text": "Apply a mask-based inpainting edit to the affected part of the video",
+    "textEn": "Apply a mask-based inpainting edit to the affected part of the video.",
+    "textZh": "对视频受影响部分应用基于掩码的修复编辑。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "正确的操作是对视频受影响部分应用基于掩码的修复编辑。\n这是唯一一个直接修改现有已批准视频文件的选项。修复允许您\n使用掩码隔离特定的右上角，并与周围像素无缝融合，以\nerase 水印，而不改变或重新生成其余视频画面。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 项目，用于生成短促销产品视频。\n在几个剪辑获得批准后，审阅者注意到某些视频的右上角有一个小水印。\n您需要在不重新生成视频的情况下去除水印。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that generates short promotional product videos.\nAfter several clips are approved, reviewers notice a small watermark in the top-right corner of some\nvideos.\nYou need to remove the watermark without regenerating the videos.\nWhat should you do?",
+  "explanationZh": "正确的操作是对视频受影响部分应用基于掩码的修复编辑。\n这是唯一一个直接修改现有已批准视频文件的选项。修复允许您\n使用掩码隔离特定的右上角，并与周围像素无缝融合，以\nerase 水印，而不改变或重新生成其余视频画面。",
+  "explanationEn": "The correct action to take is to apply a mask-based inpainting edit to the affected part of the video.\nThis is the only option that directly modifies the existing, approved video files. Inpainting allows you to\nisolate the specific top-right corner using a mask and seamlessly blend it with the surrounding pixels to\nerase the watermark without altering or regenerating the rest of the video footage.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 14",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 14",
+  "pdfPage": 135,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 14
+ },
+ {
+  "id": "q135",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "hotspot",
+  "stem": "您开发了一种测试方法，以验证从对 Azure Vision 在 Foundry ToolsAPI 的调用中检索到的结果。该调用用于分析图像中公司徽标的存在。该调用返回一个名为 brands 的品牌集合。\n您有以下代码段：\n```\nfor brand in image_analysis.brands:\n    if brand.confidence >= 0.75:\n        print(f\"\\nLogo of {brand.name} between {brand.rectangle.x}, {brand.rectangle.y} and {brand.rectangle.w}, {brand.rectangle.h}\")\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Yes",
+   "Yes",
+   "No"
+  ],
+  "pdfAnswer": [
+   "Yes",
+   "Yes",
+   "No"
+  ],
+  "explanation": "框 1：是\n该代码段正确地过滤并显示每个检测到的品牌的名称（和坐标）\n仅当模型的置信度分数达到 75% 或更高时。表达式 if brand.confidence >= 0.75\n确保只有满足或超过此阈值的品牌被打印。\n框 2: 是\n代码段将显示坐标。具体来说，它打印矩形的左上角的 x 和 y 值，以及其宽度 (w) 和高度 (h)，对于任何\n \n检测到的品牌，其置信度分数等于或大于 0.75 (75%)。 \n \n \n提供的代码直接使用属性来提取边界框： \nbrand.rectangle.x 和 brand.rectangle.y：边界框左上角的坐标。\n \nbrand.rectangle.w 和 brand.rectangle.h：边界框的宽度和高度。 \n框 3：无\n请参见上面的框 2。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "该代码将显示置信度等于或高于 75% 的每个已检测品牌的名称。",
+    "labelEn": "The code will display the name of each detected brand with a confidence equal to or higher than 75 percent.",
+    "labelZh": "该代码将显示置信度等于或高于 75% 的每个已检测品牌的名称。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "2",
+    "label": "该代码将显示所显示品牌的品牌徽标所在矩形左上角的坐标。",
+    "labelEn": "The code will display coordinates for the top-left corner of the rectangle that contains the brand logo of the displayed brands.",
+    "labelZh": "该代码将显示所显示品牌的品牌徽标所在矩形左上角的坐标。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "该代码将显示所显示品牌的品牌徽标所在矩形右下角的坐标。",
+    "labelEn": "The code will display coordinates for the bottom-right corner of the rectangle that contains the brand logo of the displayed brands.",
+    "labelZh": "该代码将显示所显示品牌的品牌徽标所在矩形右下角的坐标。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   }
+  ],
+  "stemZh": "您开发了一种测试方法，以验证从对 Azure Vision 在 Foundry ToolsAPI 的调用中检索到的结果。该调用用于分析图像中公司徽标的存在。该调用返回一个名为 brands 的品牌集合。\n您有以下代码段：\n```\nfor brand in image_analysis.brands:\n    if brand.confidence >= 0.75:\n        print(f\"\\nLogo of {brand.name} between {brand.rectangle.x}, {brand.rectangle.y} and {brand.rectangle.w}, {brand.rectangle.h}\")\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You develop a test method to verify the results retrieved from a call to the Azure Vision in Foundry Tools\nAPI. The call is used to analyze the existence of company logos in images. The call returns a collection of\nbrands named brands.\nYou have the following code segment:\n```\nfor brand in image_analysis.brands:\n    if brand.confidence >= 0.75:\n        print(f\"\\nLogo of {brand.name} between {brand.rectangle.x}, {brand.rectangle.y} and {brand.rectangle.w}, {brand.rectangle.h}\")\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：是\n该代码段正确地过滤并显示每个检测到的品牌的名称（和坐标）\n仅当模型的置信度分数达到 75% 或更高时。表达式 if brand.confidence >= 0.75\n确保只有满足或超过此阈值的品牌被打印。\n框 2: 是\n代码段将显示坐标。具体来说，它打印矩形的左上角的 x 和 y 值，以及其宽度 (w) 和高度 (h)，对于任何\n \n检测到的品牌，其置信度分数等于或大于 0.75 (75%)。 \n \n \n提供的代码直接使用属性来提取边界框： \nbrand.rectangle.x 和 brand.rectangle.y：边界框左上角的坐标。\n \nbrand.rectangle.w 和 brand.rectangle.h：边界框的宽度和高度。 \n框 3：无\n请参见上面的框 2。",
+  "explanationEn": "Box 1: Yes\nThe code segment correctly filters for and displays the name (and coordinates) of each detected brand\nonly if the model's confidence score is 75 percent or higher.The expression if brand.confidence >= 0.75\nguarantees that only brands meeting or exceeding this threshold are printed.\nBox 2: Yes\nThe code segment will display the coordinates. Specifically, it prints the x and y values of the rectangle's\ntop-left corner alongside its width (w) and height (h) for any detected brand with a confidence score equal\nto or greater than 0.75 (75%).\n \nThe provided code uses the properties directly to extract the bounding box:\nbrand.rectangle.x and brand.rectangle.y: The coordinates of the top-left corner of the bounding box.\n \n the bounding box.\nbrand.rectangle.w and brand.rectangle.h: The width and height of\nBox 3: No\nSee Box 2 above.",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "yn",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 15",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 15",
+  "pdfPage": 136,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 15
+ },
+ {
+  "id": "q136",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "drag",
+  "stem": "您正在开发一个应用程序，用于检测在工厂生产线上生产的故障组件。\n这些组件是特定于您的业务的。\n您需要使用 Azure 自定义视觉 API 来帮助检测常见故障。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Create a project.",
+   "Upload and tag images.",
+   "Train the object detection model."
+  ],
+  "pdfAnswer": [
+   "Create a project.",
+   "Upload and tag images.",
+   "Train the object detection model."
+  ],
+  "explanation": "步骤 1：创建项目\n您必须首先在自定义视觉门户或通过 SDK 设置一个新项目，以存储您的数据和配置。\n步骤 2：上传并标记图像\n接下来，您需要上传特定工厂组件的照片，并在故障周围绘制边界框以进行标记。\n步骤 3：训练目标检测模型\n因为您需要识别和定位组件上的特定可定位故障，所以必须训练一个目标检测模型，而不是一个通用\n分类模型。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "步骤 1",
+    "labelEn": "Step 1",
+    "labelZh": "步骤 1",
+    "answer": "Create a project.",
+    "choices": [
+     {
+      "key": "Create a project.",
+      "en": "Create a project.",
+      "zh": "创建项目。"
+     },
+     {
+      "key": "Upload and tag images.",
+      "en": "Upload and tag images.",
+      "zh": "上传并标记图像。"
+     },
+     {
+      "key": "Train the object detection model.",
+      "en": "Train the object detection model.",
+      "zh": "训练对象检测模型。"
+     },
+     {
+      "key": "Initialize the training dataset.",
+      "en": "Initialize the training dataset.",
+      "zh": "初始化训练数据集。"
+     },
+     {
+      "key": "Train the classifier model.",
+      "en": "Train the classifier model.",
+      "zh": "训练分类器模型。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "步骤 2",
+    "labelEn": "Step 2",
+    "labelZh": "步骤 2",
+    "answer": "Upload and tag images.",
+    "choices": [
+     {
+      "key": "Create a project.",
+      "en": "Create a project.",
+      "zh": "创建项目。"
+     },
+     {
+      "key": "Upload and tag images.",
+      "en": "Upload and tag images.",
+      "zh": "上传并标记图像。"
+     },
+     {
+      "key": "Train the object detection model.",
+      "en": "Train the object detection model.",
+      "zh": "训练对象检测模型。"
+     },
+     {
+      "key": "Initialize the training dataset.",
+      "en": "Initialize the training dataset.",
+      "zh": "初始化训练数据集。"
+     },
+     {
+      "key": "Train the classifier model.",
+      "en": "Train the classifier model.",
+      "zh": "训练分类器模型。"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "步骤 3",
+    "labelEn": "Step 3",
+    "labelZh": "步骤 3",
+    "answer": "Train the object detection model.",
+    "choices": [
+     {
+      "key": "Create a project.",
+      "en": "Create a project.",
+      "zh": "创建项目。"
+     },
+     {
+      "key": "Upload and tag images.",
+      "en": "Upload and tag images.",
+      "zh": "上传并标记图像。"
+     },
+     {
+      "key": "Train the object detection model.",
+      "en": "Train the object detection model.",
+      "zh": "训练对象检测模型。"
+     },
+     {
+      "key": "Initialize the training dataset.",
+      "en": "Initialize the training dataset.",
+      "zh": "初始化训练数据集。"
+     },
+     {
+      "key": "Train the classifier model.",
+      "en": "Train the classifier model.",
+      "zh": "训练分类器模型。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您正在开发一个应用程序，用于检测在工厂生产线上生产的故障组件。\n这些组件是特定于您的业务的。\n您需要使用 Azure 自定义视觉 API 来帮助检测常见故障。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stemEn": "You are developing an application that will detect faulty components produced on a factory production line.\nThe components are specific to your business.\nYou need to use the Azure Custom Vision API to help detect common faults.\nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the\nlist of actions to the answer area and arrange them in the correct order.\nSelect and Place:",
+  "explanationZh": "步骤 1：创建项目\n您必须首先在自定义视觉门户或通过 SDK 设置一个新项目，以存储您的数据和配置。\n步骤 2：上传并标记图像\n接下来，您需要上传特定工厂组件的照片，并在故障周围绘制边界框以进行标记。\n步骤 3：训练目标检测模型\n因为您需要识别和定位组件上的特定可定位故障，所以必须训练一个目标检测模型，而不是一个通用\n分类模型。",
+  "explanationEn": "Step 1: Create a project\nYou must first set up a new project in the Custom Vision portal or via the SDK to store your data and\nconfiguration.\nStep 2: Upload and tag images\nNext, you need to upload photos of your specific factory components and draw bounding boxes around the\nfaults to tag them.\nStep 3: Train the object detection model\nBecause you need to identify and locate specific, localizable faults on a component, you must train an\nobject detection model rather than a general classifier model.",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "drag",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 16",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 16",
+  "pdfPage": 137,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 16
+ },
+ {
+  "id": "q137",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "hotspot",
+  "stem": "您正在构建一个自定义视觉模型，该模型将作为 iOS 应用的一部分进行部署。\n您有猫和狗的图像。每张图像包含一只猫或一只狗。\n您需要使用 Azure 自定义视觉服务来检测图像是猫还是狗。\n您应该如何在 Azure 自定义视觉门户中配置项目？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Classification",
+   "Multiclass (Single tag per image)",
+   "General (compact)"
+  ],
+  "pdfAnswer": [
+   "Classification",
+   "Multiclass (Single tag per image)",
+   "General (compact)"
+  ],
+  "explanation": "框 1：分类\n您应该使用分类项目类型，而不是对象检测。\n项目要求：您的目标是识别图像的整体内容是否属于特定\n类别（猫或狗）。分类目的：Azure AI 自定义视觉图像分类器根据图像的整体视觉特征\n为整个图像应用内容标签。\n框 2：多类（每张图像一个标签）\n图像约束：由于每张图像仅包含一种独特的动物，您将其配置为\n多类（每张图像一个标签）分类类型。\n框 3：一般（紧凑）\n域：选择一个通用（紧凑型）域。紧凑型域生成专门为边缘设备和移动性能优化的轻量级模型。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "项目类型：",
+    "labelEn": "Project Types:",
+    "labelZh": "项目类型：",
+    "choices": [
+     {
+      "key": "Classification",
+      "en": "Classification",
+      "zh": "分类 (Classification)"
+     },
+     {
+      "key": "Object Detection",
+      "en": "Object Detection",
+      "zh": "对象检测 (Object Detection)"
+     }
+    ],
+    "answer": "Classification"
+   },
+   {
+    "id": "2",
+    "label": "分类类型：",
+    "labelEn": "Classification Types:",
+    "labelZh": "分类类型：",
+    "choices": [
+     {
+      "key": "Multiclass (Single tag per image)",
+      "en": "Multiclass (Single tag per image)",
+      "zh": "多类（每张图像一个标签）(Multiclass)"
+     },
+     {
+      "key": "Multilabel (Multiple tags per image)",
+      "en": "Multilabel (Multiple tags per image)",
+      "zh": "多标签（每张图像多个标签）(Multilabel)"
+     }
+    ],
+    "answer": "Multiclass (Single tag per image)"
+   },
+   {
+    "id": "3",
+    "label": "域：",
+    "labelEn": "Domains:",
+    "labelZh": "域：",
+    "choices": [
+     {
+      "key": "Adult",
+      "en": "Adult",
+      "zh": "成人 (Adult)"
+     },
+     {
+      "key": "Food",
+      "en": "Food",
+      "zh": "食品 (Food)"
+     },
+     {
+      "key": "General",
+      "en": "General",
+      "zh": "通用 (General)"
+     },
+     {
+      "key": "General (compact)",
+      "en": "General (compact)",
+      "zh": "通用（紧凑）(General (compact))"
+     },
+     {
+      "key": "Landmarks",
+      "en": "Landmarks",
+      "zh": "地标 (Landmarks)"
+     },
+     {
+      "key": "Landmarks (compact)",
+      "en": "Landmarks (compact)",
+      "zh": "地标（紧凑）(Landmarks (compact))"
+     },
+     {
+      "key": "Retail",
+      "en": "Retail",
+      "zh": "零售 (Retail)"
+     },
+     {
+      "key": "Retail (compact)",
+      "en": "Retail (compact)",
+      "zh": "零售（紧凑）(Retail (compact))"
+     }
+    ],
+    "answer": "General (compact)"
+   }
+  ],
+  "stemZh": "您正在构建一个自定义视觉模型，该模型将作为 iOS 应用的一部分进行部署。\n您有猫和狗的图像。每张图像包含一只猫或一只狗。\n您需要使用 Azure 自定义视觉服务来检测图像是猫还是狗。\n您应该如何在 Azure 自定义视觉门户中配置项目？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You are building a custom vision model that will be deployed as part of an iOS app.\nYou have images of cats and dogs. Each image contains either a cat or a dog.\nYou need to use the Azure Custom Vision service to detect whether the image is of a cat or a dog.\nHow should you configure the project in the Azure Custom Vision portal? To answer, select the\nappropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：分类\n您应该使用分类项目类型，而不是对象检测。\n项目要求：您的目标是识别图像的整体内容是否属于特定\n类别（猫或狗）。分类目的：Azure AI 自定义视觉图像分类器根据图像的整体视觉特征\n为整个图像应用内容标签。\n框 2：多类（每张图像一个标签）\n图像约束：由于每张图像仅包含一种独特的动物，您将其配置为\n多类（每张图像一个标签）分类类型。\n框 3：一般（紧凑）\n域：选择一个通用（紧凑型）域。紧凑型域生成专门为边缘设备和移动性能优化的轻量级模型。",
+  "explanationEn": "Box 1: Classification\nYou should use the Classification project type rather than Object detection.\nProject Requirement: Your goal is to identify whether the overall content of the image belongs to a specific\ncategory (a cat or a dog).Classification Purpose: An Azure AI Custom Vision image classifier applies\ncontent labels to an entire image based on its overall visual characteristics.\nBox 2: Multiclass (Single tag per image)\nImage Constraints: Because each image contains only one distinct animal, you will configure this as a\nMulticlass (Single tag per image) classification type.\nBox 3: General (compact)\nDomain: Select a General (compact) domain. Compact domains generate lightweight models specifically\noptimized for edge devices and mobile performance.",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "select",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 17",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 17",
+  "pdfPage": 138,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 17
+ },
+ {
+  "id": "q138",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在设计一个 Azure AI 解决方案，以识别生产线上的缺陷产品。\n您有一个实时视频流和一个样本产品的图像库，这些产品是手动批准或拒绝的。\n您需要推荐一个满足以下要求的服务：\n● 监控视频流并识别缺陷产品。\n● 可以使用图像库训练新模型。\n● 最小化开发工作量。\n您应该推荐什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Vision in Foundry Tools",
+    "textEn": "Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Vision"
+   },
+   {
+    "id": "B",
+    "text": "Azure AI Video Indexer",
+    "textEn": "Azure AI Video Indexer",
+    "textZh": "Azure AI 视频索引器"
+   },
+   {
+    "id": "C",
+    "text": "Azure AI Custom Vision",
+    "textEn": "Azure AI Custom Vision",
+    "textZh": "Azure AI 自定义视觉"
+   },
+   {
+    "id": "D",
+    "text": "Azure Machine Learning",
+    "textEn": "Azure Machine Learning",
+    "textZh": "Azure 机器学习"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "Azure AI 自定义视觉\n当您有特定要求，而基本视觉服务的图像分析无法提供时，请使用该服务。例如，它适合识别不寻常的物\n体、制造缺陷或提供详细的自定义分类。\n如果您需要基本的物体检测或人脸检测，请不要使用该服务。请改用人脸或视觉服务。\n不要将该服务用于基本视觉分析。请使用 Azure OpenAI 的视觉能力模型或 Azure 机器学习中的开源模\n型。\n不正确： \n不是 B:\n \nAzure AI 视频索引器 \n请使用 Azure 视频索引器服务进行更高级的视频分析相关任务，这些任务是视觉服务的基本视频分析无法\n \nce's\n提供的。\n \n不要将 Azure 视频索引器服务用于基本视频分析任务，例如人数统计和运动及事件检测。视觉服务的基本\n视频分析在这些任务上更具成本效益。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在设计一个 Azure AI 解决方案，以识别生产线上的缺陷产品。\n您有一个实时视频流和一个样本产品的图像库，这些产品是手动批准或拒绝的。\n您需要推荐一个满足以下要求的服务：\n● 监控视频流并识别缺陷产品。\n● 可以使用图像库训练新模型。\n● 最小化开发工作量。\n您应该推荐什么？",
+  "stemEn": "You are designing an Azure AI solution to identify defective products on a production line.\nYou have a real-time video feed and an image library of sample products that are approved or rejected\nmanually.\nYou need to recommend a service that meets the following requirements:\n● Monitors the video feed and identifies the defective products.\n● Can train a new model by using the image library.\n● Minimizes development effort.\nWhat should you recommend?",
+  "explanationZh": "Azure AI 自定义视觉\n当您有特定要求，而基本视觉服务的图像分析无法提供时，请使用该服务。例如，它适合识别不寻常的物\n体、制造缺陷或提供详细的自定义分类。\n如果您需要基本的物体检测或人脸检测，请不要使用该服务。请改用人脸或视觉服务。\n不要将该服务用于基本视觉分析。请使用 Azure OpenAI 的视觉能力模型或 Azure 机器学习中的开源模\n型。\n不正确： \n不是 B:\n \nAzure AI 视频索引器 \n请使用 Azure 视频索引器服务进行更高级的视频分析相关任务，这些任务是视觉服务的基本视频分析无法\n \nce's\n提供的。\n \n不要将 Azure 视频索引器服务用于基本视频分析任务，例如人数统计和运动及事件检测。视觉服务的基本\n视频分析在这些任务上更具成本效益。",
+  "explanationEn": "Azure AI Custom Vision\nUse the service when you have specific requirements that the basic Vision service's image analysis can't\nprovide. For example, it's good for recognizing unusual objects, manufacturing defects, or providing\ndetailed custom classifications.\nDon't use the service if you need basic object detection or face detection. Use Face or Vision services\ninstead.\nDon't use the service for basic visual analysis. Use vision capable models from Azure OpenAI or open-\nsource models in Azure Machine Learning instead.\nIncorrect: \nNot B:\n \nAzure AI Video Indexer \n \nbasic video analysis can't provide.\n \nUse Azure Video Indexer service for more advanced video analysis related tasks that the Vision servi\nDon't use Azure Video Indexer service for basic video analysis tasks like people counting and motion and\nevent detection. The Vision service's basic video analysis is more cost effective for these tasks.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 18",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 18",
+  "pdfPage": 140,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 18
+ },
+ {
+  "id": "q139",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在构建一个包含一百万篇扫描杂志文章的应用程序。每篇文章将作为图像文件存储\n。\n您需要配置应用程序以从图像中提取文本。解决方案必须最小化开发\\努力。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Document Intelligence in Foundry Tools",
+    "textEn": "Azure Document Intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure 文档智能"
+   },
+   {
+    "id": "B",
+    "text": "the Read API in Azure Vision in Foundry Tools",
+    "textEn": "the Read API in Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure 视觉的读取 API"
+   },
+   {
+    "id": "C",
+    "text": "Azure Vision in Foundry Tools Image Analysis",
+    "textEn": "Azure Vision in Foundry Tools Image Analysis",
+    "textZh": "Foundry Tools 中的 Azure 视觉图像分析"
+   },
+   {
+    "id": "D",
+    "text": "Azure Language in Foundry Tools",
+    "textEn": "Azure Language in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure 语言"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "为了以最小的开发努力从一百万篇扫描的杂志文章中提取文本，您应该\n包含 Azure 计算机视觉中的读取 API（Foundry Tools 中的 Azure 视觉）。\n针对文本密集型图像进行了优化：读取 OCR 模型专门设计用于从文档风格的图像中提取印刷和\n手写文本，使其非常适合扫描的杂志布局。\n异步处理：它利用一个异步 API，旨在无缝处理大规模、高容量的\n工作负载。\n最小开发努力：它作为一个预构建的、完全托管的 AI 服务运行。您无需训练、\n标记或构建自定义布局模型——只需发送图像并接收结构化文本布局输出。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个包含一百万篇扫描杂志文章的应用程序。每篇文章将作为图像文件存储\n。\n您需要配置应用程序以从图像中提取文本。解决方案必须最小化开发\\努力。\n您应该在解决方案中包含什么？",
+  "stemEn": "You are building an app that will include one million scanned magazine articles. Each article will be stored\nas an image file.\nYou need to configure the app to extract text from the images. The solution must minimize development\neffort.\nWhat should you include in the solution?",
+  "explanationZh": "为了以最小的开发努力从一百万篇扫描的杂志文章中提取文本，您应该\n包含 Azure 计算机视觉中的读取 API（Foundry Tools 中的 Azure 视觉）。\n针对文本密集型图像进行了优化：读取 OCR 模型专门设计用于从文档风格的图像中提取印刷和\n手写文本，使其非常适合扫描的杂志布局。\n异步处理：它利用一个异步 API，旨在无缝处理大规模、高容量的\n工作负载。\n最小开发努力：它作为一个预构建的、完全托管的 AI 服务运行。您无需训练、\n标记或构建自定义布局模型——只需发送图像并接收结构化文本布局输出。",
+  "explanationEn": "To extract text from one million of scanned magazine articles with minimal development effort, you should\ninclude the Read API in Azure Computer Vision (Azure Vision in Foundry Tools).\nOptimized for Text-Heavy Images: The Read OCR model is specifically engineered to extract printed and\nhandwritten text from document-style images, making it perfect for scanned magazine layouts.\nAsynchronous Processing: It utilizes an asynchronous API designed to handle large-scale, high-volume\nworkloads seamlessly.\nMinimal Development Effort: It operates as a pre-built, fully managed AI service. You do not need to train,\nlabel, or build custom layout models—simply send the image and receive structured text layout output.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 19",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 19",
+  "pdfPage": 141,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 19
+ },
+ {
+  "id": "q140",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "hotspot",
+  "stem": "您正在开发一个将使用 Foundry Tools API 中的 Azure 视觉来分析图像的应用程序。\n您需要配置应用程序将用于识别图像是剪贴画还是线条画的请求。\n您应该如何完成请求？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "POST",
+   "imageType"
+  ],
+  "pdfAnswer": [
+   "POST",
+   "imageType"
+  ],
+  "explanation": "框 1：POST\n示例：\n发布'https://cognitive-services-happylearnings.cognitiveservices.azure.com/vision/v3.2/analyze？\nVisualFeatures=类别、品牌、成人、颜色、描述、面孔、图像类型、对象、标签&语言=en\n&模型版本=最新'\n框 2：imageType\n使用 API\n图像类型检测功能是 Analyze Image 3.2 API 的一部分。您可以通过本地 SDK 或通过 REST 调用来调用\n此 API。在 visualFeatures 查询参数中包含 ImageType。然后，当您获得完整的 JSON 响应时，只需解析\n字符串以获取 \"imageType\" 部分的内容。\n注意：使用 Analyze Image 3.2 API，Azure AI Vision 可以分析图像的内容类型，并指示图像是剪贴\n画还是线条画。\n剪贴画检测\nAzure AI Vision 分析图像，并根据以下表格中的描述，以 0 到 3 的等级评估图像为剪贴画的可能性。\n*0\n非剪贴画\n*1\n模糊\n*2\n普通剪贴画\n*3\n优质剪贴画",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "HTTP 方法：[ ] \"https://*.cognitiveservices.azure.com/vision/v3.2/analyze?...\"",
+    "labelEn": "HTTP method: [ ] \"https://*.cognitiveservices.azure.com/vision/v3.2/analyze?...\"",
+    "labelZh": "HTTP 方法：[ ] \"https://*.cognitiveservices.azure.com/vision/v3.2/analyze?...\"",
+    "choices": [
+     {
+      "key": "GET",
+      "en": "GET",
+      "zh": "GET"
+     },
+     {
+      "key": "PATCH",
+      "en": "PATCH",
+      "zh": "PATCH"
+     },
+     {
+      "key": "POST",
+      "en": "POST",
+      "zh": "POST"
+     }
+    ],
+    "answer": "POST"
+   },
+   {
+    "id": "2",
+    "label": "\"https://*.cognitiveservices.azure.com/vision/v3.2/analyze?visualFeatures= [ ] &details={string}&language=en\"",
+    "labelEn": "\"https://*.cognitiveservices.azure.com/vision/v3.2/analyze?visualFeatures= [ ] &details={string}&language=en\"",
+    "labelZh": "\"https://*.cognitiveservices.azure.com/vision/v3.2/analyze?visualFeatures= [ ] &details={string}&language=en\"",
+    "choices": [
+     {
+      "key": "description",
+      "en": "description",
+      "zh": "description"
+     },
+     {
+      "key": "imageType",
+      "en": "imageType",
+      "zh": "imageType"
+     },
+     {
+      "key": "objects",
+      "en": "objects",
+      "zh": "objects"
+     },
+     {
+      "key": "tags",
+      "en": "tags",
+      "zh": "tags"
+     }
+    ],
+    "answer": "imageType"
+   }
+  ],
+  "stemZh": "您正在开发一个将使用 Foundry Tools API 中的 Azure 视觉来分析图像的应用程序。\n您需要配置应用程序将用于识别图像是剪贴画还是线条画的请求。\n您应该如何完成请求？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You are developing an app that will use the Azure Vision in Foundry Tools API to analyze an image.\nYou need configure the request that will be used by the app to identify whether an image is clipart or a line\ndrawing.\nHow should you complete the request? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：POST\n示例：\n发布'https://cognitive-services-happylearnings.cognitiveservices.azure.com/vision/v3.2/analyze？\nVisualFeatures=类别、品牌、成人、颜色、描述、面孔、图像类型、对象、标签&语言=en\n&模型版本=最新'\n框 2：imageType\n使用 API\n图像类型检测功能是 Analyze Image 3.2 API 的一部分。您可以通过本地 SDK 或通过 REST 调用来调用\n此 API。在 visualFeatures 查询参数中包含 ImageType。然后，当您获得完整的 JSON 响应时，只需解析\n字符串以获取 \"imageType\" 部分的内容。\n注意：使用 Analyze Image 3.2 API，Azure AI Vision 可以分析图像的内容类型，并指示图像是剪贴\n画还是线条画。\n剪贴画检测\nAzure AI Vision 分析图像，并根据以下表格中的描述，以 0 到 3 的等级评估图像为剪贴画的可能性。\n*0\n非剪贴画\n*1\n模糊\n*2\n普通剪贴画\n*3\n优质剪贴画",
+  "explanationEn": "Box 1: POST\nExample:\nPOST 'https://cognitive-services-happylearnings.cognitiveservices.azure.com/vision/v3.2/analyze?\nvisualFeatures=Categories,Brands,Adult,Color,Description,Faces,ImageType,Objects,Tags&language=en\n&model-version=latest'\nBox 2: imageType\nUse the API\nThe image type detection feature is part of the Analyze Image 3.2 API. You can call this API through a\nnative SDK or through REST calls. Include ImageType in the visualFeatures query parameter. Then, when\nyou get the full JSON response, simply parse the string for the contents of the \"imageType\" section.\nNote: With the Analyze Image 3.2 API, Azure AI Vision can analyze the content type of images and\nindicate whether an image is clip art or a line drawing.\nClip art detection\nAzure AI Vision analyzes an image and rates the likelihood of the image being clip art on a scale of 0 to 3,\nas described in the following table.\n*0\nNon-clip-art\n*1\nAmbiguous\n*2\nNormal-clip-art\n*3\nGood-clip-art",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "select",
+  "template": "{{1}} https://*.cognitiveservices.azure.com/vision/v3.2/analyze?visualFeatures={{2}}&details={string}&language=en",
+  "templateEn": "{{1}} https://*.cognitiveservices.azure.com/vision/v3.2/analyze?visualFeatures={{2}}&details={string}&language=en",
+  "templateZh": "{{1}} https://*.cognitiveservices.azure.com/vision/v3.2/analyze?visualFeatures={{2}}&details={string}&language=en",
+  "templateKind": "code",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 20",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 20",
+  "pdfPage": 142,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 20
+ },
+ {
+  "id": "q141",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "multi",
+  "stem": "您使用 Azure 自定义视觉服务构建分类器。 \n训练完成后，您需要评估分类器。\n \n \n可供审查的两个指标是什么？每个正确答案都提供了完整的解决方案。",
+  "options": [
+   {
+    "id": "A",
+    "text": "F-score",
+    "textEn": "F-score",
+    "textZh": "F 分数"
+   },
+   {
+    "id": "B",
+    "text": "area under the curve (AUC)",
+    "textEn": "area under the curve (AUC)",
+    "textZh": "曲线下面积 (AUC)"
+   },
+   {
+    "id": "C",
+    "text": "precision",
+    "textEn": "precision",
+    "textZh": "精确度"
+   },
+   {
+    "id": "D",
+    "text": "weighted accuracy",
+    "textEn": "weighted accuracy",
+    "textZh": "加权准确率"
+   },
+   {
+    "id": "E",
+    "text": "recall",
+    "textEn": "recall",
+    "textZh": "召回率"
+   }
+  ],
+  "answer": [
+   "C",
+   "E"
+  ],
+  "pdfAnswer": [
+   "C",
+   "E"
+  ],
+  "explanation": "Custom Vision provides three metrics regarding the performance of your model: precision, recall, and AP.",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您使用 Azure 自定义视觉服务构建分类器。 \n训练完成后，您需要评估分类器。\n \n \n可供审查的两个指标是什么？每个正确答案都提供了完整的解决方案。",
+  "stemEn": "You use the Azure Custom Vision service to build a classifier.\n \nAfter training is complete, you need to evaluate the classifier.\n \n \nWhich two metrics are available for review? Each correct answer presents a complete solution.\nNOTE: Each correct selection is worth one point. 注意： 每个正确的选择值为一分。",
+  "explanationZh": "Custom Vision provides three metrics regarding the performance of your model: precision, recall, and AP.",
+  "explanationEn": "Custom Vision provides three metrics regarding the performance of your model: precision, recall, and AP.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 21",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 21",
+  "pdfPage": 143,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 21
+ },
+ {
+  "id": "q142",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在构建一个基于互联网的培训解决方案。该解决方案要求用户的摄像头和麦克风保持启用。\n您需要监控用户的视频流，并验证用户是否独自一人，且没有与其他用户合作。\n该解决方案必须最小化开发工作量。\n您应该在解决方案中包含什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "content moderation in Azure AI Azure Video Indexer",
+    "textEn": "content moderation in Azure AI Azure Video Indexer",
+    "textZh": "Azure AI 中的内容审核 Azure 视频索引器"
+   },
+   {
+    "id": "B",
+    "text": "speech-to-text in the Azure Speech in Foundry Tools",
+    "textEn": "speech-to-text in the Azure Speech in Foundry Tools",
+    "textZh": "Azure Speech 中的语音转文本在 Foundry 工具中"
+   },
+   {
+    "id": "C",
+    "text": "object detection in Azure AI Custom Vision",
+    "textEn": "object detection in Azure AI Custom Vision",
+    "textZh": "Azure AI 自定义视觉中的目标检测"
+   },
+   {
+    "id": "D",
+    "text": "Spatial Analysis in Azure Vision in Foundry Tools",
+    "textEn": "Spatial Analysis in Azure Vision in Foundry Tools",
+    "textZh": "Foundry 工具中的 Azure Vision 空间分析"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "您应该在项目中包含 Azure AI Vision 的空间分析，因为它通过提供预训练的能力来检测人并跟踪视频流\n中的存在，从而减少开发工作量。\n项目设置\n将实时用户视频流连接到 Azure AI Vision 空间分析模块。\n配置空间边界和计数参数，以跟踪在帧中出现的个体数量。当检测到多个人员边界框时，设置事件以触发\n警报。\n好处\n通过使用预构建的 AI 模型而不是手动标记训练图像来减少开发时间。\n通过实时人员跟踪自动监控合规性。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个基于互联网的培训解决方案。该解决方案要求用户的摄像头和麦克风保持启用。\n您需要监控用户的视频流，并验证用户是否独自一人，且没有与其他用户合作。\n该解决方案必须最小化开发工作量。\n您应该在解决方案中包含什么？",
+  "stemEn": "You are building an internet-based training solution. The solution requires that a user’s camera and\nmicrophone remain enabled.\nYou need to monitor a video stream of the user and verify that the user is alone and is not collaborating\nwith another user. The solution must minimize development effort.\nWhat should you include in the solution?",
+  "explanationZh": "您应该在项目中包含 Azure AI Vision 的空间分析，因为它通过提供预训练的能力来检测人并跟踪视频流\n中的存在，从而减少开发工作量。\n项目设置\n将实时用户视频流连接到 Azure AI Vision 空间分析模块。\n配置空间边界和计数参数，以跟踪在帧中出现的个体数量。当检测到多个人员边界框时，设置事件以触发\n警报。\n好处\n通过使用预构建的 AI 模型而不是手动标记训练图像来减少开发时间。\n通过实时人员跟踪自动监控合规性。",
+  "explanationEn": "You should include Spatial Analysis in Azure AI Vision in your project because it minimizes development\neffort by offering pretrained capabilities to detect people and track presence in a video stream.\nProject Setup\nConnect the live user video stream to the Azure AI Vision spatial analysis module.\nConfigure spatial boundaries and person-counting parameters to track how many individuals appear in the\nframe.Set up events to trigger alerts when more than one person bounding box is detected.\nBenefits\nReduces development time by using pre-built AI models instead of labeling training images manually.\nMonitors compliance automatically through real-time person tracking.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 22",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 22",
+  "pdfPage": 143,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 22
+ },
+ {
+  "id": "q143",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "multi",
+  "stem": "您正在开发一种方法，该方法使用 Azure Vision 在 Foundry Tools 客户端库中。该方法将执行图像中的光学字符识别 (OCR)。该方法具有以下代码。\n```\ndef read_file_url(computervision_client, url_file):\n    read_response = computervision_client.read(url_file, raw=True)\n    read_operation_location = read_response.headers[\"Operation-Location\"]\n    operation_id = read_operation_location.split(\"/\")[-1]\n    read_result = computervision_client.get_read_result(operation_id)\n\n    for page in read_result.analyze_result.read_results:\n        for line in page.lines:\n            print(line.text)\n```\n在测试过程中，您发现对 get_read_result 方法的调用发生在读取操作完成之前。\n您需要防止 get_read_result 方法在读取操作完成之前继续执行。\n您应该执行哪两个操作？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add code to verify the read_result.status value",
+    "textEn": "Add code to verify the read_result.status value.",
+    "textZh": "添加代码以验证 read_result.status 值。"
+   },
+   {
+    "id": "B",
+    "text": "Add code to verify the status of the read_operation_location value",
+    "textEn": "Add code to verify the status of the read_operation_location value.",
+    "textZh": "添加代码以验证 read_operation_location 值的状态。"
+   },
+   {
+    "id": "C",
+    "text": "Remove the operation_id parameter",
+    "textEn": "Remove the operation_id parameter.",
+    "textZh": "移除 operation_id 参数。"
+   },
+   {
+    "id": "D",
+    "text": "Wrap the call to get_read_result within a loop that contains a delay",
+    "textEn": "Wrap the call to get_read_result within a loop that contains a delay.",
+    "textZh": "将对 get_read_result 的调用包装在包含延迟的循环中。"
+   }
+  ],
+  "answer": [
+   "A",
+   "D"
+  ],
+  "pdfAnswer": [
+   "A",
+   "D"
+  ],
+  "explanation": "示例代码：\n执行\n{\n结果 = 等待 client.GetReadResultAsync(Guid.Parse(operationId));\n}\n当 ((results.Status == OperationStatusCodes.Running ||\nresults.Status == OperationStatusCodes.NotStarted));\nComputerVisionQuickstart.cs",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在开发一种方法，该方法使用 Azure Vision 在 Foundry Tools 客户端库中。该方法将执行图像中的光学字符识别 (OCR)。该方法具有以下代码。\n```\ndef read_file_url(computervision_client, url_file):\n    read_response = computervision_client.read(url_file, raw=True)\n    read_operation_location = read_response.headers[\"Operation-Location\"]\n    operation_id = read_operation_location.split(\"/\")[-1]\n    read_result = computervision_client.get_read_result(operation_id)\n\n    for page in read_result.analyze_result.read_results:\n        for line in page.lines:\n            print(line.text)\n```\n在测试过程中，您发现对 get_read_result 方法的调用发生在读取操作完成之前。\n您需要防止 get_read_result 方法在读取操作完成之前继续执行。\n您应该执行哪两个操作？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You are developing a method that uses the Azure Vision in Foundry Tools client library. The method will\nperform optical character recognition (OCR) in images. The method has the following code.\n```\ndef read_file_url(computervision_client, url_file):\n    read_response = computervision_client.read(url_file, raw=True)\n    read_operation_location = read_response.headers[\"Operation-Location\"]\n    operation_id = read_operation_location.split(\"/\")[-1]\n    read_result = computervision_client.get_read_result(operation_id)\n\n    for page in read_result.analyze_result.read_results:\n        for line in page.lines:\n            print(line.text)\n```\nDuring testing, you discover that the call to the get_read_result method occurs before the read\noperation is complete.\nYou need to prevent the get_read_result method from proceeding until the read operation is complete.\nWhich two actions should you perform? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "示例代码：\n执行\n{\n结果 = 等待 client.GetReadResultAsync(Guid.Parse(operationId));\n}\n当 ((results.Status == OperationStatusCodes.Running ||\nresults.Status == OperationStatusCodes.NotStarted));\nComputerVisionQuickstart.cs",
+  "explanationEn": "Example code :\ndo\n {\n results = await client.GetReadResultAsync(Guid.Parse(operationId));\n }\n while ((results.Status == OperationStatusCodes.Running ||\n results.Status == OperationStatusCodes.NotStarted));\nComputerVisionQuickstart.cs",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 23",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 23",
+  "pdfPage": 144,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 23
+ },
+ {
+  "id": "q144",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "drag",
+  "stem": "您有一个应用程序，使用 Azure AI 自定义视觉和自定义训练的分类器来识别图像中的产品。\n您需要向分类器添加新产品。解决方案必须满足以下要求：\n● 尽量缩短添加产品所需的时间。\n● 最小化开发工作量。\n您应该按顺序执行哪五个操作？要回答，请将适当的操作从操作列表中移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "From Vision Studio, open the project.",
+   "Upload sample images of the new products.",
+   "Label the sample images.",
+   "Retrain the model.",
+   "Publish the model."
+  ],
+  "pdfAnswer": [
+   "From Vision Studio, open the project.",
+   "Upload sample images of the new products.",
+   "Label the sample images.",
+   "Retrain the model.",
+   "Publish the model."
+  ],
+  "explanation": "步骤 1：从 Visual Studio 打开项目 \n使用 Visual Studio。例如：\n \n创建一个新的自定义模型 \n首先，前往 Vision Studio 并选择图像分析选项卡。然后选择自定义模型tile。\n \n \n步骤 2：上传新产品的样本图像\n准备训练图像\n您需要将训练图像上传到 Azure Blob 存储容器。前往 Azure 门户中的存储资源\n并导航到存储浏览器选项卡。在这里，您可以创建一个 blob 容器并\n上传您的图像。将它们全部放在容器的根目录下。\n步骤 3：标记样本图像\n创建一个 Azure 机器学习标记项目\n \n您需要一个 COCO 文件来传达标记信息。生成 COCO 文件的简单方法是 \n创建一个 Azure 机器学习项目，该项目附带数据标记工作流。\n \n在数据集详细信息页面，选择添加一个新的数据标注项目。为其命名并选择创建一个新的\n \n工作区。这将打开一个新的 Azure 门户标签页，在那里您可以创建 Azure 机器学习项目。\n \n \n \n步骤 5：发布模型",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "步骤 1",
+    "labelEn": "Step 1",
+    "labelZh": "步骤 1",
+    "answer": "From Vision Studio, open the project.",
+    "choices": [
+     {
+      "key": "From the Custom Vision portal, open the project.",
+      "en": "From the Custom Vision portal, open the project.",
+      "zh": "从 Custom Vision 门户打开项目。"
+     },
+     {
+      "key": "From the Azure Machine Learning studio, open the workspace.",
+      "en": "From the Azure Machine Learning studio, open the workspace.",
+      "zh": "从 Azure 机器学习工作室打开工作区。"
+     },
+     {
+      "key": "From Vision Studio, open the project.",
+      "en": "From Vision Studio, open the project.",
+      "zh": "从 Vision Studio 打开项目。"
+     },
+     {
+      "key": "Upload sample images of the new products.",
+      "en": "Upload sample images of the new products.",
+      "zh": "上传新产品的示例图像。"
+     },
+     {
+      "key": "Label the sample images.",
+      "en": "Label the sample images.",
+      "zh": "标记示例图像。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     },
+     {
+      "key": "Publish the model.",
+      "en": "Publish the model.",
+      "zh": "发布模型。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "步骤 2",
+    "labelEn": "Step 2",
+    "labelZh": "步骤 2",
+    "answer": "Upload sample images of the new products.",
+    "choices": [
+     {
+      "key": "From the Custom Vision portal, open the project.",
+      "en": "From the Custom Vision portal, open the project.",
+      "zh": "从 Custom Vision 门户打开项目。"
+     },
+     {
+      "key": "From the Azure Machine Learning studio, open the workspace.",
+      "en": "From the Azure Machine Learning studio, open the workspace.",
+      "zh": "从 Azure 机器学习工作室打开工作区。"
+     },
+     {
+      "key": "From Vision Studio, open the project.",
+      "en": "From Vision Studio, open the project.",
+      "zh": "从 Vision Studio 打开项目。"
+     },
+     {
+      "key": "Upload sample images of the new products.",
+      "en": "Upload sample images of the new products.",
+      "zh": "上传新产品的示例图像。"
+     },
+     {
+      "key": "Label the sample images.",
+      "en": "Label the sample images.",
+      "zh": "标记示例图像。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     },
+     {
+      "key": "Publish the model.",
+      "en": "Publish the model.",
+      "zh": "发布模型。"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "步骤 3",
+    "labelEn": "Step 3",
+    "labelZh": "步骤 3",
+    "answer": "Label the sample images.",
+    "choices": [
+     {
+      "key": "From the Custom Vision portal, open the project.",
+      "en": "From the Custom Vision portal, open the project.",
+      "zh": "从 Custom Vision 门户打开项目。"
+     },
+     {
+      "key": "From the Azure Machine Learning studio, open the workspace.",
+      "en": "From the Azure Machine Learning studio, open the workspace.",
+      "zh": "从 Azure 机器学习工作室打开工作区。"
+     },
+     {
+      "key": "From Vision Studio, open the project.",
+      "en": "From Vision Studio, open the project.",
+      "zh": "从 Vision Studio 打开项目。"
+     },
+     {
+      "key": "Upload sample images of the new products.",
+      "en": "Upload sample images of the new products.",
+      "zh": "上传新产品的示例图像。"
+     },
+     {
+      "key": "Label the sample images.",
+      "en": "Label the sample images.",
+      "zh": "标记示例图像。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     },
+     {
+      "key": "Publish the model.",
+      "en": "Publish the model.",
+      "zh": "发布模型。"
+     }
+    ]
+   },
+   {
+    "id": "box4",
+    "label": "步骤 4",
+    "labelEn": "Step 4",
+    "labelZh": "步骤 4",
+    "answer": "Retrain the model.",
+    "choices": [
+     {
+      "key": "From the Custom Vision portal, open the project.",
+      "en": "From the Custom Vision portal, open the project.",
+      "zh": "从 Custom Vision 门户打开项目。"
+     },
+     {
+      "key": "From the Azure Machine Learning studio, open the workspace.",
+      "en": "From the Azure Machine Learning studio, open the workspace.",
+      "zh": "从 Azure 机器学习工作室打开工作区。"
+     },
+     {
+      "key": "From Vision Studio, open the project.",
+      "en": "From Vision Studio, open the project.",
+      "zh": "从 Vision Studio 打开项目。"
+     },
+     {
+      "key": "Upload sample images of the new products.",
+      "en": "Upload sample images of the new products.",
+      "zh": "上传新产品的示例图像。"
+     },
+     {
+      "key": "Label the sample images.",
+      "en": "Label the sample images.",
+      "zh": "标记示例图像。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     },
+     {
+      "key": "Publish the model.",
+      "en": "Publish the model.",
+      "zh": "发布模型。"
+     }
+    ]
+   },
+   {
+    "id": "box5",
+    "label": "步骤 5",
+    "labelEn": "Step 5",
+    "labelZh": "步骤 5",
+    "answer": "Publish the model.",
+    "choices": [
+     {
+      "key": "From the Custom Vision portal, open the project.",
+      "en": "From the Custom Vision portal, open the project.",
+      "zh": "从 Custom Vision 门户打开项目。"
+     },
+     {
+      "key": "From the Azure Machine Learning studio, open the workspace.",
+      "en": "From the Azure Machine Learning studio, open the workspace.",
+      "zh": "从 Azure 机器学习工作室打开工作区。"
+     },
+     {
+      "key": "From Vision Studio, open the project.",
+      "en": "From Vision Studio, open the project.",
+      "zh": "从 Vision Studio 打开项目。"
+     },
+     {
+      "key": "Upload sample images of the new products.",
+      "en": "Upload sample images of the new products.",
+      "zh": "上传新产品的示例图像。"
+     },
+     {
+      "key": "Label the sample images.",
+      "en": "Label the sample images.",
+      "zh": "标记示例图像。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     },
+     {
+      "key": "Publish the model.",
+      "en": "Publish the model.",
+      "zh": "发布模型。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一个应用程序，使用 Azure AI 自定义视觉和自定义训练的分类器来识别图像中的产品。\n您需要向分类器添加新产品。解决方案必须满足以下要求：\n● 尽量缩短添加产品所需的时间。\n● 最小化开发工作量。\n您应该按顺序执行哪五个操作？要回答，请将适当的操作从操作列表中移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stemEn": "You have an app that uses Azure AI Custom Vision and a custom trained classifier to identify products in\nimages.\nYou need to add new products to the classifier. The solution must meet the following requirements:\n● Minimize how long it takes to add the products.\n● Minimize development effort.\nWhich five actions should you perform in sequence? To answer, move the appropriate actions from the list\nof actions to the answer area and arrange them in the correct order.\nSelect and Place:",
+  "explanationZh": "步骤 1：从 Visual Studio 打开项目 \n使用 Visual Studio。例如：\n \n创建一个新的自定义模型 \n首先，前往 Vision Studio 并选择图像分析选项卡。然后选择自定义模型tile。\n \n \n步骤 2：上传新产品的样本图像\n准备训练图像\n您需要将训练图像上传到 Azure Blob 存储容器。前往 Azure 门户中的存储资源\n并导航到存储浏览器选项卡。在这里，您可以创建一个 blob 容器并\n上传您的图像。将它们全部放在容器的根目录下。\n步骤 3：标记样本图像\n创建一个 Azure 机器学习标记项目\n \n您需要一个 COCO 文件来传达标记信息。生成 COCO 文件的简单方法是 \n创建一个 Azure 机器学习项目，该项目附带数据标记工作流。\n \n在数据集详细信息页面，选择添加一个新的数据标注项目。为其命名并选择创建一个新的\n \n工作区。这将打开一个新的 Azure 门户标签页，在那里您可以创建 Azure 机器学习项目。\n \n \n \n步骤 5：发布模型",
+  "explanationEn": "Step 1: From Visual Studio, open the project\nVisual Studio is used. For example:\n \nCreate a new custom model \nBegin by going to Vision Studio and selecting the Image analysis tab. Then select the Customize models\ntile. \n \nStep 2: Upload samples images of the new products\nPrepare training images\nYou need to upload your training images to an Azure Blob Storage container. Go to your storage resource\nin the Azure portal and navigate to the Storage browser tab. Here you can create a blob container and\nupload your images. Put them all at the root of the container.\nStep 3: Label the sample images\nCreate an Azure Machine Learning labeling project\nYou need a COCO file to convey the labeling information. An easy way to generate a COCO file is to\ncreate an Azure Machine Learning project, which comes with a data-labeling workflow.\n \nIn the dataset details page, select Add a new Data Labeling project. Name it and select Create a new\nworkspace. That opens a new Azure portal tab where you can create the Azure Machine Learning project.\n \nStep 4: Retrain the model 步骤 4：重新训练模型\nStep 5: Publish the model",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "drag",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 24",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 24",
+  "pdfPage": 145,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 24
+ },
+ {
+  "id": "q145",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您计划构建一个应用程序，该应用程序将为上传的图像生成标签列表。该应用程序必须满足以下要求\n：\n● 以用户首选语言生成标签。\n● 支持英语、法语和西班牙语。\n● 最小化开发工作量。\n您需要构建一个函数来为该应用程序生成标签。\n您应该使用哪个 Azure 服务端点？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Vision in Foundry Tools Image Analysis",
+    "textEn": "Azure Vision in Foundry Tools Image Analysis",
+    "textZh": "Foundry Tools 图像分析中的 Azure Vision"
+   },
+   {
+    "id": "B",
+    "text": "Azure Custom Vision image classification",
+    "textEn": "Azure Custom Vision image classification",
+    "textZh": "Azure Custom Vision 图像分类"
+   },
+   {
+    "id": "C",
+    "text": "Content Safety in Foundry Control Plane",
+    "textEn": "Content Safety in Foundry Control Plane",
+    "textZh": "Foundry 控制平面中的内容安全"
+   },
+   {
+    "id": "D",
+    "text": "Custom Translator",
+    "textEn": "Custom Translator",
+    "textZh": "自定义翻译器"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "Azure Custom Vision 可用于以不同语言标记图像，但该过程涉及使用目标语言的标记数据训练您的自定\n义模型。虽然核心 Custom Vision 服务处理图像分类和物体检测，但标签的语言由您在标记训练数据\n时使用的语言决定。\nCustom Vision 的核心功能：\nAzure Custom Vision 专注于构建和部署用于图像分类和物体检测的计算机视觉模型。它允许您在自己的\n数据集上训练模型，以便模型能够识别您图像中的特定对象或场景。\n语言支持：\n模型应用的标签语言取决于您在训练集中标记图像时使用的语言。\n标记：\n当您将图像上传到自定义视觉时，您需要用相关标签或对象边界对它们进行标记。这个标记过程是您\n指定标签语言的地方。\n示例：\n如果您想对图像进行分类并让模型返回西班牙语标签（例如，“perro”而不是“dog”），您\n需要通过用西班牙语标记图像来训练您的模型。\n不正确：\n不是 Azure AI Vision 图像分析服务：它可以从您的图像中提取各种视觉特征。例如，它可以确定图像是\n否包含成人内容，查找特定品牌或对象，或查找人脸。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您计划构建一个应用程序，该应用程序将为上传的图像生成标签列表。该应用程序必须满足以下要求\n：\n● 以用户首选语言生成标签。\n● 支持英语、法语和西班牙语。\n● 最小化开发工作量。\n您需要构建一个函数来为该应用程序生成标签。\n您应该使用哪个 Azure 服务端点？",
+  "stemEn": "You plan to build an app that will generate a list of tags for uploaded images. The app must meet the\nfollowing requirements:\n● Generate tags in a user’s preferred language.\n● Support English, French, and Spanish.\n● Minimize development effort.\nYou need to build a function that will generate the tags for the app.\nWhich Azure service endpoint should you use?",
+  "explanationZh": "Azure Custom Vision 可用于以不同语言标记图像，但该过程涉及使用目标语言的标记数据训练您的自定\n义模型。虽然核心 Custom Vision 服务处理图像分类和物体检测，但标签的语言由您在标记训练数据\n时使用的语言决定。\nCustom Vision 的核心功能：\nAzure Custom Vision 专注于构建和部署用于图像分类和物体检测的计算机视觉模型。它允许您在自己的\n数据集上训练模型，以便模型能够识别您图像中的特定对象或场景。\n语言支持：\n模型应用的标签语言取决于您在训练集中标记图像时使用的语言。\n标记：\n当您将图像上传到自定义视觉时，您需要用相关标签或对象边界对它们进行标记。这个标记过程是您\n指定标签语言的地方。\n示例：\n如果您想对图像进行分类并让模型返回西班牙语标签（例如，“perro”而不是“dog”），您\n需要通过用西班牙语标记图像来训练您的模型。\n不正确：\n不是 Azure AI Vision 图像分析服务：它可以从您的图像中提取各种视觉特征。例如，它可以确定图像是\n否包含成人内容，查找特定品牌或对象，或查找人脸。",
+  "explanationEn": "Azure Custom Vision can be used to tag images in different languages, but the process involves training\nyour custom model with labeled data in the target language(s). While the core Custom Vision service\nhandles image classification and object detection, the language of the tags is determined by the language\nyou use when labeling your training data.\nCustom Vision's Core Function:\nAzure Custom Vision focuses on building and deploying computer vision models for image classification\nand object detection. It allows you to train a model on your own dataset, so the model can recognize\nspecific objects or scenarios in your images.\nLanguage Support:\nThe language of the tags applied by the model depends on the language used when you label the images\nin your training set.\nLabeling:\nWhen you upload images to Custom Vision, you'll need to label them with the relevant tags or object\nboundaries. This labeling process is where you specify the language for your tags.\nExample:\nIf you want to classify images and have the model return Spanish tags (e.g., \"perro\" instead of \"dog\"), you\nwould need to train your model by labeling the images in Spanish.\nIncorrect:\nNot The Azure AI Vision Image Analysis service: it can extract a wide variety of visual features from your\nimages. For example, it can determine whether an image contains adult content, find specific brands or\nobjects, or find human faces.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 25",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 25",
+  "pdfPage": 147,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 25
+ },
+ {
+  "id": "q146",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "drag",
+  "stem": "问题 26\n \n拖放 \n您有一个执行对象检测的 Azure 自定义视觉服务项目。该项目使用一般领域进行分类，并包含一个训\n \n \n您需要导出该模型以便在与互联网断开的网络上使用。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "options": [],
+  "answer": [
+   "Change Domains to General (compact).",
+   "Retrain the model.",
+   "Export the model."
+  ],
+  "pdfAnswer": [
+   "Change Domains to General (compact).",
+   "Retrain the model.",
+   "Export the model."
+  ],
+  "explanation": "自定义视觉支持导出使用紧凑领域训练的模型。在更改为一般（紧凑）后，重新训练模型以创建支\n持导出的迭代。导出该迭代以便在没有互联网连接的情况下本地运行。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "drag",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "步骤 1",
+    "labelEn": "Step 1",
+    "labelZh": "步骤 1",
+    "answer": "Change Domains to General (compact).",
+    "choices": [
+     {
+      "key": "Export the model.",
+      "en": "Export the model.",
+      "zh": "导出模型。"
+     },
+     {
+      "key": "Change the classification type.",
+      "en": "Change the classification type.",
+      "zh": "更改分类类型。"
+     },
+     {
+      "key": "Create a new classification model.",
+      "en": "Create a new classification model.",
+      "zh": "创建新的分类模型。"
+     },
+     {
+      "key": "Change Domains to General (compact).",
+      "en": "Change Domains to General (compact).",
+      "zh": "将域更改为 General (compact)。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "步骤 2",
+    "labelEn": "Step 2",
+    "labelZh": "步骤 2",
+    "answer": "Retrain the model.",
+    "choices": [
+     {
+      "key": "Export the model.",
+      "en": "Export the model.",
+      "zh": "导出模型。"
+     },
+     {
+      "key": "Change the classification type.",
+      "en": "Change the classification type.",
+      "zh": "更改分类类型。"
+     },
+     {
+      "key": "Create a new classification model.",
+      "en": "Create a new classification model.",
+      "zh": "创建新的分类模型。"
+     },
+     {
+      "key": "Change Domains to General (compact).",
+      "en": "Change Domains to General (compact).",
+      "zh": "将域更改为 General (compact)。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     }
+    ]
+   },
+   {
+    "id": "box3",
+    "label": "步骤 3",
+    "labelEn": "Step 3",
+    "labelZh": "步骤 3",
+    "answer": "Export the model.",
+    "choices": [
+     {
+      "key": "Export the model.",
+      "en": "Export the model.",
+      "zh": "导出模型。"
+     },
+     {
+      "key": "Change the classification type.",
+      "en": "Change the classification type.",
+      "zh": "更改分类类型。"
+     },
+     {
+      "key": "Create a new classification model.",
+      "en": "Create a new classification model.",
+      "zh": "创建新的分类模型。"
+     },
+     {
+      "key": "Change Domains to General (compact).",
+      "en": "Change Domains to General (compact).",
+      "zh": "将域更改为 General (compact)。"
+     },
+     {
+      "key": "Retrain the model.",
+      "en": "Retrain the model.",
+      "zh": "重新训练模型。"
+     }
+    ]
+   }
+  ],
+  "stemZh": "问题 26\n \n拖放 \n您有一个执行对象检测的 Azure 自定义视觉服务项目。该项目使用一般领域进行分类，并包含一个训\n \n \n您需要导出该模型以便在与互联网断开的网络上使用。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stemEn": "DRAG DROP \n \nYou have an Azure Custom Vision service project that performs object detection. The project uses the\nGeneral domain for classification and contains a trained model. 练好的模型。\nYou need to export the model for use on a network that is disconnected from the internet.\nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the\nlist of actions to the answer area and arrange them in the correct order.\nSelect and Place:",
+  "explanationZh": "自定义视觉支持导出使用紧凑领域训练的模型。在更改为一般（紧凑）后，重新训练模型以创建支\n持导出的迭代。导出该迭代以便在没有互联网连接的情况下本地运行。",
+  "explanationEn": "Custom Vision supports exporting models trained with compact domains. After changing to General\n(compact), retrain the model to create an iteration that supports export. Export that iteration to run it locally\nwithout an internet connection.",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "drag",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 26",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 26",
+  "pdfPage": 148,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 26
+ },
+ {
+  "id": "q147",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "multi",
+  "stem": "您正在构建一个共享用户图像的应用程序。\n您需要配置应用程序，以便在用户上传图像时执行以下操作：\n \n● 将图像分类为照片或绘画。 \n● 为图像生成标题。 \n解决方案必须最小化开发工作量。 \n \n您应该在解决方案中包含哪两个服务？每个正确答案都是解决方案的一部分。 \n注意: 每个正确选择值为一分",
+  "options": [
+   {
+    "id": "A",
+    "text": "image classification in Azure Custom Vision",
+    "textEn": "image classification in Azure Custom Vision",
+    "textZh": "Azure Custom Vision 中的图像分类"
+   },
+   {
+    "id": "B",
+    "text": "object detection in Azure Vision in Foundry Tools",
+    "textEn": "object detection in Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中 Azure Vision 的物体检测"
+   },
+   {
+    "id": "C",
+    "text": "content tags in Azure Vision in Foundry Tools",
+    "textEn": "content tags in Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中 Azure Vision 的内容标签"
+   },
+   {
+    "id": "D",
+    "text": "image descriptions in Azure Vision in Foundry Tools",
+    "textEn": "image descriptions in Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中 Azure Vision 的图像描述"
+   },
+   {
+    "id": "E",
+    "text": "image type detection in Azure Vision in Foundry Tools",
+    "textEn": "image type detection in Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中 Azure Vision 的图像类型检测"
+   }
+  ],
+  "answer": [
+   "D",
+   "E"
+  ],
+  "pdfAnswer": [
+   "D",
+   "E"
+  ],
+  "explanation": "图像描述生成自然语言标题，描述图像的内容。图像类型\ndetection 识别剪贴画和线条绘图，支持绘画和\n照片之间的区分。这两者都是预构建的 Azure Vision 功能，最小化开发工作量，无需\n自定义模型训练。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个共享用户图像的应用程序。\n您需要配置应用程序，以便在用户上传图像时执行以下操作：\n \n● 将图像分类为照片或绘画。 \n● 为图像生成标题。 \n解决方案必须最小化开发工作量。 \n \n您应该在解决方案中包含哪两个服务？每个正确答案都是解决方案的一部分。 \n注意: 每个正确选择值为一分",
+  "stemEn": "You are building an app that will share user images.\nYou need to configure the app to perform the following actions when a user uploads an image:\n● Categorize the image as either a photograph or a drawing.\n● Generate a caption for the image. \nThe solution must minimize development effort. \n \n \nWhich two services should you include in the solution? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point",
+  "explanationZh": "图像描述生成自然语言标题，描述图像的内容。图像类型\ndetection 识别剪贴画和线条绘图，支持绘画和\n照片之间的区分。这两者都是预构建的 Azure Vision 功能，最小化开发工作量，无需\n自定义模型训练。",
+  "explanationEn": "Image descriptions generate a natural-language caption describing the image’s contents. Image type\ndetection identifies clip art and line drawings, supporting the distinction between drawings and\nphotographs. Both are prebuilt Azure Vision capabilities, minimizing development effort without requiring\ncustom model training.",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 27",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 27",
+  "pdfPage": 149,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 27
+ },
+ {
+  "id": "q148",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "hotspot",
+  "stem": "您正在开发一个将使用 Foundry Tools 客户端库的 Azure Vision 应用程序。该应用程序具有以下代码。\n```\ndef analyze_image(local_image):\n    with open(local_image, \"rb\") as image_stream:\n        image_analysis = client.analyze_image_in_stream(\n            image=image_stream,\n            visual_features=[\n                VisualFeatureTypes.tags,\n                VisualFeatureTypes.description\n            ]\n        )\n    for caption in image_analysis.description.captions:\n        print(f\"\\n{caption.text} with confidence {caption.confidence}\")\n    for tag in image_analysis.tags:\n        print(f\"\\n{tag.name} with confidence {tag.confidence}\")\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "该代码仅请求标签和图像描述，因此不执行人脸识别。循环对 image_analysis.tags 打印每个标签的名\n称和置信度分数。语句 open(local_image,\"rb\") 以二进制模式打开本地图像文件，并将其流传递给 analyz\ne_image_in_stream 进行分析。\nImageAnalysisQuickstart.py",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "该代码将执行人脸识别。",
+    "labelEn": "The code will perform face recognition.",
+    "labelZh": "该代码将执行人脸识别。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "该代码将列出标记（tags）及其关联的置信度。",
+    "labelEn": "The code will list tags and their associated confidence.",
+    "labelZh": "该代码将列出标记（tags）及其关联的置信度。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "该代码将从本地文件系统读取图像文件。",
+    "labelEn": "The code will read an image file from the local file system.",
+    "labelZh": "该代码将从本地文件系统读取图像文件。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered Yes/No from PDF Correct Answer (p150).",
+  "stemZh": "您正在开发一个将使用 Foundry Tools 客户端库的 Azure Vision 应用程序。该应用程序具有以下代码。\n```\ndef analyze_image(local_image):\n    with open(local_image, \"rb\") as image_stream:\n        image_analysis = client.analyze_image_in_stream(\n            image=image_stream,\n            visual_features=[\n                VisualFeatureTypes.tags,\n                VisualFeatureTypes.description\n            ]\n        )\n    for caption in image_analysis.description.captions:\n        print(f\"\\n{caption.text} with confidence {caption.confidence}\")\n    for tag in image_analysis.tags:\n        print(f\"\\n{tag.name} with confidence {tag.confidence}\")\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You are developing an application that will use the Azure Vision in Foundry Tools client library. The\napplication has the following code.\n```\ndef analyze_image(local_image):\n    with open(local_image, \"rb\") as image_stream:\n        image_analysis = client.analyze_image_in_stream(\n            image=image_stream,\n            visual_features=[\n                VisualFeatureTypes.tags,\n                VisualFeatureTypes.description\n            ]\n        )\n    for caption in image_analysis.description.captions:\n        print(f\"\\n{caption.text} with confidence {caption.confidence}\")\n    for tag in image_analysis.tags:\n        print(f\"\\n{tag.name} with confidence {tag.confidence}\")\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "该代码仅请求标签和图像描述，因此不执行人脸识别。循环对 image_analysis.tags 打印每个标签的名\n称和置信度分数。语句 open(local_image,\"rb\") 以二进制模式打开本地图像文件，并将其流传递给 analyz\ne_image_in_stream 进行分析。\nImageAnalysisQuickstart.py",
+  "explanationEn": "The code requests only tags and image descriptions, so it does not perform face recognition. The loop\nover image_analysis.tags prints each tag’s name and confidence score. The statement open(local_image,\n\"rb\") opens a local image file in binary mode and passes its stream to analyze_image_in_stream for\nanalysis.\nImageAnalysisQuickstart.py",
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "control": "yn",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 28",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 28",
+  "pdfPage": 149,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 28
+ },
+ {
+  "id": "q149",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您正在构建一个应用程序，该应用程序将使用 Azure AI 监控工作区以确保安全法规的合规性。\n您需要推荐一个满足以下要求的服务：\n● 当员工进入高风险区域时生成警报\n● 实时监控视频流\n● 最小化开发工作量您应该推荐什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure AI Video Indexer",
+    "textEn": "Azure AI Video Indexer",
+    "textZh": "Azure AI 视频索引器"
+   },
+   {
+    "id": "B",
+    "text": "Object detection in Azure Custom Vision",
+    "textEn": "Object detection in Azure Custom Vision",
+    "textZh": "Azure 自定义视觉中的物体检测"
+   },
+   {
+    "id": "C",
+    "text": "Azure Vision in Foundry Tools Spatial Analysis",
+    "textEn": "Azure Vision in Foundry Tools Spatial Analysis",
+    "textZh": "Foundry Tools 空间分析中的 Azure 视觉"
+   },
+   {
+    "id": "D",
+    "text": "Azure Vision in Foundry Tools Image Analysis",
+    "textEn": "Azure Vision in Foundry Tools Image Analysis",
+    "textZh": "Foundry Tools 图像分析中的 Azure 视觉"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "空间分析处理实时视频流，并提供预构建的操作，以检测人员何时进入或退出指定区域。定义每个摄像头 \n视野内的高风险区域，并使用区域进入事件触发警报，最小化开发工作量，而无需训练自定义检测模\n型。\nenables-safety-alerts-with-nvidia-gpus/3641130",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在构建一个应用程序，该应用程序将使用 Azure AI 监控工作区以确保安全法规的合规性。\n您需要推荐一个满足以下要求的服务：\n● 当员工进入高风险区域时生成警报\n● 实时监控视频流\n● 最小化开发工作量您应该推荐什么？",
+  "stemEn": "You are building an app that will use Azure AI to monitor workspaces for safety regulation compliance.\nYou need to recommend a service that meets the following requirements:\n● Generates alerts when employees enter high-risk areas\n● Monitors video feeds in real time\n● Minimizes development effort\nWhat should you recommend?",
+  "explanationZh": "空间分析处理实时视频流，并提供预构建的操作，以检测人员何时进入或退出指定区域。定义每个摄像头 \n视野内的高风险区域，并使用区域进入事件触发警报，最小化开发工作量，而无需训练自定义检测模\n型。\nenables-safety-alerts-with-nvidia-gpus/3641130",
+  "explanationEn": "解释：\n \nSpatial Analysis processes live video streams and provides prebuilt operations for detecting when people\nenter or exit designated zones. Define high-risk areas within each camera’s view and use zone-entry\nevents to trigger alerts, minimizing development effort without training a custom detection model.\nenables-safety-alerts-with-nvidia-gpus/3641130",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 29",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 29",
+  "pdfPage": 151,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 29
+ },
+ {
+  "id": "q150",
+  "domain": "vision",
+  "domainLabel": "实现计算机视觉解决方案",
+  "type": "single",
+  "stem": "您有一家生产食品的工厂。\n您需要建立一个监控解决方案，以确保员工遵守个人防护装备（PPE）要求。该解决方案必须满足以下要求：\n● 识别已摘下口罩或安全眼镜的员工。\n● 每 15 分钟进行一次合规检查。\n● 最小化开发工作量。\n● 最小化成本。\n您应该使用哪个服务？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure AI Face",
+    "textEn": "Azure AI Face",
+    "textZh": "Azure AI 面部识别"
+   },
+   {
+    "id": "B",
+    "text": "Azure Vision in Foundry Tools",
+    "textEn": "Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Vision"
+   },
+   {
+    "id": "C",
+    "text": "Azure Video Analyzer for Media (formerly Video Indexer)",
+    "textEn": "Azure Video Analyzer for Media (formerly Video Indexer)",
+    "textZh": "Azure Video Analyzer for Media（前身为 Video Indexer）"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "Azure AI Face 提供了预构建的面部检测属性，用于面具和眼镜，避免了自定义模型\n训练。每 15 分钟安排一次图像捕获和分析，以标记缺失的设备，同时限制\n处理成本。这些属性检测存在性；它们并不证明眼镜符合安全\n标准。\nv1.2&tabs=HTTP\n \n \n \n \n \n实施文本分析解决方案\n测试题 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客…",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一家生产食品的工厂。\n您需要建立一个监控解决方案，以确保员工遵守个人防护装备（PPE）要求。该解决方案必须满足以下要求：\n● 识别已摘下口罩或安全眼镜的员工。\n● 每 15 分钟进行一次合规检查。\n● 最小化开发工作量。\n● 最小化成本。\n您应该使用哪个服务？",
+  "stemEn": "You have a factory that produces food products.\nYou need to build a monitoring solution for staff compliance with personal protective equipment (PPE)\nrequirements. The solution must meet the following requirements:\n● Identify staff who have removed masks or safety glasses.\n● Perform a compliance check every 15 minutes.\n● Minimize development effort.\n● Minimize costs.\nWhich service should you use?",
+  "explanationZh": "Azure AI Face 提供了预构建的面部检测属性，用于面具和眼镜，避免了自定义模型\n训练。每 15 分钟安排一次图像捕获和分析，以标记缺失的设备，同时限制\n处理成本。这些属性检测存在性；它们并不证明眼镜符合安全\n标准。\nv1.2&tabs=HTTP\n \n \n \n \n \n实施文本分析解决方案\n测试题 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "explanationEn": "Azure AI Face provides prebuilt face detection attributes for masks and glasses, avoiding custom model\ntraining. Schedule image capture and analysis every 15 minutes to flag missing equipment while limiting\nprocessing costs. These attributes detect presence; they do not certify that the glasses meet safety\nstandards.\nv1.2&tabs=HTTP\n \n \n \n \n \nImplement text analysis solutions\nTestlet 1\nCase Study\nThis is a case study. Case studies are not timed separately from other exam sections. You can use as\nmuch exam time as you would like to complete each case study. However, there might be additional case\nstudies or other exam sections. Manage your time to ensure that you can complete all the exam sections\nin the time provided. Pay attention to the Exam Progress at the top of the screen so you have sufficient\ntime to complete any exam sections that follow this case study.\nTo answer the case study questions, you will bed to reference information that is provided in the case.\nCase studies and associated questions might contain exhibits or other resources that provide more\ninformation about the scenario described in the case. Information provided in an individual question\ndoes not apply to the other questions in the case study.\nA Review Screen will appear at the end of this case study. From the Review Screen, you can review and\nchange your answers before you move to the next exam section. After you leave this case study, you will\nNOT be able to return to it.\nTo start the case study\nTo display the first question in this case study, select the “Next” button. To the left of the question, a menu\nprovides links to information such as business requirements, the existing environment, and problem\nstatements. Please read through all this information before answering any questions. When you are ready\nto answer a question, select the “Question” button to return to the question.\nOverview\n \nCompany Information \nContoso, Ltd is a multinational retail company that builds, deploys, and manages generative AI and agent-\nbased solutions by using Microsoft Foundry. \nExisting Environment\n \nIdentity Environment\nContoso uses Microsoft Entra ID for identity management, authentication, and authorization capabilities\nthat enable agents to access organizational resources and services.\nContoso recently formed a new AI engineering team named Agent1Dev Team to optimize and maintain\nexisting AI solutions.\nThe team collaborates with solution architects, DevOps engineers, and security engineers to design,\nimplement. monitor, and secure AI applications.\nContoso also has a team named Agent1Test Team that is responsible for validating AI solutions before the\nsolution deployments.\nGenerative Environment\nContoso has a Microsoft Foundry deployment that contains two projects named Project1 and Project2.\nProject1\nProject1 contains a customer support agent named Agent1 that assists customers with product inquiries\nand troubleshooting requests.\nAgent1 has the following configurations:\n Agent1 uses a base model deployment.\n A safety evaluation pipeline is NOT enabled.\n Tool invocation approval workflows are NOT enabled.\n Conversation memory constraints are NOT configured.\nAgent1 interacts with customers by using digital support channels and answers general questions about\nContoso products.\nProject1 is deployed to an Azure region located in the European Union (EU).\nAgent1Dev Team will use Project1 to optimize and maintain Agent1.\nProject2\nProject2 contains a deployed video generation model. The",
+  "boxes": [],
+  "domainLabelZh": "实现计算机视觉解决方案",
+  "domainLabelEn": "Implement computer vision solutions",
+  "pdfRef": "实现计算机视觉解决方案 · 问题集 2 · 问题 30",
+  "pdfRefEn": "Implement computer vision solutions · Question Set 2 · Question 30",
+  "pdfPage": 151,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 30
+ },
+ {
+  "id": "q151",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您需要推荐一个发票审核解决方案，以解决财务部门报告的问题。\n您应该在推荐中包含什么内容？",
+  "options": [
+   {
+    "id": "A",
+    "text": "chat completions",
+    "textEn": "chat completions",
+    "textZh": "聊天完成"
+   },
+   {
+    "id": "B",
+    "text": "Azure Document Intelligence in Foundry Tools",
+    "textEn": "Azure Document Intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure 文档智能"
+   },
+   {
+    "id": "C",
+    "text": "Azure Content Understanding in Foundry Tools",
+    "textEn": "Azure Content Understanding in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure 内容理解"
+   },
+   {
+    "id": "D",
+    "text": "Image Analysis",
+    "textEn": "Image Analysis",
+    "textZh": "图像分析"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要推荐一个发票审核解决方案，以解决财务部门报告的问题。\n您应该在推荐中包含什么内容？",
+  "stemEn": "You need to recommend an invoice review solution that resolves the issue reported by the finance\ndepartment.\nWhat should you include in the recommendation?",
+  "explanationZh": "",
+  "explanationEn": "",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 案例研究 · 问题 1",
+  "pdfRefEn": "Implement text analysis solutions · Case Study · Question 1",
+  "pdfPage": 155,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q152",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理的知识来源是一组存储在 Azure Blob\n存储中的扫描 PDF 故障排除指南。指南页面包含两列布局和表格。\n您使用 Foundry Tools 中的 Azure 内容理解来处理 PDF。\n您计划将处理后的内容摄取到索引中，以进行检索增强生成 (RAG)，并存储提取的字段以便后续自动化。\n利益相关者必须能够验证每个提取字段值来自原始 PDF 的位置，并将低可靠性提取路由到人工审核。\n您需要确保内容理解文档分析器的输出包括每个字段的置信度分数和源文档中的位置基础。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Set enableSegment to true",
+    "textEn": "Set enableSegment to true.",
+    "textZh": "将 enableSegment 设置为 true。"
+   },
+   {
+    "id": "B",
+    "text": "Provide labeled samples",
+    "textEn": "Provide labeled samples.",
+    "textZh": "提供标记样本。"
+   },
+   {
+    "id": "C",
+    "text": "Enable estimateFieldSourceAndConfidence",
+    "textEn": "Enable estimateFieldSourceAndConfidence.",
+    "textZh": "启用 estimateFieldSourceAndConfidence。"
+   },
+   {
+    "id": "D",
+    "text": "Configure the analyzer to use generative extraction for all fields",
+    "textEn": "Configure the analyzer to use generative extraction for all fields.",
+    "textZh": "配置分析器以对所有字段使用生成提取。"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "要在 Foundry Tools 中使用 Azure 内容理解满足您的所有要求，您需要配置\\一个具有特定标志的自定义文 \n档分析器，设置索引摄取管道，并构建一个\n下游人机协作验证规则。\n*-> 1. 启用置信度分数和源基础\n要强制分析器提供每个字段的置信度指标和精确的布局/边界框坐标\n以进行验证，您必须在您的\n配置中选择 estimate FieldSourceAndConfidence 参数。\n选项 A（全局）：在主分析器配置中将 estimateFieldSourceAndConfidence = true 设置为评估所有字段\n。\n选项 B（字段级别）：在各个字段模式下设置 estimateSourceAndConfidence = true。这确保生成的\nJSON 响应填充边界框坐标、页码，以及每个提取实体的置信度分数 0.0 到 1.0。\n2. 配置双列和表格布局的文档提取\n3. 构建摄取管道（RAG与自动化双路径）\n4. 实施阈值路由和源验证",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理的知识来源是一组存储在 Azure Blob\n存储中的扫描 PDF 故障排除指南。指南页面包含两列布局和表格。\n您使用 Foundry Tools 中的 Azure 内容理解来处理 PDF。\n您计划将处理后的内容摄取到索引中，以进行检索增强生成 (RAG)，并存储提取的字段以便后续自动化。\n利益相关者必须能够验证每个提取字段值来自原始 PDF 的位置，并将低可靠性提取路由到人工审核。\n您需要确保内容理解文档分析器的输出包括每个字段的置信度分数和源文档中的位置基础。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe knowledge source for the agent is a set of scanned PDF troubleshooting guides stored in Azure Blob\nStorage. The guide pages contain two-column layouts and tables.\nYou use Azure Content Understanding in Foundry Tools to process the PDFs.\nYou plan to ingest the processed content into an index for Retrieval Augmented Generation (RAG) and\nstore extracted fields for downstream automation.\nStakeholders must be able to verify where each extracted field value came from in the original PDF and\nroute low-reliability extractions for manual review.\nYou need to ensure that the Content Understanding document analyzer output includes a per-field\nconfidence score and source grounding to locations within the source document.\nWhat should you do?",
+  "explanationZh": "要在 Foundry Tools 中使用 Azure 内容理解满足您的所有要求，您需要配置\\一个具有特定标志的自定义文 \n档分析器，设置索引摄取管道，并构建一个\n下游人机协作验证规则。\n*-> 1. 启用置信度分数和源基础\n要强制分析器提供每个字段的置信度指标和精确的布局/边界框坐标\n以进行验证，您必须在您的\n配置中选择 estimate FieldSourceAndConfidence 参数。\n选项 A（全局）：在主分析器配置中将 estimateFieldSourceAndConfidence = true 设置为评估所有字段\n。\n选项 B（字段级别）：在各个字段模式下设置 estimateSourceAndConfidence = true。这确保生成的\nJSON 响应填充边界框坐标、页码，以及每个提取实体的置信度分数 0.0 到 1.0。\n2. 配置双列和表格布局的文档提取\n3. 构建摄取管道（RAG与自动化双路径）\n4. 实施阈值路由和源验证",
+  "explanationEn": "解释：\n \nTo fulfill all your requirements using Azure Content Understanding in Foundry Tools, you need to configure\na custom document analyzer with specific flags, set up an index ingestion pipeline, and build a\ndownstream human-in-the-loop validation rule.\n*-> 1. Enable Confidence Scores and Source Grounding\nTo force the analyzer to provide per-field confidence metrics and precise layout/bounding box coordinates\nfor verification, you must opt-in to the estimate FieldSourceAndConfidence parameter within your\nconfiguration.\nOption A (Global): Set estimateFieldSourceAndConfidence = true in the main analyzer config to evaluate\nall fields.\nOption B (Field-Level): Set estimateSourceAndConfidence = true under individual field schemas.This\nensures the generated JSON response populates the bounding box coordinates, page numbers, and a\nconfidence score 0.0 to 1.0 for every extracted entity.\n2. Configure Document Extraction for Two-Column & Table Layouts\n3. Build the Ingestion Pipeline (RAG vs. Automation Dual-Path)\n4. Implement Threshold Routing and Source Verification",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 1",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 1",
+  "pdfPage": 156,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q153",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您正在为客户支持平台在Microsoft Foundry构建语音处理解决方案。\n该平台将转录实时电话通话，以便您公司的主管可以查看通话记录并在通话进行时检测问题。通话音频将作为来自电话系统的连续流传输。\n您需要确保通话记录在音频流的几秒钟内出现。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Use text to speech by using a custom neural voice",
+    "textEn": "Use text to speech by using a custom neural voice.",
+    "textZh": "使用自定义神经语音的文本转语音。"
+   },
+   {
+    "id": "B",
+    "text": "Use speech translation to generate the transcripts into multiple languages",
+    "textEn": "Use speech translation to generate the transcripts into multiple languages.",
+    "textZh": "使用语音翻译将记录生成多种语言的转录。"
+   },
+   {
+    "id": "C",
+    "text": "Run a batch transcription job on recorded audio files",
+    "textEn": "Run a batch transcription job on recorded audio files.",
+    "textZh": "对录制的音频文件运行批量转录作业。"
+   },
+   {
+    "id": "D",
+    "text": "Use real-time speech to text to process streaming audio input",
+    "textEn": "Use real-time speech to text to process streaming audio input.",
+    "textZh": "使用实时语音转文本处理流媒体音频输入。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "您应该在此项目中使用实时语音转文本（流媒体 STT）。\n为什么需要实时 STT\n低延迟：它在几秒钟内转录音频。\n连续输入：它处理实时、持续的音频流。\n实时监控：监督人员需要立即的文本来标记问题。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您正在为客户支持平台在Microsoft Foundry构建语音处理解决方案。\n该平台将转录实时电话通话，以便您公司的主管可以查看通话记录并在通话进行时检测问题。通话音频将作为来自电话系统的连续流传输。\n您需要确保通话记录在音频流的几秒钟内出现。\n您应该怎么做？",
+  "stemEn": "You are building a speech processing solution in Microsoft Foundry for a customer support platform.\nThe platform will transcribe live phone calls, so that supervisors at your company can view call transcripts\nand detect issues while the calls are in progress. The call audio will arrive as a continuous stream from the\ntelephony system.\nYou need to ensure that the call transcripts appear within only a few seconds of the audio stream.\nWhat should you do?",
+  "explanationZh": "您应该在此项目中使用实时语音转文本（流媒体 STT）。\n为什么需要实时 STT\n低延迟：它在几秒钟内转录音频。\n连续输入：它处理实时、持续的音频流。\n实时监控：监督人员需要立即的文本来标记问题。",
+  "explanationEn": "You should use Real-Time Speech-to-Text (Streaming STT) for this project.\nWhy Real-Time STT is Required\nLow Latency: It transcribes audio within seconds.\nContinuous Input: It processes live, ongoing audio streams.\nLive Monitoring: Supervisors need immediate text to flag issues.",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 2",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 2",
+  "pdfPage": 156,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q154",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您正在创建一个 Microsoft Foundry 项目中的代理工作流程，以支持自然语音交互。\n \n代理必须接收连续的音频输入，将输入转换为文本以进行推理，然后返回 \n \n支持轮流发言的动态，代理在用户说完之前开始生成语音输出。\n以低延迟运行，以保持对话体验。\n您需要在实时代理交互中启用语音转文本和文本转语音。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Use batch transcription to convert the audio input and return text responses from the agent",
+    "textEn": "Use batch transcription to convert the audio input and return text responses from the agent.",
+    "textZh": "使用批量转录将音频输入转换并返回代理的文本响应。"
+   },
+   {
+    "id": "B",
+    "text": "Use real-time speech to text for incoming audio and text to speech for agent responses",
+    "textEn": "Use real-time speech to text for incoming audio and text to speech for agent responses.",
+    "textZh": "对于传入音频使用实时语音转文本，对于代理响应使用文本转语音。"
+   },
+   {
+    "id": "C",
+    "text": "Use an embeddings model to encode the audio, and then decode the audio into text and speech",
+    "textEn": "Use an embeddings model to encode the audio, and then decode the audio into text and speech.",
+    "textZh": "使用嵌入模型对音频进行编码，然后将音频解码为文本和语音。"
+   },
+   {
+    "id": "D",
+    "text": "Use speech translation to convert the audio into another language and return the translated text",
+    "textEn": "Use speech translation to convert the audio into another language and return the translated text.",
+    "textZh": "使用语音翻译将音频转换为另一种语言并返回翻译后的文本。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "为了在这个特定的 Microsoft Foundry 工作流程中实现低延迟和自然的轮流发言动态，最佳方法是对传\n入音频使用实时语音转文本，对代理响应使用文本转语音。\n低延迟：流式实时语音转文本（STT）和文本转语音（TTS）管道并发处理audio chunks。这允许系统\n在用户仍在说话时分析文本并准备响应。\n轮流发言支持：实时语音转文本系统利用语音活动检测（VAD）和连续\n流媒体。这使得代理能够即时检测暂停、打断或拖延的语音，以自然地\n转换对话轮次。\n直接推理兼容性：因为您的工作流程需要将输入转换为文本以进行推理\n（例如提示大型语言模型），一个高度优化的基于文本的管道可以无缝\n适应，而无需额外的翻译层。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您正在创建一个 Microsoft Foundry 项目中的代理工作流程，以支持自然语音交互。\n \n代理必须接收连续的音频输入，将输入转换为文本以进行推理，然后返回 \n \n支持轮流发言的动态，代理在用户说完之前开始生成语音输出。\n以低延迟运行，以保持对话体验。\n您需要在实时代理交互中启用语音转文本和文本转语音。\n您应该怎么做？",
+  "stemEn": "You are creating an agent workflow in a Microsoft Foundry project to support natural voice interactions.\n \n \nThe agent must receive continuous audio input, convert the input into text for reasoning, and then return\n \nspoken responses to a user. The workflow must meet the following requirements: 口头回应给用户。工作流程必须满足以下要求：\nSupport turn-taking dynamics, where the agent begins to generate the speech output before the user\nfinishes speaking.\nOperate with low latency to maintain conversational experience.\nYou need to enable both speech to text and text to speech in a real-time agent interaction.\nWhat should you do?",
+  "explanationZh": "为了在这个特定的 Microsoft Foundry 工作流程中实现低延迟和自然的轮流发言动态，最佳方法是对传\n入音频使用实时语音转文本，对代理响应使用文本转语音。\n低延迟：流式实时语音转文本（STT）和文本转语音（TTS）管道并发处理audio chunks。这允许系统\n在用户仍在说话时分析文本并准备响应。\n轮流发言支持：实时语音转文本系统利用语音活动检测（VAD）和连续\n流媒体。这使得代理能够即时检测暂停、打断或拖延的语音，以自然地\n转换对话轮次。\n直接推理兼容性：因为您的工作流程需要将输入转换为文本以进行推理\n（例如提示大型语言模型），一个高度优化的基于文本的管道可以无缝\n适应，而无需额外的翻译层。",
+  "explanationEn": "To achieve low latency and natural turn-taking dynamics in this specific Microsoft Foundry workflow, the\nbest approach is to use real-time speech-to-text for incoming audio and text-to-speech for agent\nresponses.\nLow Latency: Streaming, real-time Speech-to-Text (STT) and Text-to-Speech (TTS) pipelines process\naudio chunks concurrently. This allows the system to analyze text and prepare responses while the user is\nstill speaking.\nTurn-Taking Support: Real-time STT systems utilize voice activity detection (VAD) and continuous\nstreaming. This enables the agent to instantly detect pauses, interruptions, or trailing speech to naturally\nshift conversational turns.\nDirect Reasoning Compatibility: Because your workflow requires converting input into text for reasoning\n(such as prompting a Large Language Model), a highly optimized text-based pipeline fits seamlessly\nwithout extra translation layers.",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 3",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 3",
+  "pdfPage": 157,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q155",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您有一个名为 App1 的应用程序，它在 Foundry Tools 中使用 Azure Speech 来转录实时通话。\n转录片段通常包含英语和西班牙语。App1 将每个片段发送到 Azure\nTranslator 在 Foundry Tools 中翻译成另一种语言。\n有时，混合语言片段会导致翻译不完整或不正确。\n您需要减少翻译错误。解决方案必须确保整个转录成功翻译。\n在将片段发送到翻译器之前，您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Use document translation to translate the entire transcript as a single document",
+    "textEn": "Use document translation to translate the entire transcript as a single document.",
+    "textZh": "使用文档翻译将整个转录作为单个文档进行翻译。"
+   },
+   {
+    "id": "B",
+    "text": "Split the mixed-language segments into single-language segments and translate each segment separately",
+    "textEn": "Split the mixed-language segments into single-language segments and translate each segment separately.",
+    "textZh": "将混合语言片段拆分为单一语言片段，并分别翻译每个片段。"
+   },
+   {
+    "id": "C",
+    "text": "Enable automatic language detection for the translation request",
+    "textEn": "Enable automatic language detection for the translation request.",
+    "textZh": "为翻译请求启用自动语言检测。"
+   },
+   {
+    "id": "D",
+    "text": "Specify English as the source language in the translation request for all the segments",
+    "textEn": "Specify English as the source language in the translation request for all the segments.",
+    "textZh": "在翻译请求中将英语指定为所有段落的源语言。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "要修复来自混合语言转录的不完整或不正确的翻译，您必须在将文本发送到 Azure Translator 之前识别并隔离\n句子或短语级别的语言。\n当单个请求仅包含一种源语言时，Azure Translator 的表现最佳。当它在单一源语言代码下接收到\n混合语言段落时，通常无法正确解析次要语言。\n以下是您在调用 Translator API 之前应在应用程序中实现的逐步流程。\n1. 将段落拆分为句子\n实时通话转录段落可以包含多个句子。如果段落包含混合语言，请不要直接将原始的多句段落发送\n给翻译器。将段落拆分为单个句子。使用正则标点规则或轻量级句子拆分库。\n2. 每个句子运行语言检测\nAzure Translator 具有内置的检测 API，但对于混合语言的实时通话，每个句子执行专门的检测步\n骤可以提供更好的控制。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个名为 App1 的应用程序，它在 Foundry Tools 中使用 Azure Speech 来转录实时通话。\n转录片段通常包含英语和西班牙语。App1 将每个片段发送到 Azure\nTranslator 在 Foundry Tools 中翻译成另一种语言。\n有时，混合语言片段会导致翻译不完整或不正确。\n您需要减少翻译错误。解决方案必须确保整个转录成功翻译。\n在将片段发送到翻译器之前，您应该怎么做？",
+  "stemEn": "You have an application named App1 that uses Azure Speech in Foundry Tools to transcribe live calls.\nTranscript segments often contain both English and Spanish. App1 sends each segment to Azure\nTranslator in Foundry Tools to translate to another language.\nSometimes, mixed-language segments result in incomplete or incorrect translations.\nYou need to reduce translation errors. The solution must ensure that the entire transcript is translated\nsuccessfully.\nWhat should you do before sending the segments to Translator?",
+  "explanationZh": "要修复来自混合语言转录的不完整或不正确的翻译，您必须在将文本发送到 Azure Translator 之前识别并隔离\n句子或短语级别的语言。\n当单个请求仅包含一种源语言时，Azure Translator 的表现最佳。当它在单一源语言代码下接收到\n混合语言段落时，通常无法正确解析次要语言。\n以下是您在调用 Translator API 之前应在应用程序中实现的逐步流程。\n1. 将段落拆分为句子\n实时通话转录段落可以包含多个句子。如果段落包含混合语言，请不要直接将原始的多句段落发送\n给翻译器。将段落拆分为单个句子。使用正则标点规则或轻量级句子拆分库。\n2. 每个句子运行语言检测\nAzure Translator 具有内置的检测 API，但对于混合语言的实时通话，每个句子执行专门的检测步\n骤可以提供更好的控制。",
+  "explanationEn": "To fix incomplete or incorrect translations from mixed-language transcripts, you must identify and isolate\nthe languages at the sentence or phrase level before sending the text to Azure Translator.\nAzure Translator performs best when a single request contains only one source language. When it\nreceives a mixed-language segment under a single source language code, it often fails to parse the\nsecondary language correctly.\nHere is the step-by-step pipeline you should implement inside your application before hitting the Translator\nAPI.\n1. Split Segments into Sentences\nLive call transcript segments can contain multiple sentences. Do not send the raw, multi-sentence\nsegment directly to the translator if it contains mixed languages.Break the segment into individual\nsentences.Use regex punctuation rules or a lightweight sentence-splitting library.\n2. Run Language Detection Per Sentence\nAzure Translator has a built-in Detect API, but for mixed-language live calls, executing a dedicated\ndetection step per sentence provides better control.",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 4",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 4",
+  "pdfPage": 158,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 4
+ },
+ {
+  "id": "q156",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Python 应用程序在将客户评论发布到公共论坛之前收集这些评论。\n您需要向 Azure AI 内容安全发送文本评论，并返回自残严重性。\n。\n您应该如何完成代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。\n区域：",
+  "options": [],
+  "answer": [
+   "AnalyzeTextOptions(text=comment)",
+   "client.analyze_text(request)"
+  ],
+  "pdfAnswer": [
+   "AnalyzeTextOptions(text=comment)",
+   "client.analyze_text(request)"
+  ],
+  "explanation": "框 1：AnalyzeTextOptions(text=comment)\n要在您的 Python 脚本中设置请求，您必须使用 AnalyzeTextOptions(text=comment)，将文本作为单个字\n符串传递，而不是列表。\n示例：\n构建请求选项，专注于文本分析 # 您可以选择性地将\n分析限制为特定类别\nrequest_options = AnalyzeTextOptions(\ntext=user_comment,\ncategories=[TextCategory.SELF_HARM]\n框 2：client.analyze_text(request)\n您必须使用 client.analyze_text(request)\n1. 发送请求：调用 client.analyze_text(request) 以检索多严重性结果。\n2. 提取自残结果：从响应列表中找到自残类别。\n3. 返回严重性：访问 .severity 属性",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "AnalyzeTextOptions(text=comment)",
+      "en": "AnalyzeTextOptions(text=comment)",
+      "zh": "AnalyzeTextOptions(text=comment)"
+     },
+     {
+      "key": "AnalyzeTextOptions(text=[comment])",
+      "en": "AnalyzeTextOptions(text=[comment])",
+      "zh": "AnalyzeTextOptions(text=[comment])"
+     },
+     {
+      "key": "AnalyzeTextOptions(categories=comment)",
+      "en": "AnalyzeTextOptions(categories=comment)",
+      "zh": "AnalyzeTextOptions(categories=comment)"
+     },
+     {
+      "key": "TextCategory.SELF_HARM(comment)",
+      "en": "TextCategory.SELF_HARM(comment)",
+      "zh": "TextCategory.SELF_HARM(comment)"
+     }
+    ],
+    "answer": "AnalyzeTextOptions(text=comment)",
+    "positionNoteEn": "after `edential(key))     request =` before `response = {{2}}`",
+    "positionNoteZh": "空位在：`edential(key))     request =` 之后",
+    "positionNote": "空位在：`edential(key))     request =` 之后"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "client.analyze_text(request)",
+      "en": "client.analyze_text(request)",
+      "zh": "client.analyze_text(request)"
+     },
+     {
+      "key": "client.analyze_image(request)",
+      "en": "client.analyze_image(request)",
+      "zh": "client.analyze_image(request)"
+     },
+     {
+      "key": "client.moderate_text(request)",
+      "en": "client.moderate_text(request)",
+      "zh": "client.moderate_text(request)"
+     },
+     {
+      "key": "client.path(\"/text:analyze\").post(request)",
+      "en": "client.path(\"/text:analyze\").post(request)",
+      "zh": "client.path(\"/text:analyze\").post(request)"
+     }
+    ],
+    "answer": "client.analyze_text(request)",
+    "positionNoteEn": "Box 2",
+    "positionNoteZh": "框 2",
+    "positionNote": "框 2"
+   }
+  ],
+  "stemZh": "您有一个 Python 应用程序在将客户评论发布到公共论坛之前收集这些评论。\n您需要向 Azure AI 内容安全发送文本评论，并返回自残严重性。\n。\n您应该如何完成代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。\n区域：",
+  "stemEn": "You have a Python application collects customer comments before posting them to a public forum.\nYou need to send a text comment to Azure AI Content Safety and return the self-harm severity from the\nresponse. 响应\nHow should you complete the code? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：AnalyzeTextOptions(text=comment)\n要在您的 Python 脚本中设置请求，您必须使用 AnalyzeTextOptions(text=comment)，将文本作为单个字\n符串传递，而不是列表。\n示例：\n构建请求选项，专注于文本分析 # 您可以选择性地将\n分析限制为特定类别\nrequest_options = AnalyzeTextOptions(\ntext=user_comment,\ncategories=[TextCategory.SELF_HARM]\n框 2：client.analyze_text(request)\n您必须使用 client.analyze_text(request)\n1. 发送请求：调用 client.analyze_text(request) 以检索多严重性结果。\n2. 提取自残结果：从响应列表中找到自残类别。\n3. 返回严重性：访问 .severity 属性",
+  "explanationEn": "Box 1: AnalyzeTextOptions(text=comment)\nTo set up the request in your Python script, you must use AnalyzeTextOptions(text=comment), passing the\ntext as a single string rather than a list.\nExample:\nBuild the request options focusing on Text analysis\n # You can optionally restrict analysis to specific categories\n request_options = AnalyzeTextOptions(\n text=user_comment,\n categories=[TextCategory.SELF_HARM]\nBox 2: client.analyze_text(request)\nYou must use client.analyze_text(request)\n1. Send the request: Call client.analyze_text(request) to retrieve the multi-severity results.\n2. Extract the self-harm result: Locate the self-harm categories from the response list.\n3. Return the severity: Access the .severity attribute",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "select",
+  "template": "def get_self_harm_severity(comment: str) -> int:\n    key = os.environ[\"CONTENT_SAFETY_KEY\"]\n    endpoint = os.environ[\"CONTENT_SAFETY_ENDPOINT\"]\n    client = ContentSafetyClient(endpoint, AzureKeyCredential(key))\n    request = {{1}}\n    response = {{2}}\n    result = next(\n        item for item in response.categories_analysis\n        if item.category == TextCategory.SELF_HARM\n    )\n    return result.severity",
+  "templateEn": "def get_self_harm_severity(comment: str) -> int:\n    key = os.environ[\"CONTENT_SAFETY_KEY\"]\n    endpoint = os.environ[\"CONTENT_SAFETY_ENDPOINT\"]\n    client = ContentSafetyClient(endpoint, AzureKeyCredential(key))\n    request = {{1}}\n    response = {{2}}\n    result = next(\n        item for item in response.categories_analysis\n        if item.category == TextCategory.SELF_HARM\n    )\n    return result.severity",
+  "templateZh": "def get_self_harm_severity(comment: str) -> int:\n    key = os.environ[\"CONTENT_SAFETY_KEY\"]\n    endpoint = os.environ[\"CONTENT_SAFETY_ENDPOINT\"]\n    client = ContentSafetyClient(endpoint, AzureKeyCredential(key))\n    request = {{1}}\n    response = {{2}}\n    result = next(\n        item for item in response.categories_analysis\n        if item.category == TextCategory.SELF_HARM\n    )\n    return result.severity",
+  "templateKind": "code",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 5",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 5",
+  "pdfPage": 158,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 5
+ },
+ {
+  "id": "q157",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您在 Azure Language 的 Foundry Tools 中有一个自定义命名实体识别 (NER) 项目，用于支持票据\n。该项目的架构包含一个名为 ContactInfo 的实体类型。\n在标记的训练文件中，ContactInfo 用于电话号码、电子邮件地址和社交媒体账号。\n模型评估显示 ContactInfo 的精确度较低，包括将附近文本错误提取为 ContactInfo 的假阳性。\n您需要提高项目的精确度。\n在重新训练模型之前，您应该做什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Lower the confidence threshold for ContactInfo",
+    "textEn": "Lower the confidence threshold for ContactInfo.",
+    "textZh": "降低 ContactInfo 的置信度阈值。"
+   },
+   {
+    "id": "B",
+    "text": "Trigger an auto-labeling job",
+    "textEn": "Trigger an auto-labeling job.",
+    "textZh": "触发自动标记任务。"
+   },
+   {
+    "id": "C",
+    "text": "Add more support tickets as training data and label more ContactInfo entities",
+    "textEn": "Add more support tickets as training data and label more ContactInfo entities.",
+    "textZh": "添加更多支持票作为训练数据，并标记更多 ContactInfo 实体。"
+   },
+   {
+    "id": "D",
+    "text": "Replace ContactInfo by using Phone, Email, and SocialMedia entities. Relabel every matching span",
+    "textEn": "Replace ContactInfo by using Phone, Email, and SocialMedia entities. Relabel every matching span.",
+    "textZh": "使用 Phone、Email 和 SocialMedia 实体替换 ContactInfo。重新标记每个匹配的跨度。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "在重新训练模型之前，为了提高项目的精确度，您应该使用 Phone、Email 和 SocialMedia 实体替换\nContactInfo，然后重新标记每个匹配的跨度。\n减少模型混淆：将不同类型的数据（如电话号码、电子邮件和用户名）合并为单一通用实体（ContactInfo\n）会为模型创建冲突模式。将它们分开可以让模型学习每种类型的特定、独特的语法规则。\n \n \n消除过度提取：当一个实体过于宽泛时，模型很难识别实体的开始和结束，导致通过抓取相邻文本而产 \n生假阳性。不同的实体提供了更清晰、更干净的边界。\n \n \noverview",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您在 Azure Language 的 Foundry Tools 中有一个自定义命名实体识别 (NER) 项目，用于支持票据\n。该项目的架构包含一个名为 ContactInfo 的实体类型。\n在标记的训练文件中，ContactInfo 用于电话号码、电子邮件地址和社交媒体账号。\n模型评估显示 ContactInfo 的精确度较低，包括将附近文本错误提取为 ContactInfo 的假阳性。\n您需要提高项目的精确度。\n在重新训练模型之前，您应该做什么？",
+  "stemEn": "You have a custom named entity recognition (NER) project in Azure Language in Foundry Tools for\nsupport tickets. The schema for the project contains an entity type named ContactInfo.\nIn tagged training files, ContactInfo is used for phone numbers, email addresses, and social media\nhandles.\nModel evaluation shows low precision for ContactInfo, including false positives in which nearby text is\nextracted as ContactInfo.\nYou need to improve the precision of the project.\nWhat should you do before retraining the model?",
+  "explanationZh": "在重新训练模型之前，为了提高项目的精确度，您应该使用 Phone、Email 和 SocialMedia 实体替换\nContactInfo，然后重新标记每个匹配的跨度。\n减少模型混淆：将不同类型的数据（如电话号码、电子邮件和用户名）合并为单一通用实体（ContactInfo\n）会为模型创建冲突模式。将它们分开可以让模型学习每种类型的特定、独特的语法规则。\n \n \n消除过度提取：当一个实体过于宽泛时，模型很难识别实体的开始和结束，导致通过抓取相邻文本而产 \n生假阳性。不同的实体提供了更清晰、更干净的边界。\n \n \noverview",
+  "explanationEn": "To improve the precision of the project before retraining the model, you should replace ContactInfo by\nusing Phone, Email, and SocialMedia entities, and then relabel every matching span.\nReduces Model Confusion: Combining distinct types of data (like phone numbers, emails, and usernames)\ninto a single generic entity (ContactInfo) creates conflicting patterns for the model. Splitting them allows the\nmodel to learn the specific, unique syntax rules of each type.\n \nEliminates Over-extraction: When an entity is too broad, the model struggles to identify where the entity\nbegins and ends, leading to false positives by grabbing adjacent text. Distinct entities provide sharper,\ncleaner boundaries.\n \n \noverview",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 6",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 6",
+  "pdfPage": 160,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 6
+ },
+ {
+  "id": "q158",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您正在构建一个文本转语音解决方案，该解决方案使用 Azure Speech 在 Foundry Tools 中读取文本文件中的指令。\n您发现该解决方案经常错误地发音技术术语。\n您需要防止错误的发音。该解决方案必须尽量减少开发工作量。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "From Speech Studio, train a custom neural voice",
+    "textEn": "From Speech Studio, train a custom neural voice",
+    "textZh": "从 Speech Studio 训练一个自定义神经语音"
+   },
+   {
+    "id": "B",
+    "text": "Use Speech Synthesis Markup Language (SSML) to specify phonemes",
+    "textEn": "Use Speech Synthesis Markup Language (SSML) to specify phonemes.",
+    "textZh": "使用语音合成标记语言 (SSML) 指定音素。"
+   },
+   {
+    "id": "C",
+    "text": "Use Speech Synthesis Markup Language (SSML) to apply say as rules",
+    "textEn": "Use Speech Synthesis Markup Language (SSML) to apply say as rules.",
+    "textZh": "使用语音合成标记语言 (SSML) 应用发音规则。"
+   },
+   {
+    "id": "D",
+    "text": "Use Speech Synthesis Markup Language (SSML) to adjust the prosody of the voice",
+    "textEn": "Use Speech Synthesis Markup Language (SSML) to adjust the prosody of the voice.",
+    "textZh": "使用语音合成标记语言 (SSML) 调整语音的韵律。"
+   },
+   {
+    "id": "E",
+    "text": "From Azure OpenAI use the Whisper model",
+    "textEn": "From Azure OpenAI use the Whisper model.",
+    "textZh": "从 Azure OpenAI 使用 Whisper 模型。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "使用语音合成标记语言 (SSML) 和 <phoneme> 元素是修正技术术语发音错误的理想方法。\n<phoneme> 标签允许您通过使用国际音标 (IPA) 明确定义声音来覆盖默认的文本转语音模型。\nfrom-ssm",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您正在构建一个文本转语音解决方案，该解决方案使用 Azure Speech 在 Foundry Tools 中读取文本文件中的指令。\n您发现该解决方案经常错误地发音技术术语。\n您需要防止错误的发音。该解决方案必须尽量减少开发工作量。\n您应该怎么做？",
+  "stemEn": "You are building a text-to-speech solution that uses Azure Speech in Foundry Tools to read instructions\nfrom the script in a text file.\nYou discover that the solution often pronounces technical terms incorrectly.\nYou need to prevent the incorrect pronunciations. The solution must minimize development effort.\nWhat should you do?",
+  "explanationZh": "使用语音合成标记语言 (SSML) 和 <phoneme> 元素是修正技术术语发音错误的理想方法。\n<phoneme> 标签允许您通过使用国际音标 (IPA) 明确定义声音来覆盖默认的文本转语音模型。\nfrom-ssm",
+  "explanationEn": "Using Speech Synthesis Markup Language (SSML) with the <phoneme> element is the ideal way to fix\nmispronunciations for technical terms.\nThe <phoneme> tag lets you override the default text-to-speech model by explicitly defining the sounds\nusing the International Phonetic Alphabet (IPA).\nfrom-ssm",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 7",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 7",
+  "pdfPage": 161,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 7
+ },
+ {
+  "id": "q159",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Python 应用程序，在将提示文本发送到语言模型之前会删除敏感信息。该应用程序具有以下代码：\n```\nsample_text = \"Contact John Doe at 312-555-1234 or john.doe@contoso.com. His SSN is 859-98-0987.\"\n\ndef redact_for_model(input_text):\n    payload = {\n        \"kind\": \"PiiEntityRecognition\",\n        \"parameters\": {\n            \"modelVersion\": \"latest\",\n            \"piiCategories\": [\"Person\", \"PhoneNumber\"],\n            \"redactionPolicies\": [\n                {\n                    \"policyKind\": \"entityMask\"\n                }\n            ]\n        },\n        \"analysisInput\": {\n            \"documents\": [\n                {\n                    \"id\": \"1\",\n                    \"language\": \"en\",\n                    \"text\": input_text\n                }\n            ]\n        }\n    }\n    ...\n    return {\n        \"text for model\": doc.get(\"redactedText\", \"\"),\n        \"audit\": [\n            (entity[\"text\"], entity[\"category\"], entity[\"confidenceScore\"])\n            for entity in doc[\"entities\"]\n        ]\n    }\nresult = redact_for_model(sample_text)\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "框 1: 否\n审计列表将不包括“联系人”和“社会安全号码”的实体记录，因为这两个词都不是配置中定义的目标个人身份信息\n实体类型。\n代码通过 piiCategories 列表将扫描限制为 Person 和 PhoneNumber。\n“联系人”定义：这是一个常规的英语动词/名词，而不是一个人的名字或电话号码。\n“SSN”定义：虽然“SSN”是指向敏感数据的文本标签，但它是一个描述符，而不是\n实际的社会安全号码。\n框 2: 是\n对于给定的 sample_text，text_for_model 将包括 john.doe@contoso.com 和 859-98-0987\n完全未被编辑。\n有效负载明确将个人可识别信息（PII）识别限制为仅两个特定\n类别，通过设置 piiCategories: [“Person”, “PhoneNumber”]。\n电子邮件地址被排除：由于电子邮件类别在配置列表中被省略，服务\n绕过电子邮件地址（john.doe@contoso.com），并保持其完全不变。\nSSN 被排除：同样，由于 USSSN（或等效的社会安全号码）类别未在 piiCategories 数组中指定，SS\nN（859-98-0987）被编辑政策完全忽略，保持可见。\n框 3：是\ntext_for_model 将包含“John Doe”和“312-555-1234”的实体类型掩码，但仅限于这两个\n特定项目。\npiiCategories 数组明确请求 Person 和 PhoneNumber。\n应用的编辑：Azure AI 语言服务将用像 * 或实体标签（具体取决于确切的政策设置）替换“John Doe\n”和“312-555-1234”。\n跳过的数据：电子邮件（john.doe@contoso.com）和社会安全号码（859-98-0987）将不会被编辑\n因为它们的类别（电子邮件和美国社会安全号码）已从您的 piiCategories 列表中省略。\nconcepts/conversations-entity-categories",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-text-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "对于 sample_text，audit 将包含 Contact 和 SSN 的实体记录。",
+    "labelEn": "For sample_text, audit will include entity records for Contact and SSN.",
+    "labelZh": "对于 sample_text，audit 将包含 Contact 和 SSN 的实体记录。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "对于 sample_text，text_for_model 将包含 john.doe@contoso.com 和 859-98-0987。",
+    "labelEn": "For sample_text, text_for_model will include john.doe@contoso.com and 859-98-0987.",
+    "labelZh": "对于 sample_text，text_for_model 将包含 john.doe@contoso.com 和 859-98-0987。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "对于 sample_text，text_for_model 将包含 John Doe 和 312-555-1234 的实体类型掩码。",
+    "labelEn": "For sample_text, text_for_model will contain entity type masks for John Doe and 312-555-1234.",
+    "labelZh": "对于 sample_text，text_for_model 将包含 John Doe 和 312-555-1234 的实体类型掩码。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "stemZh": "您有一个 Python 应用程序，在将提示文本发送到语言模型之前会删除敏感信息。该应用程序具有以下代码：\n```\nsample_text = \"Contact John Doe at 312-555-1234 or john.doe@contoso.com. His SSN is 859-98-0987.\"\n\ndef redact_for_model(input_text):\n    payload = {\n        \"kind\": \"PiiEntityRecognition\",\n        \"parameters\": {\n            \"modelVersion\": \"latest\",\n            \"piiCategories\": [\"Person\", \"PhoneNumber\"],\n            \"redactionPolicies\": [\n                {\n                    \"policyKind\": \"entityMask\"\n                }\n            ]\n        },\n        \"analysisInput\": {\n            \"documents\": [\n                {\n                    \"id\": \"1\",\n                    \"language\": \"en\",\n                    \"text\": input_text\n                }\n            ]\n        }\n    }\n    ...\n    return {\n        \"text for model\": doc.get(\"redactedText\", \"\"),\n        \"audit\": [\n            (entity[\"text\"], entity[\"category\"], entity[\"confidenceScore\"])\n            for entity in doc[\"entities\"]\n        ]\n    }\nresult = redact_for_model(sample_text)\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Python application that redacts sensitive information before sending prompt text to a language\nmodel. The application has the following code:\n```\nsample_text = \"Contact John Doe at 312-555-1234 or john.doe@contoso.com. His SSN is 859-98-0987.\"\n\ndef redact_for_model(input_text):\n    payload = {\n        \"kind\": \"PiiEntityRecognition\",\n        \"parameters\": {\n            \"modelVersion\": \"latest\",\n            \"piiCategories\": [\"Person\", \"PhoneNumber\"],\n            \"redactionPolicies\": [\n                {\n                    \"policyKind\": \"entityMask\"\n                }\n            ]\n        },\n        \"analysisInput\": {\n            \"documents\": [\n                {\n                    \"id\": \"1\",\n                    \"language\": \"en\",\n                    \"text\": input_text\n                }\n            ]\n        }\n    }\n    ...\n    return {\n        \"text for model\": doc.get(\"redactedText\", \"\"),\n        \"audit\": [\n            (entity[\"text\"], entity[\"category\"], entity[\"confidenceScore\"])\n            for entity in doc[\"entities\"]\n        ]\n    }\nresult = redact_for_model(sample_text)\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: 否\n审计列表将不包括“联系人”和“社会安全号码”的实体记录，因为这两个词都不是配置中定义的目标个人身份信息\n实体类型。\n代码通过 piiCategories 列表将扫描限制为 Person 和 PhoneNumber。\n“联系人”定义：这是一个常规的英语动词/名词，而不是一个人的名字或电话号码。\n“SSN”定义：虽然“SSN”是指向敏感数据的文本标签，但它是一个描述符，而不是\n实际的社会安全号码。\n框 2: 是\n对于给定的 sample_text，text_for_model 将包括 john.doe@contoso.com 和 859-98-0987\n完全未被编辑。\n有效负载明确将个人可识别信息（PII）识别限制为仅两个特定\n类别，通过设置 piiCategories: [“Person”, “PhoneNumber”]。\n电子邮件地址被排除：由于电子邮件类别在配置列表中被省略，服务\n绕过电子邮件地址（john.doe@contoso.com），并保持其完全不变。\nSSN 被排除：同样，由于 USSSN（或等效的社会安全号码）类别未在 piiCategories 数组中指定，SS\nN（859-98-0987）被编辑政策完全忽略，保持可见。\n框 3：是\ntext_for_model 将包含“John Doe”和“312-555-1234”的实体类型掩码，但仅限于这两个\n特定项目。\npiiCategories 数组明确请求 Person 和 PhoneNumber。\n应用的编辑：Azure AI 语言服务将用像 * 或实体标签（具体取决于确切的政策设置）替换“John Doe\n”和“312-555-1234”。\n跳过的数据：电子邮件（john.doe@contoso.com）和社会安全号码（859-98-0987）将不会被编辑\n因为它们的类别（电子邮件和美国社会安全号码）已从您的 piiCategories 列表中省略。\nconcepts/conversations-entity-categories",
+  "explanationEn": "Box 1: No\nThe audit list will not include entity records for \"Contact\" and \"SSN\" because neither word is a target PII\nentity type defined in the configuration.\nThe code limits scanning to Person and PhoneNumber via the piiCategories list.\n\"Contact\" Definition: This is a regular English verb/noun, not a person's name or a telephone number.\n\"SSN\" Definition: While \"SSN\" is a text label that points to sensitive data, it is a descriptor rather than an\nactual Social Security Number.\nBox 2: Yes\nFor the given sample_text, text_for_model will include both or john.doe@contoso.com and 859-98-0987\ncompletely unredacted.\nThe payload explicitly restricts the Personally Identifiable Information (PII) recognition to only two specific\ncategories by setting piiCategories: [\"Person\", \"PhoneNumber\"].\nEmail Address Excluded: Because the Email category is omitted from the configuration list, the service\nbypasses the email address (john.doe@contoso.com) and leaves it fully intact.\nSSN Excluded: Similarly, because the USSSN (or equivalent Social Security Number) category is not\nspecified in the piiCategories array, the SSN (859-98-0987) is completely ignored by the redaction policy\nand remains visible.\nBox 3: Yes\ntext_for_model will contain entity type masks for \"John Doe\" and \"312-555-1234\", but only for those two\nspecific items.\nThe piiCategories array explicitly requests Person and PhoneNumber.\nApplied Redaction: The Azure AI Language service will replace \"John Doe\" and \"312-555-1234\" with\nmasks like * or entity labels (depending on exact policy settings).\nSkipped Data: The email (john.doe@contoso.com) and the SSN (859-98-0987) will not be redacted\nbecause their categories (Email and USSSN) were omitted from your piiCategories list.\nconcepts/conversations-entity-categories",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "yn",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 8",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 8",
+  "pdfPage": 162,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 8
+ },
+ {
+  "id": "q160",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您需要创建一个新资源，用于执行情感分析和光学字符识别（OCR）。该解决方案必须满足以下要求：\n使用单个密钥和端点访问多个服务。\n整合您可能使用的未来服务的账单。\n支持将来在 Foundry Tools 中使用 Azure Vision。\n您应该如何完成创建新资源的 HTTP 请求？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "PUT",
+   "CognitiveServices"
+  ],
+  "pdfAnswer": [
+   "PUT",
+   "CognitiveServices"
+  ],
+  "explanation": "框 1：PUT\n需要使用 PUT 方法创建一个认知服务多服务资源。此特定资源\ntype 提供多个 AI 服务的单个端点和密钥，整合账单，并支持 Azure\nVision。\n框 2：CognitiveServices\n使用 CognitiveServices 类型创建一个多服务资源。这满足了所有要求，通过\n提供一个密钥和多个服务的端点，整合账单，并使得能够访问\n像 Azure AI Vision 和文本分析这样的功能。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "PUT",
+      "en": "PUT",
+      "zh": "PUT"
+     },
+     {
+      "key": "POST",
+      "en": "POST",
+      "zh": "POST"
+     },
+     {
+      "key": "PATCH",
+      "en": "PATCH",
+      "zh": "PATCH"
+     }
+    ],
+    "answer": "PUT",
+    "positionNoteEn": "blank 1 before `https://management.a`",
+    "positionNoteZh": "空位在框1",
+    "positionNote": "空位在框1"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "CognitiveServices",
+      "en": "CognitiveServices",
+      "zh": "CognitiveServices"
+     },
+     {
+      "key": "ComputerVision",
+      "en": "ComputerVision",
+      "zh": "ComputerVision"
+     },
+     {
+      "key": "TextAnalytics",
+      "en": "TextAnalytics",
+      "zh": "TextAnalytics"
+     }
+    ],
+    "answer": "CognitiveServices",
+    "positionNoteEn": "after `ion\": \"West US\",   \"kind\": \"` before `\",   \"sku\": {     \"n`",
+    "positionNoteZh": "空位在：`ion\": \"West US\",   \"kind\": \"` 之后",
+    "positionNote": "空位在：`ion\": \"West US\",   \"kind\": \"` 之后"
+   }
+  ],
+  "stemZh": "您需要创建一个新资源，用于执行情感分析和光学字符识别（OCR）。该解决方案必须满足以下要求：\n使用单个密钥和端点访问多个服务。\n整合您可能使用的未来服务的账单。\n支持将来在 Foundry Tools 中使用 Azure Vision。\n您应该如何完成创建新资源的 HTTP 请求？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "stemEn": "You need to create a new resource that will be used to perform sentiment analysis and optical character\nrecognition (OCR). The solution must meet the following requirements:\nUse a single key and endpoint to access multiple services.\nConsolidate billing for future services that you might use.\nSupport the use of Azure Vision in Foundry Tools in the future.\nHow should you complete the HTTP request to create the new resource? To answer, select the\nappropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：PUT\n需要使用 PUT 方法创建一个认知服务多服务资源。此特定资源\ntype 提供多个 AI 服务的单个端点和密钥，整合账单，并支持 Azure\nVision。\n框 2：CognitiveServices\n使用 CognitiveServices 类型创建一个多服务资源。这满足了所有要求，通过\n提供一个密钥和多个服务的端点，整合账单，并使得能够访问\n像 Azure AI Vision 和文本分析这样的功能。",
+  "explanationEn": "Box 1: PUT\nNeed to create a Cognitive Services Multi-Service resource using the PUT method. This specific resource\ntype provides a single endpoint and key for multiple AI services, consolidates billing, and supports Azure\nVision.\nBox 2: CognitiveServices\nUsing the CognitiveServices kind creates a multi-service resource. This fulfills all the requirements by\nproviding a single key and endpoint for multiple services, consolidating billing, and enabling access to\nfeatures like Azure AI Vision and Text Analytics under one roof.",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "select",
+  "template": "{{1}} https://management.azure.com/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/CS1?api-version=2021-04-30\n{\n  \"location\": \"West US\",\n  \"kind\": \"{{2}}\",\n  \"sku\": {\n    \"name\": \"S0\"\n  },\n  \"properties\": {},\n  \"identity\": {\n    \"type\": \"SystemAssigned\"\n  }\n}",
+  "templateEn": "{{1}} https://management.azure.com/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/CS1?api-version=2021-04-30\n{\n  \"location\": \"West US\",\n  \"kind\": \"{{2}}\",\n  \"sku\": {\n    \"name\": \"S0\"\n  },\n  \"properties\": {},\n  \"identity\": {\n    \"type\": \"SystemAssigned\"\n  }\n}",
+  "templateZh": "{{1}} https://management.azure.com/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/CS1?api-version=2021-04-30\n{\n  \"location\": \"West US\",\n  \"kind\": \"{{2}}\",\n  \"sku\": {\n    \"name\": \"S0\"\n  },\n  \"properties\": {},\n  \"identity\": {\n    \"type\": \"SystemAssigned\"\n  }\n}",
+  "templateKind": "code",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 9",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 9",
+  "pdfPage": 164,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 9
+ },
+ {
+  "id": "q161",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您正在开发一个文本处理解决方案。\n您有以下函数。\n```\ndef get_key_words(textAnalyticsClient, text):\n\n    response = textAnalyticsClient.recognize_entities(documents = [text])[0]\n    print(\"Key Words:\")\n    for entity in response.entities:\n        print(\"\\t\\t\", entity.text)\n```\n您调用该函数并使用以下字符串作为第二个参数。\nOur tour of London included a visit to Buckingham Palace\n该函数的输出将是什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "London and Buckingham Palace only",
+    "textEn": "London and Buckingham Palace only",
+    "textZh": "仅伦敦和白金汉宫"
+   },
+   {
+    "id": "B",
+    "text": "Tour and visit only",
+    "textEn": "Tour and visit only",
+    "textZh": "仅旅游和访问"
+   },
+   {
+    "id": "C",
+    "text": "Our tour of London included a visit to Buckingham Palace",
+    "textEn": "Our tour of London included a visit to Buckingham Palace",
+    "textZh": "我们的伦敦之旅包括参观白金汉宫"
+   },
+   {
+    "id": "D",
+    "text": "London and Tour only",
+    "textEn": "London and Tour only",
+    "textZh": "仅伦敦和旅游"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "两个地方伦敦和白金汉宫将被识别。\n \n \n注意：命名实体识别（NER）是Azure AI语言提供的功能之一，这是一个集合用于开发涉及书面语言的智能\n应用程序的云中的机器学习和AI算法。NER功能可以识别和分类非结构化文本中的实体。例如：人、地点\nwritten\n、组织和数量。预构建的NER功能具有预设的已识别实体列表。\n \n \n \n自定义NER功能允许您训练模型以识别特定于您的用例的专业实体。\nour use",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在开发一个文本处理解决方案。\n您有以下函数。\n```\ndef get_key_words(textAnalyticsClient, text):\n\n    response = textAnalyticsClient.recognize_entities(documents = [text])[0]\n    print(\"Key Words:\")\n    for entity in response.entities:\n        print(\"\\t\\t\", entity.text)\n```\n您调用该函数并使用以下字符串作为第二个参数。\nOur tour of London included a visit to Buckingham Palace\n该函数的输出将是什么？",
+  "stemEn": "You are developing a text processing solution.\nYou have the following function.\n```\ndef get_key_words(textAnalyticsClient, text):\n\n    response = textAnalyticsClient.recognize_entities(documents = [text])[0]\n    print(\"Key Words:\")\n    for entity in response.entities:\n        print(\"\\t\\t\", entity.text)\n```\nYou call the function and use the following string as the second argument.\nOur tour of London included a visit to Buckingham Palace\nWhat will be the output of the function?",
+  "explanationZh": "两个地方伦敦和白金汉宫将被识别。\n \n \n注意：命名实体识别（NER）是Azure AI语言提供的功能之一，这是一个集合用于开发涉及书面语言的智能\n应用程序的云中的机器学习和AI算法。NER功能可以识别和分类非结构化文本中的实体。例如：人、地点\nwritten\n、组织和数量。预构建的NER功能具有预设的已识别实体列表。\n \n \n \n自定义NER功能允许您训练模型以识别特定于您的用例的专业实体。\nour use",
+  "explanationEn": "The two places London and Buckingham Palace will be recognized.\nNote: Named Entity Recognition (NER) is one of the features offered by Azure AI Language, a collection of\n \nmachine learning and AI algorithms in the cloud for developing intelligent applications that involve\nlanguage. The NER feature can identify and categorize entities in unstructured text. For example: people,\nplaces, organizations, and quantities. The prebuilt NER feature has a pre-set list of recognized entities.\ncase.\n \nThe custom NER feature allows you to train the model to recognize specialized entities specific to y",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 10",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 10",
+  "pdfPage": 165,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 10
+ },
+ {
+  "id": "q162",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您正在构建一个学生将用来查找论文参考资料的解决方案。\n您使用以下代码开始构建解决方案。\n```\nfrom azure.core.credentials import AzureKeyCredential\nfrom azure.ai.textanalytics import TextAnalyticsClient\n\nendpoint = os.environ[\"AZURE_TEXT_ANALYTICS_ENDPOINT\"]\nkey = os.environ[\"AZURE_TEXT_ANALYTICS_KEY\"]\n\ntext_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))\ndocuments = [\n    \"\"\"\n    Our tour guide took us up the Space Needle during our trip to Seattle last week.\n    \"\"\"\n]\n\nresult = text_analytics_client.recognize_linked_entities(documents)\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "No",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "框 1: 否\n \nTextAnalyticsClient.RecognizeLinkedEntities 方法运行一个预测模型，以识别传入文档中发现的一组实\n \n体，并包含将这些实体与著名知识库中相应条目链接的信息。 \n \n此方法有一个语言参数作为输入：language (String)文档所写的语 \n言。如果未指定，则该值将设置为发送到服务的请求中的默认语言 DefaultLanguage。如果设置为空字符\n串，则服务将应用一个模型，其中语言明确设置为“None”。\n框 2: 是\n该方法返回\n响应<LinkedEntityCollection>\n一个结果，包含在文档中识别出的链接实体集合，以及指示实体正确匹配识别子字符串的置信度分数。\nLinkedEntityCollection 类是文档中 LinkedEntity 对象的集合，以及在处理文档时遇到的警告。\nLinkedEntity 具有一个属性 Url，该属性获取标识链接实体在数据源中条目的 URL。\nBingEntitySearchApiId 属性是识别实体的 Bing 实体搜索 API 唯一标识符。\n与 Bing 实体搜索 API 一起使用，以获取额外的相关信息。\n框 3：是\nMatches 属性/属性是一个集合，标识文档中与此链接实体对应的子字符串。\nLinkedEntityMatch 结构具有以下属性：\n置信度\n获取一个介于 0 和 1 之间的分数，表示该子字符串与对应链接实体匹配的信心。\n度\n获取句子中匹配文本的长度。\n消\n获取文档中匹配文本的起始位置。\n本\n获取实体文本在文档中的显示形式。\nazure.ai.textanalytics.textanalyticsclient.recognizelinkedentities",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "该代码会检测文档的语言。",
+    "labelEn": "The code will detect the language of documents.",
+    "labelZh": "该代码会检测文档的语言。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "2",
+    "label": "为每个链接实体返回的 url 属性将是一个必应 (Bing) 搜索链接。",
+    "labelEn": "The url attribute returned for each linked entity will be a Bing search link.",
+    "labelZh": "为每个链接实体返回的 url 属性将是一个必应 (Bing) 搜索链接。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "为每个链接实体返回的 matches 属性将提供文档中引用该实体的位置。",
+    "labelEn": "The matches attribute returned for each linked entity will provide the location in a document where the entity is referenced.",
+    "labelZh": "为每个链接实体返回的 matches 属性将提供文档中引用该实体的位置。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "stemZh": "您正在构建一个学生将用来查找论文参考资料的解决方案。\n您使用以下代码开始构建解决方案。\n```\nfrom azure.core.credentials import AzureKeyCredential\nfrom azure.ai.textanalytics import TextAnalyticsClient\n\nendpoint = os.environ[\"AZURE_TEXT_ANALYTICS_ENDPOINT\"]\nkey = os.environ[\"AZURE_TEXT_ANALYTICS_KEY\"]\n\ntext_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))\ndocuments = [\n    \"\"\"\n    Our tour guide took us up the Space Needle during our trip to Seattle last week.\n    \"\"\"\n]\n\nresult = text_analytics_client.recognize_linked_entities(documents)\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意: 每个正确的选择值为一分。",
+  "stemEn": "You are building a solution that students will use to find references for essays.\nYou use the following code to start building the solution.\n```\nfrom azure.core.credentials import AzureKeyCredential\nfrom azure.ai.textanalytics import TextAnalyticsClient\n\nendpoint = os.environ[\"AZURE_TEXT_ANALYTICS_ENDPOINT\"]\nkey = os.environ[\"AZURE_TEXT_ANALYTICS_KEY\"]\n\ntext_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))\ndocuments = [\n    \"\"\"\n    Our tour guide took us up the Space Needle during our trip to Seattle last week.\n    \"\"\"\n]\n\nresult = text_analytics_client.recognize_linked_entities(documents)\n```\nFor each of the following statements, select Yes is the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1: 否\n \nTextAnalyticsClient.RecognizeLinkedEntities 方法运行一个预测模型，以识别传入文档中发现的一组实\n \n体，并包含将这些实体与著名知识库中相应条目链接的信息。 \n \n此方法有一个语言参数作为输入：language (String)文档所写的语 \n言。如果未指定，则该值将设置为发送到服务的请求中的默认语言 DefaultLanguage。如果设置为空字符\n串，则服务将应用一个模型，其中语言明确设置为“None”。\n框 2: 是\n该方法返回\n响应<LinkedEntityCollection>\n一个结果，包含在文档中识别出的链接实体集合，以及指示实体正确匹配识别子字符串的置信度分数。\nLinkedEntityCollection 类是文档中 LinkedEntity 对象的集合，以及在处理文档时遇到的警告。\nLinkedEntity 具有一个属性 Url，该属性获取标识链接实体在数据源中条目的 URL。\nBingEntitySearchApiId 属性是识别实体的 Bing 实体搜索 API 唯一标识符。\n与 Bing 实体搜索 API 一起使用，以获取额外的相关信息。\n框 3：是\nMatches 属性/属性是一个集合，标识文档中与此链接实体对应的子字符串。\nLinkedEntityMatch 结构具有以下属性：\n置信度\n获取一个介于 0 和 1 之间的分数，表示该子字符串与对应链接实体匹配的信心。\n度\n获取句子中匹配文本的长度。\n消\n获取文档中匹配文本的起始位置。\n本\n获取实体文本在文档中的显示形式。\nazure.ai.textanalytics.textanalyticsclient.recognizelinkedentities",
+  "explanationEn": "Box 1: No\n \nThe TextAnalyticsClient.RecognizeLinkedEntities method runs a predictive model to identify a collection of\nentities found in the passed-in document, and include information linking the entities to their corresponding\nentries in a well-known knowledge base.\n \n \nThis method has a language parameter as input: language (String)\nThe language that the document is written in. If unspecified, this value will be set to the default language in\nDefaultLanguage in the request sent to the service. If set to an empty string, the service will apply a model\nwhere the language is explicitly set to \"None\".\nBox 2: Yes\nThe method returns\nResponse<LinkedEntityCollection>\nA result containing the collection of linked entities identified in the document, as well as scores indicating\nthe confidence that the entity correctly matches the identified substring.\nThe LinkedEntityCollection Class is a collection of LinkedEntity objects in a document, and warnings\nencountered while processing the document.\nThe LinkedEntity has a property Url which gets the URL that identifies the linked entity's entry in the data\nsource.\nThe BingEntitySearchApiId property is a Bing Entity Search API unique identifier of the recognized entity.\nUse in conjunction with the Bing Entity Search API to fetch additional relevant information.\nBox 3: Yes\nThe Matches attribute/property is a collection identifying the substrings of the document that correspond to\nthis linked entity.\nThe LinkedEntityMatch struct has the properties:\nConfidenceScore\nGets a score between 0 and 1, indicating the confidence that this substring matches the corresponding\nlinked entity.\nLength 长\nGets the length of the matching text in the sentence.\nOffset 抵\nGets the starting position for the matching text in the document.\nText 文\nGets the entity text as it appears in the document.\nazure.ai.textanalytics.textanalyticsclient.recognizelinkedentities",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "yn",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 11",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 11",
+  "pdfPage": 166,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 11
+ },
+ {
+  "id": "q163",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您运行以下命令。\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。",
+  "options": [],
+  "answer": [
+   "Yes",
+   "Yes",
+   "Yes"
+  ],
+  "pdfAnswer": [
+   "Yes",
+   "Yes",
+   "Yes"
+  ],
+  "explanation": "解释：\n框 1：是\nhttp://localhost:5000/status：也可以通过 GET 请求，这验证用于启动容器的 api-key 是否有效，而不会导致端点查询。\n\n框 2：是\n该命令将容器和 LUIS 日志保存到位于 C:\\output 的输出挂载上，该挂载位于容器主机上。\n\n框 3：是\nhttp://localhost:5000/swagger：容器提供了端点的完整文档集和一个试用功能。通过此功能，您可以将设置输入到基于网页的 HTML 表单中，并进行查询，而无需编写任何代码。查询返回后，提供了一个示例 CURL 命令，以演示所需的 HTTP 头和主体格式。\n\n参考：\nhttps://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-container-howto",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "访问 http://localhost:5000/status 会查询 Azure 端点，以验证用于启动容器的 API 密钥是否有效。",
+    "labelEn": "Going to http://localhost:5000/status will query the Azure endpoint to verify whether the API key used to start the container is valid.",
+    "labelZh": "访问 http://localhost:5000/status 会查询 Azure 端点，以验证用于启动容器的 API 密钥是否有效。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "2",
+    "label": "容器日志记录提供程序将写入日志数据。",
+    "labelEn": "The container logging provider will write log data.",
+    "labelZh": "容器日志记录提供程序将写入日志数据。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "3",
+    "label": "访问 http://localhost:5000/swagger 将提供访问可用端点文档的详细信息。",
+    "labelEn": "Going to http://localhost:5000/swagger will provide the details to access the documentation for the available endpoints.",
+    "labelZh": "访问 http://localhost:5000/swagger 将提供访问可用端点文档的详细信息。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   }
+  ],
+  "stemZh": "您运行以下命令。\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。",
+  "stemEn": "You run the following command.\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\n \nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "解释：\n框 1：是\nhttp://localhost:5000/status：也可以通过 GET 请求，这验证用于启动容器的 api-key 是否有效，而不会导致端点查询。\n\n框 2：是\n该命令将容器和 LUIS 日志保存到位于 C:\\output 的输出挂载上，该挂载位于容器主机上。\n\n框 3：是\nhttp://localhost:5000/swagger：容器提供了端点的完整文档集和一个试用功能。通过此功能，您可以将设置输入到基于网页的 HTML 表单中，并进行查询，而无需编写任何代码。查询返回后，提供了一个示例 CURL 命令，以演示所需的 HTTP 头和主体格式。\n\n参考：\nhttps://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-container-howto",
+  "explanationEn": "Explanation:\nBox 1: Yes\nhttp://localhost:5000/status : Also requested with GET, this verifies if the api-key used to start the container is valid without causing an endpoint query.\n\nBox 2: Yes\nThe command saves container and LUIS logs to output mount at C:\\output, located on container host\n\nBox 3: Yes\nhttp://localhost:5000/swagger: The container provides a full set of documentation for the endpoints and a Try it out feature. With this feature, you can enter your settings into a web-based HTML form and make the query without having to write any code. After the query returns, an example CURL command is provided to demonstrate the HTTP headers and body format that's required.\n\nReference:\nhttps://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-container-howto",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "yn",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 12",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 12",
+  "pdfPage": 168,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 12
+ },
+ {
+  "id": "q164",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您在 Microsoft Foundry 项目中有一个可配置的护栏。\n您有一个 Python 应用程序。一个名为 ConfidentialTerms 的文本黑名单已经包含了必须在用户消息中检测的术语。该应用程序将每条传入的用户消息存储在一个名为 input_text 的变量中。\n您计划在将 input_text 发送到语言模型之前进行审核。\n您需要使用现有的黑名单分析 input_text。\n您应该如何完成代码？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "AnalyzeTextOptions",
+   "client.analyze_text"
+  ],
+  "pdfAnswer": [
+   "AnalyzeTextOptions",
+   "client.analyze_text"
+  ],
+  "explanation": "框 1：AnalyzeTextOptions\n这是用于封装文本分析请求参数的模型类。它包含要评估的文本、要过滤的黑名单名称集合，以及像\nhalt_on_blocklist_hit 这样的配置标志。\n框 2：client.analyze_text\n这是 ContentSafetyClient 暴露的执行方法。它将请求对象中配置的有效负载传输到云端终端，并返回\n一个对象，详细说明哪些（如果有的话）黑名单元素或安全类别被触发。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "框 1",
+    "labelEn": "Box 1",
+    "labelZh": "框 1",
+    "choices": [
+     {
+      "key": "AnalyzeTextOptions",
+      "en": "AnalyzeTextOptions",
+      "zh": "AnalyzeTextOptions"
+     },
+     {
+      "key": "AnalyzeImageOptions",
+      "en": "AnalyzeImageOptions",
+      "zh": "AnalyzeImageOptions"
+     },
+     {
+      "key": "AddOrUpdateTextBlocklistItemsOptions",
+      "en": "AddOrUpdateTextBlocklistItemsOptions",
+      "zh": "AddOrUpdateTextBlocklistItemsOptions"
+     },
+     {
+      "key": "TextBlocklist",
+      "en": "TextBlocklist",
+      "zh": "TextBlocklist"
+     }
+    ],
+    "answer": "AnalyzeTextOptions",
+    "positionNoteEn": "after `point, credential) request =` before `(     text=input_tex`",
+    "positionNoteZh": "空位在：`point, credential) request =` 之后",
+    "positionNote": "空位在：`point, credential) request =` 之后"
+   },
+   {
+    "id": "2",
+    "label": "框 2",
+    "labelEn": "Box 2",
+    "labelZh": "框 2",
+    "choices": [
+     {
+      "key": "client.analyze_text",
+      "en": "client.analyze_text",
+      "zh": "client.analyze_text"
+     },
+     {
+      "key": "client.analyze_image",
+      "en": "client.analyze_image",
+      "zh": "client.analyze_image"
+     },
+     {
+      "key": "client.add_or_update_blocklist_items",
+      "en": "client.add_or_update_blocklist_items",
+      "zh": "client.add_or_update_blocklist_items"
+     },
+     {
+      "key": "client.list_text_blocklists",
+      "en": "client.list_text_blocklists",
+      "zh": "client.list_text_blocklists"
+     }
+    ],
+    "answer": "client.analyze_text",
+    "positionNoteEn": "after `it=False ) analysis_result =` before `(request)`",
+    "positionNoteZh": "空位在：`it=False ) analysis_result =` 之后",
+    "positionNote": "空位在：`it=False ) analysis_result =` 之后"
+   }
+  ],
+  "stemZh": "您在 Microsoft Foundry 项目中有一个可配置的护栏。\n您有一个 Python 应用程序。一个名为 ConfidentialTerms 的文本黑名单已经包含了必须在用户消息中检测的术语。该应用程序将每条传入的用户消息存储在一个名为 input_text 的变量中。\n您计划在将 input_text 发送到语言模型之前进行审核。\n您需要使用现有的黑名单分析 input_text。\n您应该如何完成代码？要回答，请在答案区域选择适当的选项。\n \n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a configurable guardrail in a Microsoft Foundry project.\nYou have a Python application. A text blocklist named ConfidentialTerms already contains terms that\nmust be detected in user messages. The application stores each incoming user message in a variable\nnamed input_text.\nYou plan to moderate input_text before the text is sent to a language model.\nYou need to analyze input_text by using the existing blocklist.\nHow should you complete the code? To answer, select the appropriate options in the answer area.\n \nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：AnalyzeTextOptions\n这是用于封装文本分析请求参数的模型类。它包含要评估的文本、要过滤的黑名单名称集合，以及像\nhalt_on_blocklist_hit 这样的配置标志。\n框 2：client.analyze_text\n这是 ContentSafetyClient 暴露的执行方法。它将请求对象中配置的有效负载传输到云端终端，并返回\n一个对象，详细说明哪些（如果有的话）黑名单元素或安全类别被触发。",
+  "explanationEn": "Box 1: AnalyzeTextOptions\nThis is the model class used to encapsulate parameters for text analysis requests. It holds the text to\nevaluate, the collection of blocklist_names to filter against, and configuration flags like\nhalt_on_blocklist_hit.\nBox 2: client.analyze_text\nThis is the executive method exposed by the ContentSafetyClient. It transmits the payload configured in\nthe request object to the cloud endpoint and returns an object detailing which, if any, blocklist elements or\nsafety categories were triggered.",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "select",
+  "template": "blocklist_name = \"ConfidentialTerms\"\nclient = ContentSafetyClient(endpoint, credential)\nrequest = {{1}}(\n    text=input_text,\n    blocklist_names=[blocklist_name],\n    halt_on_blocklist_hit=False\n)\nanalysis_result = {{2}}(request)",
+  "templateEn": "blocklist_name = \"ConfidentialTerms\"\nclient = ContentSafetyClient(endpoint, credential)\nrequest = {{1}}(\n    text=input_text,\n    blocklist_names=[blocklist_name],\n    halt_on_blocklist_hit=False\n)\nanalysis_result = {{2}}(request)",
+  "templateZh": "blocklist_name = \"ConfidentialTerms\"\nclient = ContentSafetyClient(endpoint, credential)\nrequest = {{1}}(\n    text=input_text,\n    blocklist_names=[blocklist_name],\n    halt_on_blocklist_hit=False\n)\nanalysis_result = {{2}}(request)",
+  "templateKind": "code",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 13",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 13",
+  "pdfPage": 169,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 13
+ },
+ {
+  "id": "q165",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您拥有一个包含 Azure Language in Foundry Tools 服务资源的 Azure 订阅。\n您需要识别语言服务的 REST 接口的 URL。\n您应该在 Azure 门户中使用哪个刀片？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Networking",
+    "textEn": "Networking",
+    "textZh": "网络"
+   },
+   {
+    "id": "B",
+    "text": "Identity",
+    "textEn": "Identity",
+    "textZh": "身份"
+   },
+   {
+    "id": "C",
+    "text": "Properties",
+    "textEn": "Properties",
+    "textZh": "属性"
+   },
+   {
+    "id": "D",
+    "text": "Keys and Endpoint",
+    "textEn": "Keys and Endpoint",
+    "textZh": "密钥和端点"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "示例：\n在资源管理组中，选择密钥和端点。确认您的资源的新端点名称以以下方式开始：https://{your custo\nm name}.cognitiveservices.azure.com。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您拥有一个包含 Azure Language in Foundry Tools 服务资源的 Azure 订阅。\n您需要识别语言服务的 REST 接口的 URL。\n您应该在 Azure 门户中使用哪个刀片？",
+  "stemEn": "You have an Azure subscription that contains an Azure Language in Foundry Tools service resource.\nYou need to identify the URL of the REST interface for the Language service.\nWhich blade should you use in the Azure portal?",
+  "explanationZh": "示例：\n在资源管理组中，选择密钥和端点。确认您的资源的新端点名称以以下方式开始：https://{your custo\nm name}.cognitiveservices.azure.com。",
+  "explanationEn": "Example:\nIn the Resource management group, select Keys and Endpoint. Confirm that the new endpoint name of\nyour resource starts this way: https://{your custom name}.cognitiveservices.azure.com.",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 14",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 14",
+  "pdfPage": 171,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 14
+ },
+ {
+  "id": "q166",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您需要通过使用自然语言处理来测量公众对您品牌在社交媒体上的看法。\n您应该使用哪个 Azure 服务？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Language in Foundry Tools",
+    "textEn": "Azure Language in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Language"
+   },
+   {
+    "id": "B",
+    "text": "Azure Vision in Foundry Tools",
+    "textEn": "Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Vision"
+   },
+   {
+    "id": "C",
+    "text": "Content Safety in Foundry Control Plane",
+    "textEn": "Content Safety in Foundry Control Plane",
+    "textZh": "Foundry Control Plane 中的 Content Safety"
+   },
+   {
+    "id": "D",
+    "text": "Azure Document Intelligence in Foundry Tools",
+    "textEn": "Azure Document Intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Document Intelligence"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "Foundry Tools 中的 Azure Language 提供情感分析，以识别社交媒体文本中的积极、中立和消极情感\n，帮助测量公众对您品牌的看法。其意见挖掘功能将意见与特定产品或服务属性关联，以获得更详细的见\n解。\nsentiment-analysis",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您需要通过使用自然语言处理来测量公众对您品牌在社交媒体上的看法。\n您应该使用哪个 Azure 服务？",
+  "stemEn": "You need to measure the public perception of your brand on social media by using natural language\nprocessing.\nWhich Azure service should you use?",
+  "explanationZh": "Foundry Tools 中的 Azure Language 提供情感分析，以识别社交媒体文本中的积极、中立和消极情感\n，帮助测量公众对您品牌的看法。其意见挖掘功能将意见与特定产品或服务属性关联，以获得更详细的见\n解。\nsentiment-analysis",
+  "explanationEn": "解释：\nAzure Language in Foundry Tools provides sentiment analysis to identify positive, neutral, and negative\nsentiment in social media text, helping measure public perception of your brand. Its opinion mining feature\nassociates opinions with specific product or service attributes for more detailed insights.\nsentiment-analysis",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 15",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 15",
+  "pdfPage": 172,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 15
+ },
+ {
+  "id": "q167",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您有一个 Python 应用程序，通过使用 REST API 将客户支持记录发送到 Foundry Tools 中的 Azure Language。这些记录是英文的，可能包含客户姓名、电子邮件地址和电话号码。\n您需要存储每次对话的已编辑记录。支持工作流程必须仅编辑客户姓名，而保持其他实体类型不变。\n您应该如何完成 analyze-text 请求体？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "\"kind\": \"PiiEntityRecognition\"",
+   "\"piiCategories\": [\"Person\"]"
+  ],
+  "pdfAnswer": [
+   "\"kind\": \"PiiEntityRecognition\"",
+   "\"piiCategories\": [\"Person\"]"
+  ],
+  "explanation": "PiiEntityRecognition 检测敏感实体并返回 redactedText 字段。将 piiCategories 限制为 Person 会编辑检\n测到的人名，同时保持电子邮件地址和电话号码不变。\n将返回的 redactedText 存储为编辑后的抄本。\nhow-to/redact-text-pii?trk=public_post_comment-text",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "{ [ ], \"parameters\": { ...",
+    "labelEn": "{ [ ], \"parameters\": { ...",
+    "labelZh": "{ [ ], \"parameters\": { ...",
+    "choices": [
+     {
+      "key": "\"kind\": \"EntityRecognition\"",
+      "en": "\"kind\": \"EntityRecognition\"",
+      "zh": "\"kind\": \"EntityRecognition\""
+     },
+     {
+      "key": "\"kind\": \"LanguageDetection\"",
+      "en": "\"kind\": \"LanguageDetection\"",
+      "zh": "\"kind\": \"LanguageDetection\""
+     },
+     {
+      "key": "\"kind\": \"PiiEntityRecognition\"",
+      "en": "\"kind\": \"PiiEntityRecognition\"",
+      "zh": "\"kind\": \"PiiEntityRecognition\""
+     }
+    ],
+    "answer": "\"kind\": \"PiiEntityRecognition\"",
+    "positionNoteEn": "{ [ ], \"parameters\": { ...",
+    "positionNoteZh": "{ [ ], \"parameters\": { ...",
+    "positionNote": "{ [ ], \"parameters\": { ..."
+   },
+   {
+    "id": "2",
+    "label": "\"modelVersion\": \"latest\", [ ] },",
+    "labelEn": "\"modelVersion\": \"latest\", [ ] },",
+    "labelZh": "\"modelVersion\": \"latest\", [ ] },",
+    "choices": [
+     {
+      "key": "\"piiCategories\": [\"Organization\"]",
+      "en": "\"piiCategories\": [\"Organization\"]",
+      "zh": "\"piiCategories\": [\"Organization\"]"
+     },
+     {
+      "key": "\"piiCategories\": [\"Person\"]",
+      "en": "\"piiCategories\": [\"Person\"]",
+      "zh": "\"piiCategories\": [\"Person\"]"
+     },
+     {
+      "key": "\"piiCategories\": [\"PhoneNumber\"]",
+      "en": "\"piiCategories\": [\"PhoneNumber\"]",
+      "zh": "\"piiCategories\": [\"PhoneNumber\"]"
+     }
+    ],
+    "answer": "\"piiCategories\": [\"Person\"]",
+    "positionNoteEn": "\"modelVersion\": \"latest\", [ ] },",
+    "positionNoteZh": "\"modelVersion\": \"latest\", [ ] },",
+    "positionNote": "\"modelVersion\": \"latest\", [ ] },"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered from PDF Correct Answer (p174).",
+  "stemZh": "您有一个 Python 应用程序，通过使用 REST API 将客户支持记录发送到 Foundry Tools 中的 Azure Language。这些记录是英文的，可能包含客户姓名、电子邮件地址和电话号码。\n您需要存储每次对话的已编辑记录。支持工作流程必须仅编辑客户姓名，而保持其他实体类型不变。\n您应该如何完成 analyze-text 请求体？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Python application that sends customer support transcripts to Azure Language in Foundry\nTools by using the REST API. The transcripts are in English and can contain customer names, email\naddresses, and phone numbers.\nYou need to store a redacted transcript of each conversation. The support workflow must redact only\ncustomer names and leave other entity types unchanged.\nHow should you complete the analyze-text request body? To answer, select the appropriate options in\nthe answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "PiiEntityRecognition 检测敏感实体并返回 redactedText 字段。将 piiCategories 限制为 Person 会编辑检\n测到的人名，同时保持电子邮件地址和电话号码不变。\n将返回的 redactedText 存储为编辑后的抄本。\nhow-to/redact-text-pii?trk=public_post_comment-text",
+  "explanationEn": "PiiEntityRecognition detects sensitive entities and returns a redactedText field. Restricting piiCategories to\nPerson redacts detected person names while leaving email addresses and phone numbers unchanged.\nStore the returned redactedText as the redacted transcript.\nhow-to/redact-text-pii?trk=public_post_comment-text",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "select",
+  "template": "{\n  {{1}},\n  \"parameters\": {\n    \"modelVersion\": \"latest\",\n    {{2}}\n  },\n  \"analysisInput\": {\n    \"documents\": [\n      {\n        \"id\": \"1\",\n        \"language\": \"en\",\n        \"text\": \"John Doe called from 112-555-0176 and used order@contoso.com.\"\n      }\n    ]\n  }\n}",
+  "templateEn": "{\n  {{1}},\n  \"parameters\": {\n    \"modelVersion\": \"latest\",\n    {{2}}\n  },\n  \"analysisInput\": {\n    \"documents\": [\n      {\n        \"id\": \"1\",\n        \"language\": \"en\",\n        \"text\": \"John Doe called from 112-555-0176 and used order@contoso.com.\"\n      }\n    ]\n  }\n}",
+  "templateZh": "{\n  {{1}},\n  \"parameters\": {\n    \"modelVersion\": \"latest\",\n    {{2}}\n  },\n  \"analysisInput\": {\n    \"documents\": [\n      {\n        \"id\": \"1\",\n        \"language\": \"en\",\n        \"text\": \"John Doe called from 112-555-0176 and used order@contoso.com.\"\n      }\n    ]\n  }\n}",
+  "templateKind": "code",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 16",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 16",
+  "pdfPage": 172,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 16
+ },
+ {
+  "id": "q168",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "single",
+  "stem": "您有一个 Python 应用程序，通过使用 Azure Language 在 Foundry Tools 中处理客户支持电子邮件\n。该应用程序通过使用\nTextAnalyticsClient 客户端将每封电子邮件的正文作为文本发送到文档集合中。\n您需要从每封电子邮件中提取预构建的实体类别，包括 Person、Organization、Location 和\nDateTime，而无需训练模型。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Call recognize_entities",
+    "textEn": "Call recognize_entities.",
+    "textZh": "调用 recognize_entities。"
+   },
+   {
+    "id": "B",
+    "text": "Configure NamedEntityRecognitionSkill in a skillset",
+    "textEn": "Configure NamedEntityRecognitionSkill in a skillset.",
+    "textZh": "在技能集中配置 NamedEntityRecognitionSkill。"
+   },
+   {
+    "id": "C",
+    "text": "Call recognize_pii_entities",
+    "textEn": "Call recognize_pii_entities.",
+    "textZh": "调用 recognize_pii_entities 。"
+   },
+   {
+    "id": "D",
+    "text": "Submit an analyze job that uses CustomEntityRecognition",
+    "textEn": "Submit an analyze job that uses CustomEntityRecognition.",
+    "textZh": "提交一个使用 CustomEntityRecognition 的分析作业。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "调用 TextAnalyticsClient.recognize_entities(documents=documents) 以执行预构建的命名实体识\n别，而无需训练模型。它识别包括 Person、Organization、Location 和DateTime 的类别，返回每个实\n体的文本、类别、置信度分数和在文档中的位置。\ntabs=windows%2Cga-api&pivots=ai-foundry-portal",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Python 应用程序，通过使用 Azure Language 在 Foundry Tools 中处理客户支持电子邮件\n。该应用程序通过使用\nTextAnalyticsClient 客户端将每封电子邮件的正文作为文本发送到文档集合中。\n您需要从每封电子邮件中提取预构建的实体类别，包括 Person、Organization、Location 和\nDateTime，而无需训练模型。\n您应该怎么做？",
+  "stemEn": "You have a Python application that processes customer support emails by using Azure Language in\nFoundry Tools. The application sends each email body as text in a document collection by using a\nTextAnalyticsClient client.\nYou need to extract prebuilt entity categories, including Person, Organization, Location, and\nDateTime, from each email without training a model.\nWhat should you do?",
+  "explanationZh": "调用 TextAnalyticsClient.recognize_entities(documents=documents) 以执行预构建的命名实体识\n别，而无需训练模型。它识别包括 Person、Organization、Location 和DateTime 的类别，返回每个实\n体的文本、类别、置信度分数和在文档中的位置。\ntabs=windows%2Cga-api&pivots=ai-foundry-portal",
+  "explanationEn": "Call TextAnalyticsClient.recognize_entities(documents=documents) to perform prebuilt named entity\nrecognition without training a model. It identifies categories including Person, Organization, Location, and\nDateTime, returning each entity’s text, category, confidence score, and position within the document.\ntabs=windows%2Cga-api&pivots=ai-foundry-portal",
+  "boxes": [],
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 17",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 17",
+  "pdfPage": 174,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 17
+ },
+ {
+  "id": "q169",
+  "domain": "text",
+  "domainLabel": "实现文本分析解决方案",
+  "type": "hotspot",
+  "stem": "您拥有一个包含名为 Resource1 的 Azure Language in Foundry Tools 资源的 Azure 订阅。\n您运行以下 cURL 命令，然后播放 Output.mp3 文件。\n```\ncurl --location --request POST \"https://eastus.tts.speech.microsoft.com/cognitiveservices/v1\" ^\n--header \"Ocp-Apim-Subscription-Key: 3795c4011f714f5aa66469e573109e4f\" ^\n--header \"Content-Type: application/ssml+xml\" ^\n--header \"X-Microsoft-OutputFormat: audio-16khz-128kbitrate-mono-mp3\" ^\n--header \"User-Agent: curl\" ^\n--data-raw \"<speak version='1.0' xml:lang='en-US'>\n  <voice xml:gender='Female' name='en-US-JennyNeural'>\n    Welcome to the Azure Text-to-Speech demonstration.\n  </voice>\n  <voice xml:gender='Male' name='en-GB-RyanNeural'>\n    This service allows you to convert text into natural-sounding speech.\n  </voice>\n  <voice xml:gender='Male' name='en-US-ChristopherNeural'>\n    <mstts:express-as style=\"advertisement_upbeat\" styledegree=\"2\">\n    It's easy to integrate, customizable, and supports multiple languages and voices.\n    </mstts:express-as>\n  </voice>\n</speak>\" --output output.mp3\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则选择“否”。\n注意：每个正确的选择值为一点。",
+  "options": [],
+  "answer": [
+   "Yes",
+   "No",
+   "No"
+  ],
+  "pdfAnswer": [
+   "Yes",
+   "No",
+   "No"
+  ],
+  "explanation": "这三句话使用了不同的声音：JennyNeural、RyanNeural 和 ChristopherNeural。只有两个指定的口音：J\nenny 和 Christopher 使用美式英语（en-US），而 Ryan 使用英式英语（en-GB）。第三句话使用 ad\nvertisement_upbeat，styledegree=\"2\"，请求以两倍于默认风格强度的兴奋、高能量的语调进行传\n递，而不是中性语调。\n实施信息提取解决方案\n测试项 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过…",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "1",
+    "label": "你会听到三句用不同声音说出的话。",
+    "labelEn": "You hear three sentences in different voices.",
+    "labelZh": "你会听到三句用不同声音说出的话。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "Yes"
+   },
+   {
+    "id": "2",
+    "label": "你会听到三句用不同口音说出的话。",
+    "labelEn": "You hear three sentences in different accents.",
+    "labelZh": "你会听到三句用不同口音说出的话。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   },
+   {
+    "id": "3",
+    "label": "你会听到三句以中性语气表达的话。",
+    "labelEn": "You hear three sentences expressed in a neutral tone.",
+    "labelZh": "你会听到三句以中性语气表达的话。",
+    "choices": [
+     {
+      "key": "Yes",
+      "en": "Yes",
+      "zh": "是"
+     },
+     {
+      "key": "No",
+      "en": "No",
+      "zh": "否"
+     }
+    ],
+    "answer": "No"
+   }
+  ],
+  "widgetRecovered": true,
+  "recoveryNote": "Recovered Yes/No from PDF Correct Answer (p176).",
+  "stemZh": "您拥有一个包含名为 Resource1 的 Azure Language in Foundry Tools 资源的 Azure 订阅。\n您运行以下 cURL 命令，然后播放 Output.mp3 文件。\n```\ncurl --location --request POST \"https://eastus.tts.speech.microsoft.com/cognitiveservices/v1\" ^\n--header \"Ocp-Apim-Subscription-Key: 3795c4011f714f5aa66469e573109e4f\" ^\n--header \"Content-Type: application/ssml+xml\" ^\n--header \"X-Microsoft-OutputFormat: audio-16khz-128kbitrate-mono-mp3\" ^\n--header \"User-Agent: curl\" ^\n--data-raw \"<speak version='1.0' xml:lang='en-US'>\n  <voice xml:gender='Female' name='en-US-JennyNeural'>\n    Welcome to the Azure Text-to-Speech demonstration.\n  </voice>\n  <voice xml:gender='Male' name='en-GB-RyanNeural'>\n    This service allows you to convert text into natural-sounding speech.\n  </voice>\n  <voice xml:gender='Male' name='en-US-ChristopherNeural'>\n    <mstts:express-as style=\"advertisement_upbeat\" styledegree=\"2\">\n    It's easy to integrate, customizable, and supports multiple languages and voices.\n    </mstts:express-as>\n  </voice>\n</speak>\" --output output.mp3\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则选择“否”。\n注意：每个正确的选择值为一点。",
+  "stemEn": "You have an Azure subscription that contains an Azure Language in Foundry Tools resource named\nResource1.\nYou run the following cURL command, and then play the Output.mp3 file.\n```\ncurl --location --request POST \"https://eastus.tts.speech.microsoft.com/cognitiveservices/v1\" ^\n--header \"Ocp-Apim-Subscription-Key: 3795c4011f714f5aa66469e573109e4f\" ^\n--header \"Content-Type: application/ssml+xml\" ^\n--header \"X-Microsoft-OutputFormat: audio-16khz-128kbitrate-mono-mp3\" ^\n--header \"User-Agent: curl\" ^\n--data-raw \"<speak version='1.0' xml:lang='en-US'>\n  <voice xml:gender='Female' name='en-US-JennyNeural'>\n    Welcome to the Azure Text-to-Speech demonstration.\n  </voice>\n  <voice xml:gender='Male' name='en-GB-RyanNeural'>\n    This service allows you to convert text into natural-sounding speech.\n  </voice>\n  <voice xml:gender='Male' name='en-US-ChristopherNeural'>\n    <mstts:express-as style=\"advertisement_upbeat\" styledegree=\"2\">\n    It's easy to integrate, customizable, and supports multiple languages and voices.\n    </mstts:express-as>\n  </voice>\n</speak>\" --output output.mp3\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise select No.\nNOTE: Each correct selection is worth point.",
+  "explanationZh": "这三句话使用了不同的声音：JennyNeural、RyanNeural 和 ChristopherNeural。只有两个指定的口音：J\nenny 和 Christopher 使用美式英语（en-US），而 Ryan 使用英式英语（en-GB）。第三句话使用 ad\nvertisement_upbeat，styledegree=\"2\"，请求以两倍于默认风格强度的兴奋、高能量的语调进行传\n递，而不是中性语调。\n实施信息提取解决方案\n测试项 1\n案例研究\n这是一个案例研究。 案例研究的时间与其他考试部分没有单独计时。 您可以使用尽可能多的考试时间来完\n成每个案例研究。然而，可能会有额外的案例研究或其他考试部分。管理好您的时间，以确保您能够在提\n供的时间内完成所有考试部分。请注意屏幕顶部的考试进度，以确保您有足够的时间完成此案例研究后面\n的任何考试部分。\n要回答案例研究问题，您需要参考案例中提供的信息。\n案例研究及相关问题可能包含展品或其他资源，提供有关案例中描述的场景的更多信息。 单个问题\n中提供的信息不适用于案例研究中的其他问题。\n在此案例研究结束时，将出现一个审查屏幕。在审查屏幕上，您可以在进入下一个考试部分之前审查和更\n改您的答案。离开此案例研究后，您将无法返回。\n要开始案例研究\n要显示本案例研究中的第一个问题，请选择“下一步”按钮。在问题左侧，一个菜单提供了链接，包含业\n务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "explanationEn": "解释：\n \nThe three sentences use distinct voices: JennyNeural, RyanNeural, and ChristopherNeural. There are only\ntwo specified accents: Jenny and Christopher use American English (en-US), while Ryan uses British\nEnglish (en-GB). The third sentence uses advertisement_upbeat with styledegree=\"2\", requesting an\nexcited, high-energy delivery at twice the default style intensity, rather than a neutral tone.\nImplement information extraction solutions\nTestlet 1\nCase Study\nThis is a case study. Case studies are not timed separately from other exam sections. You can use as\nmuch exam time as you would like to complete each case study. However, there might be additional case\nstudies or other exam sections. Manage your time to ensure that you can complete all the exam sections\nin the time provided. Pay attention to the Exam Progress at the top of the screen so you have sufficient\ntime to complete any exam sections that follow this case study.\nTo answer the case study questions, you will bed to reference information that is provided in the case.\nCase studies and associated questions might contain exhibits or other resources that provide more\ninformation about the scenario described in the case. Information provided in an individual question\ndoes not apply to the other questions in the case study.\nA Review Screen will appear at the end of this case study. From the Review Screen, you can review and\nchange your answers before you move to the next exam section. After you leave this case study, you will\nNOT be able to return to it.\nTo start the case study\nTo display the first question in this case study, select the “Next” button. To the left of the question, a menu\nprovides links to information such as business requirements, the existing environment, and problem\nstatements. Please read through all this information before answering any questions. When you are ready\nto answer a question, select the “Question” button to return to the question.\nOverview\n \nCompany Information \nContoso, Ltd is a multinational retail company that builds, deploys, and manages generative AI and agent-\nbased solutions by using Microsoft Foundry. \nExisting Environment\n \nIdentity Environment\nContoso uses Microsoft Entra ID for identity management, authentication, and authorization capabilities\nthat enable agents to access organizational resources and services.\nContoso recently formed a new AI engineering team named Agent1Dev Team to optimize and maintain\nexisting AI solutions.\nThe team collaborates with solution architects, DevOps engineers, and security engineers to design,\nimplement. monitor, and secure AI applications.\nContoso also has a team named Agent1Test Team that is responsible for validating AI solutions before the\nsolution deployments.\nGenerative Environment\nContoso has a Microsoft Foundry deployment that contains two projects named Project1 and Project2.\nProject1\nProject1 contains a customer support agent named Agent1 that assists customers with product inquiries\nand troubleshooting requests.\nAgent1 has the following configurations:\n Agent1 uses a base model deployment.\n A safety evaluation pipeline is NOT enabled.\n Tool invocation approval workflows are NOT enabled.\n Conversation memory constraints are NOT configured.\nAgent1 interacts with customers by using digital support channels and answers general questions about\nContoso products.\nProject1 is deployed to an Azure region located in the European Union (EU).\nAgent1Dev Team will use Project1 to optimize and maintain Agent",
+  "domainLabelZh": "实现文本分析解决方案",
+  "domainLabelEn": "Implement text analysis solutions",
+  "control": "yn",
+  "pdfRef": "实现文本分析解决方案 · 问题集 2 · 问题 18",
+  "pdfRefEn": "Implement text analysis solutions · Question Set 2 · Question 18",
+  "pdfPage": 175,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 18
+ },
+ {
+  "id": "q170",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "multi",
+  "stem": "您需要为 Agent1 配置一个索引管道，以检索存储1中的相关产品信息。该解决方案必须满足技术要求。\n您应该使用哪两个内置技能？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure OpenAI Embedding",
+    "textEn": "Azure OpenAI Embedding",
+    "textZh": "Azure OpenAI 嵌入"
+   },
+   {
+    "id": "B",
+    "text": "Entity Recognition",
+    "textEn": "Entity Recognition",
+    "textZh": "实体识别"
+   },
+   {
+    "id": "C",
+    "text": "Text Split",
+    "textEn": "Text Split",
+    "textZh": "文本拆分"
+   },
+   {
+    "id": "D",
+    "text": "Merge",
+    "textEn": "Merge",
+    "textZh": "合并"
+   },
+   {
+    "id": "E",
+    "text": "Language Detection",
+    "textEn": "Language Detection",
+    "textZh": "语言检测"
+   },
+   {
+    "id": "F",
+    "text": "key phrase extraction",
+    "textEn": "key phrase extraction",
+    "textZh": "关键短语提取"
+   }
+  ],
+  "answer": [
+   "A",
+   "C"
+  ],
+  "pdfAnswer": [
+   "A",
+   "C"
+  ],
+  "explanation": "此场景中最重要的技能是 Azure OpenAI 嵌入和文本拆分。\nAzure OpenAI 嵌入：此技能对于生成文本的向量表示（嵌入）至关重要，这直接启用了所需的向量搜索\n能力。\n文本拆分：此技能是必不可少的，因为 LLM 和嵌入模型有严格的令牌限制。打破\n将大型产品详细信息表拆分成较小的部分，确保文本适合嵌入模型，并\n提高语义搜索的准确性。\n不正确：\n[不是 B]\n实体识别：这提取特定实体，如姓名、日期或地点。虽然对\n高级过滤有帮助，但它不是启用基本语义或向量搜索的基础要求。\n[不适用 D]\n合并：此技能将多个字段中的文本合并为一个字符串。由于产品表单已经是\n统一的文档，因此优先考虑拆分和分块，而不是合并单独的字段。\n[不适用 E]\n语言检测：此功能识别输入文本的语言。除非您的产品表单是\n完全多语言的，并且需要有条件地路由到不同的语言模型，否则此技能是次要的。\n[不适用 F]\n关键短语提取：这提取主要的讨论点或关键词。这主要用于传统的\n关键词标记或基本搜索索引，而您的要求特别规定了基于向量和\n语义的检索。\n场景：\n技术要求；\n*-> 产品表单必须通过使用启用语义和向量\n搜索的索引管道进行处理，以便 Agent1 能够检索相关的产品信息。\n数据环境：Azure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，\n用于存储所有 Contoso 产品的产品详细信息表单。\n \n \n计划变更：启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。\n \n \n+Atlassian+Confluence.php",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要为 Agent1 配置一个索引管道，以检索存储1中的相关产品信息。该解决方案必须满足技术要求。\n您应该使用哪两个内置技能？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You need to configure an indexing pipeline for Agent1 to retrieve the relevant product information in\nstorage1. The solution must meet the technical requirement.\nWhich two built-in skills should you use? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "此场景中最重要的技能是 Azure OpenAI 嵌入和文本拆分。\nAzure OpenAI 嵌入：此技能对于生成文本的向量表示（嵌入）至关重要，这直接启用了所需的向量搜索\n能力。\n文本拆分：此技能是必不可少的，因为 LLM 和嵌入模型有严格的令牌限制。打破\n将大型产品详细信息表拆分成较小的部分，确保文本适合嵌入模型，并\n提高语义搜索的准确性。\n不正确：\n[不是 B]\n实体识别：这提取特定实体，如姓名、日期或地点。虽然对\n高级过滤有帮助，但它不是启用基本语义或向量搜索的基础要求。\n[不适用 D]\n合并：此技能将多个字段中的文本合并为一个字符串。由于产品表单已经是\n统一的文档，因此优先考虑拆分和分块，而不是合并单独的字段。\n[不适用 E]\n语言检测：此功能识别输入文本的语言。除非您的产品表单是\n完全多语言的，并且需要有条件地路由到不同的语言模型，否则此技能是次要的。\n[不适用 F]\n关键短语提取：这提取主要的讨论点或关键词。这主要用于传统的\n关键词标记或基本搜索索引，而您的要求特别规定了基于向量和\n语义的检索。\n场景：\n技术要求；\n*-> 产品表单必须通过使用启用语义和向量\n搜索的索引管道进行处理，以便 Agent1 能够检索相关的产品信息。\n数据环境：Azure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，\n用于存储所有 Contoso 产品的产品详细信息表单。\n \n \n计划变更：启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。\n \n \n+Atlassian+Confluence.php",
+  "explanationEn": "The most essential skills for this scenario are Azure OpenAI Embedding and Text Split.\nAzure OpenAI Embedding: This skill is critical for generating the vector representations (embeddings) of\nyour text, which directly enables the required vector search capability.\nText Split: This skill is essential because LLMs and embedding models have strict token limits. Breaking\nlarge product detail sheets into smaller chunks ensures the text fits into the embedding model and\nimproves the accuracy of semantic search.\nIncorrect:\n[Not B]\nEntity Recognition: This extracts specific entities like names, dates, or locations. While helpful for\nadvanced filtering, it is not a foundational requirement to enable basic semantic or vector search.\n[Not D]\nMerge: This skill combines text from multiple fields into a single string. Since product sheets are already\nunified documents, splitting and chunking them is the priority rather than merging separate fields.\n[Not E]\nLanguage Detection: This identifies the language of the input text. Unless your product sheets are\ncompletely multilingual and require conditional routing to different language models, this skill is secondary.\n[Not F]\nKey Phrase Extraction: This pulls out main talking points or keywords. This is primary used for traditional\nkeyword tagging or basic search indexing, whereas your requirement specifically dictates vector and\nsemantic-based retrieval.\nScenario:\nTechnical Requirements;\n*-> The product sheets must be processed by using an indexing pipeline that enables semantic and vector\nsearch, so that Agent1 can retrieve the relevant product information.\nData environment: The Azure environment contains an Azure Blob Storage account named storage1 that\nstores product detail sheets for all the Contoso products.\nPlanned changes: Enable Agent1 to retrieve and use the detailed product information from the product\nsheets stored in storage1.\n \n+Atlassian+Confluence.php",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 案例研究 · 问题 1",
+  "pdfRefEn": "Implement information extraction solutions · Case Study · Question 1",
+  "pdfPage": 179,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q171",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您需要推荐一个解决方案，以支持计划变更和 Agent1 使用存储在 storage1 中的产品信息的技术要求。\n您应该在推荐中包含什么内容？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Translator in Foundry Tools",
+    "textEn": "Azure Translator in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Translator"
+   },
+   {
+    "id": "B",
+    "text": "Grounding with Bing Search",
+    "textEn": "Grounding with Bing Search",
+    "textZh": "Grounding with Bing Search（必应搜索落地）"
+   },
+   {
+    "id": "C",
+    "text": "Azure AI Search",
+    "textEn": "Azure AI Search",
+    "textZh": "Azure AI Search"
+   },
+   {
+    "id": "D",
+    "text": "Azure Document intelligence in Foundry Tools",
+    "textEn": "Azure Document intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Document Intelligence"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "支持此场景的最佳选择是 Azure AI Search。\n检索增强生成 (RAG)：Azure AI Search 作为 AI 代理的主要知识库和\n索引基础设施。它直接从 Azure Blob Storage 中摄取原始非结构化数据，\n对其进行索引，并创建向量嵌入。\n自然语言查询：它支持语义排名和向量搜索。这使得 Foundry 代理能够处理以自然语言编写的用户问题，\n并找到精确匹配或概念相关性。\n相关性和准确性：通过利用索引器的基础数据，它确保代理的\n响应严格与产品详细信息表相关联，防止幻觉并验证\n准确性。\n不正确：\n[不是 B]\n与 Bing Search 的基础连接：此工具将代理连接到实时互联网。由于产品表\n是存储在您私人 Azure Blob Storage 账户中的专有公司数据，Bing\nSearch 无法访问它们，也无法帮助回答有关 Contoso 产品的具体问题。\n[不适用 D]\n为什么文档智能是错误的\n提取与检索：Azure 文档智能用于从文件中提取结构、文本、表格和表单\n字段，将非结构化数据转换为结构化数据格式。\n缺失搜索基础设施：它没有本地搜索索引器、向量数据库或语义\n查询引擎来接受自然语言用户问题并动态返回有根据的答案。它\n被用作 Azure AI Search 之前或并行的工具，以帮助在数据摄取管道中清理和结构化高度复杂的\n布局。\n场景：\n技术要求；\n使用产品表信息生成的响应必须相关、完整且准确。\n*-> Agent1 必须能够使用产品表回答有关产品details 的自然语言问题。\n数据环境：Azure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，\n用于存储所有 Contoso 产品的产品详细信息表单。\n计划变更：启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。\n \n \n \n \nazure-portal-7eb138b4ae8f\n \n \n实施信息提取解决方案\n问题集 2",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您需要推荐一个解决方案，以支持计划变更和 Agent1 使用存储在 storage1 中的产品信息的技术要求。\n您应该在推荐中包含什么内容？",
+  "stemEn": "You need to recommend a solution to support the planned changes and technical requirements for Agent1\nto use the product information stored in storage1.\nWhat should you include in the recommendation?",
+  "explanationZh": "支持此场景的最佳选择是 Azure AI Search。\n检索增强生成 (RAG)：Azure AI Search 作为 AI 代理的主要知识库和\n索引基础设施。它直接从 Azure Blob Storage 中摄取原始非结构化数据，\n对其进行索引，并创建向量嵌入。\n自然语言查询：它支持语义排名和向量搜索。这使得 Foundry 代理能够处理以自然语言编写的用户问题，\n并找到精确匹配或概念相关性。\n相关性和准确性：通过利用索引器的基础数据，它确保代理的\n响应严格与产品详细信息表相关联，防止幻觉并验证\n准确性。\n不正确：\n[不是 B]\n与 Bing Search 的基础连接：此工具将代理连接到实时互联网。由于产品表\n是存储在您私人 Azure Blob Storage 账户中的专有公司数据，Bing\nSearch 无法访问它们，也无法帮助回答有关 Contoso 产品的具体问题。\n[不适用 D]\n为什么文档智能是错误的\n提取与检索：Azure 文档智能用于从文件中提取结构、文本、表格和表单\n字段，将非结构化数据转换为结构化数据格式。\n缺失搜索基础设施：它没有本地搜索索引器、向量数据库或语义\n查询引擎来接受自然语言用户问题并动态返回有根据的答案。它\n被用作 Azure AI Search 之前或并行的工具，以帮助在数据摄取管道中清理和结构化高度复杂的\n布局。\n场景：\n技术要求；\n使用产品表信息生成的响应必须相关、完整且准确。\n*-> Agent1 必须能够使用产品表回答有关产品details 的自然语言问题。\n数据环境：Azure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，\n用于存储所有 Contoso 产品的产品详细信息表单。\n计划变更：启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。\n \n参考：\n \n \n \nazure-portal-7eb138b4ae8f\n \n \n实施信息提取解决方案\n问题集 2",
+  "explanationEn": "The best choice to include to support this scenario is Azure AI Search.\nRetrieval-Augmented Generation (RAG): Azure AI Search acts as the primary knowledge base and\nindexing infrastructure for AI agents. It ingests raw unstructured data directly from Azure Blob Storage,\nindexes it, and creates vector embeddings.\nNatural Language Queries: It supports semantic ranking and vector search. This allows the Foundry agent\nto handle user questions written in natural language and find exact matches or conceptual relevance.\nRelevance and Accuracy: By leveraging grounding data through an indexer, it ensures the agent's\nresponses are strictly tied back to the product detail sheets, preventing hallucinations and verifying\naccuracy.\nIncorrect:\n[Not B]\nGrounding with Bing Search: This tool connects the agent to the live internet. Because the product sheets\nare proprietary company data stored securely inside your private Azure Blob Storage account, Bing\nSearch cannot access them and will not help answer specific questions about Contoso products.\n[Not D]\nWhy Document Intelligence is Incorrect\nExtraction vs. Retrieval: Azure Document Intelligence is used to extract structure, text, tables, and form\nfields from files to turn unstructured data into structured data formats.\nMissing Search Infrastructure: It does not possess a native search indexer, vector database, or semantic\nquery engine to accept natural language user questions and dynamically return grounded answers. It is\ninstead used as a tool prior to or alongside Azure AI Search to help clean and structure highly complex\nlayouts during the data ingestion pipeline.\nScenario:\nTechnical Requirements;\nResponses generated by using the product sheet information must be relevant, complete, and accurate.\n*-> Agent1 must be able to use the product sheets to answer natural language questions about product\ndetails.\nData environment: The Azure environment contains an Azure Blob Storage account named storage1 that\nstores product detail sheets for all the Contoso products.\nPlanned changes: Enable Agent1 to retrieve and use the detailed product information from the product\nsheets stored in storage1. \n \nazure-portal-7eb138b4ae8f\n \n \nImplement information extraction solutions\nQuestion Set 2",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 案例研究 · 问题 2",
+  "pdfRefEn": "Implement information extraction solutions · Case Study · Question 2",
+  "pdfPage": 180,
+  "pdfSet": "案例研究",
+  "pdfSetEn": "Case Study",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q172",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个名为 Project1 的 Microsoft Foundry 项目。\nProject1 包含一个处理 PDF 供应商发票的应用程序。\n您需要在 Foundry Tools 中配置 Azure 文档智能，以生成保留 PDF 的部分和表格结构的 Markdown 输出\n。该解决方案必须最小化开发工作量。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Configure output=figures when you analyze the PDF",
+    "textEn": "Configure output=figures when you analyze the PDF.",
+    "textZh": "在分析 PDF 时配置 output=figures。"
+   },
+   {
+    "id": "B",
+    "text": "Configure content=markdown when you analyze the document",
+    "textEn": "Configure content=markdown when you analyze the document.",
+    "textZh": "在分析文档时，将 content=markdown 配置为。"
+   },
+   {
+    "id": "C",
+    "text": "Increase the confidence threshold",
+    "textEn": "Increase the confidence threshold.",
+    "textZh": "增加置信度阈值。"
+   },
+   {
+    "id": "D",
+    "text": "Set the output_content_format=ContentFormat.MARKDOWN value",
+    "textEn": "Set the output_content_format=ContentFormat.MARKDOWN value.",
+    "textZh": "设置 output_content_format=ContentFormat.MARKDOWN 值。"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "将输出格式参数设置为 Markdown 是正确且推荐的操作，但确切的\n属性和枚举名称取决于您是直接与 REST API 交互还是使用\nPython SDK。\n \n \n要处理 PDF 发票并保留其表格、标题和视觉部分在 GitHub FlavoredMarkdown (GFM) 中，请使用下\n面详细的精确语法配置您的 Azure 文档智能布局模型参数。 \n \n \nand\n \nPython SDK 语法：在 Azure Python 客户端库中，参数名称为 output_content_format，\n其必需值为 DocumentContentFormat.MARKDOWN（而不是 ContentFormat.MARKDOWN，\n后者在 .NET C# SDK 中使用）",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个名为 Project1 的 Microsoft Foundry 项目。\nProject1 包含一个处理 PDF 供应商发票的应用程序。\n您需要在 Foundry Tools 中配置 Azure 文档智能，以生成保留 PDF 的部分和表格结构的 Markdown 输出\n。该解决方案必须最小化开发工作量。\n您应该怎么做？",
+  "stemEn": "You have a Microsoft Foundry project named Project1.\nProject1 contains an application that processes PDF vendor invoices.\nYou need to configure Azure Document Intelligence in Foundry Tools to generate a Markdown output that\npreserves the sections and table structure of the PDFs. The solution must minimize development effort.\nWhat should you do?",
+  "explanationZh": "将输出格式参数设置为 Markdown 是正确且推荐的操作，但确切的\n属性和枚举名称取决于您是直接与 REST API 交互还是使用\nPython SDK。\n \n \n要处理 PDF 发票并保留其表格、标题和视觉部分在 GitHub FlavoredMarkdown (GFM) 中，请使用下\n面详细的精确语法配置您的 Azure 文档智能布局模型参数。 \n \n \nand\n \nPython SDK 语法：在 Azure Python 客户端库中，参数名称为 output_content_format，\n其必需值为 DocumentContentFormat.MARKDOWN（而不是 ContentFormat.MARKDOWN，\n后者在 .NET C# SDK 中使用）",
+  "explanationEn": "Setting the output format parameter to Markdown is the correct and recommended action, but the exact\nproperty and enum name depend on whether you are interacting with the REST API directly or using the\nPython SDK.\nTo process PDF invoices and preserve their tables, headings, and visual sections in GitHub Flavored\n \nMarkdown (GFM), configure your Azure Document Intelligence layout model parameters using the precise\nsyntax detailed below.\n \nImplementation Details 实施细节\n \nPython SDK Syntax: In the Azure Python client library, the parameter name is output_content_format,\nits required value is DocumentContentFormat.MARKDOWN (rather than ContentFormat.MARKDOWN,\nwhich is used in the .NET C# SDK)",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 1",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 1",
+  "pdfPage": 182,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 1
+ },
+ {
+  "id": "q173",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 项目，该项目摄取存储在 Azure Blob Storage 中的扫描 PDF 发票。\n每个发票包含打印的细项，并具有基于表格的布局。\n提取的结果以结构化 JSON 存储，并用作检索增强生成 (RAG) 解决方案中代理的基础数据。\n您需要创建一个满足以下要求的单一分析器：\n提取发票号码、发票日期、供应商名称和总金额，适用于不同模板返回置信度分数，以便置信度低于 0.80 的结果可以转交给主管审核你应该使用什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a Foundry agent that has groundedness guardrails enabled to extract invoice fields and confidence scores",
+    "textEn": "a Foundry agent that has groundedness guardrails enabled to extract invoice fields and confidence scores",
+    "textZh": "一个启用了基础性保护措施的 Foundry 代理，用于提取发票字段和置信度 分数"
+   },
+   {
+    "id": "B",
+    "text": "a custom Azure Content Understanding in Foundry Tools analyzer that defines the required fields as the extracted fields and the returned confidence scores for routing",
+    "textEn": "a custom Azure Content Understanding in Foundry Tools analyzer that defines the required fields as the extracted fields and the returned confidence scores for routing",
+    "textZh": "一个自定义的 Azure 内容理解在 Foundry 工具分析器中，定义所需字段为 提取字段和返回的置信度分数以进行路由"
+   },
+   {
+    "id": "C",
+    "text": "the Azure Content Understanding in Foundry Tools prebuilt-layout analyzer",
+    "textEn": "the Azure Content Understanding in Foundry Tools prebuilt-layout analyzer",
+    "textZh": "Azure 内容理解在 Foundry 工具中的 预构建布局 分析器"
+   },
+   {
+    "id": "D",
+    "text": "the Azure Content Understanding in Foundry Tools prebuilt-documentSearch analyzer and search.score from the Azure AI Search results for routing",
+    "textEn": "the Azure Content Understanding in Foundry Tools prebuilt-documentSearch analyzer and search.score from the Azure AI Search results for routing",
+    "textZh": "Azure 内容理解在 Foundry 工具中的 预构建文档搜索 分析器和 search.score 来自 Azure AI 搜索结果的路由"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "在这种情况下，最佳选项是一个自定义的 Azure 内容理解在 Foundry 工具分析器中，\n定义所需字段为提取字段和返回的置信度分数以进行路由。\n自定义字段定位与置信度分数：Azure 内容理解允许您构建一个\n具有用户定义架构的文档分析器。通过定义所需字段（发票号码、\n发票日期、供应商名称和总金额），该服务将处理不同布局的提取\n并返回专用的字段级置信度分数。您可以原生评估这些置信度指标以\n实施您的主管路由工作流程。\nRAG-就绪输出结构：该服务自然返回高度结构化的 JSON 负载。这使得它完美优化为可以直接作为检索增\n强生成（RAG）代理的基础数据。\n不正确：\n[不 C]\n预构建布局分析器提取原始结构元素，如文本块、层次结构、选择标记\n和完整表格。它不会自动分类或干净地将特定目标实体（如\n供应商名称或总金额）隔离到专用的模式属性中，导致您需要进行大量后处理\n工作来隔离文本。\n \nng.\n[不适用 D]\n预构建文档搜索分析器经过优化，能够广泛、布局感知地提取文本以进行索引。\n \n \n依赖 Azure AI Search 的 search.score 进行监督路由在概念上是错误的；search.score代表的是搜索查\n询排名的相关性分数，而不是数据提取置信度的准确性指标。\n \n \nimprovement",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个 Microsoft Foundry 项目，该项目摄取存储在 Azure Blob Storage 中的扫描 PDF 发票。\n每个发票包含打印的细项，并具有基于表格的布局。\n提取的结果以结构化 JSON 存储，并用作检索增强生成 (RAG) 解决方案中代理的基础数据。\n您需要创建一个满足以下要求的单一分析器：\n提取发票号码、发票日期、供应商名称和总金额，适用于不同模板返回置信度分数，以便置信度低于 0.80 的结果可以转交给主管审核你应该使用什么？",
+  "stemEn": "You have a Microsoft Foundry project that ingests scanned PDF invoices stored in Azure Blob Storage.\nEach invoice contains printed fine items and has a table-based layout.\nExtracted results are stored as structured JSON and used as grounding data for an agent in a Retrieval\nAugmented Generation (RAG) solution.\nYou need to create a single analyzer that meets the following requirements:\nExtracts the invoice number, invoice date, vendor name, and total amount across varying templates\nReturns confidence scores so that results with confidence below 0.80 can be routed for supervisor\nreview\nWhat should you use?",
+  "explanationZh": "在这种情况下，最佳选项是一个自定义的 Azure 内容理解在 Foundry 工具分析器中，\n定义所需字段为提取字段和返回的置信度分数以进行路由。\n自定义字段定位与置信度分数：Azure 内容理解允许您构建一个\n具有用户定义架构的文档分析器。通过定义所需字段（发票号码、\n发票日期、供应商名称和总金额），该服务将处理不同布局的提取\n并返回专用的字段级置信度分数。您可以原生评估这些置信度指标以\n实施您的主管路由工作流程。\nRAG-就绪输出结构：该服务自然返回高度结构化的 JSON 负载。这使得它完美优化为可以直接作为检索增\n强生成（RAG）代理的基础数据。\n不正确：\n[不 C]\n预构建布局分析器提取原始结构元素，如文本块、层次结构、选择标记\n和完整表格。它不会自动分类或干净地将特定目标实体（如\n供应商名称或总金额）隔离到专用的模式属性中，导致您需要进行大量后处理\n工作来隔离文本。\n \nng.\n[不适用 D]\n预构建文档搜索分析器经过优化，能够广泛、布局感知地提取文本以进行索引。\n \n \n依赖 Azure AI Search 的 search.score 进行监督路由在概念上是错误的；search.score代表的是搜索查\n询排名的相关性分数，而不是数据提取置信度的准确性指标。\n \n \nimprovement",
+  "explanationEn": "The best option in this scenario is a custom Azure Content Understanding in Foundry Tools analyzer that\ndefines the required fields as the extracted fields and the returned confidence scores for routing.\nCustom Field Targeting with Confidence Scores: Azure Content Understanding allows you to build a\ndocument analyzer with a user-defined schema. By defining your required fields (InvoiceNumber,\nInvoiceDate, VendorName, and TotalAmount), the service will handle extraction across varying layouts\nand return a dedicated field-level confidence score. You can natively evaluate these confidence metrics to\nimplement your supervisor routing workflow.\nRAG-Ready Output Structure: The service naturally returns highly structured JSON payloads. This makes\nit perfectly optimized to be ingested directly as grounding data for a Retrieval-Augmented Generation\n(RAG) agent.\nIncorrect:\n[Not C]\nThe prebuilt-layout analyzer extracts raw structural elements such as blocks of text, hierarchy, selection\nmarks, and complete tables. It does not automatically classify or cleanly isolate specific target entities (like\nvendor name or total amount) into dedicated schema properties, leaving you with heavy post-processing\nwork to isolate the text.\n[Not D]\nThe prebuilt-documentSearch analyzer is optimized for broad, layout-aware text extraction for indexi\n \nRelying on Azure AI Search's search.score for supervisor routing is conceptually flawed; search.score\nrepresents a relevance score for a search query ranking rather than an accuracy metric for data extraction\nconfidence.\n \n \nimprovement",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 2",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 2",
+  "pdfPage": 182,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 2
+ },
+ {
+  "id": "q174",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个使用 Azure AI Search 将代理与内部文档对接的 Microsoft Foundry 项目。\n在最近的内容更新后，用户报告代理的回答变得不那么准确。\n您需要确定检索到的内容是否对模型生成的响应产生了负面影响。\n您应该查看哪个可观察信号？",
+  "options": [
+   {
+    "id": "A",
+    "text": "indexer status and failure history",
+    "textEn": "indexer status and failure history",
+    "textZh": "索引器状态和失败历史"
+   },
+   {
+    "id": "B",
+    "text": "latency breakdown traces",
+    "textEn": "latency breakdown traces",
+    "textZh": "延迟分解跟踪"
+   },
+   {
+    "id": "C",
+    "text": "prediction drift metrics",
+    "textEn": "prediction drift metrics",
+    "textZh": "预测漂移指标"
+   },
+   {
+    "id": "D",
+    "text": "groundedness evaluation metrics",
+    "textEn": "groundedness evaluation metrics",
+    "textZh": "可靠性评估指标"
+   }
+  ],
+  "answer": [
+   "D"
+  ],
+  "pdfAnswer": [
+   "D"
+  ],
+  "explanation": "在这种情况下，最有趣的可观察信号是检索分数与响应质量\n（可靠性评估），特别是分析上下文相关性指标与检索\n置信度分数。\n因为您的 LLM 代理通过 Azure AI Search 使用检索增强生成（RAG）模式，内容更新后准确度的突然下降\n通常意味着搜索索引要么在表面上匹配不良关键字，要么排名算法拉取了技术上相关但上下文上错误\n的文档。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个使用 Azure AI Search 将代理与内部文档对接的 Microsoft Foundry 项目。\n在最近的内容更新后，用户报告代理的回答变得不那么准确。\n您需要确定检索到的内容是否对模型生成的响应产生了负面影响。\n您应该查看哪个可观察信号？",
+  "stemEn": "You have a Microsoft Foundry project that uses Azure AI Search to ground an agent in internal\ndocumentation.\nAfter a recent content update, users report that the agent’s answers have become less accurate.\nYou need to identify whether the retrieved content is negatively influencing the model’s generated\nresponses.\nWhich observability signal should you review?",
+  "explanationZh": "在这种情况下，最有趣的可观察信号是检索分数与响应质量\n（可靠性评估），特别是分析上下文相关性指标与检索\n置信度分数。\n因为您的 LLM 代理通过 Azure AI Search 使用检索增强生成（RAG）模式，内容更新后准确度的突然下降\n通常意味着搜索索引要么在表面上匹配不良关键字，要么排名算法拉取了技术上相关但上下文上错误\n的文档。",
+  "explanationEn": "The most interesting observability signal in this scenario is Retrieval Score vs. Response Quality\n(Groundedness Evaluation), specifically analyzing the Context Relevance metric alongside Retrieval\nConfidence Scores.\nBecause your LLM agent uses a Retrieval-Augmented Generation (RAG) pattern via Azure AI Search, a\nsudden drop in accuracy after a content update usually implies that the search index is either surface-\nmatching bad keywords, or the ranking algorithm is pulling technically relevant but contextually wrong\ndocuments.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 3",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 3",
+  "pdfPage": 183,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 3
+ },
+ {
+  "id": "q175",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理使用两个工具执行以下操作：\n使用 Azure AI Search 从私有产品文档索引中检索答案。\n使用网络搜索工具从互联网上检索公共信息。\n您需要确保在特定运行中，代理确定性地仅从互联网上检索信息。\n您应该将 tool_choice 设置为什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "{“type”: “bing_grouding”}",
+    "textEn": "{“type”: “bing_grouding”}",
+    "textZh": "一个。{“类型”: “bing_grouding”}"
+   },
+   {
+    "id": "B",
+    "text": "{“type”: “azure_ai-search”}",
+    "textEn": "{“type”: “azure_ai-search”}",
+    "textZh": "{“类型”: “azure_ai-search”}"
+   },
+   {
+    "id": "C",
+    "text": "“auto”",
+    "textEn": "“auto”",
+    "textZh": "“自动”"
+   },
+   {
+    "id": "D",
+    "text": "“required”",
+    "textEn": "“required”",
+    "textZh": "“必需的”"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "要强制特定运行仅使用来自互联网的公共信息，而不是您的私人文档，请在运行级别覆盖工具编排 \n \n有效负载。将 tool_choice 指令专门设置为网络基础工具（例如，bing_grounding 或 web_sea\nrch），并限制该运行的工具数组。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理使用两个工具执行以下操作：\n使用 Azure AI Search 从私有产品文档索引中检索答案。\n使用网络搜索工具从互联网上检索公共信息。\n您需要确保在特定运行中，代理确定性地仅从互联网上检索信息。\n您应该将 tool_choice 设置为什么？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent uses two tools to perform the\nfollowing actions:\nUse Azure AI Search to retrieve answers from a private product documentation index.\nUse the web search tool to retrieve public information on the internet.\nYou need to ensure that for a specific run, the agent deterministically retrieves information only from the\ninternet.\nTo what should you set tool_choice?",
+  "explanationZh": "要强制特定运行仅使用来自互联网的公共信息，而不是您的私人文档，请在运行级别覆盖工具编排 \n \n有效负载。将 tool_choice 指令专门设置为网络基础工具（例如，bing_grounding 或 web_sea\nrch），并限制该运行的工具数组。",
+  "explanationEn": "To force a specific run to exclusively use public information from the internet instead of your private\n \ndocuments, override the tool orchestration payload at the run level. Set the tool_choice directive\nfor that run.\n \nspecifically to the web grounding tool (e.g., bing_grounding or web_search) and constrain the tools array",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 4",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 4",
+  "pdfPage": 184,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 4
+ },
+ {
+  "id": "q176",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理在 Foundry Too 中使用 Azure 内容理解来处理供应商入职包。这些包包括包含表格和超链接的数字 P\nDF。\n提取的内容被编入索引以供搜索，并以 Markdown 格式提供给下游代理。\n您需要生成一个 Markdown 输出，其布局和语义结构经过优化，以适应检索增强生成（RAG）工作流程。\n您应该使用哪个内置分析器？",
+  "options": [
+   {
+    "id": "A",
+    "text": "prebuilt-documentFieldSchema",
+    "textEn": "prebuilt-documentFieldSchema",
+    "textZh": "一个。预建文档字段架构"
+   },
+   {
+    "id": "B",
+    "text": "prebuilt-documentSearch",
+    "textEn": "prebuilt-documentSearch",
+    "textZh": "预构建文档搜索"
+   },
+   {
+    "id": "C",
+    "text": "prebuilt-read",
+    "textEn": "prebuilt-read",
+    "textZh": "预构建阅读"
+   },
+   {
+    "id": "D",
+    "text": "prebuilt-layout",
+    "textEn": "prebuilt-layout",
+    "textZh": "预建布局"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "适合使用的内置分析器是预构建文档搜索。\nRAG 优化：预构建文档搜索分析器是 Azure 内容理解中专用检索增强生成（RAG）分析器套件的一部分\n。它专门构建用于执行语义分析并提取优化为分块、索引和向量工作流程的文档结构。\n原生 Markdown 布局：它将布局结构（例如段落、复杂的多页表格和层次部分）直接提取为干净的 Ma\nrkdown 格式。这种结构保留非常适合大型语言模型（LLM）或其他 AI 代理的下游使用。",
+  "caseStudy": true,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "caseStudyId": "case-extract-1",
+  "caseStudyText": "务需求、现有环境和问题陈述等信息。在回答任何问题之前，请仔细阅读所有这些信息。当您准备\n好回答问题时，请选择“问题”按钮以返回问题。\n概述\n \n公司信息 \n \n \nContoso, Ltd是一家跨国零售公司，通过使用Microsoft Foundry构建、部署和管理生成式AI和基于代理的\n解决方案。 \n现有环境\n \n身份环境\nContoso使用Microsoft Entra ID进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务\n。\nContoso最近成立了一个新的AI工程团队，名为Agent1Dev Team，以优化和维护现有的AI解决方案。\n该团队与解决方案架构师、DevOps工程师和安全工程师合作，设计、实施、监控和保护AI应用程序\n。\nContoso还有一个名为Agent1Test Team的团队，负责在解决方案部署之前验证AI解决方案。\n生成环境\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n项目1\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询\n和故障排除请求。\nAgent1 具有以下配置：\nAgent1 使用基础模型部署。\n安全评估管道 未 启用。\n工具调用审批工作流 未 启用。\n对话记忆约束 未 配置。\nAgent1 通过数字支持渠道与客户互动，并回答有关Contoso 产品的一般问题。\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n项目2\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型\n开发视频创作解决方案。\n该解决方案的开发尚未完成。\n数据环境\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详\n细信息表。\n产品说明书包括规格、功能描述和产品支持信息，\nAgent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n问题陈述\nContoso 确定了以下问题： \nAgent1 仅对 Contoso 产品有一般了解。\n \n \n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。 \nn\n \nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n \nContoso 的财务部门报告称，供应商发票必须手动审核，以确保\n发票与供应商合同中定义的条款相符。发票包含表格、徽标，\n以及各种布局，使得文件难以一致地处理。\n需求\n计划变更\nContoso 计划实施以下变更：\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据\n供应商合同条款验证发票细节。\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保\n连续性和一致的响应。\n启用 Agent1 从存储在storage1 中的产品表中检索和使用详细的产品信息。\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户\n问题。\n完成视频创作解决方案的开发。\n技术要求\nContoso 确定了以下技术要求：\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI\n工作负载，并动态扩展以处理可变的客户支持流量，而无需保留\n吞吐量容量。\n产品表必须通过使用索引管道进行处理，以支持语义和向量\n搜索，以便 Agent1 可以检索相关的产品信息。\n使用产品表信息生成的响应必须相关、完整且\n准确。\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n模型处理的数据必须保留在欧盟内。\n安全和合规要求\nContoso 确定了以下安全和合规要求：\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n访问 Azure 资源必须遵循最小权限原则。\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中\n。\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n业务需求\nContoso 确定了以下业务需求：\n \n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回\n \n忆之前互动中的相关信息。\n \nAgent1 只能回答有关 Contoso 销售的产品的问题。",
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理在 Foundry Too 中使用 Azure 内容理解来处理供应商入职包。这些包包括包含表格和超链接的数字 P\nDF。\n提取的内容被编入索引以供搜索，并以 Markdown 格式提供给下游代理。\n您需要生成一个 Markdown 输出，其布局和语义结构经过优化，以适应检索增强生成（RAG）工作流程。\n您应该使用哪个内置分析器？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses Azure Content Understanding in Foundry Too to process vendor onboarding packets. The\npacks include digital PDFs that contain tables and hyperlinks.\nThe extracted content is indexed for search and provided to a downstream agent in the Markdown format.\nYou need to generate a Markdown output that has a layout and a semantic structure optimized for\nRetrieval Augmented Generation (RAG) workflows.\nWhich built-in analyzer should you use?",
+  "explanationZh": "适合使用的内置分析器是预构建文档搜索。\nRAG 优化：预构建文档搜索分析器是 Azure 内容理解中专用检索增强生成（RAG）分析器套件的一部分\n。它专门构建用于执行语义分析并提取优化为分块、索引和向量工作流程的文档结构。\n原生 Markdown 布局：它将布局结构（例如段落、复杂的多页表格和层次部分）直接提取为干净的 Ma\nrkdown 格式。这种结构保留非常适合大型语言模型（LLM）或其他 AI 代理的下游使用。",
+  "explanationEn": "The appropriate built-in analyzer to use is prebuilt-documentSearch.\nRAG Optimization: The prebuilt-documentSearch analyzer is part of the dedicated Retrieval-Augmented\nGeneration (RAG) analyzer suite within Azure Content Understanding. It is specifically built to perform\nsemantic analysis and extract documents in structures optimized for chunking, indexing, and vector\nworkflows.\nNative Markdown Layout: It extracts layout structures (such as paragraphs, complex multi-page tables,\nand hierarchical sections) directly into clean Markdown format. This structural preservation is ideal for\ndownstream consumption by large language models (LLMs) or other AI agents.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 5",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 5",
+  "pdfPage": 184,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 5
+ },
+ {
+  "id": "q177",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用 Azure AI Search 进行检索增强生成 (RAG)。\n您计划摄取并索引 PDF 产品手册。\n您需要构建一个支持语义相似性匹配的解决方案。该解决方案必须确保在用户提问使用与产品手册不同的措辞时，代理能够检索到相关数据。\n您应该使用哪种索引方法？",
+  "options": [
+   {
+    "id": "A",
+    "text": "vector search",
+    "textEn": "vector search",
+    "textZh": "向量搜索"
+   },
+   {
+    "id": "B",
+    "text": "semantic ranking",
+    "textEn": "semantic ranking",
+    "textZh": "语义排名"
+   },
+   {
+    "id": "C",
+    "text": "suggesters",
+    "textEn": "suggesters",
+    "textZh": "建议者"
+   },
+   {
+    "id": "D",
+    "text": "analyzers",
+    "textEn": "analyzers",
+    "textZh": "分析器"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "向量搜索是此解决方案中正确的索引和检索类型。\n向量搜索与语义排名\n虽然这两种功能都有助于弥合不同措辞之间的差距，但向量搜索专门设计用于索引和检索层，以通过将文\n本转换为基于概念意义的数学向量（嵌入）来处理语义相似性匹配。语义排名是初始检索后应\n用的二次重新排名层，以提高精度，但它不能单独作为主要的索引方法。\nimary",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用 Azure AI Search 进行检索增强生成 (RAG)。\n您计划摄取并索引 PDF 产品手册。\n您需要构建一个支持语义相似性匹配的解决方案。该解决方案必须确保在用户提问使用与产品手册不同的措辞时，代理能够检索到相关数据。\n您应该使用哪种索引方法？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses Azure AI Search for Retrieval Augmented Generation (RAG).\nYou plan to ingest and index PDF product manuals.\nYou need to build a solution that supports semantic similarity matching. The solution must ensure that the\nagent retrieves relevant data when user questions use different wording than the product manuals.\nWhich indexing approach should you use?",
+  "explanationZh": "向量搜索是此解决方案中正确的索引和检索类型。\n向量搜索与语义排名\n虽然这两种功能都有助于弥合不同措辞之间的差距，但向量搜索专门设计用于索引和检索层，以通过将文\n本转换为基于概念意义的数学向量（嵌入）来处理语义相似性匹配。语义排名是初始检索后应\n用的二次重新排名层，以提高精度，但它不能单独作为主要的索引方法。\nimary",
+  "explanationEn": "Vector search is the correct indexing and retrieval type to use for this solution.\nVector search versus semantic ranking\nWhile both features help bridge the gap between different wordings, vector search is specifically designed\nat the indexing and retrieval layer to handle semantic similarity matching by converting text into\nmathematical vectors (embeddings) based on conceptual meaning. Semantic ranking is a secondary re-\nranking layer applied after initial retrieval to improve precision, but it cannot function as the pr\nindexing method on its own.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 6",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 6",
+  "pdfPage": 185,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 6
+ },
+ {
+  "id": "q178",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个 Microsoft Foundry 代理，它从包含以下内容的 Azure Search 索引中获取响应：\n可搜索的产品名称和产品代码的文本字段一个存储产品描述嵌入的向量字段您需要确保用户可以通过以下方式查询索引：\n确切的产品名称或代码产品的自然语言描述您应该配置什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "vector search only",
+    "textEn": "vector search only",
+    "textZh": "仅向量搜索"
+   },
+   {
+    "id": "B",
+    "text": "hybrid search",
+    "textEn": "hybrid search",
+    "textZh": "混合搜索"
+   },
+   {
+    "id": "C",
+    "text": "keyword search only",
+    "textEn": "keyword search only",
+    "textZh": "仅关键字搜索"
+   },
+   {
+    "id": "D",
+    "text": "semantic search only",
+    "textEn": "semantic search only",
+    "textZh": "仅语义搜索"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "为了满足您的要求，您需要在 Azure AI Search 中配置一个带有语义排名的混合搜索。此设置结合了对\n确切标识符的关键字匹配和对自然语言查询的向量搜索，为您的 Microsoft Foundry 代理提供最准\n确的基础数据。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Microsoft Foundry 代理，它从包含以下内容的 Azure Search 索引中获取响应：\n可搜索的产品名称和产品代码的文本字段一个存储产品描述嵌入的向量字段您需要确保用户可以通过以下方式查询索引：\n确切的产品名称或代码产品的自然语言描述您应该配置什么？",
+  "stemEn": "You have a Microsoft Foundry agent that grounds responses from an Azure Search index that contains the\nfollowing:\nSearchable text fields for product names and product codes\nA vector field that stores embeddings for product descriptions\nYou need to ensure that users can query the index by using the following:\nExact product names or codes\nNatural language descriptions of the products\nWhat should you configure?",
+  "explanationZh": "为了满足您的要求，您需要在 Azure AI Search 中配置一个带有语义排名的混合搜索。此设置结合了对\n确切标识符的关键字匹配和对自然语言查询的向量搜索，为您的 Microsoft Foundry 代理提供最准\n确的基础数据。",
+  "explanationEn": "To meet your requirements, you need to configure a Hybrid Search with Semantic Ranking in Azure AI\nSearch. This setup combines keyword matching for exact identifiers with vector search for natural\nlanguage queries, delivering the most accurate grounding data to your Microsoft Foundry agent.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 7",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 7",
+  "pdfPage": 185,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 7
+ },
+ {
+  "id": "q179",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个 Azure AI Search 索引器，用于摄取 PDF 政策手册。\n客户端应用程序必须显示具有边界多边形的页面级引用，适用于文本和图像。\n您需要向 Azure AI Search 技能集添加一个内置的多模态内容提取技能。该解决方案必须满足以下要求\n：\n提供文本和图像位置元数据。\n提取跨多个页面的表格。\n您应该添加什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Document Extraction",
+    "textEn": "Document Extraction",
+    "textZh": "文档提取"
+   },
+   {
+    "id": "B",
+    "text": "Azure Content Understanding in Foundry Tools",
+    "textEn": "Azure Content Understanding in Foundry Tools",
+    "textZh": "Foundry 工具中的 Azure 内容理解"
+   },
+   {
+    "id": "C",
+    "text": "GenAI Prompt",
+    "textEn": "GenAI Prompt",
+    "textZh": "GenAI 提示"
+   },
+   {
+    "id": "D",
+    "text": "Document Layout",
+    "textEn": "Document Layout",
+    "textZh": "文档布局"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "为了满足该项目的所有要求，您需要 Azure 内容理解技能（通过\nAzure AI Foundry / Microsoft Foundry Tools 集成）。\n1. 提取跨页表格：一个关键限制是能够识别和提取跨越\n多个页面的表格作为一个单元。Azure 内容理解技能本身支持此功能，\n而较旧的文档布局技能将布局内容输出为扁平化的文本/markdown 边界，\n这些边界在页面之间断裂，导致信息丢失。\n2. 页面级边界多边形：它作为一种布局感知的内置多模态内容提取\n技能，绘制文本和图像位置元数据（location_metadata），满足您的客户端应用程序\n对严格页面级引用边界的要求。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个 Azure AI Search 索引器，用于摄取 PDF 政策手册。\n客户端应用程序必须显示具有边界多边形的页面级引用，适用于文本和图像。\n您需要向 Azure AI Search 技能集添加一个内置的多模态内容提取技能。该解决方案必须满足以下要求\n：\n提供文本和图像位置元数据。\n提取跨多个页面的表格。\n您应该添加什么？",
+  "stemEn": "You have an Azure AI Search indexer that ingests PDF policy manuals.\nClient applications must display page-level citations that have bounding polygons for both text and images.\nYou need to add a single built-in multimodal content extraction skill to the Azure AI Search skillset. The\nsolution must meet the following requirements:\nProvide text and image location metadata.\nExtract tables that span multiple pages.\nWhat should you add?",
+  "explanationZh": "为了满足该项目的所有要求，您需要 Azure 内容理解技能（通过\nAzure AI Foundry / Microsoft Foundry Tools 集成）。\n1. 提取跨页表格：一个关键限制是能够识别和提取跨越\n多个页面的表格作为一个单元。Azure 内容理解技能本身支持此功能，\n而较旧的文档布局技能将布局内容输出为扁平化的文本/markdown 边界，\n这些边界在页面之间断裂，导致信息丢失。\n2. 页面级边界多边形：它作为一种布局感知的内置多模态内容提取\n技能，绘制文本和图像位置元数据（location_metadata），满足您的客户端应用程序\n对严格页面级引用边界的要求。",
+  "explanationEn": "To meet all requirements for this project, you need the Azure Content Understanding skill (integrated via\nAzure AI Foundry / Microsoft Foundry Tools).\n1. Extracting Cross-Page Tables: A critical constraint is the ability to recognize and extract tables that span\nmultiple pages as a single unit. The Azure Content Understanding skill natively supports this capability,\nwhereas the older Document Layout skill outputs layout content as flattened text/markdown boundaries\nthat break across pages, leading to information loss.\n2. Page-Level Bounding Polygons: It functions as a layout-aware, built-in multimodal content extraction\nskill that maps out text and image location metadata (location_metadata), satisfying your client application\nrequirement for strict page-level citation boundaries.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 8",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 8",
+  "pdfPage": 186,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 8
+ },
+ {
+  "id": "q180",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个名为 App1 的发票处理应用程序，它在Foundry Tools 中使用 Azure Constant Understanding。\n您正在构建一个名为 Pipeline1 的新内容理解管道，该管道必须满足以下要求：\n将发票与其相关的采购订单进行比较验证语音与静态供应商联系文件返回一个包含差异发现的单一结构化输出您需要配置 Pipeline1 并将管道暴露为单一分析器端点。您应该配置什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "a single-file task in standard mode that uses the vendor contract provided as an additional document during analysis",
+    "textEn": "a single-file task in standard mode that uses the vendor contract provided as an additional document during analysis.",
+    "textZh": "在标准模式下的单文件任务，使用提供的供应商合同作为分析过程中的附加文档。"
+   },
+   {
+    "id": "B",
+    "text": "a single-file task in standard mode that uses confidence scores enabled for the extracted fields",
+    "textEn": "a single-file task in standard mode that uses confidence scores enabled for the extracted fields.",
+    "textZh": "在标准模式下的单文件任务，使用为提取字段启用的置信度分数。"
+   },
+   {
+    "id": "C",
+    "text": "a multiple-file task in pro mode that uses the vendor contract files as reference data",
+    "textEn": "a multiple-file task in pro mode that uses the vendor contract files as reference data",
+    "textZh": "在专业模式下的多文件任务，使用供应商合同文件作为参考数据"
+   },
+   {
+    "id": "D",
+    "text": "a multi-file task in standard mode that uses the invoice and purchase order as input to the analyzer",
+    "textEn": "a multi-file task in standard mode that uses the invoice and purchase order as input to the analyzer",
+    "textZh": "在标准模式下的多文件任务，使用发票和采购订单作为分析器的输入"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "多文件任务：需要比单文件任务更高。您的管道需要在单个分析器请求中协调两个独立的活动事务\n性文档（发票和采购订单）中的数据。\n需要专业模式而不是标准模式。专业模式专为需要多步骤推理、跨文件分析和与知识库验证的高级场景而\n设计。请注意，专业模式目前支持分类和生成字段，但不支持特定提取字段的置信度分数。\nific\n \n \n作为参考数据的供应商合同文件：必需。由于供应商合同是静态合规性\\文档，因此应上传并视为分析\n \n \ns",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 App1 的发票处理应用程序，它在Foundry Tools 中使用 Azure Constant Understanding。\n您正在构建一个名为 Pipeline1 的新内容理解管道，该管道必须满足以下要求：\n将发票与其相关的采购订单进行比较验证语音与静态供应商联系文件返回一个包含差异发现的单一结构化输出您需要配置 Pipeline1 并将管道暴露为单一分析器端点。您应该配置什么？",
+  "stemEn": "You have an invoice-processing application named App1 that uses Azure Constant Understanding in\nFoundry Tools.\nYou are building a new Content Understanding pipeline named Pipeline1 that must meet the following\nrequirements:\nCompare an invoice to its related purchase order\nValidate the voice against static vendor contact documents\nReturn a single structured output that includes discrepancy findings\nYou need to configure Pipeline1 and expose the pipeline as a single analyzer endpoint. What should you\nconfigure?",
+  "explanationZh": "多文件任务：需要比单文件任务更高。您的管道需要在单个分析器请求中协调两个独立的活动事务\n性文档（发票和采购订单）中的数据。\n需要专业模式而不是标准模式。专业模式专为需要多步骤推理、跨文件分析和与知识库验证的高级场景而\n设计。请注意，专业模式目前支持分类和生成字段，但不支持特定提取字段的置信度分数。\nific\n \n \n作为参考数据的供应商合同文件：必需。由于供应商合同是静态合规性\\文档，因此应上传并视为分析\n \n \ns",
+  "explanationEn": "Multiple-file task: Required over a single-file task. Your pipeline needs to reconcile data across two\nseparate active transactional documents (the invoice and the purchase order) within a single analyzer\nrequest.\nPro mode is required instead of standard mode. Pro mode is specifically designed for advanced scenarios\nrequiring multi-step reasoning, cross-file analysis, and validation against a knowledge base. Note that Pro\nmode currently supports classify and generate fields but does not support confidence scores for spec\nextracted fields.\nVendor contract files as reference data: Required. Because the vendor contracts are static compliance\n \ndocuments, they should be uploaded and treated as the analyzer's background knowledge base 器的背景知识库（参考数据），以指导验证逻辑。\n(reference data) to guide the validation logic.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 9",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 9",
+  "pdfPage": 186,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 9
+ },
+ {
+  "id": "q181",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个名为 App1 的网络应用程序，它向 Microsoft Foundry 项目中的多模态聊天模型部署发送请求。\n用户消息可以包含文本和图像。\n目前，App1 将图像 URL 作为纯文本包含在消息内容中，因此模型无法将其识别为图像。\n跟踪显示请求包含单个文本消息，而不是多模态内容数组。\n您需要将消息作为结构化数组发送，其中包括文本部分和图像引用，以确保模型能够正确处理图像。\n您应该怎么做？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Set the user message content array to include items that have type: text and type: image_url",
+    "textEn": "Set the user message content array to include items that have type: text and type: image_url.",
+    "textZh": "将用户消息内容数组设置为包含 type: text 和 type: image_url 的项目。"
+   },
+   {
+    "id": "B",
+    "text": "Encode the image to base64 and include the encoded data inside the content string of the user message",
+    "textEn": "Encode the image to base64 and include the encoded data inside the content string of the user message.",
+    "textZh": "将图像编码为 base64，并将编码后的数据包含在用户消息的 content 字符串中。"
+   },
+   {
+    "id": "C",
+    "text": "Add the image URL to the request metadata section, so the model can resolve the processing issue automatically",
+    "textEn": "Add the image URL to the request metadata section, so the model can resolve the processing issue automatically.",
+    "textZh": "将图像 URL 添加到请求元数据部分，以便模型可以自动解决处理问题。"
+   },
+   {
+    "id": "D",
+    "text": "Place the image URL inside the System Message and set type to image_url so the model loads the image at initialization",
+    "textEn": "Place the image URL inside the System Message and set type to image_url so the model loads the image at initialization.",
+    "textZh": "将图像 URL 放入系统消息中，并将类型设置为 image_url ，以便模型在初始化时加载 图像。"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "要解决此问题，您必须将请求有效负载结构从单个字符串更改为结构化内容\n数组。Azure AI Foundry 中的多模态模型期望文本和图像的不同对象数组。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个名为 App1 的网络应用程序，它向 Microsoft Foundry 项目中的多模态聊天模型部署发送请求。\n用户消息可以包含文本和图像。\n目前，App1 将图像 URL 作为纯文本包含在消息内容中，因此模型无法将其识别为图像。\n跟踪显示请求包含单个文本消息，而不是多模态内容数组。\n您需要将消息作为结构化数组发送，其中包括文本部分和图像引用，以确保模型能够正确处理图像。\n您应该怎么做？",
+  "stemEn": "You have a web app named App1 that sends requests to a multimodal chat model deployment in a\nMicrosoft Foundry project.\nUser messages can contain both text and images.\nCurrently, App1 includes image URLs as plain text inside the message content, so the model cannot\nrecognize them as images.\nTraces show that the requests contain a single text message instead of a multimodal content array.\nYou need to send the message as a structured array that includes both the text portion and the image\nreference to ensure that the model can process the image correctly.\nWhat should you do?",
+  "explanationZh": "要解决此问题，您必须将请求有效负载结构从单个字符串更改为结构化内容\n数组。Azure AI Foundry 中的多模态模型期望文本和图像的不同对象数组。",
+  "explanationEn": "To fix this, you must change your request payload structure from a single string to a structured content\narray. Multimodal models in Azure AI Foundry expect an array of distinct objects for text and images.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 10",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 10",
+  "pdfPage": 187,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 10
+ },
+ {
+  "id": "q182",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "multi",
+  "stem": "您正在开发一个将使用 Azure AI Search 进行内部文档的应用程序。\n您需要为 Azure AI Search 实现文档级过滤。\n您应该在解决方案中包含哪三项操作？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "options": [
+   {
+    "id": "A",
+    "text": "Add allowed groups to each index entry",
+    "textEn": "Add allowed groups to each index entry",
+    "textZh": "将允许的组添加到每个索引条目"
+   },
+   {
+    "id": "B",
+    "text": "Create one index per group",
+    "textEn": "Create one index per group.",
+    "textZh": "为每个组创建一个索引。"
+   },
+   {
+    "id": "C",
+    "text": "Send access tokens from Microsoft Entra ID, with the search request",
+    "textEn": "Send access tokens from Microsoft Entra ID, with the search request.",
+    "textZh": "从 Microsoft Entra ID 发送访问令牌，并附带搜索请求。"
+   },
+   {
+    "id": "D",
+    "text": "Retrieve all the groups",
+    "textEn": "Retrieve all the groups.",
+    "textZh": "检索所有组。"
+   },
+   {
+    "id": "E",
+    "text": "Retrieve the group memberships of the user",
+    "textEn": "Retrieve the group memberships of the user",
+    "textZh": "检索用户的组成员资格"
+   },
+   {
+    "id": "F",
+    "text": "Supply the groups as a filter for the search requests",
+    "textEn": "Supply the groups as a filter for the search requests",
+    "textZh": "将组作为搜索请求的过滤条件"
+   }
+  ],
+  "answer": [
+   "A",
+   "E",
+   "F"
+  ],
+  "pdfAnswer": [
+   "A",
+   "E",
+   "F"
+  ],
+  "explanation": "[一个] \n为每个索引条目添加允许的组：您搜索索引中的每个文档必须包含一个字段（例如，\ngroup_ids），列出有权限查看该文档的安全组或主体。 \n \n[和]\n检索用户的组成员资格：当用户提交查询时，您的应用程序必须查询\nMicrosoft Entra ID，以获取用户所属的所有安全组的列表。\n[F]\n将组作为搜索请求的过滤器：您的应用程序将把用户的组\n成员资格转换为OData过滤器（使用search.in()函数），并将其附加到搜索API查询中，\n仅限制结果为用户有权限访问的文档。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您正在开发一个将使用 Azure AI Search 进行内部文档的应用程序。\n您需要为 Azure AI Search 实现文档级过滤。\n您应该在解决方案中包含哪三项操作？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You are developing an application that will use Azure AI Search for internal documents.\nYou need to implement document-level filtering for Azure AI Search.\nWhich three actions should you include in the solution? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "[一个] \n为每个索引条目添加允许的组：您搜索索引中的每个文档必须包含一个字段（例如，\ngroup_ids），列出有权限查看该文档的安全组或主体。 \n \n[和]\n检索用户的组成员资格：当用户提交查询时，您的应用程序必须查询\nMicrosoft Entra ID，以获取用户所属的所有安全组的列表。\n[F]\n将组作为搜索请求的过滤器：您的应用程序将把用户的组\n成员资格转换为OData过滤器（使用search.in()函数），并将其附加到搜索API查询中，\n仅限制结果为用户有权限访问的文档。",
+  "explanationEn": "[A] \nAdd allowed groups to each index entry: Each document in your search index must include a field (e.g.,\n \ngroup_ids) listing the security groups or principals that have permission to view that document.\n \n[E]\nRetrieve the group memberships of the user: When a user submits a query, your application must query\nMicrosoft Entra ID to fetch the list of all security groups the user belongs to.\n[F]\nSupply the groups as a filter for the search requests: Your application will then translate the user's group\nmemberships into an OData filter (using the search.in() function) and append it to the search API query,\nrestricting the results only to documents the user has access to.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 11",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 11",
+  "pdfPage": 188,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 11
+ },
+ {
+  "id": "q183",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个Azure AI搜索索引器，用于摄取PDF政策手册。\n客户端应用程序必须显示具有边界多边形的页面级引用，适用于文本和图像。\n您需要向 Azure AI Search 技能集添加一个内置的多模态内容提取技能。该解决方案必须满足以下要求\n：\n提供文本和图像位置元数据。\n提取跨多个页面的表格。\n您应该添加什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Document Layout",
+    "textEn": "Document Layout",
+    "textZh": "文档布局"
+   },
+   {
+    "id": "B",
+    "text": "Document Extraction",
+    "textEn": "Document Extraction",
+    "textZh": "文档提取"
+   },
+   {
+    "id": "C",
+    "text": "Azure Content Understanding",
+    "textEn": "Azure Content Understanding",
+    "textZh": "Azure内容理解"
+   },
+   {
+    "id": "D",
+    "text": "GenAI Prompt",
+    "textEn": "GenAI Prompt",
+    "textZh": "GenAI 提示"
+   }
+  ],
+  "answer": [
+   "C"
+  ],
+  "pdfAnswer": [
+   "C"
+  ],
+  "explanation": "为了满足要求，您需要在 Azure AI 搜索技能集中使用 Azure 内容理解技能。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个Azure AI搜索索引器，用于摄取PDF政策手册。\n客户端应用程序必须显示具有边界多边形的页面级引用，适用于文本和图像。\n您需要向 Azure AI Search 技能集添加一个内置的多模态内容提取技能。该解决方案必须满足以下要求\n：\n提供文本和图像位置元数据。\n提取跨多个页面的表格。\n您应该添加什么？",
+  "stemEn": "You have an Azure AI Search indexer that ingest PDF policy manuals.\nClient applications must display page-level citations that have bounding polygons for both text and images.\nYou need to add a single built-in multimodal content extraction skill to the Azure AI Search skillset. The\nsolution must meet the following requirements:\nProvide text and image location metadata.\nExtract tables that span multiple pages.\nWhat should you add?",
+  "explanationZh": "为了满足要求，您需要在 Azure AI 搜索技能集中使用 Azure 内容理解技能。",
+  "explanationEn": "To meet the requirements, you need to use the Azure Content Understanding skill in your Azure AI Search\nskillset.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 12",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 12",
+  "pdfPage": 188,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 12
+ },
+ {
+  "id": "q184",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "hotspot",
+  "stem": "您正在创建一个将使用 Azure AI 搜索的增强管道。知识库包含非结构化的 JSON 数据和扫描的 PDF 文档中的文本。\n对于每种数据类型，您应该使用哪种投影类型？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Object projection",
+   "File projection"
+  ],
+  "pdfAnswer": [
+   "Object projection",
+   "File projection"
+  ],
+  "explanation": "框 1：对象投影\n对于非结构化的 JSON 数据，您必须使用对象投影，对于从\n扫描的 PDF 文档中提取的文本数据，您必须使用文件投影。\n对象投影：将您的数据投影为完整的 JSON 表示。它非常适合在 Azure Blob Storage 中保持原始\n结构以及任何应用的 AI 增强功能，所有这些都在单个 JSON 文档中。\n \n框 2：文件投影\n文件投影：捕获在光学字符\n \n \n识别（OCR）处理过程中所需的二进制或图像提取层。它将原始文本和图形细节直接从 \n非结构化的物理二进制文件中隔离并输出到指定的容器中。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "JSON 数据",
+    "labelEn": "JSON data",
+    "labelZh": "JSON 数据",
+    "answer": "Object projection",
+    "choices": [
+     {
+      "key": "Object projection",
+      "en": "Object projection",
+      "zh": "对象投影"
+     },
+     {
+      "key": "File projection",
+      "en": "File projection",
+      "zh": "文件投影"
+     },
+     {
+      "key": "Table projection",
+      "en": "Table projection",
+      "zh": "表投影"
+     }
+    ],
+    "positionNoteEn": "JSON data",
+    "positionNoteZh": "JSON 数据",
+    "positionNote": "JSON 数据"
+   },
+   {
+    "id": "box2",
+    "label": "提取的文本数据：",
+    "labelEn": "Extracted text data:",
+    "labelZh": "提取的文本数据：",
+    "answer": "File projection",
+    "choices": [
+     {
+      "key": "Object projection",
+      "en": "Object projection",
+      "zh": "对象投影"
+     },
+     {
+      "key": "File projection",
+      "en": "File projection",
+      "zh": "文件投影"
+     },
+     {
+      "key": "Table projection",
+      "en": "Table projection",
+      "zh": "表投影"
+     }
+    ],
+    "positionNoteEn": "Scanned PDF text",
+    "positionNoteZh": "扫描的 PDF 文本",
+    "positionNote": "扫描的 PDF 文本"
+   }
+  ],
+  "stemZh": "您正在创建一个将使用 Azure AI 搜索的增强管道。知识库包含非结构化的 JSON 数据和扫描的 PDF 文档中的文本。\n对于每种数据类型，您应该使用哪种投影类型？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You are creating an enrichment pipeline that will use Azure AI Search. The knowledge store contains\nunstructured JSON data and the text from scanned PDF documents.\nWhich projection type should you use for each data type? To answer, select the appropriate options in the\nanswer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：对象投影\n对于非结构化的 JSON 数据，您必须使用对象投影，对于从\n扫描的 PDF 文档中提取的文本数据，您必须使用文件投影。\n对象投影：将您的数据投影为完整的 JSON 表示。它非常适合在 Azure Blob Storage 中保持原始\n结构以及任何应用的 AI 增强功能，所有这些都在单个 JSON 文档中。\n \n框 2：文件投影\n文件投影：捕获在光学字符\n \n \n识别（OCR）处理过程中所需的二进制或图像提取层。它将原始文本和图形细节直接从 \n非结构化的物理二进制文件中隔离并输出到指定的容器中。",
+  "explanationEn": "Box 1: Object projection\nFor the unstructured JSON data, you must use object projection, and for the extracted text data from the\nscanned PDF documents, you must use file projection.\nObject Projection: Projects your data as a full JSON representation. It is ideal for maintaining the original\nstructure alongside any applied AI enrichments within a single JSON document inside Azure Blob Storage.\n \nBox 2: File projection\n \nFile Projection: Captures the binary or image extraction layer required during Optical Character\nRecognition (OCR) processing. It isolates and outputs raw text and graphic details directly from\nunstructured physical binary files into a designated container",
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "control": "select",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 13",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 13",
+  "pdfPage": 189,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 13
+ },
+ {
+  "id": "q185",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "hotspot",
+  "stem": "您有一组存储为 PDF 文件的新闻稿。\n您需要从文件中提取文本并进行情感分析。\n您应该使用哪个服务来完成每个任务？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "options": [],
+  "answer": [
+   "Azure Document Intelligence in Foundry Tools",
+   "Azure Language in Foundry Tools"
+  ],
+  "pdfAnswer": [
+   "Azure Document Intelligence in Foundry Tools",
+   "Azure Language in Foundry Tools"
+  ],
+  "explanation": "框 1：Foundry Tools 中的 Azure 文档智能\nFoundry Tools 中的 Azure 文档智能现已普遍可用\n发布日期：2020 年 7 月 08 日\n宣布 Foundry Tools 中 Azure 文档智能的普遍可用版本发布。通过自动化信息提取，加速\n您的业务流程。\n您现在可以快速准确地从文档中提取文本、表格和键值对。只需几个样本，表单识别器就能根据您的文档\n进行定制理解，无论是在本地还是在云端。它支持多页文档（图像、PDF 和 Tiff 文件），并提取文档及其\n内容的结构化表示输出。\n不正确：\n* Foundry Tools 中的 Azure Vision\n计算机视觉 v4.0 读取 OCR（预览）是什么？\n新的计算机视觉图像分析 4.0 REST API 提供从图像中提取打印或手写文本的能力，采用统一的性能增强同\n步 API，使您能够轻松获取所有图像洞察，包括在单个 API 操作中的 OCR 结果。读取 OCR 引擎建立在多\n个深度学习模型之上，支持全球语言的通用脚本模型。\n框 2：Foundry Tools 中的 Azure 语言\n执行情感分析\n情感分析和意见挖掘是 Azure 语言认知服务提供的功能，这是一个用于开发涉及书面语言的智能应用程\n序的云端机器学习和 AI 算法集合。\noverview",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "rawType": "hotspot",
+  "boxes": [
+   {
+    "id": "box1",
+    "label": "提取文本：",
+    "labelEn": "Extract text:",
+    "labelZh": "提取文本：",
+    "answer": "Azure Document Intelligence in Foundry Tools",
+    "choices": [
+     {
+      "key": "Azure AI Search",
+      "en": "Azure AI Search",
+      "zh": "Azure AI 搜索 (AI Search)"
+     },
+     {
+      "key": "Azure Vision in Foundry Tools",
+      "en": "Azure Vision in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 视觉 (Vision)"
+     },
+     {
+      "key": "Azure Document Intelligence in Foundry Tools",
+      "en": "Azure Document Intelligence in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 文档智能 (Document Intelligence)"
+     }
+    ]
+   },
+   {
+    "id": "box2",
+    "label": "执行情感分析：",
+    "labelEn": "Perform sentiment analysis:",
+    "labelZh": "执行情感分析：",
+    "answer": "Azure Language in Foundry Tools",
+    "choices": [
+     {
+      "key": "Azure AI Search",
+      "en": "Azure AI Search",
+      "zh": "Azure AI 搜索 (AI Search)"
+     },
+     {
+      "key": "Azure AI Computer Vision",
+      "en": "Azure AI Computer Vision",
+      "zh": "Azure AI 计算机视觉 (Computer Vision)"
+     },
+     {
+      "key": "Azure Document Intelligence in Foundry Tools",
+      "en": "Azure Document Intelligence in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 文档智能 (Document Intelligence)"
+     },
+     {
+      "key": "Azure Language in Foundry Tools",
+      "en": "Azure Language in Foundry Tools",
+      "zh": "Foundry Tools 中的 Azure 语言 (Language)"
+     }
+    ]
+   }
+  ],
+  "stemZh": "您有一组存储为 PDF 文件的新闻稿。\n您需要从文件中提取文本并进行情感分析。\n您应该使用哪个服务来完成每个任务？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a collection of press releases stored as PDF files.\nYou need to extract text from the files and perform sentiment analysis.\nWhich service should you use for each task? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "explanationZh": "框 1：Foundry Tools 中的 Azure 文档智能\nFoundry Tools 中的 Azure 文档智能现已普遍可用\n发布日期：2020 年 7 月 08 日\n宣布 Foundry Tools 中 Azure 文档智能的普遍可用版本发布。通过自动化信息提取，加速\n您的业务流程。\n您现在可以快速准确地从文档中提取文本、表格和键值对。只需几个样本，表单识别器就能根据您的文档\n进行定制理解，无论是在本地还是在云端。它支持多页文档（图像、PDF 和 Tiff 文件），并提取文档及其\n内容的结构化表示输出。\n不正确：\n* Foundry Tools 中的 Azure Vision\n计算机视觉 v4.0 读取 OCR（预览）是什么？\n新的计算机视觉图像分析 4.0 REST API 提供从图像中提取打印或手写文本的能力，采用统一的性能增强同\n步 API，使您能够轻松获取所有图像洞察，包括在单个 API 操作中的 OCR 结果。读取 OCR 引擎建立在多\n个深度学习模型之上，支持全球语言的通用脚本模型。\n框 2：Foundry Tools 中的 Azure 语言\n执行情感分析\n情感分析和意见挖掘是 Azure 语言认知服务提供的功能，这是一个用于开发涉及书面语言的智能应用程\n序的云端机器学习和 AI 算法集合。\noverview",
+  "explanationEn": "Box 1: Azure Document Intelligence in Foundry Tools\nAzure Document Intelligence in Foundry Tools is now generally available\nPublished date: July 08, 2020\nAnnouncing the general availability release of Azure Document Intelligence in Foundry Tools. Accelerate\nyour business processes by automating information extraction.\nYou can now extract text, tables, and key value pairs quickly and accurately from documents. With just a\nfew samples, Form Recognizer tailors its understanding to your documents, both on-premises and in the\ncloud. It supports multi-page documents (Images, PDFs and Tiff files) and extract a structured\nrepresentation output of the document and its contents.\nIncorrect:\n* Azure Vision in Foundry Tools\nWhat is Computer Vision v4.0 Read OCR (preview)?\nThe new Computer Vision Image Analysis 4.0 REST API offers the ability to extract printed or handwritten\ntext from images in a unified performance-enhanced synchronous API that makes it easy to get all image\ninsights including OCR results in a single API operation. The Read OCR engine is built on top of multiple\ndeep learning models supported by universal script-based models for global language support.\nBox 2: Azure Language in Foundry Tools\nPerform sentiment analysis\nSentiment analysis and opinion mining are features offered by Azure Cognitive Service for Language, a\ncollection of machine learning and AI algorithms in the cloud for developing intelligent applications that\ninvolve written language.\noverview",
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "control": "select",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 14",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 14",
+  "pdfPage": 190,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 14
+ },
+ {
+  "id": "q186",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个文件共享，其中包含 5,000 张扫描发票的图像。\n \n您需要分析这些图像。解决方案必须提取以下数据：\n \n● 发票项目 \n● 销售金额\n● 客户详细信息\n \n \n您应该使用什么？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Azure Document Intelligence in Foundry Tools",
+    "textEn": "Azure Document Intelligence in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Document Intelligence"
+   },
+   {
+    "id": "B",
+    "text": "Azure Vision in Foundry Tools",
+    "textEn": "Azure Vision in Foundry Tools",
+    "textZh": "Foundry Tools 中的 Azure Vision"
+   },
+   {
+    "id": "C",
+    "text": "Azure Custom Vision",
+    "textEn": "Azure Custom Vision",
+    "textZh": "Azure 自定义视觉"
+   },
+   {
+    "id": "D",
+    "text": "Azure AI Immersive Reader",
+    "textEn": "Azure AI Immersive Reader",
+    "textZh": "Azure AI 沉浸式阅读器"
+   }
+  ],
+  "answer": [
+   "A"
+  ],
+  "pdfAnswer": [
+   "A"
+  ],
+  "explanation": "Azure Document Intelligence 提供了一个预构建的发票模型，可以从扫描的发票中提取结构化数据，包\n括行项目、金额和客户详细信息，如姓名和账单地址。它结合了 OCR 和文档理解，并将提取的字段作\n为结构化 JSON 返回，无需自定义模型训练。\n4.0.0",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个文件共享，其中包含 5,000 张扫描发票的图像。\n \n您需要分析这些图像。解决方案必须提取以下数据：\n \n● 发票项目 \n● 销售金额\n● 客户详细信息\n \n \n您应该使用什么？",
+  "stemEn": "You have a file share that contains 5,000 images of scanned invoices.\n \n \nYou need to analyze the images. The solution must extract the following data:\n● Invoice items \n● Sales amounts\n● Customer details\n \n \nWhat should you use?",
+  "explanationZh": "Azure Document Intelligence 提供了一个预构建的发票模型，可以从扫描的发票中提取结构化数据，包\n括行项目、金额和客户详细信息，如姓名和账单地址。它结合了 OCR 和文档理解，并将提取的字段作\n为结构化 JSON 返回，无需自定义模型训练。\n4.0.0",
+  "explanationEn": "Azure Document Intelligence provides a prebuilt invoice model that extracts structured data from scanned\ninvoices, including line items, amounts, and customer details such as names and billing addresses. It\ncombines OCR with document understanding and returns the extracted fields as structured JSON without\nrequiring custom model training.\n4.0.0",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 15",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 15",
+  "pdfPage": 192,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 15
+ },
+ {
+  "id": "q187",
+  "domain": "extract",
+  "domainLabel": "实现信息提取解决方案",
+  "type": "single",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用从存储在 Azure Blob 存储中的文档构建的知识源。这些文档包括包含多页表格的数字扫描 PDF\n。\n您有一个提取仅包含纯文本的摄取作业，这导致表格结构、标题和页码元数据的丢失。\n用户经常提出需要跨页面检索特定表格行的问题。\n您需要为检索增强生成（RAG）管道配置一个摄取作业，该作业提取扫描 PDF 的内容，保留表格和标题作为结构感知块，并为每个块存储页码元数据。\n您应该如何配置数据摄取作业？",
+  "options": [
+   {
+    "id": "A",
+    "text": "Use page-level OCR extraction and store each page as a single chunk",
+    "textEn": "Use page-level OCR extraction and store each page as a single chunk.",
+    "textZh": "使用页面级 OCR 提取，并将每个页面存储为一个单独的块。"
+   },
+   {
+    "id": "B",
+    "text": "Use advanced data parsing to reingest the documents",
+    "textEn": "Use advanced data parsing to reingest the documents.",
+    "textZh": "使用高级数据解析重新摄取文档。"
+   },
+   {
+    "id": "C",
+    "text": "Use basic parsing and fixed-size chunking",
+    "textEn": "Use basic parsing and fixed-size chunking.",
+    "textZh": "使用基本解析和固定大小分块。"
+   },
+   {
+    "id": "D",
+    "text": "Use OCR and page-level chunking",
+    "textEn": "Use OCR and page-level chunking.",
+    "textZh": "使用OCR和页面级分块。"
+   }
+  ],
+  "answer": [
+   "B"
+  ],
+  "pdfAnswer": [
+   "B"
+  ],
+  "explanation": "高级数据解析从扫描的PDF中提取内容，同时保留标题和表格\n结构。它可以合并跨多个页面的表格，并创建包含\n页码和章节元数据的结构感知块。重新摄取文档会用这些\n信息重建知识源，支持准确检索特定表格行及其源页面。",
+  "caseStudy": false,
+  "answerConfidence": "medium",
+  "answerFixed": false,
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n代理使用从存储在 Azure Blob 存储中的文档构建的知识源。这些文档包括包含多页表格的数字扫描 PDF\n。\n您有一个提取仅包含纯文本的摄取作业，这导致表格结构、标题和页码元数据的丢失。\n用户经常提出需要跨页面检索特定表格行的问题。\n您需要为检索增强生成（RAG）管道配置一个摄取作业，该作业提取扫描 PDF 的内容，保留表格和标题作为结构感知块，并为每个块存储页码元数据。\n您应该如何配置数据摄取作业？",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nThe agent uses a knowledge source built from documents stored in Azure Blob Storage. The documents\ninclude digitally scanned PDFs that contain multipage tables.\nYou have an ingestion job that extracts only plain text, causing loss of table structure, headings, and page-\nnumber metadata.\nUsers frequently ask questions that require the retrieval of specific table rows across the pages.\nYou need to configure an ingestion job for a Retrieval Augmented Generation (RAG) pipeline that extracts\nthe contents from the scanned PDFs, preserves tables and headings as structure-aware chunks, and\nstores page-number metadata with each chunk.\nHow should you configure the ingestion job?",
+  "explanationZh": "高级数据解析从扫描的PDF中提取内容，同时保留标题和表格\n结构。它可以合并跨多个页面的表格，并创建包含\n页码和章节元数据的结构感知块。重新摄取文档会用这些\n信息重建知识源，支持准确检索特定表格行及其源页面。",
+  "explanationEn": "Advanced data parsing extracts content from scanned PDFs while preserving headings and table\nstructure. It can merge tables spanning multiple pages and create structure-aware chunks containing\npage-number and section metadata. Reingesting the documents rebuilds the knowledge source with this\ninformation, supporting accurate retrieval of specific table rows and their source pages.",
+  "boxes": [],
+  "domainLabelZh": "实现信息提取解决方案",
+  "domainLabelEn": "Implement information extraction solutions",
+  "pdfRef": "实现信息提取解决方案 · 问题集 2 · 问题 16",
+  "pdfRefEn": "Implement information extraction solutions · Question Set 2 · Question 16",
+  "pdfPage": 192,
+  "pdfSet": "问题集 2",
+  "pdfSetEn": "Question Set 2",
+  "pdfQNum": 16
+ }
+];

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="FXS-张腾" />
+  <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
+  <title>AI-103 练习助手 · 187题中英对照</title>
+  <link rel="stylesheet" href="styles.css?v=202610262110" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">103</div>
+        <div>
+          <h1>AI-103 练习助手 · 187题中英对照</h1>
+          <div class="sub">Developing AI Apps and Agents on Azure · 可切换中/英/对照</div>
+          <div class="author">作者：FXS-张腾</div>
+        </div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language / 语言">
+        <button type="button" data-lang="zh" title="中文">中文</button>
+        <button type="button" data-lang="en" title="English">EN</button>
+        <button type="button" data-lang="both" title="中英对照" class="active">对照</button>
+      </div>
+    </header>
+
+    <section id="view-home" class="card">
+      <h2>题库概览</h2>
+      <p class="muted">题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。</p>
+      <div class="stats" aria-label="题库统计">
+        <div class="stat"><div class="n" id="stat-total">0</div><div class="l">全部题目</div></div>
+        <div class="stat"><div class="n" id="stat-plan">0</div><div class="l">规划管理</div></div>
+        <div class="stat"><div class="n" id="stat-genai">0</div><div class="l">生成式/智能体</div></div>
+        <div class="stat"><div class="n" id="stat-vision">0</div><div class="l">计算机视觉</div></div>
+        <div class="stat"><div class="n" id="stat-text">0</div><div class="l">文本分析</div></div>
+        <div class="stat"><div class="n" id="stat-extract">0</div><div class="l">信息提取</div></div>
+      </div>
+      <div class="home-actions">
+        <button type="button" class="btn btn-primary" id="btn-go-practice">
+          全题库练习
+          <span class="desc">按领域筛选 · 即时反馈与解析 · 进度本地保存</span>
+        </button>
+        <button type="button" class="btn" id="btn-go-exam">
+          模拟考试
+          <span class="desc">限时抽题 · 结束计分（700/1000 及格）· 错题回顾</span>
+        </button>
+      </div>
+      <div class="note">
+        及格线参考 Microsoft 认证常见换算：约 700 / 1000。若某题答案相对 PDF 有更正，练习反馈中会显示「答案已更正」说明。快捷键：数字键 1–6 选题，Enter 提交/下一题。
+      </div>
+    </section>
+
+    <section id="view-practice" class="hidden">
+      <div class="toolbar">
+        <button type="button" class="btn btn-sm btn-ghost" id="btn-practice-back">← 首页</button>
+        <label class="muted">
+          筛选
+          <select id="practice-filter" aria-label="按领域筛选">
+            <option value="all">全部</option>
+            <option value="plan">规划和管理 Azure AI 解决方案</option>
+            <option value="genai">实现生成式 AI 与智能体解决方案</option>
+            <option value="vision">实现计算机视觉解决方案</option>
+            <option value="text">实现文本分析解决方案</option>
+            <option value="extract">实现信息提取解决方案</option>
+          </select>
+        </label>
+        <button type="button" class="btn btn-sm btn-danger" id="btn-practice-reset">重置进度</button>
+        <button type="button" class="btn btn-sm" id="btn-practice-shuffle" title="随机打乱当前题目顺序">乱序</button>
+        <label class="showans-toggle" id="lbl-practice-showall"><input type="checkbox" id="chk-practice-showall"> <span>始终显示答案（背题模式）</span></label>
+        <div class="progress-wrap">
+          <div class="progress-bar"><i id="practice-progress-bar"></i></div>
+          <div class="progress-label" id="practice-progress-label"></div>
+        </div>
+      </div>
+      <div class="card" id="practice-body"></div>
+      <div class="nav-row">
+        <button type="button" class="btn" id="btn-practice-prev">上一题</button>
+        <button type="button" class="btn" id="btn-practice-flag">标记复习</button>
+        <button type="button" class="btn" id="btn-practice-skip">跳过</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-ghost" id="btn-practice-reveal">显示答案</button>
+        <button type="button" class="btn btn-primary" id="btn-practice-submit">提交</button>
+        <button type="button" class="btn" id="btn-practice-next">下一题</button>
+      </div>
+      <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题</p>
+    </section>
+
+    <section id="view-exam-config" class="card hidden">
+      <h2>模拟考试设置</h2>
+      <p class="muted">按官方领域权重近似抽题，题目与选项顺序随机打乱。考试过程中不显示对错。</p>
+      <div class="exam-config">
+        <label>
+          <span>题目数量</span>
+          <select id="exam-count">
+            <option value="30">30 题</option>
+            <option value="50" selected>50 题（默认）</option>
+            <option value="60">60 题</option>
+          </select>
+        </label>
+        <label>
+          <span>考试时长（分钟）</span>
+          <select id="exam-minutes">
+            <option value="60">60</option>
+            <option value="90" selected>90（默认）</option>
+            <option value="120">120</option>
+          </select>
+        </label>
+      </div>
+      <div class="nav-row">
+        <button type="button" class="btn btn-ghost" id="btn-exam-config-back">← 返回</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="btn-exam-start">开始考试</button>
+      </div>
+    </section>
+
+    <section id="view-exam" class="hidden">
+      <div class="toolbar">
+        <button type="button" class="btn btn-sm btn-ghost" id="btn-exam-back">← 离开</button>
+        <div class="timer" id="exam-timer" aria-live="polite">90:00</div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><i id="exam-progress-bar"></i></div>
+          <div class="progress-label" id="exam-progress-label"></div>
+        </div>
+      </div>
+      <div class="card" id="exam-body"></div>
+      <div class="card">
+        <div class="muted" style="margin-bottom:0.4rem">题目导航（点击跳转；底边高亮 = 已标记）</div>
+        <div class="exam-grid" id="exam-grid"></div>
+      </div>
+      <div class="nav-row">
+        <button type="button" class="btn" id="btn-exam-prev">上一题</button>
+        <button type="button" class="btn" id="btn-exam-flag">标记</button>
+        <button type="button" class="btn" id="btn-exam-next">下一题</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="btn-exam-submit">交卷</button>
+        <button type="button" class="btn btn-primary hidden" id="btn-exam-to-result">查看成绩</button>
+      </div>
+      <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 下一题</p>
+    </section>
+
+    <section id="view-result" class="hidden">
+      <div class="card">
+        <h2>考试成绩</h2>
+        <div class="score-hero" id="result-hero"></div>
+        <h3 style="font-size:0.95rem;margin:1rem 0 0.5rem">领域得分</h3>
+        <div class="domain-breakdown" id="result-domains"></div>
+        <div class="nav-row" style="margin-top:1rem">
+          <button type="button" class="btn" id="btn-result-review">逐题回顾</button>
+          <button type="button" class="btn" id="btn-result-retry">再考一次</button>
+          <span class="spacer"></span>
+          <button type="button" class="btn btn-primary" id="btn-result-home">回首页</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>错题与解析</h2>
+        <div class="review-list" id="result-wrong"></div>
+      </div>
+    </section>
+
+    <footer class="app-foot">
+      <span class="foot-text">AI-103 练习助手 · 187 题（PDF 题源）· 本地运行 · 进度保存在浏览器 localStorage</span>
+      <span class="foot-author">作者：FXS-张腾</span>
+    </footer>
+  </div>
+
+  <script src="questions.js?v=202610262110"></script>
+  <script src="app.js?v=202610262110"></script>
+</body>
+</html>
