@@ -5903,7 +5903,7 @@ footer.app-foot {
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "single",
-  "stem": "您成功运行了以下 HTTP 请求。\n请求的结果是什么？",
+  "stem": "您成功运行了以下 HTTP 请求。\n```\nPOST https://management.azure.com/subscriptions/18c51a87-3a69-47a8-aedc-a54745f708a1/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/contoso1/regenerateKey?api-version=2021-04-30\nBody{\"keyName\": \"Key2\"}\n```\n请求的结果是什么？",
   "options": [
    {
     "id": "A",
@@ -5940,8 +5940,8 @@ footer.app-foot {
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您成功运行了以下 HTTP 请求。\n请求的结果是什么？",
-  "stemEn": "You successfully run the following HTTP request.\nWhat is the result of the request?",
+  "stemZh": "您成功运行了以下 HTTP 请求。\n```\nPOST https://management.azure.com/subscriptions/18c51a87-3a69-47a8-aedc-a54745f708a1/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/contoso1/regenerateKey?api-version=2021-04-30\nBody{\"keyName\": \"Key2\"}\n```\n请求的结果是什么？",
+  "stemEn": "You successfully run the following HTTP request.\n```\nPOST https://management.azure.com/subscriptions/18c51a87-3a69-47a8-aedc-a54745f708a1/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/contoso1/regenerateKey?api-version=2021-04-30\nBody{\"keyName\": \"Key2\"}\n```\nWhat is the result of the request?",
   "explanationZh": "regenerateKey 操作使用 \"keyName\": \"Key2\" 为\ncontoso1 重新生成次级订阅密钥。新值替换并使之前的次级密钥失效；主密钥保持不变。\n未更改。\n视图=rest-aiservices-accountmanagement-2024-10-01&tabs=HTTP",
   "explanationEn": "The regenerateKey operation with \"keyName\": \"Key2\" regenerates the secondary subscription key for\ncontoso1. The new value replaces and invalidates the previous secondary key; the primary key remains\nunchanged.\nview=rest-aiservices-accountmanagement-2024-10-01&tabs=HTTP",
   "boxes": [],
