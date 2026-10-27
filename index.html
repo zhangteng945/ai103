@@ -7,7 +7,7 @@
   <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610271608" />
+  <link rel="stylesheet" href="styles.css?v=202610271621" />
 </head>
 <body>
   <div class="app">
@@ -47,6 +47,18 @@
           模拟考试
           <span class="desc">限时抽题 · 结束计分（700/1000 及格）· 错题回顾</span>
         </button>
+        <button type="button" class="btn" id="btn-go-flagged" disabled>
+          标记复习
+          <span class="desc">暂无标记题目</span>
+        </button>
+        <button type="button" class="btn" id="btn-go-wrong" disabled>
+          错题回顾
+          <span class="desc">暂无错题</span>
+        </button>
+        <button type="button" class="btn hidden" id="btn-go-last-exam">
+          上次考试成绩
+          <span class="desc"></span>
+        </button>
       </div>
       <div class="note">
         及格线参考 Microsoft 认证常见换算：约 700 / 1000。若某题答案相对 PDF 有更正，练习反馈中会显示「答案已更正」说明。快捷键：数字键 1–6 选题，Enter 提交/下一题。
@@ -60,6 +72,8 @@
           筛选
           <select id="practice-filter" aria-label="按领域筛选">
             <option value="all">全部</option>
+            <option value="flagged">已标记</option>
+            <option value="wrong">错题</option>
             <option value="plan">规划和管理 Azure AI 解决方案</option>
             <option value="genai">实现生成式 AI 与智能体解决方案</option>
             <option value="vision">实现计算机视觉解决方案</option>
@@ -174,7 +188,7 @@
     </footer>
   </div>
 
-  <script src="questions.js?v=202610271608"></script>
-  <script src="app.js?v=202610271608"></script>
+  <script src="questions.js?v=202610271621"></script>
+  <script src="app.js?v=202610271621"></script>
 </body>
 </html>

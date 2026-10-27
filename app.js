@@ -3,6 +3,7 @@
   "use strict";
 
   const STORAGE_KEY = "ai103_practice_v3";
+  const EXAM_STORAGE_KEY = "ai103_exam_last_v1";
   const LANG_KEY = "ai103-lang";
   const SHOWANS_KEY = "ai103-showans";
   const QORDER_KEY = "ai103-qorder";
@@ -27,9 +28,17 @@
       btnPracticeDesc: "按领域筛选 · 即时反馈与解析 · 进度本地保存",
       btnExam: "模拟考试",
       btnExamDesc: "限时抽题 · 结束计分（700/1000 及格）· 错题回顾",
+      btnFlagged: "标记复习",
+      btnFlaggedDesc: (n) => (n ? ("已标记 " + n + " 题 · 点击开始复习") : "暂无标记题目"),
+      btnWrong: "错题回顾",
+      btnWrongDesc: (n) => (n ? ("错题 " + n + " 题 · 点击开始复习") : "暂无错题"),
+      btnLastExam: "上次考试成绩",
+      btnLastExamDesc: (score, n) => ("得分 " + score + " · 错题 " + n + " · 点击查看"),
       homeNote: "及格线参考 Microsoft 认证常见换算：约 700 / 1000。若某题答案相对 PDF 有更正，练习反馈中会显示「答案已更正」说明。快捷键：数字键 1–6 选题，Enter 提交/下一题。",
       filter: "筛选",
       filterAll: "全部",
+      filterFlagged: "已标记",
+      filterWrong: "错题",
       domain: {
         plan: "规划和管理 Azure AI 解决方案",
         genai: "实现生成式 AI 与智能体解决方案",
@@ -146,9 +155,17 @@
       btnPracticeDesc: "Filter by domain · instant feedback · local progress",
       btnExam: "Mock exam",
       btnExamDesc: "Timed sample · score out of 1000 (pass 700) · review misses",
+      btnFlagged: "Flagged review",
+      btnFlaggedDesc: (n) => (n ? (n + " flagged · tap to review") : "No flagged questions"),
+      btnWrong: "Miss review",
+      btnWrongDesc: (n) => (n ? (n + " misses · tap to review") : "No misses yet"),
+      btnLastExam: "Last exam score",
+      btnLastExamDesc: (score, n) => ("Score " + score + " · " + n + " misses · view"),
       homeNote: "Pass bar ≈ 700 / 1000 (common Microsoft scale). Corrected answers show a note after submit. Keys: 1–6 select, Enter submit/next.",
       filter: "Filter",
       filterAll: "All",
+      filterFlagged: "Flagged",
+      filterWrong: "Misses",
       domain: {
         plan: "Plan and manage an Azure AI solution",
         genai: "Implement generative AI and agentic solutions",
@@ -420,6 +437,7 @@
     practiceAnswers: {}, // id -> selected ids[] OR box map {boxId: value}
     practiceSubmitted: {}, // id -> true
     practiceFlags: {},
+    wrongIds: {}, // id -> true (persisted wrong-answer bank for 错题回顾)
     examQuestions: [],
     examIndex: 0,
     examAnswers: {},
@@ -462,8 +480,31 @@
       const data = JSON.parse(raw);
       if (data.answers) state.practiceAnswers = data.answers;
       if (data.submitted) state.practiceSubmitted = data.submitted;
-      if (data.flags) state.practiceFlags = data.flags;
+      if (data.flags) {
+        const cleaned = {};
+        Object.keys(data.flags).forEach((id) => {
+          if (data.flags[id]) cleaned[id] = true;
+        });
+        state.practiceFlags = cleaned;
+      }
+      if (data.wrongIds) {
+        const cleaned = {};
+        Object.keys(data.wrongIds).forEach((id) => {
+          if (data.wrongIds[id]) cleaned[id] = true;
+        });
+        state.wrongIds = cleaned;
+      }
       sanitizeProgress();
+      if (!data.wrongIds) {
+        let derived = false;
+        QUESTIONS.forEach((q) => {
+          if (state.practiceSubmitted[q.id] && !isCorrect(q, state.practiceAnswers[q.id])) {
+            state.wrongIds[q.id] = true;
+            derived = true;
+          }
+        });
+        if (derived) saveProgress();
+      }
     } catch (e) {
       /* ignore */
     }
@@ -492,6 +533,7 @@
       if (!ok) {
         delete state.practiceAnswers[id];
         delete state.practiceSubmitted[id];
+        delete state.wrongIds[id];
         changed = true;
       }
     });
@@ -502,22 +544,152 @@
         changed = true;
       }
     });
+    Object.keys(state.practiceFlags).forEach((id) => {
+      if (!byId[id] || !state.practiceFlags[id]) {
+        delete state.practiceFlags[id];
+        changed = true;
+      }
+    });
+    Object.keys(state.wrongIds).forEach((id) => {
+      if (!byId[id] || !state.wrongIds[id]) {
+        delete state.wrongIds[id];
+        changed = true;
+      }
+    });
     if (changed) saveProgress();
   }
 
   function saveProgress() {
     try {
+      const flags = {};
+      Object.keys(state.practiceFlags).forEach((id) => {
+        if (state.practiceFlags[id]) flags[id] = true;
+      });
+      const wrongIds = {};
+      Object.keys(state.wrongIds).forEach((id) => {
+        if (state.wrongIds[id]) wrongIds[id] = true;
+      });
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
           answers: state.practiceAnswers,
           submitted: state.practiceSubmitted,
-          flags: state.practiceFlags,
+          flags: flags,
+          wrongIds: wrongIds,
         })
       );
     } catch (e) {
       /* ignore */
     }
+  }
+
+  function flaggedCount() {
+    return Object.keys(state.practiceFlags).filter((id) => state.practiceFlags[id]).length;
+  }
+
+  function wrongCount() {
+    return Object.keys(state.wrongIds).filter((id) => state.wrongIds[id]).length;
+  }
+
+  function questionsByFilter(filter) {
+    if (filter === "flagged") {
+      return QUESTIONS.filter((q) => !!state.practiceFlags[q.id]);
+    }
+    if (filter === "wrong") {
+      return QUESTIONS.filter((q) => !!state.wrongIds[q.id]);
+    }
+    if (filter === "all" || !filter) return QUESTIONS.slice();
+    return byDomain(filter);
+  }
+
+  function saveExamLast() {
+    try {
+      if (!state.examResult) return;
+      const r = state.examResult;
+      localStorage.setItem(
+        EXAM_STORAGE_KEY,
+        JSON.stringify({
+          result: {
+            correct: r.correct,
+            total: r.total,
+            pct: r.pct,
+            score1000: r.score1000,
+            pass: r.pass,
+            byDom: r.byDom,
+            wrongIds: (r.wrongList || []).map((q) => q.id),
+            auto: !!r.auto,
+          },
+          questionIds: state.examQuestions.map((q) => q.id),
+          answers: state.examAnswers,
+          flags: state.examFlags,
+        })
+      );
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function loadExamLast() {
+    try {
+      const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      const byId = {};
+      QUESTIONS.forEach((q) => (byId[q.id] = q));
+      const qs = (data.questionIds || []).map((id) => byId[id]).filter(Boolean);
+      if (!qs.length || !data.result) return false;
+      state.examQuestions = qs;
+      state.examAnswers = data.answers || {};
+      state.examFlags = data.flags || {};
+      state.examSubmitted = true;
+      state.revealed = true;
+      state.examTimerId = null;
+      state.examSecondsLeft = 0;
+      state.examResult = {
+        correct: data.result.correct,
+        total: data.result.total,
+        pct: data.result.pct,
+        score1000: data.result.score1000,
+        pass: data.result.pass,
+        byDom: data.result.byDom || {},
+        wrongList: (data.result.wrongIds || []).map((id) => byId[id]).filter(Boolean),
+        auto: !!data.result.auto,
+      };
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function hasExamLast() {
+    try {
+      return !!localStorage.getItem(EXAM_STORAGE_KEY);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /** Read last exam summary without mutating in-progress exam state. */
+  function peekExamLast() {
+    try {
+      const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data || !data.result) return null;
+      return {
+        score1000: data.result.score1000,
+        wrongCount: (data.result.wrongIds || []).length,
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function openLastExamResult() {
+    // Always reload from storage so we don't clobber with a partial in-memory state
+    if (!loadExamLast()) return;
+    showView("result");
+    renderResult();
   }
 
   function shuffle(arr) {
@@ -775,7 +947,57 @@
       if (el) el.textContent = counts[d];
     });
     applyChrome();
+    updateHomeReviewButtons();
     showView("home");
+  }
+
+  function updateHomeReviewButtons() {
+    const pack = t();
+    const nFlag = flaggedCount();
+    const nWrong = wrongCount();
+    const bf = $("#btn-go-flagged");
+    if (bf) {
+      bf.disabled = nFlag === 0;
+      bf.classList.toggle("is-disabled", nFlag === 0);
+      bf.innerHTML =
+        pack.btnFlagged + '<span class="desc">' + pack.btnFlaggedDesc(nFlag) + "</span>";
+    }
+    const bw = $("#btn-go-wrong");
+    if (bw) {
+      bw.disabled = nWrong === 0;
+      bw.classList.toggle("is-disabled", nWrong === 0);
+      bw.innerHTML =
+        pack.btnWrong + '<span class="desc">' + pack.btnWrongDesc(nWrong) + "</span>";
+    }
+    const bl = $("#btn-go-last-exam");
+    if (bl) {
+      // Prefer live submitted result when viewing home after an exam; else peek storage
+      // (never loadExamLast here — that would clobber an in-progress exam).
+      let score = null;
+      let nMiss = 0;
+      let has = false;
+      if (state.examSubmitted && state.examResult && state.examResult.total) {
+        has = true;
+        score = state.examResult.score1000;
+        nMiss = (state.examResult.wrongList || []).length;
+      } else {
+        const peek = peekExamLast();
+        if (peek) {
+          has = true;
+          score = peek.score1000;
+          nMiss = peek.wrongCount;
+        }
+      }
+      bl.classList.toggle("hidden", !has);
+      bl.disabled = !has;
+      if (has) {
+        bl.innerHTML =
+          pack.btnLastExam +
+          '<span class="desc">' +
+          pack.btnLastExamDesc(score, nMiss) +
+          "</span>";
+      }
+    }
   }
 
   function applyChrome() {
@@ -828,13 +1050,15 @@
       const sel = filtLab.querySelector("select");
       filtLab.childNodes[0].textContent = pack.filter + " ";
       if (sel) {
-        const opts = sel.querySelectorAll("option");
-        if (opts[0]) opts[0].textContent = pack.filterAll;
-        DOMAIN_ORDER.forEach((d, i) => {
-          if (opts[i + 1]) opts[i + 1].textContent = pack.domain[d];
+        Array.from(sel.options).forEach((opt) => {
+          if (opt.value === "all") opt.textContent = pack.filterAll;
+          else if (opt.value === "flagged") opt.textContent = pack.filterFlagged;
+          else if (opt.value === "wrong") opt.textContent = pack.filterWrong;
+          else if (pack.domain[opt.value]) opt.textContent = pack.domain[opt.value];
         });
       }
     }
+    updateHomeReviewButtons();
     const kbdP = $("#view-practice .kbd-hint");
     if (kbdP) kbdP.innerHTML = "<kbd>1</kbd>–<kbd>6</kbd> " + pack.kbdPractice;
     setTxt("#view-exam-config h2", pack.examConfigTitle);
@@ -1203,8 +1427,7 @@
   /* ---- Practice ---- */
   function startPractice(filter) {
     state.practiceFilter = filter || "all";
-    state.practiceList =
-      filter === "all" ? QUESTIONS.slice() : byDomain(filter);
+    state.practiceList = questionsByFilter(state.practiceFilter);
     applyPracticeOrder();
     // restore index to first unanswered if possible
     let idx = state.practiceList.findIndex((q) => !state.practiceSubmitted[q.id]);
@@ -1243,7 +1466,7 @@
   function togglePracticeShuffle() {
     const cur = currentPracticeQ();
     const filter = state.practiceFilter;
-    const base = filter === "all" ? QUESTIONS.slice() : byDomain(filter);
+    const base = questionsByFilter(filter);
     if (isPracticeShuffled()) {
       delete state.practiceOrder[filter];
       state.practiceList = base;
@@ -1636,6 +1859,8 @@
     if (isPracticeRevealed(q)) return; // revealed answers are never scored
     if (!allBoxesSelected(q, sel)) return;
     state.practiceSubmitted[q.id] = true;
+    if (isCorrect(q, sel)) delete state.wrongIds[q.id];
+    else state.wrongIds[q.id] = true;
     saveProgress();
     renderPractice();
   }
@@ -1646,8 +1871,11 @@
       delete state.practiceAnswers[q.id];
       delete state.practiceSubmitted[q.id];
       delete state.practiceFlags[q.id];
+      delete state.wrongIds[q.id];
     });
     saveProgress();
+    state.practiceList = questionsByFilter(state.practiceFilter);
+    applyPracticeOrder();
     state.practiceIndex = 0;
     renderPractice();
   }
@@ -1894,6 +2122,12 @@
       wrongList,
       auto: !!auto,
     };
+    // Merge exam misses into persistent wrong bank (survives 回首页)
+    wrongList.forEach((q) => {
+      state.wrongIds[q.id] = true;
+    });
+    saveProgress();
+    saveExamLast();
     showView("result");
     renderResult();
   }
@@ -2048,6 +2282,7 @@
       return;
     }
     loadProgress();
+    loadExamLast();
     applyChrome();
     renderHome();
 
@@ -2057,12 +2292,31 @@
 
     $("#btn-go-practice").addEventListener("click", () => startPractice("all"));
     $("#btn-go-exam").addEventListener("click", openExamConfig);
+    const btnFlagged = $("#btn-go-flagged");
+    if (btnFlagged) {
+      btnFlagged.addEventListener("click", () => {
+        if (!flaggedCount()) return;
+        startPractice("flagged");
+      });
+    }
+    const btnWrong = $("#btn-go-wrong");
+    if (btnWrong) {
+      btnWrong.addEventListener("click", () => {
+        if (!wrongCount()) return;
+        startPractice("wrong");
+      });
+    }
+    const btnLastExam = $("#btn-go-last-exam");
+    if (btnLastExam) {
+      btnLastExam.addEventListener("click", () => openLastExamResult());
+    }
 
     $("#practice-filter").addEventListener("change", (e) => {
       startPractice(e.target.value);
     });
     $("#btn-practice-back").addEventListener("click", () => {
-      showView("home");
+      // Do NOT clear flags / wrongIds — only explicit「重置进度」clears
+      renderHome();
     });
     $("#btn-practice-submit").addEventListener("click", submitPractice);
     $("#btn-practice-reveal").addEventListener("click", () => {
@@ -2099,8 +2353,17 @@
     $("#btn-practice-flag").addEventListener("click", () => {
       const q = currentPracticeQ();
       if (!q) return;
-      state.practiceFlags[q.id] = !state.practiceFlags[q.id];
+      if (state.practiceFlags[q.id]) delete state.practiceFlags[q.id];
+      else state.practiceFlags[q.id] = true;
       saveProgress();
+      if (state.practiceFilter === "flagged") {
+        const curId = q.id;
+        state.practiceList = questionsByFilter("flagged");
+        applyPracticeOrder();
+        let i = state.practiceList.findIndex((x) => x.id === curId);
+        if (i < 0) i = Math.min(state.practiceIndex, Math.max(0, state.practiceList.length - 1));
+        state.practiceIndex = state.practiceList.length ? i : 0;
+      }
       renderPractice();
     });
     $("#btn-practice-reset").addEventListener("click", resetPracticeFilter);
@@ -2125,8 +2388,16 @@
         if (!confirm(t().confirmLeave)) return;
         if (state.examTimerId) clearInterval(state.examTimerId);
         state.examTimerId = null;
+        // Unfinished exam discarded; previous saved last-exam result kept
+        state.examQuestions = [];
+        state.examAnswers = {};
+        state.examFlags = {};
+        state.examResult = null;
+        loadExamLast();
+      } else {
+        saveExamLast();
       }
-      showView("home");
+      renderHome();
     });
     $("#btn-exam-prev").addEventListener("click", () => {
       if (state.examIndex > 0) {
@@ -2157,7 +2428,11 @@
       showView("exam");
       renderExam();
     });
-    $("#btn-result-home").addEventListener("click", () => showView("home"));
+    $("#btn-result-home").addEventListener("click", () => {
+      // Keep exam result + wrong bank; only explicit reset / new exam clears last score UI
+      saveExamLast();
+      renderHome();
+    });
     $("#btn-result-retry").addEventListener("click", openExamConfig);
 
     document.addEventListener("keydown", onKey);
