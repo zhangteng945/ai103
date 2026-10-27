@@ -7,7 +7,7 @@
   <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610271621" />
+  <link rel="stylesheet" href="styles.css?v=202610271641" />
 </head>
 <body>
   <div class="app">
@@ -112,13 +112,14 @@
 
     <section id="view-exam-config" class="card hidden">
       <h2>模拟考试设置</h2>
-      <p class="muted">按官方领域权重近似抽题，题目与选项顺序随机打乱。考试过程中不显示对错。</p>
+      <p class="muted">真实考试结构：48 道普通题（选择/判断/拖拽）+ 3 道多判断 + 7 道同一案例小题（选 58 题时）。其它数量仍按领域权重抽题。考试过程中不显示对错。</p>
       <div class="exam-config">
         <label>
           <span>题目数量</span>
           <select id="exam-count">
             <option value="30">30 题</option>
-            <option value="50" selected>50 题（默认）</option>
+            <option value="50">50 题</option>
+            <option value="58" selected>58 题（默认，真实考试）</option>
             <option value="60">60 题</option>
           </select>
         </label>
@@ -188,7 +189,7 @@
     </footer>
   </div>
 
-  <script src="questions.js?v=202610271621"></script>
-  <script src="app.js?v=202610271621"></script>
+  <script src="questions.js?v=202610271641"></script>
+  <script src="app.js?v=202610271641"></script>
 </body>
 </html>

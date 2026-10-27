@@ -107,11 +107,12 @@
       unanswered: "（未选）",
       notAnswered: "未作答",
       examConfigTitle: "模拟考试设置",
-      examConfigIntro: "按官方领域权重近似抽题，题目与选项顺序随机打乱。考试过程中不显示对错。",
+      examConfigIntro: "真实考试结构：48 道普通题（选择/判断/拖拽）+ 3 道多判断 + 7 道同一案例小题（选 58 题时）。其它数量仍按领域权重抽题。考试过程中不显示对错。",
       examCount: "题目数量",
       examMinutes: "考试时长（分钟）",
       examCount30: "30 题",
-      examCount50: "50 题（默认）",
+      examCount50: "50 题",
+      examCount58: "58 题（默认，真实考试）",
       examCount60: "60 题",
       back: "← 返回",
       startExam: "开始考试",
@@ -234,11 +235,12 @@
       unanswered: "(none)",
       notAnswered: "No answer",
       examConfigTitle: "Mock exam setup",
-      examConfigIntro: "Sampled by domain weights; order shuffled. No feedback until you finish.",
+      examConfigIntro: "Real exam structure: 48 ordinary + 3 multi-judgment + 7 from one case study (when 58 is selected). Other counts still use domain-weighted sampling. No feedback until you finish.",
       examCount: "Question count",
       examMinutes: "Duration (minutes)",
       examCount30: "30 questions",
-      examCount50: "50 questions (default)",
+      examCount50: "50 questions",
+      examCount58: "58 questions (default, real exam)",
       examCount60: "60 questions",
       back: "← Back",
       startExam: "Start exam",
@@ -909,6 +911,161 @@
     return shuffle(picked).map(shuffleOptions);
   }
 
+  /** Multi-judgment (多判断题): non-case hotspot/yn with 2+ Yes/No statement boxes. */
+  function isMultiJudgment(q) {
+    if (!q || q.caseStudy) return false;
+    if (!(Array.isArray(q.boxes) && q.boxes.length >= 2)) return false;
+    if (q.control === "yn") return true;
+    return getControl(q) === "yn";
+  }
+
+  /** Pick one caseStudyId block targeting 7 sub-questions (prefer exact 7). */
+  function pickCaseBlock(targetCount) {
+    const want = targetCount == null ? 7 : targetCount;
+    const groups = {};
+    QUESTIONS.forEach((q) => {
+      if (!q.caseStudy) return;
+      const id = q.caseStudyId || "_none";
+      if (!groups[id]) groups[id] = [];
+      groups[id].push(q);
+    });
+    const ids = shuffle(Object.keys(groups));
+    ids.sort((a, b) => {
+      const da = Math.abs(groups[a].length - want);
+      const db = Math.abs(groups[b].length - want);
+      if (da !== db) return da - db;
+      // Prefer exact match, then prefer >= want over shortfall
+      const ae = groups[a].length === want ? 0 : 1;
+      const be = groups[b].length === want ? 0 : 1;
+      if (ae !== be) return ae - be;
+      const ag = groups[a].length >= want ? 0 : 1;
+      const bg = groups[b].length >= want ? 0 : 1;
+      if (ag !== bg) return ag - bg;
+      return 0;
+    });
+    if (!ids.length) return [];
+    let qs = groups[ids[0]].slice();
+    // Keep PDF / bank order within the case, then trim if longer than want
+    if (qs.length > want) qs = qs.slice(0, want);
+    return qs;
+  }
+
+  /**
+   * Real-exam (58): 48 ordinary → 3 multi-judgment → 7 from one case block.
+   * Ordinary = non-case, non-multi-judgment (single/multi/hotspot-select/drag).
+   * Segments are internally shuffled; overall order is fixed 48+3+7.
+   */
+  function sampleRealExam58() {
+    const caseQs = pickCaseBlock(7);
+    const used = new Set(caseQs.map((q) => q.id));
+
+    const mjPool = shuffle(QUESTIONS.filter((q) => isMultiJudgment(q) && !used.has(q.id)));
+    const mj = mjPool.slice(0, 3);
+    mj.forEach((q) => used.add(q.id));
+
+    const ordinaryAll = QUESTIONS.filter(
+      (q) => !q.caseStudy && !isMultiJudgment(q) && !used.has(q.id)
+    );
+    // Domain-weight among ordinary only, then shuffle that segment
+    let ordinary = weightedSampleFromPool(ordinaryAll, 48);
+    ordinary.forEach((q) => used.add(q.id));
+
+    // Fill shortfalls from remaining bank (prefer same category)
+    function fill(need, preferFn) {
+      if (need <= 0) return [];
+      const rest = shuffle(QUESTIONS.filter((q) => !used.has(q.id) && preferFn(q)));
+      const take = rest.slice(0, need);
+      take.forEach((q) => used.add(q.id));
+      if (take.length < need) {
+        const more = shuffle(QUESTIONS.filter((q) => !used.has(q.id))).slice(0, need - take.length);
+        more.forEach((q) => used.add(q.id));
+        return take.concat(more);
+      }
+      return take;
+    }
+    if (ordinary.length < 48) {
+      ordinary = ordinary.concat(
+        fill(48 - ordinary.length, (q) => !q.caseStudy && !isMultiJudgment(q))
+      );
+    }
+    let mjFinal = mj;
+    if (mjFinal.length < 3) {
+      mjFinal = mjFinal.concat(
+        fill(3 - mjFinal.length, (q) => isMultiJudgment(q) || (getControl(q) === "yn" && !q.caseStudy))
+      );
+    }
+    let caseFinal = caseQs;
+    if (caseFinal.length < 7) {
+      caseFinal = caseFinal.concat(
+        fill(7 - caseFinal.length, (q) => !!q.caseStudy)
+      );
+    }
+
+    ordinary = shuffle(ordinary);
+    mjFinal = shuffle(mjFinal);
+    // Case: keep bank order (already trimmed); do not reshuffle across cases
+    return ordinary
+      .concat(mjFinal)
+      .concat(caseFinal)
+      .map(shuffleOptions);
+  }
+
+  /** Domain-weighted sample drawn only from a given pool (may return fewer than n). */
+  function weightedSampleFromPool(pool, n) {
+    if (!pool.length || n <= 0) return [];
+    const byDom = {};
+    DOMAIN_ORDER.forEach((d) => {
+      byDom[d] = [];
+    });
+    const other = [];
+    pool.forEach((q) => {
+      if (byDom[q.domain]) byDom[q.domain].push(q);
+      else other.push(q);
+    });
+    DOMAIN_ORDER.forEach((d) => {
+      byDom[d] = shuffle(byDom[d]);
+    });
+    const targets = {};
+    let assigned = 0;
+    DOMAIN_ORDER.forEach((d, i) => {
+      if (i === DOMAIN_ORDER.length - 1) {
+        targets[d] = Math.max(0, n - assigned);
+      } else {
+        targets[d] = Math.round(n * DOMAIN_WEIGHTS[d]);
+        assigned += targets[d];
+      }
+    });
+    let total = DOMAIN_ORDER.reduce((s, d) => s + targets[d], 0);
+    while (total > n) {
+      const d = DOMAIN_ORDER.find((x) => targets[x] > 0);
+      if (!d) break;
+      targets[d]--;
+      total--;
+    }
+    while (total < n) {
+      const d =
+        DOMAIN_ORDER.find((x) => byDom[x].length > targets[x]) || DOMAIN_ORDER[0];
+      targets[d]++;
+      total++;
+    }
+    let picked = [];
+    DOMAIN_ORDER.forEach((d) => {
+      const take = Math.min(targets[d], byDom[d].length);
+      picked = picked.concat(byDom[d].slice(0, take));
+    });
+    if (picked.length < n) {
+      const have = new Set(picked.map((q) => q.id));
+      const rest = shuffle(pool.filter((q) => !have.has(q.id)));
+      picked = picked.concat(rest.slice(0, n - picked.length));
+    }
+    return picked.slice(0, n);
+  }
+
+  function sampleExamQuestions(n) {
+    if (n === 58) return sampleRealExam58();
+    return weightedSample(n);
+  }
+
   /** Tolerant key compare: trims, collapses whitespace/NBSP, unifies smart quotes */
   function normKey(v) {
     return String(v == null ? "" : v)
@@ -1072,7 +1229,8 @@
       const o = countSel.options;
       if (o[0]) o[0].textContent = pack.examCount30;
       if (o[1]) o[1].textContent = pack.examCount50;
-      if (o[2]) o[2].textContent = pack.examCount60;
+      if (o[2]) o[2].textContent = pack.examCount58;
+      if (o[3]) o[3].textContent = pack.examCount60;
     }
     setTxt("#btn-exam-config-back", pack.back);
     setTxt("#btn-exam-start", pack.startExam);
@@ -1887,10 +2045,10 @@
   }
 
   function startExam() {
-    const count = parseInt($("#exam-count").value, 10) || 50;
+    const count = parseInt($("#exam-count").value, 10) || 58;
     const minutes = parseInt($("#exam-minutes").value, 10) || 90;
     const n = Math.min(count, QUESTIONS.length);
-    state.examQuestions = weightedSample(n);
+    state.examQuestions = sampleExamQuestions(n);
     state.examIndex = 0;
     state.examAnswers = {};
     state.examFlags = {};
