@@ -334,6 +334,16 @@
   function stemOf(q) {
     return pickText(q.stemZh || q.stem, q.stemEn);
   }
+  function caseStudyTextOf(q) {
+    if (!q) return "";
+    const zh = q.caseStudyTextZh || q.caseStudyText || "";
+    const en = q.caseStudyTextEn || "";
+    if (state.lang === "zh") return zh || en;
+    if (state.lang === "en") return en || zh;
+    // both: ZH then EN stacked
+    if (zh && en && zh !== en) return zh + "\n\n—\n\n" + en;
+    return zh || en;
+  }
   function optionText(opt) {
     return pickText(opt.textZh || opt.text, opt.textEn || opt.text);
   }
@@ -1404,7 +1414,7 @@
     html += "</div>";
     if (q.caseStudy && q.caseStudyText) {
       html += '<details class="case-box"><summary>' + escapeHtml(pack.caseSummary) + '</summary><div class="case-body">' +
-        formatMultiline(q.caseStudyText) + "</div></details>";
+        formatMultiline(caseStudyTextOf(q)) + "</div></details>";
     }
     html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
     if (isBoxQ(q)) {
@@ -1729,7 +1739,7 @@
     html += "</div>";
     if (q.caseStudy && q.caseStudyText) {
       html += '<details class="case-box"><summary>' + escapeHtml(pack.caseSummary) + '</summary><div class="case-body">' +
-        formatMultiline(q.caseStudyText) + "</div></details>";
+        formatMultiline(caseStudyTextOf(q)) + "</div></details>";
     }
     html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
     if (isBoxQ(q)) {
