@@ -2,7 +2,7 @@
  * AI-103 Supabase Auth (Phase 1.1 — email + password + login gate).
  * - No valid url/anonKey: all APIs no-op; localStorage practice unchanged (open access).
  * - With real keys: hide home/practice/exam until session; logout returns to login-only.
- * - Requires supabase-js CDN before this file (window.supabase.createClient).
+ * - Requires supabase-js before this file (vendored js/vendor/… or CDN; window.supabase.createClient).
  * - Public sign-up is disabled; register shows admin-assigned message.
  * - Optional user_metadata.expires_at (ISO): past → signOut + 「账号已过期，请联系管理员」.
  * - Docs: docs/auth-plan.md
@@ -113,7 +113,7 @@
       return "未配置 Supabase（离线模式）。进度仅保存在本机 localStorage。";
     }
     if (state.mode === "no-sdk") {
-      return "登录组件加载失败（CDN/网络），请刷新页面重试。";
+      return "登录组件加载失败（脚本/网络），请强制刷新或换 Chrome 重试。";
     }
     if (state.user && state.user.email) {
       return "已登录：" + state.user.email;
@@ -257,7 +257,7 @@
     if (!sb || typeof sb.createClient !== "function") {
       state.mode = "no-sdk";
       state.ready = true;
-      log("supabase-js missing — load CDN before this script");
+      log("supabase-js missing — load js/vendor/supabase-js before this script");
       return null;
     }
     try {
