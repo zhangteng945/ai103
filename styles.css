@@ -1324,3 +1324,77 @@ html.auth-required body.auth-ok #auth-panel {
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* ===== Line-wrap / overflow hardening (2026-10-28) =====
+   Long code lines, URLs and unbroken tokens must wrap inside their own box
+   instead of widening the page (esp. ~375px phones). */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+@supports (overflow: clip) {
+  html, body { overflow-x: clip; }
+}
+.app,
+.card,
+#practice-body,
+#exam-body,
+.toolbar,
+.options,
+.option,
+.option .otext,
+.stem,
+.case-body,
+.feedback,
+.inline-template,
+.blank-legend,
+.refs {
+  min-width: 0;
+}
+.stem,
+.option .otext,
+.case-body,
+.feedback,
+.inline-template {
+  max-width: 100%;
+}
+.stem,
+.option .otext,
+.case-body,
+.feedback,
+.inline-template,
+.blank-legend-item,
+.refs,
+.refs ul {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* fenced code / exhibits: wrap long lines, keep indentation */
+.stem pre.stem-code,
+pre,
+code {
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.stem pre.stem-code { overflow-x: auto; }
+.inline-template.is-code { overflow-wrap: anywhere; }
+/* in-code dropdowns stay usable but never exceed the code box */
+.inline-blank { max-width: 100%; min-width: 0; }
+.box-select,
+.box-select.inline-select,
+select {
+  max-width: 100%;
+}
+.box-mark.inline-mark { white-space: normal; }
+img, video, canvas, svg, table {
+  max-width: 100%;
+}
+img { height: auto; }
+table { display: block; overflow-x: auto; }
+.badge { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 520px) {
+  .showans-toggle { white-space: normal; }
+  .box-select.inline-select { min-width: 0; }
+}
