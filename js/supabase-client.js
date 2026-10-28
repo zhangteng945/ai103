@@ -4,6 +4,7 @@
  * - With real keys: hide home/practice/exam until session; logout returns to login-only.
  * - Requires supabase-js CDN before this file (window.supabase.createClient).
  * - Public sign-up is disabled; register shows admin-assigned message.
+ * - Optional user_metadata.expires_at (ISO): past → signOut + 「账号已过期，请联系管理员」.
  * - Docs: docs/auth-plan.md
  */
 (function (global) {
@@ -23,10 +24,14 @@
       /(?:^|[?&])auth=1(?:&|$)/.test(location.search || ""));
 
   var client = null;
+  var EXPIRED_MSG = "账号已过期，请联系管理员";
+  var enforcingExpiry = false;
+
   var state = {
     user: null,
     ready: false,
     mode: enabled ? "connecting" : "offline-noop",
+    expired: false,
   };
 
   function log() {
@@ -38,6 +43,9 @@
   }
 
   function statusMessage() {
+    if (state.expired) {
+      return EXPIRED_MSG;
+    }
     if (!enabled) {
       return "未配置 Supabase（离线模式）。进度仅保存在本机 localStorage。";
     }
@@ -76,6 +84,50 @@
     state.user = user
       ? { id: user.id, email: user.email || "" }
       : null;
+  }
+
+  /** Read expires_at ISO from user_metadata (Dashboard / raw_user_meta_data). */
+  function userExpiresAt(user) {
+    if (!user) return null;
+    var meta = user.user_metadata || {};
+    var v = meta.expires_at;
+    if (v == null || v === "") return null;
+    return String(v);
+  }
+
+  function isAccountExpired(user) {
+    var iso = userExpiresAt(user);
+    if (!iso) return false;
+    var t = Date.parse(iso);
+    if (isNaN(t)) return false;
+    return Date.now() > t;
+  }
+
+  /**
+   * If user_metadata.expires_at is past now: clear session, show Chinese expiry
+   * message, return true. No expires_at → treat as unlimited.
+   */
+  async function rejectIfExpired(user) {
+    if (!isAccountExpired(user)) return false;
+    if (enforcingExpiry) return true;
+    enforcingExpiry = true;
+    try {
+      log("account expired", userExpiresAt(user));
+      state.expired = true;
+      applyUser(null);
+      var c = ensureClient();
+      if (c) {
+        try {
+          await c.auth.signOut();
+        } catch (e) {}
+      }
+      state.ready = true;
+      setStatusEl(EXPIRED_MSG);
+      refreshUi();
+    } finally {
+      enforcingExpiry = false;
+    }
+    return true;
   }
 
   function isLoggedIn() {
@@ -164,6 +216,7 @@
   }
 
   async function signIn(email, password) {
+    state.expired = false;
     if (!enabled) {
       setStatusEl("请先创建 Supabase 项目，并填写 js/supabase-config.js（见 docs/auth-plan.md）。");
       log("signIn no-op: missing config");
@@ -185,7 +238,12 @@
       log("signIn error", msg);
       return { ok: false, reason: "auth-error", error: result.error };
     }
-    applyUser(result.data && result.data.user ? result.data.user : null);
+    var user = result.data && result.data.user ? result.data.user : null;
+    if (await rejectIfExpired(user)) {
+      return { ok: false, reason: "expired" };
+    }
+    state.expired = false;
+    applyUser(user);
     state.ready = true;
     setStatusEl(statusMessage());
     refreshUi();
@@ -233,7 +291,12 @@
       return null;
     }
     var session = result.data && result.data.session ? result.data.session : null;
-    applyUser(session && session.user ? session.user : null);
+    var user = session && session.user ? session.user : null;
+    if (user && (await rejectIfExpired(user))) {
+      return null;
+    }
+    if (user) state.expired = false;
+    applyUser(user);
     return session;
   }
 
@@ -279,7 +342,13 @@
     refreshUi();
 
     c.auth.onAuthStateChange(function (_event, session) {
-      applyUser(session && session.user ? session.user : null);
+      var user = session && session.user ? session.user : null;
+      if (user && isAccountExpired(user)) {
+        Promise.resolve(rejectIfExpired(user));
+        return;
+      }
+      if (user) state.expired = false;
+      applyUser(user);
       state.ready = true;
       refreshUi();
     });
