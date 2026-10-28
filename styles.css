@@ -1208,7 +1208,7 @@ footer.app-foot {
 }
 
 
-/* Auth panel (shown when Supabase configured or ?auth=1 / authUi) */
+/* Auth / password-gate panel */
 .auth-panel {
   width: 100%;
   margin-top: 0.75rem;
@@ -1257,7 +1257,7 @@ footer.app-foot {
   margin: 0;
 }
 
-/* Login gate: real Supabase keys → hide app until body.auth-ok (session). Title/credit stay. */
+/* Login gate: hide app until body.auth-ok (password unlock). Title/credit stay. */
 html.auth-required body:not(.auth-ok) #view-home,
 html.auth-required body:not(.auth-ok) #view-practice,
 html.auth-required body:not(.auth-ok) #view-exam-config,

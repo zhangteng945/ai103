@@ -7,22 +7,25 @@
   <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610281435" />
-  <!-- Config early so auth-required can hide app before paint; real keys never committed -->
-  <script src="js/supabase-config.js"></script>
+  <link rel="stylesheet" href="styles.css?v=202610281505" />
+  <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
     (function () {
-      var c = window.__AI103_SUPABASE__ || {};
-      var ph =
-        !c.url ||
-        !c.anonKey ||
-        String(c.url).indexOf("YOUR_PROJECT") >= 0 ||
-        String(c.anonKey).indexOf("your_anon") >= 0;
-      if (!ph) document.documentElement.classList.add("auth-required");
+      document.documentElement.classList.add("auth-required");
     })();
   </script>
 </head>
 <body>
+  <script>
+    (function () {
+      try {
+        document.body.classList.add("auth-gated");
+        if (localStorage.getItem("ai103_gate_v1") === "1") document.body.classList.add("auth-ok");
+      } catch (e) {
+        document.body.classList.add("auth-gated");
+      }
+    })();
+  </script>
   <div class="app">
     <header class="topbar">
       <div class="brand">
@@ -39,19 +42,17 @@
         <button type="button" data-lang="both" title="中英对照" class="active">对照</button>
       </div>
 
-      <div id="auth-panel" class="auth-panel hidden" aria-label="账号">
-        <div id="auth-status" class="auth-status">正在加载登录组件…</div>
+      <div id="auth-panel" class="auth-panel hidden" aria-label="访问密码">
+        <div id="auth-status" class="auth-status">请输入访问密码</div>
         <form id="auth-form" class="auth-form-fields" autocomplete="on" action="#" method="post" novalidate>
-          <input type="text" id="auth-email" class="auth-input" name="email" placeholder="邮箱或短名（如 fanjie）" autocomplete="username" inputmode="email" />
-          <input type="password" id="auth-password" class="auth-input" name="password" placeholder="密码" autocomplete="current-password" />
+          <input type="password" id="auth-password" class="auth-input" name="password" placeholder="访问密码" autocomplete="current-password" />
         </form>
         <div class="auth-actions">
-          <button type="submit" form="auth-form" class="btn btn-sm" id="btn-auth-login">登录</button>
-          <button type="button" class="btn btn-sm btn-ghost" id="btn-auth-register" title="默认由管理员开通">注册/开通</button>
-          <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出</button>
+          <button type="submit" form="auth-form" class="btn btn-sm" id="btn-auth-login">进入</button>
+          <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出解锁</button>
         </div>
-        <p class="auth-hint muted">请先登录 · 支持完整邮箱；学员也可用短名（如 fanjie）自动补全 @ai103.local · 账号由管理员分配</p>
-        <p class="auth-wechat-tip muted">请用 Chrome 或系统浏览器打开，不要用微信内置浏览器</p>
+        <p class="auth-hint muted">共享密码访问 · 解锁后本机记住，清除站点数据或点「退出解锁」可重新上锁</p>
+        <p class="auth-wechat-tip muted">建议用 Chrome / 系统浏览器打开</p>
       </div>
     </header>
 
@@ -217,10 +218,9 @@
     </footer>
   </div>
 
-  <!-- supabase-js vendored locally (no jsDelivr); auth client（config 已在 head；supabase-config.js 勿提交） -->
-  <script src="js/vendor/supabase-js-2.118.0.min.js?v=202610281435" onerror="window.__AI103_CDN_FAIL__=1;var e=document.getElementById('auth-status');if(e)e.textContent='登录组件加载失败，请强制刷新或换 Chrome 浏览器';"></script>
-  <script src="js/supabase-client.js?v=202610281435"></script>
-  <script src="questions.js?v=202610281435"></script>
-  <script src="app.js?v=202610281435"></script>
+  <!-- Temporary shared-password gate (Supabase Auth UI off; vendor/client kept in repo unused) -->
+  <script src="js/password-gate.js?v=202610281505"></script>
+  <script src="questions.js?v=202610281505"></script>
+  <script src="app.js?v=202610281505"></script>
 </body>
 </html>
