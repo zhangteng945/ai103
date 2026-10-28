@@ -7,7 +7,20 @@
   <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610281158" />
+  <link rel="stylesheet" href="styles.css?v=202610281206" />
+  <!-- Config early so auth-required can hide app before paint; real keys never committed -->
+  <script src="js/supabase-config.js"></script>
+  <script>
+    (function () {
+      var c = window.__AI103_SUPABASE__ || {};
+      var ph =
+        !c.url ||
+        !c.anonKey ||
+        String(c.url).indexOf("YOUR_PROJECT") >= 0 ||
+        String(c.anonKey).indexOf("your_anon") >= 0;
+      if (!ph) document.documentElement.classList.add("auth-required");
+    })();
+  </script>
 </head>
 <body>
   <div class="app">
@@ -37,7 +50,7 @@
           <button type="button" class="btn btn-sm btn-ghost" id="btn-auth-register" title="默认由管理员开通">注册/开通</button>
           <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出</button>
         </div>
-        <p class="auth-hint muted">邮箱登录 · 账号由管理员分配 · 详见 docs/auth-plan.md</p>
+        <p class="auth-hint muted">请先登录后访问题库与练习 · 账号由管理员分配 · 详见 docs/auth-plan.md</p>
       </div>
     </header>
 
@@ -203,11 +216,10 @@
     </footer>
   </div>
 
-  <!-- supabase-js CDN + local config（supabase-config.js 勿提交）+ auth client -->
+  <!-- supabase-js CDN + auth client（config 已在 head；supabase-config.js 勿提交） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js"></script>
-  <script src="js/supabase-client.js?v=202610281200"></script>
-  <script src="questions.js?v=202610281200"></script>
-  <script src="app.js?v=202610281200"></script>
+  <script src="js/supabase-client.js?v=202610281206"></script>
+  <script src="questions.js?v=202610281206"></script>
+  <script src="app.js?v=202610281206"></script>
 </body>
 </html>

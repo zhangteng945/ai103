@@ -455,11 +455,45 @@
     practiceOrder: loadOrderMap(), // filter -> [qid...] when shuffled
   };
 
+  function authAllowsApp() {
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (!A || !A.enabled) return true; // offline / no keys → open access
+    if (typeof A.isLoggedIn === "function") return !!A.isLoggedIn();
+    const st = A.getState ? A.getState() : null;
+    return !!(st && st.user && st.user.email);
+  }
+
+  function hideAllAppViews() {
+    Object.keys(views).forEach((k) => {
+      if (views[k]) views[k].classList.add("hidden");
+    });
+    state.mode = "auth";
+  }
+
   function showView(name) {
+    if (!authAllowsApp()) {
+      hideAllAppViews();
+      return;
+    }
     Object.keys(views).forEach((k) => {
       views[k].classList.toggle("hidden", k !== name);
     });
     state.mode = name;
+  }
+
+  function onAuthGateChange() {
+    if (!authAllowsApp()) {
+      if (state.examTimerId) {
+        clearInterval(state.examTimerId);
+        state.examTimerId = null;
+      }
+      hideAllAppViews();
+      return;
+    }
+    // Only auto-open home when leaving the login gate (not on token refresh mid-practice)
+    if (state.mode === "auth" || !state.mode) {
+      renderHome();
+    }
   }
 
   function byDomain(domain) {
@@ -2442,7 +2476,12 @@
     loadProgress();
     loadExamLast();
     applyChrome();
-    renderHome();
+    document.addEventListener("ai103-auth-change", onAuthGateChange);
+    if (authAllowsApp()) {
+      renderHome();
+    } else {
+      hideAllAppViews();
+    }
 
     $$(".lang-toggle button").forEach((btn) => {
       btn.addEventListener("click", () => setLang(btn.getAttribute("data-lang")));

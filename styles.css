@@ -1208,7 +1208,7 @@ footer.app-foot {
 }
 
 
-/* Auth panel skeleton (feature-flagged; hidden by default) */
+/* Auth panel (shown when Supabase configured or ?auth=1 / authUi) */
 .auth-panel {
   width: 100%;
   margin-top: 0.75rem;
@@ -1250,4 +1250,39 @@ footer.app-foot {
   flex: 1 1 100%;
   font-size: 0.75rem;
   margin: 0;
+}
+
+/* Login gate: real Supabase keys → hide app until body.auth-ok (session). Title/credit stay. */
+html.auth-required body:not(.auth-ok) #view-home,
+html.auth-required body:not(.auth-ok) #view-practice,
+html.auth-required body:not(.auth-ok) #view-exam-config,
+html.auth-required body:not(.auth-ok) #view-exam,
+html.auth-required body:not(.auth-ok) #view-result {
+  display: none !important;
+}
+html.auth-required body:not(.auth-ok) .lang-toggle {
+  display: none !important;
+}
+html.auth-required body:not(.auth-ok) .app-foot .foot-text {
+  display: none;
+}
+html.auth-required body:not(.auth-ok) #auth-panel.hidden,
+html.auth-required body:not(.auth-ok) #auth-panel {
+  display: flex !important;
+}
+html.auth-required body:not(.auth-ok) #auth-panel {
+  margin-top: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  max-width: 26rem;
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+html.auth-required body:not(.auth-ok) .auth-status {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+html.auth-required body.auth-ok #auth-panel {
+  /* compact top-bar status after login */
+  max-width: none;
 }

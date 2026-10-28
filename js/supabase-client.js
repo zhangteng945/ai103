@@ -1,6 +1,7 @@
 /**
- * AI-103 Supabase Auth (Phase 1.1 — email + password).
- * - No valid url/anonKey: all APIs no-op; localStorage practice unchanged.
+ * AI-103 Supabase Auth (Phase 1.1 — email + password + login gate).
+ * - No valid url/anonKey: all APIs no-op; localStorage practice unchanged (open access).
+ * - With real keys: hide home/practice/exam until session; logout returns to login-only.
  * - Requires supabase-js CDN before this file (window.supabase.createClient).
  * - Public sign-up is disabled; register shows admin-assigned message.
  * - Docs: docs/auth-plan.md
@@ -77,10 +78,51 @@
       : null;
   }
 
+  function isLoggedIn() {
+    return !!(state.user && state.user.email);
+  }
+
+  function emitAuthChange() {
+    try {
+      document.dispatchEvent(
+        new CustomEvent("ai103-auth-change", {
+          detail: {
+            enabled: enabled,
+            ready: state.ready,
+            user: state.user,
+            loggedIn: isLoggedIn(),
+          },
+        })
+      );
+    } catch (e) {}
+  }
+
+  /** When Supabase is configured: hide app until session; show login panel. Offline: no gate. */
+  function applyAppGate() {
+    var html = document.documentElement;
+    var body = document.body;
+    if (!html) return;
+    if (!enabled) {
+      html.classList.remove("auth-required");
+      if (body) {
+        body.classList.remove("auth-gated", "auth-ok");
+      }
+      return;
+    }
+    html.classList.add("auth-required");
+    if (body) {
+      body.classList.add("auth-gated");
+      if (isLoggedIn()) body.classList.add("auth-ok");
+      else body.classList.remove("auth-ok");
+    }
+  }
+
   function refreshUi() {
-    showPanel(featureUi);
+    // Real keys → always show panel + gate. Offline → panel only if featureUi / ?auth=1.
+    showPanel(enabled || featureUi);
+    applyAppGate();
     setStatusEl(statusMessage());
-    var loggedIn = !!(state.user && state.user.email);
+    var loggedIn = isLoggedIn();
     var loginBtn = document.getElementById("btn-auth-login");
     var regBtn = document.getElementById("btn-auth-register");
     var logoutBtn = document.getElementById("btn-auth-logout");
@@ -90,6 +132,7 @@
     if (regBtn) regBtn.classList.toggle("hidden", loggedIn);
     if (logoutBtn) logoutBtn.classList.toggle("hidden", !loggedIn);
     if (form) form.classList.toggle("hidden", loggedIn);
+    emitAuthChange();
   }
 
   function ensureClient() {
@@ -243,7 +286,12 @@
   }
 
   function wireDom() {
-    showPanel(featureUi);
+    // Early gate class before session restore (prevents home flash when keys present)
+    if (enabled) {
+      document.documentElement.classList.add("auth-required");
+      if (document.body) document.body.classList.add("auth-gated");
+    }
+    showPanel(enabled || featureUi);
     refreshUi();
 
     var loginBtn = document.getElementById("btn-auth-login");
@@ -304,6 +352,10 @@
   var API = {
     enabled: enabled,
     featureUi: featureUi,
+    requiresAuth: function () {
+      return enabled;
+    },
+    isLoggedIn: isLoggedIn,
     getClient: function () {
       return ensureClient();
     },
@@ -314,6 +366,7 @@
         mode: state.mode,
         enabled: enabled,
         featureUi: featureUi,
+        loggedIn: isLoggedIn(),
       };
     },
     statusMessage: statusMessage,
@@ -325,6 +378,7 @@
     pullProgress: pullProgress,
     pushProgress: pushProgress,
     refreshUi: refreshUi,
+    applyAppGate: applyAppGate,
     init: wireDom,
   };
 

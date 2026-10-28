@@ -1217,7 +1217,7 @@ footer.app-foot {
 }
 
 
-/* Auth panel skeleton (feature-flagged; hidden by default) */
+/* Auth panel (shown when Supabase configured or ?auth=1 / authUi) */
 .auth-panel {
   width: 100%;
   margin-top: 0.75rem;
@@ -1260,7 +1260,75 @@ footer.app-foot {
   font-size: 0.75rem;
   margin: 0;
 }
+
+/* Login gate: real Supabase keys → hide app until body.auth-ok (session). Title/credit stay. */
+html.auth-required body:not(.auth-ok) #view-home,
+html.auth-required body:not(.auth-ok) #view-practice,
+html.auth-required body:not(.auth-ok) #view-exam-config,
+html.auth-required body:not(.auth-ok) #view-exam,
+html.auth-required body:not(.auth-ok) #view-result {
+  display: none !important;
+}
+html.auth-required body:not(.auth-ok) .lang-toggle {
+  display: none !important;
+}
+html.auth-required body:not(.auth-ok) .app-foot .foot-text {
+  display: none;
+}
+html.auth-required body:not(.auth-ok) #auth-panel.hidden,
+html.auth-required body:not(.auth-ok) #auth-panel {
+  display: flex !important;
+}
+html.auth-required body:not(.auth-ok) #auth-panel {
+  margin-top: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  max-width: 26rem;
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+html.auth-required body:not(.auth-ok) .auth-status {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+html.auth-required body.auth-ok #auth-panel {
+  /* compact top-bar status after login */
+  max-width: none;
+}
 </style>
+  <script>/**
+ * 复制本文件为 supabase-config.js 并填入真实值。
+ * supabase-config.js 不应提交到公开仓库。
+ *
+ * 对应 .env.example：
+ *   SUPABASE_URL      → url
+ *   SUPABASE_ANON_KEY → anonKey
+ *
+ * 填入真实 url + anonKey 后：未登录只能看到标题/作者与登录面板，
+ * 登录成功后才显示题库首页与练习/模考。无密钥 / 占位符时保持离线开放访问。
+ *
+ * 离线调试时可强制显示登录面板：
+ *   authUi: true
+ * 或访问 index.html?auth=1
+ */
+window.__AI103_SUPABASE__ = {
+  url: "https://YOUR_PROJECT_REF.supabase.co",
+  anonKey: "your_anon_public_key_here",
+  /** 无有效密钥时：为 true 或 ?auth=1 仍可显示顶栏账号面板（操作会提示未配置） */
+  authUi: false,
+};
+</script>
+  <script>
+    (function () {
+      var c = window.__AI103_SUPABASE__ || {};
+      var ph =
+        !c.url ||
+        !c.anonKey ||
+        String(c.url).indexOf("YOUR_PROJECT") >= 0 ||
+        String(c.anonKey).indexOf("your_anon") >= 0;
+      if (!ph) document.documentElement.classList.add("auth-required");
+    })();
+  </script>
 </head>
 <body>
   <div class="app">
@@ -1290,7 +1358,7 @@ footer.app-foot {
           <button type="button" class="btn btn-sm btn-ghost" id="btn-auth-register" title="默认由管理员开通">注册/开通</button>
           <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出</button>
         </div>
-        <p class="auth-hint muted">邮箱登录 · 账号由管理员分配 · 详见 docs/auth-plan.md</p>
+        <p class="auth-hint muted">请先登录后访问题库与练习 · 账号由管理员分配 · 详见 docs/auth-plan.md</p>
       </div>
     </header>
 
@@ -1456,27 +1524,9 @@ footer.app-foot {
     </footer>
   </div>
   <script>/**
- * 复制本文件为 supabase-config.js 并填入真实值。
- * supabase-config.js 不应提交到公开仓库。
- *
- * 对应 .env.example：
- *   SUPABASE_URL      → url
- *   SUPABASE_ANON_KEY → anonKey
- *
- * 打开登录面板（可选）：
- *   authUi: true
- * 或访问 index.html?auth=1
- */
-window.__AI103_SUPABASE__ = {
-  url: "https://YOUR_PROJECT_REF.supabase.co",
-  anonKey: "your_anon_public_key_here",
-  /** 为 true 时显示顶栏账号面板；无有效密钥时面板仍可显但操作会提示未配置 */
-  authUi: false,
-};
-</script>
-  <script>/**
- * AI-103 Supabase Auth (Phase 1.1 — email + password).
- * - No valid url/anonKey: all APIs no-op; localStorage practice unchanged.
+ * AI-103 Supabase Auth (Phase 1.1 — email + password + login gate).
+ * - No valid url/anonKey: all APIs no-op; localStorage practice unchanged (open access).
+ * - With real keys: hide home/practice/exam until session; logout returns to login-only.
  * - Requires supabase-js CDN before this file (window.supabase.createClient).
  * - Public sign-up is disabled; register shows admin-assigned message.
  * - Docs: docs/auth-plan.md
@@ -1553,10 +1603,51 @@ window.__AI103_SUPABASE__ = {
       : null;
   }
 
+  function isLoggedIn() {
+    return !!(state.user && state.user.email);
+  }
+
+  function emitAuthChange() {
+    try {
+      document.dispatchEvent(
+        new CustomEvent("ai103-auth-change", {
+          detail: {
+            enabled: enabled,
+            ready: state.ready,
+            user: state.user,
+            loggedIn: isLoggedIn(),
+          },
+        })
+      );
+    } catch (e) {}
+  }
+
+  /** When Supabase is configured: hide app until session; show login panel. Offline: no gate. */
+  function applyAppGate() {
+    var html = document.documentElement;
+    var body = document.body;
+    if (!html) return;
+    if (!enabled) {
+      html.classList.remove("auth-required");
+      if (body) {
+        body.classList.remove("auth-gated", "auth-ok");
+      }
+      return;
+    }
+    html.classList.add("auth-required");
+    if (body) {
+      body.classList.add("auth-gated");
+      if (isLoggedIn()) body.classList.add("auth-ok");
+      else body.classList.remove("auth-ok");
+    }
+  }
+
   function refreshUi() {
-    showPanel(featureUi);
+    // Real keys → always show panel + gate. Offline → panel only if featureUi / ?auth=1.
+    showPanel(enabled || featureUi);
+    applyAppGate();
     setStatusEl(statusMessage());
-    var loggedIn = !!(state.user && state.user.email);
+    var loggedIn = isLoggedIn();
     var loginBtn = document.getElementById("btn-auth-login");
     var regBtn = document.getElementById("btn-auth-register");
     var logoutBtn = document.getElementById("btn-auth-logout");
@@ -1566,6 +1657,7 @@ window.__AI103_SUPABASE__ = {
     if (regBtn) regBtn.classList.toggle("hidden", loggedIn);
     if (logoutBtn) logoutBtn.classList.toggle("hidden", !loggedIn);
     if (form) form.classList.toggle("hidden", loggedIn);
+    emitAuthChange();
   }
 
   function ensureClient() {
@@ -1719,7 +1811,12 @@ window.__AI103_SUPABASE__ = {
   }
 
   function wireDom() {
-    showPanel(featureUi);
+    // Early gate class before session restore (prevents home flash when keys present)
+    if (enabled) {
+      document.documentElement.classList.add("auth-required");
+      if (document.body) document.body.classList.add("auth-gated");
+    }
+    showPanel(enabled || featureUi);
     refreshUi();
 
     var loginBtn = document.getElementById("btn-auth-login");
@@ -1780,6 +1877,10 @@ window.__AI103_SUPABASE__ = {
   var API = {
     enabled: enabled,
     featureUi: featureUi,
+    requiresAuth: function () {
+      return enabled;
+    },
+    isLoggedIn: isLoggedIn,
     getClient: function () {
       return ensureClient();
     },
@@ -1790,6 +1891,7 @@ window.__AI103_SUPABASE__ = {
         mode: state.mode,
         enabled: enabled,
         featureUi: featureUi,
+        loggedIn: isLoggedIn(),
       };
     },
     statusMessage: statusMessage,
@@ -1801,6 +1903,7 @@ window.__AI103_SUPABASE__ = {
     pullProgress: pullProgress,
     pushProgress: pushProgress,
     refreshUi: refreshUi,
+    applyAppGate: applyAppGate,
     init: wireDom,
   };
 
@@ -15730,11 +15833,45 @@ window.__AI103_SUPABASE__ = {
     practiceOrder: loadOrderMap(), // filter -> [qid...] when shuffled
   };
 
+  function authAllowsApp() {
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (!A || !A.enabled) return true; // offline / no keys → open access
+    if (typeof A.isLoggedIn === "function") return !!A.isLoggedIn();
+    const st = A.getState ? A.getState() : null;
+    return !!(st && st.user && st.user.email);
+  }
+
+  function hideAllAppViews() {
+    Object.keys(views).forEach((k) => {
+      if (views[k]) views[k].classList.add("hidden");
+    });
+    state.mode = "auth";
+  }
+
   function showView(name) {
+    if (!authAllowsApp()) {
+      hideAllAppViews();
+      return;
+    }
     Object.keys(views).forEach((k) => {
       views[k].classList.toggle("hidden", k !== name);
     });
     state.mode = name;
+  }
+
+  function onAuthGateChange() {
+    if (!authAllowsApp()) {
+      if (state.examTimerId) {
+        clearInterval(state.examTimerId);
+        state.examTimerId = null;
+      }
+      hideAllAppViews();
+      return;
+    }
+    // Only auto-open home when leaving the login gate (not on token refresh mid-practice)
+    if (state.mode === "auth" || !state.mode) {
+      renderHome();
+    }
   }
 
   function byDomain(domain) {
@@ -17717,7 +17854,12 @@ window.__AI103_SUPABASE__ = {
     loadProgress();
     loadExamLast();
     applyChrome();
-    renderHome();
+    document.addEventListener("ai103-auth-change", onAuthGateChange);
+    if (authAllowsApp()) {
+      renderHome();
+    } else {
+      hideAllAppViews();
+    }
 
     $$(".lang-toggle button").forEach((btn) => {
       btn.addEventListener("click", () => setLang(btn.getAttribute("data-lang")));
