@@ -469,9 +469,20 @@
     const opt = (q.options || []).find((o) => o.id === oid);
     return opt ? oid + ". " + inl(optionText(opt)) : oid;
   }
+  // Safety net for imported text: trim trailing spaces, drop whitespace-only
+  // lines, keep at most one blank line (= one paragraph gap).
+  function tidyText(s) {
+    if (typeof s !== "string" || s.indexOf("\n") < 0) return s;
+    return s
+      .replace(/\r\n?/g, "\n")
+      .replace(/[ \t\u3000]+\n/g, "\n")
+      .replace(/\n[ \t\u3000]+(?=\n)/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/^\n+|\s+$/g, "");
+  }
   function pickText(zh, en) {
-    const z = zh || en || "";
-    const e = en || zh || "";
+    const z = tidyText(zh || en || "");
+    const e = tidyText(en || zh || "");
     if (state.lang === "zh") return z || e;
     if (state.lang === "en") return e || z;
     if (z && e && z !== e) return z + "\n" + e;
@@ -482,8 +493,8 @@
   }
   function caseStudyTextOf(q) {
     if (!q) return "";
-    const zh = q.caseStudyTextZh || q.caseStudyText || "";
-    const en = q.caseStudyTextEn || "";
+    const zh = tidyText(q.caseStudyTextZh || q.caseStudyText || "");
+    const en = tidyText(q.caseStudyTextEn || "");
     if (state.lang === "zh") return zh || en;
     if (state.lang === "en") return en || zh;
     // both: ZH then EN stacked
@@ -543,10 +554,10 @@
   }
 
   function explanationOf(q) {
-    if (state.lang === "en") return q.explanationEn || q.explanation || "";
-    if (state.lang === "zh") return q.explanationZh || q.explanation || "";
-    const zh = q.explanationZh || q.explanation || "";
-    const en = q.explanationEn || "";
+    if (state.lang === "en") return tidyText(q.explanationEn || q.explanation || "");
+    if (state.lang === "zh") return tidyText(q.explanationZh || q.explanation || "");
+    const zh = tidyText(q.explanationZh || q.explanation || "");
+    const en = tidyText(q.explanationEn || "");
     if (zh && en && zh !== en) return zh + "\n\n—\n\n" + en;
     return zh || en;
   }
