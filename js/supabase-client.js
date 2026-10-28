@@ -39,7 +39,7 @@
   var SIGNIN_TIMEOUT_MS = 15000;
   var TIMEOUT_MSG = "网络超时，请重试";
 
-  function mapAuthError(err) {
+  function mapAuthError(err, emailRaw) {
     var raw = (err && (err.message || err.error_description || err.msg)) || "";
     var msg = String(raw);
     var low = msg.toLowerCase();
@@ -49,7 +49,12 @@
       code === "invalid_credentials" ||
       low.indexOf("invalid_credentials") >= 0
     ) {
-      return "邮箱或密码错误（邮箱格式：姓名@ai103.local）";
+      // Neutral for full emails (e.g. Outlook); student short-name hint only when no @
+      var typed = String(emailRaw || "").trim();
+      if (typed && typed.indexOf("@") < 0) {
+        return "邮箱或密码错误（短名将补全为 姓名@ai103.local）";
+      }
+      return "邮箱或密码错误";
     }
     if (
       low.indexOf("email not confirmed") >= 0 ||
@@ -323,7 +328,7 @@
         log("signIn timeout");
         return { ok: false, reason: "timeout" };
       }
-      var netMsg = mapAuthError(e) || TIMEOUT_MSG;
+      var netMsg = mapAuthError(e, email) || TIMEOUT_MSG;
       setStatusEl("登录失败：" + netMsg, true);
       log("signIn exception", e && e.message ? e.message : e);
       return { ok: false, reason: "network-error", error: e };
@@ -334,7 +339,7 @@
       return { ok: false, reason: "empty-result" };
     }
     if (result.error) {
-      var msg = mapAuthError(result.error) || "登录失败";
+      var msg = mapAuthError(result.error, email) || "登录失败";
       setStatusEl("登录失败：" + msg, true);
       log("signIn error", result.error.message || msg);
       return { ok: false, reason: "auth-error", error: result.error };
@@ -502,7 +507,7 @@
       if (loginInFlight) return;
       var creds = readCreds();
       if (!creds.email || !creds.password) {
-        setStatusEl("请输入邮箱和密码（可用姓名，将自动补全 @ai103.local）。", true);
+        setStatusEl("请输入邮箱和密码。", true);
         return;
       }
       loginInFlight = true;

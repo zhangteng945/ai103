@@ -1350,7 +1350,7 @@ window.__AI103_SUPABASE__ = {
       <div id="auth-panel" class="auth-panel hidden" aria-label="账号">
         <div id="auth-status" class="auth-status">账号功能未启用（离线模式）</div>
         <form id="auth-form" class="auth-form-fields" autocomplete="on" action="#" method="post" novalidate>
-          <input type="email" id="auth-email" class="auth-input" name="email" placeholder="姓名@ai103.local" autocomplete="username" inputmode="email" />
+          <input type="email" id="auth-email" class="auth-input" name="email" placeholder="邮箱或短名（如 fanjie）" autocomplete="username" inputmode="email" />
           <input type="password" id="auth-password" class="auth-input" name="password" placeholder="密码" autocomplete="current-password" />
         </form>
         <div class="auth-actions">
@@ -1358,7 +1358,7 @@ window.__AI103_SUPABASE__ = {
           <button type="button" class="btn btn-sm btn-ghost" id="btn-auth-register" title="默认由管理员开通">注册/开通</button>
           <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出</button>
         </div>
-        <p class="auth-hint muted">请先登录 · 可用短名（如 fanjie）自动补全 @ai103.local · 账号由管理员分配</p>
+        <p class="auth-hint muted">请先登录 · 支持完整邮箱；学员也可用短名（如 fanjie）自动补全 @ai103.local · 账号由管理员分配</p>
       </div>
     </header>
 
@@ -1564,7 +1564,7 @@ window.__AI103_SUPABASE__ = {
   var SIGNIN_TIMEOUT_MS = 15000;
   var TIMEOUT_MSG = "网络超时，请重试";
 
-  function mapAuthError(err) {
+  function mapAuthError(err, emailRaw) {
     var raw = (err && (err.message || err.error_description || err.msg)) || "";
     var msg = String(raw);
     var low = msg.toLowerCase();
@@ -1574,7 +1574,12 @@ window.__AI103_SUPABASE__ = {
       code === "invalid_credentials" ||
       low.indexOf("invalid_credentials") >= 0
     ) {
-      return "邮箱或密码错误（邮箱格式：姓名@ai103.local）";
+      // Neutral for full emails (e.g. Outlook); student short-name hint only when no @
+      var typed = String(emailRaw || "").trim();
+      if (typed && typed.indexOf("@") < 0) {
+        return "邮箱或密码错误（短名将补全为 姓名@ai103.local）";
+      }
+      return "邮箱或密码错误";
     }
     if (
       low.indexOf("email not confirmed") >= 0 ||
@@ -1848,7 +1853,7 @@ window.__AI103_SUPABASE__ = {
         log("signIn timeout");
         return { ok: false, reason: "timeout" };
       }
-      var netMsg = mapAuthError(e) || TIMEOUT_MSG;
+      var netMsg = mapAuthError(e, email) || TIMEOUT_MSG;
       setStatusEl("登录失败：" + netMsg, true);
       log("signIn exception", e && e.message ? e.message : e);
       return { ok: false, reason: "network-error", error: e };
@@ -1859,7 +1864,7 @@ window.__AI103_SUPABASE__ = {
       return { ok: false, reason: "empty-result" };
     }
     if (result.error) {
-      var msg = mapAuthError(result.error) || "登录失败";
+      var msg = mapAuthError(result.error, email) || "登录失败";
       setStatusEl("登录失败：" + msg, true);
       log("signIn error", result.error.message || msg);
       return { ok: false, reason: "auth-error", error: result.error };
@@ -2027,7 +2032,7 @@ window.__AI103_SUPABASE__ = {
       if (loginInFlight) return;
       var creds = readCreds();
       if (!creds.email || !creds.password) {
-        setStatusEl("请输入邮箱和密码（可用姓名，将自动补全 @ai103.local）。", true);
+        setStatusEl("请输入邮箱和密码。", true);
         return;
       }
       loginInFlight = true;
