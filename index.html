@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="FXS-张腾" />
-  <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
+  <meta name="description" content="IT认证练习 — AI-103 / DOP-C02 多题库中英对照练习" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
-  <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610281505" />
+  <title>IT认证练习</title>
+  <link rel="stylesheet" href="styles.css?v=202610281520" />
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
     (function () {
@@ -29,10 +29,10 @@
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-icon" aria-hidden="true">103</div>
+        <div class="brand-icon" aria-hidden="true">IT</div>
         <div>
-          <h1>AI-103 练习助手 · 187题中英对照</h1>
-          <div class="sub">Developing AI Apps and Agents on Azure · 可切换中/英/对照</div>
+          <h1>IT认证练习</h1>
+          <div class="sub">多题库练习 · 可切换中/英/对照</div>
           <div class="author">作者：FXS-张腾</div>
         </div>
       </div>
@@ -58,8 +58,12 @@
 
     <section id="view-home" class="card">
       <h2>题库概览</h2>
+      <div class="exam-switcher" id="exam-switcher" role="tablist" aria-label="选择题库">
+        <button type="button" class="exam-tab active" role="tab" data-exam-id="ai103" aria-pressed="true">AI-103</button>
+        <button type="button" class="exam-tab" role="tab" data-exam-id="dop-c02" aria-pressed="false">DOP-C02</button>
+      </div>
       <p class="muted">题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。</p>
-      <div class="stats" aria-label="题库统计">
+      <div class="stats" id="home-stats" aria-label="题库统计">
         <div class="stat"><div class="n" id="stat-total">0</div><div class="l">全部题目</div></div>
         <div class="stat"><div class="n" id="stat-plan">0</div><div class="l">规划管理</div></div>
         <div class="stat"><div class="n" id="stat-genai">0</div><div class="l">生成式/智能体</div></div>
@@ -213,14 +217,16 @@
     </section>
 
     <footer class="app-foot">
-      <span class="foot-text">AI-103 练习助手 · 187 题（PDF 题源）· 本地运行 · 进度保存在浏览器 localStorage</span>
+      <span class="foot-text">IT认证练习 · 本地运行 · 进度按题库隔离保存在 localStorage</span>
       <span class="foot-author">作者：FXS-张腾</span>
     </footer>
   </div>
 
   <!-- Temporary shared-password gate (Supabase Auth UI off; vendor/client kept in repo unused) -->
-  <script src="js/password-gate.js?v=202610281505"></script>
-  <script src="questions.js?v=202610281505"></script>
-  <script src="app.js?v=202610281505"></script>
+  <script src="js/password-gate.js?v=202610281520"></script>
+  <script src="js/exam-registry.js?v=202610281520"></script>
+  <script src="questions.js?v=202610281520"></script>
+  <script src="banks/questions-dop-c02.js?v=202610281520"></script>
+  <script src="app.js?v=202610281520"></script>
 </body>
 </html>

@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="FXS-张腾" />
-  <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
+  <meta name="description" content="IT认证练习 — AI-103 / DOP-C02 多题库中英对照练习" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
-  <title>AI-103 练习助手 · 187题中英对照</title>
+  <title>IT认证练习</title>
   <style>:root {
   --bg: #0f1419;
   --bg-elevated: #1a2332;
@@ -1300,7 +1300,255 @@ html.auth-required body.auth-ok #auth-panel {
   /* compact top-bar status after login */
   max-width: none;
 }
+
+/* Exam bank switcher (home) */
+.exam-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+}
+.exam-tab {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.4rem 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.exam-tab:hover {
+  border-color: var(--primary);
+}
+.exam-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.option .otext .image-only-note,
+.image-only-note {
+  color: var(--text-muted);
+  font-style: italic;
+}
 </style>
+  <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
+  <script>
+    (function () {
+      document.documentElement.classList.add("auth-required");
+    })();
+  </script>
+</head>
+<body>
+  <script>
+    (function () {
+      try {
+        document.body.classList.add("auth-gated");
+        if (localStorage.getItem("ai103_gate_v1") === "1") document.body.classList.add("auth-ok");
+      } catch (e) {
+        document.body.classList.add("auth-gated");
+      }
+    })();
+  </script>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">IT</div>
+        <div>
+          <h1>IT认证练习</h1>
+          <div class="sub">多题库练习 · 可切换中/英/对照</div>
+          <div class="author">作者：FXS-张腾</div>
+        </div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language / 语言">
+        <button type="button" data-lang="zh" title="中文">中文</button>
+        <button type="button" data-lang="en" title="English">EN</button>
+        <button type="button" data-lang="both" title="中英对照" class="active">对照</button>
+      </div>
+
+      <div id="auth-panel" class="auth-panel hidden" aria-label="访问密码">
+        <div id="auth-status" class="auth-status">请输入访问密码</div>
+        <form id="auth-form" class="auth-form-fields" autocomplete="on" action="#" method="post" novalidate>
+          <input type="password" id="auth-password" class="auth-input" name="password" placeholder="访问密码" autocomplete="current-password" />
+        </form>
+        <div class="auth-actions">
+          <button type="submit" form="auth-form" class="btn btn-sm" id="btn-auth-login">进入</button>
+          <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出解锁</button>
+        </div>
+        <p class="auth-hint muted">共享密码访问 · 解锁后本机记住，清除站点数据或点「退出解锁」可重新上锁</p>
+        <p class="auth-wechat-tip muted">建议用 Chrome / 系统浏览器打开</p>
+      </div>
+    </header>
+
+    <section id="view-home" class="card">
+      <h2>题库概览</h2>
+      <div class="exam-switcher" id="exam-switcher" role="tablist" aria-label="选择题库">
+        <button type="button" class="exam-tab active" role="tab" data-exam-id="ai103" aria-pressed="true">AI-103</button>
+        <button type="button" class="exam-tab" role="tab" data-exam-id="dop-c02" aria-pressed="false">DOP-C02</button>
+      </div>
+      <p class="muted">题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。</p>
+      <div class="stats" id="home-stats" aria-label="题库统计">
+        <div class="stat"><div class="n" id="stat-total">0</div><div class="l">全部题目</div></div>
+        <div class="stat"><div class="n" id="stat-plan">0</div><div class="l">规划管理</div></div>
+        <div class="stat"><div class="n" id="stat-genai">0</div><div class="l">生成式/智能体</div></div>
+        <div class="stat"><div class="n" id="stat-vision">0</div><div class="l">计算机视觉</div></div>
+        <div class="stat"><div class="n" id="stat-text">0</div><div class="l">文本分析</div></div>
+        <div class="stat"><div class="n" id="stat-extract">0</div><div class="l">信息提取</div></div>
+      </div>
+      <div class="home-actions">
+        <button type="button" class="btn btn-primary" id="btn-go-practice">
+          全题库练习
+          <span class="desc">按领域筛选 · 即时反馈与解析 · 进度本地保存</span>
+        </button>
+        <button type="button" class="btn" id="btn-go-exam">
+          模拟考试
+          <span class="desc">限时抽题 · 结束计分（700/1000 及格）· 错题回顾</span>
+        </button>
+        <button type="button" class="btn" id="btn-go-flagged" disabled>
+          标记复习
+          <span class="desc">暂无标记题目</span>
+        </button>
+        <button type="button" class="btn" id="btn-go-wrong" disabled>
+          错题回顾
+          <span class="desc">暂无错题</span>
+        </button>
+        <button type="button" class="btn hidden" id="btn-go-last-exam">
+          上次考试成绩
+          <span class="desc"></span>
+        </button>
+      </div>
+      <div class="note">
+        及格线参考 Microsoft 认证常见换算：约 700 / 1000。若某题答案相对 PDF 有更正，练习反馈中会显示「答案已更正」说明。快捷键：数字键 1–6 选题，Enter 提交/下一题。
+      </div>
+    </section>
+
+    <section id="view-practice" class="hidden">
+      <div class="toolbar">
+        <button type="button" class="btn btn-sm btn-ghost" id="btn-practice-back">← 首页</button>
+        <label class="muted">
+          筛选
+          <select id="practice-filter" aria-label="按领域筛选">
+            <option value="all">全部</option>
+            <option value="flagged">已标记</option>
+            <option value="wrong">错题</option>
+            <option value="plan">规划和管理 Azure AI 解决方案</option>
+            <option value="genai">实现生成式 AI 与智能体解决方案</option>
+            <option value="vision">实现计算机视觉解决方案</option>
+            <option value="text">实现文本分析解决方案</option>
+            <option value="extract">实现信息提取解决方案</option>
+          </select>
+        </label>
+        <button type="button" class="btn btn-sm btn-danger" id="btn-practice-reset">重置进度</button>
+        <button type="button" class="btn btn-sm" id="btn-practice-shuffle" title="随机打乱当前题目顺序">乱序</button>
+        <label class="showans-toggle" id="lbl-practice-showall"><input type="checkbox" id="chk-practice-showall"> <span>始终显示答案（背题模式）</span></label>
+        <div class="progress-wrap">
+          <div class="progress-bar"><i id="practice-progress-bar"></i></div>
+          <div class="progress-label" id="practice-progress-label"></div>
+        </div>
+      </div>
+      <div class="card" id="practice-body"></div>
+      <div class="nav-row">
+        <button type="button" class="btn" id="btn-practice-prev">上一题</button>
+        <button type="button" class="btn" id="btn-practice-flag">标记复习</button>
+        <button type="button" class="btn" id="btn-practice-skip">跳过</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-ghost" id="btn-practice-reveal">显示答案</button>
+        <button type="button" class="btn btn-primary" id="btn-practice-submit">提交</button>
+        <button type="button" class="btn" id="btn-practice-next">下一题</button>
+      </div>
+      <form class="jump-row" id="practice-jump" novalidate autocomplete="off">
+        <label class="jump-label" for="practice-jump-input"><span class="jump-pre" id="practice-jump-pre">跳到第</span>
+          <input type="text" id="practice-jump-input" inputmode="numeric" enterkeyhint="go" maxlength="5" placeholder="1–187" aria-describedby="practice-jump-hint" />
+          <span class="jump-suf" id="practice-jump-suf">题</span></label>
+        <button type="submit" class="btn" id="btn-practice-jump">跳转</button>
+        <select id="practice-jump-select" aria-label="选择题号"></select>
+        <span class="jump-hint" id="practice-jump-hint" role="status" aria-live="polite"></span>
+      </form>
+      <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题</p>
+    </section>
+
+    <section id="view-exam-config" class="card hidden">
+      <h2>模拟考试设置</h2>
+      <p class="muted">真实考试结构：48 道普通题（选择/判断/拖拽）+ 3 道多判断 + 7 道同一案例小题（选 58 题时）。其它数量仍按领域权重抽题。考试过程中不显示对错。</p>
+      <div class="exam-config">
+        <label>
+          <span>题目数量</span>
+          <select id="exam-count">
+            <option value="30">30 题</option>
+            <option value="50">50 题</option>
+            <option value="58" selected>58 题（默认，真实考试）</option>
+            <option value="60">60 题</option>
+          </select>
+        </label>
+        <label>
+          <span>考试时长（分钟）</span>
+          <select id="exam-minutes">
+            <option value="60">60</option>
+            <option value="90" selected>90（默认）</option>
+            <option value="120">120</option>
+          </select>
+        </label>
+      </div>
+      <div class="nav-row">
+        <button type="button" class="btn btn-ghost" id="btn-exam-config-back">← 返回</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="btn-exam-start">开始考试</button>
+      </div>
+    </section>
+
+    <section id="view-exam" class="hidden">
+      <div class="toolbar">
+        <button type="button" class="btn btn-sm btn-ghost" id="btn-exam-back">← 离开</button>
+        <div class="timer" id="exam-timer" aria-live="polite">90:00</div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><i id="exam-progress-bar"></i></div>
+          <div class="progress-label" id="exam-progress-label"></div>
+        </div>
+      </div>
+      <div class="card" id="exam-body"></div>
+      <div class="card">
+        <div class="muted" style="margin-bottom:0.4rem">题目导航（点击跳转；底边高亮 = 已标记）</div>
+        <div class="exam-grid" id="exam-grid"></div>
+      </div>
+      <div class="nav-row">
+        <button type="button" class="btn" id="btn-exam-prev">上一题</button>
+        <button type="button" class="btn" id="btn-exam-flag">标记</button>
+        <button type="button" class="btn" id="btn-exam-next">下一题</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="btn-exam-submit">交卷</button>
+        <button type="button" class="btn btn-primary hidden" id="btn-exam-to-result">查看成绩</button>
+      </div>
+      <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 下一题</p>
+    </section>
+
+    <section id="view-result" class="hidden">
+      <div class="card">
+        <h2>考试成绩</h2>
+        <div class="score-hero" id="result-hero"></div>
+        <h3 style="font-size:0.95rem;margin:1rem 0 0.5rem">领域得分</h3>
+        <div class="domain-breakdown" id="result-domains"></div>
+        <div class="nav-row" style="margin-top:1rem">
+          <button type="button" class="btn" id="btn-result-review">逐题回顾</button>
+          <button type="button" class="btn" id="btn-result-retry">再考一次</button>
+          <span class="spacer"></span>
+          <button type="button" class="btn btn-primary" id="btn-result-home">回首页</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>错题与解析</h2>
+        <div class="review-list" id="result-wrong"></div>
+      </div>
+    </section>
+
+    <footer class="app-foot">
+      <span class="foot-text">IT认证练习 · 本地运行 · 进度按题库隔离保存在 localStorage</span>
+      <span class="foot-author">作者：FXS-张腾</span>
+    </footer>
+  </div>
+
+  
   <script>/**
  * AI-103 temporary shared-password gate (replaces Supabase Auth UI for now).
  * Unlock persists in localStorage key ai103_gate_v1.
@@ -1540,6 +1788,132 @@ html.auth-required body.auth-ok #auth-panel {
     wireDom();
   }
 })(typeof window !== "undefined" ? window : this);
+</script>
+  <script>/**
+ * Multi-exam registry for IT认证练习.
+ * Banks: AI-103 (questions.js → QUESTIONS_AI103), DOP-C02 (banks/questions-dop-c02.js).
+ */
+(function (global) {
+  "use strict";
+
+  var EXAM_ID_KEY = "itcert_exam_id_v1";
+
+  var EXAMS = [
+    {
+      id: "ai103",
+      title: "AI-103",
+      shortLabel: "AI-103",
+      subtitleZh: "Developing AI Apps and Agents on Azure",
+      subtitleEn: "Developing AI Apps and Agents on Azure",
+      mockDefaultCount: 58,
+      mockCounts: [30, 50, 58, 60],
+      mockDefaultMinutes: 90,
+      mockMinutes: [60, 90, 120],
+      specialExam58: true,
+      domainOrder: ["plan", "genai", "vision", "text", "extract"],
+      domainWeights: {
+        plan: 0.275,
+        genai: 0.325,
+        vision: 0.125,
+        text: 0.125,
+        extract: 0.125,
+      },
+      domainLabelsZh: {
+        plan: "规划和管理 Azure AI 解决方案",
+        genai: "实现生成式 AI 与智能体解决方案",
+        vision: "实现计算机视觉解决方案",
+        text: "实现文本分析解决方案",
+        extract: "实现信息提取解决方案",
+      },
+      domainLabelsEn: {
+        plan: "Plan & manage Azure AI solutions",
+        genai: "Generative AI & agents",
+        vision: "Computer vision",
+        text: "Text analysis",
+        extract: "Information extraction",
+      },
+      statMode: "domains",
+      legacyPracticeKey: "ai103_practice_v3",
+      legacyExamLastKey: "ai103_exam_last_v1",
+      legacyQOrderKey: "ai103-qorder",
+      getQuestions: function () {
+        return global.QUESTIONS_AI103 || global.QUESTIONS || [];
+      },
+    },
+    {
+      id: "dop-c02",
+      title: "DOP-C02",
+      shortLabel: "DOP-C02",
+      subtitleZh: "AWS Certified DevOps Engineer – Professional",
+      subtitleEn: "AWS Certified DevOps Engineer – Professional",
+      mockDefaultCount: 75,
+      mockCounts: [30, 50, 75, 100],
+      mockDefaultMinutes: 180,
+      mockMinutes: [90, 180, 210],
+      specialExam58: false,
+      domainOrder: [],
+      domainWeights: {},
+      domainLabelsZh: {},
+      domainLabelsEn: {},
+      statMode: "types",
+      legacyPracticeKey: null,
+      legacyExamLastKey: null,
+      legacyQOrderKey: null,
+      getQuestions: function () {
+        return global.QUESTIONS_DOP_C02 || [];
+      },
+    },
+  ];
+
+  function list() {
+    return EXAMS.slice();
+  }
+
+  function get(id) {
+    for (var i = 0; i < EXAMS.length; i++) {
+      if (EXAMS[i].id === id) return EXAMS[i];
+    }
+    return EXAMS[0];
+  }
+
+  function loadSavedExamId() {
+    try {
+      var v = global.localStorage && localStorage.getItem(EXAM_ID_KEY);
+      if (v && get(v) && get(v).id === v) return v;
+    } catch (e) {}
+    return "ai103";
+  }
+
+  function saveExamId(id) {
+    try {
+      if (global.localStorage) localStorage.setItem(EXAM_ID_KEY, id);
+    } catch (e) {}
+  }
+
+  function practiceKey(examId) {
+    return "itcert_practice_v1_" + examId;
+  }
+
+  function examLastKey(examId) {
+    return "itcert_exam_last_v1_" + examId;
+  }
+
+  function qOrderKey(examId) {
+    return "itcert_qorder_v1_" + examId;
+  }
+
+  global.ITCERT_EXAMS = {
+    EXAM_ID_KEY: EXAM_ID_KEY,
+    list: list,
+    get: get,
+    loadSavedExamId: loadSavedExamId,
+    saveExamId: saveExamId,
+    practiceKey: practiceKey,
+    examLastKey: examLastKey,
+    qOrderKey: qOrderKey,
+    defaultId: "ai103",
+  };
+})(typeof window !== "undefined" ? window : globalThis);
 </script>
   <script>const QUESTIONS = [
  {
@@ -15000,25 +15374,159 @@ html.auth-required body.auth-ok #auth-panel {
   "pdfSetEn": "Question Set 2",
   "pdfQNum": 16
  }
-];</script>
-  <script>/* AI-103 Practice App — Teng */
+];
+const QUESTIONS_AI103 = QUESTIONS;
+if (typeof window !== "undefined") {
+  window.QUESTIONS = QUESTIONS;
+  window.QUESTIONS_AI103 = QUESTIONS_AI103;
+}
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { QUESTIONS: QUESTIONS, QUESTIONS_AI103: QUESTIONS_AI103 };
+}
+</script>
+  <script>/* standalone: DOP bank omitted (~4MB); use index.html for multi-bank */
+const QUESTIONS_DOP_C02 = [];
+if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
+</script>
+  <script>/* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02) — Teng */
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "ai103_practice_v3";
-  const EXAM_STORAGE_KEY = "ai103_exam_last_v1";
-  const LANG_KEY = "ai103-lang";
-  const SHOWANS_KEY = "ai103-showans";
-  const QORDER_KEY = "ai103-qorder";
-  const DOMAIN_ORDER = ["plan", "genai", "vision", "text", "extract"];
-  const DOMAIN_WEIGHTS = { plan: 0.275, genai: 0.325, vision: 0.125, text: 0.125, extract: 0.125 };
+  const LANG_KEY = "ai103-lang"; // site-wide language preference (legacy key kept)
+  const SHOWANS_KEY = "ai103-showans"; // site-wide show-answer preference
   const PASS_SCORE = 700;
+  const IMAGE_ONLY_NOTE = "本题选项为 PDF 截图，暂无文字，请对照原题";
+
+  /* Active bank — reassigned when switching exams (shadows any global QUESTIONS). */
+  let QUESTIONS = [];
+  let DOMAIN_ORDER = ["plan", "genai", "vision", "text", "extract"];
+  let DOMAIN_WEIGHTS = { plan: 0.275, genai: 0.325, vision: 0.125, text: 0.125, extract: 0.125 };
+  let currentExamId = "ai103";
+
+  function examApi() {
+    return (typeof window !== "undefined" && window.ITCERT_EXAMS) || null;
+  }
+  function currentExam() {
+    const api = examApi();
+    return api ? api.get(currentExamId) : null;
+  }
+  function storagePracticeKey() {
+    const api = examApi();
+    return api ? api.practiceKey(currentExamId) : "itcert_practice_v1_" + currentExamId;
+  }
+  function storageExamLastKey() {
+    const api = examApi();
+    return api ? api.examLastKey(currentExamId) : "itcert_exam_last_v1_" + currentExamId;
+  }
+  function storageQOrderKey() {
+    const api = examApi();
+    return api ? api.qOrderKey(currentExamId) : "itcert_qorder_v1_" + currentExamId;
+  }
+  /** Resolve practice raw JSON: namespaced key, else AI-103 legacy once. */
+  function readPracticeRaw() {
+    try {
+      let raw = localStorage.getItem(storagePracticeKey());
+      if (raw) return { raw: raw, fromLegacy: false };
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyPracticeKey) {
+        raw = localStorage.getItem(exam.legacyPracticeKey);
+        if (raw) return { raw: raw, fromLegacy: true };
+      }
+    } catch (e) {}
+    return { raw: null, fromLegacy: false };
+  }
+  function readExamLastRaw() {
+    try {
+      let raw = localStorage.getItem(storageExamLastKey());
+      if (raw) return raw;
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyExamLastKey) {
+        return localStorage.getItem(exam.legacyExamLastKey);
+      }
+    } catch (e) {}
+    return null;
+  }
+  function readQOrderRaw() {
+    try {
+      let raw = localStorage.getItem(storageQOrderKey());
+      if (raw) return raw;
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyQOrderKey) {
+        return localStorage.getItem(exam.legacyQOrderKey);
+      }
+    } catch (e) {}
+    return null;
+  }
+  function applyExamConfig(exam) {
+    if (!exam) return;
+    currentExamId = exam.id;
+    DOMAIN_ORDER = (exam.domainOrder && exam.domainOrder.length) ? exam.domainOrder.slice() : [];
+    DOMAIN_WEIGHTS = Object.assign({}, exam.domainWeights || {});
+    const qs = typeof exam.getQuestions === "function" ? exam.getQuestions() : [];
+    QUESTIONS = Array.isArray(qs) ? qs.slice() : [];
+  }
+  function clearSessionProgressState() {
+    state.practiceFilter = "all";
+    state.practiceList = [];
+    state.practiceIndex = 0;
+    state.practiceAnswers = {};
+    state.practiceSubmitted = {};
+    state.practiceFlags = {};
+    state.wrongIds = {};
+    state.practiceReveal = {};
+    state.boxChoiceOrder = {};
+    state.practiceOrder = {};
+    if (state.examTimerId) {
+      clearInterval(state.examTimerId);
+      state.examTimerId = null;
+    }
+    state.examQuestions = [];
+    state.examIndex = 0;
+    state.examAnswers = {};
+    state.examFlags = {};
+    state.examSecondsLeft = 0;
+    state.examSubmitted = false;
+    state.examResult = null;
+    state.revealed = false;
+  }
+  function switchExam(examId, opts) {
+    const api = examApi();
+    if (!api) return false;
+    const exam = api.get(examId);
+    if (!exam || (exam.id === currentExamId && QUESTIONS.length)) {
+      if (exam && exam.id === currentExamId) {
+        // still refresh UI
+        if (!opts || !opts.silent) {
+          rebuildExamConfigControls();
+          rebuildPracticeFilter();
+          rebuildHomeStats();
+          applyChrome();
+          updateExamSwitcherUI();
+        }
+        return true;
+      }
+      return false;
+    }
+    if (api.saveExamId) api.saveExamId(exam.id);
+    applyExamConfig(exam);
+    clearSessionProgressState();
+    state.practiceOrder = loadOrderMap();
+    loadProgress();
+    // Do not auto-load last exam into live state on switch; peek only via home button
+    rebuildExamConfigControls();
+    rebuildPracticeFilter();
+    rebuildHomeStats();
+    applyChrome();
+    updateExamSwitcherUI();
+    if (!opts || !opts.skipHome) renderHome();
+    return true;
+  }
 
   /* Lang: zh | en | both — default 对照 */
   const I18N = {
     zh: {
-      brandTitle: "AI-103 练习助手 · 187题中英对照",
-      brandSub: "Developing AI Apps and Agents on Azure · 可切换中/英/对照",
+      brandTitle: "IT认证练习",
+      brandSub: "多题库练习 · 可切换中/英/对照",
       homeTitle: "题库概览",
       homeIntro: "题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。",
       statAll: "全部题目",
@@ -15142,11 +15650,11 @@ html.auth-required body.auth-ok #auth-panel {
       confirmHandIn: "确定交卷并查看成绩？",
       kbdPractice: "选择 · Enter 提交 / 下一题",
       kbdExam: "选择 · Enter 下一题",
-      foot: "AI-103 练习助手 · 187 题（PDF 题源）· 本地运行 · 进度保存在浏览器 localStorage",
+      foot: "IT认证练习 · 本地运行 · 进度按题库隔离保存在 localStorage",
     },
     en: {
-      brandTitle: "AI-103 Practice · 187 bilingual questions",
-      brandSub: "Developing AI Apps and Agents on Azure · CN / EN / Both",
+      brandTitle: "IT Cert Practice",
+      brandSub: "Multi-exam practice · ZH / EN / both",
       homeTitle: "Question bank",
       homeIntro: "Sourced from your PDF; answers checked against docs. Covers official skills measured (ref. 2026-04 outline). Unofficial practice only.",
       statAll: "All",
@@ -15270,7 +15778,7 @@ html.auth-required body.auth-ok #auth-panel {
       confirmHandIn: "Submit and view score?",
       kbdPractice: "select · Enter submit / next",
       kbdExam: "select · Enter next",
-      foot: "AI-103 Practice · 187 questions (PDF) · local · progress in localStorage",
+      foot: "IT Cert Practice · local · progress isolated per exam in localStorage",
     },
   };
   // 对照 uses ZH chrome (friendliest) but dual stems/options
@@ -15302,14 +15810,20 @@ html.auth-required body.auth-ok #auth-panel {
   }
   function loadOrderMap() {
     try {
-      const m = JSON.parse(localStorage.getItem(QORDER_KEY) || "{}");
+      const raw = readQOrderRaw();
+      const m = JSON.parse(raw || "{}");
       if (m && typeof m === "object") return m;
     } catch (e) {}
     return {};
   }
   function saveOrderMap(m) {
     try {
-      localStorage.setItem(QORDER_KEY, JSON.stringify(m));
+      localStorage.setItem(storageQOrderKey(), JSON.stringify(m));
+      // one-time migrate away from legacy key for ai103
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyQOrderKey) {
+        try { localStorage.removeItem(exam.legacyQOrderKey); } catch (e2) {}
+      }
     } catch (e) {}
   }
   /* true while rendering a practice question whose answer is revealed (not submitted) */
@@ -15367,7 +15881,12 @@ html.auth-required body.auth-ok #auth-panel {
     return zh || en;
   }
   function optionText(opt) {
-    return pickText(opt.textZh || opt.text, opt.textEn || opt.text);
+    if (!opt) return "";
+    if (opt.imageOnly) return IMAGE_ONLY_NOTE;
+    const zh = opt.textZh || opt.text || "";
+    const en = opt.textEn || opt.text || "";
+    if (!String(zh).trim() && !String(en).trim()) return IMAGE_ONLY_NOTE;
+    return pickText(zh, en);
   }
   function boxLabel(b) {
     return pickText(b.labelZh || b.label, b.labelEn || b.label);
@@ -15423,7 +15942,7 @@ html.auth-required body.auth-ok #auth-panel {
   }
 
   const $ = (sel, root) => (root || document).querySelector(sel);
-  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+  const $ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 
   const views = {
     home: $("#view-home"),
@@ -15514,7 +16033,8 @@ html.auth-required body.auth-ok #auth-panel {
 
   function loadProgress() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const got = readPracticeRaw();
+      const raw = got.raw;
       if (!raw) return;
       const data = JSON.parse(raw);
       if (data.answers) state.practiceAnswers = data.answers;
@@ -15608,15 +16128,18 @@ html.auth-required body.auth-ok #auth-panel {
       Object.keys(state.wrongIds).forEach((id) => {
         if (state.wrongIds[id]) wrongIds[id] = true;
       });
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          answers: state.practiceAnswers,
-          submitted: state.practiceSubmitted,
-          flags: flags,
-          wrongIds: wrongIds,
-        })
-      );
+      const payload = JSON.stringify({
+        answers: state.practiceAnswers,
+        submitted: state.practiceSubmitted,
+        flags: flags,
+        wrongIds: wrongIds,
+      });
+      localStorage.setItem(storagePracticeKey(), payload);
+      // Migrate: once written to namespaced key, drop legacy ai103 key to avoid split brain
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyPracticeKey) {
+        try { localStorage.removeItem(exam.legacyPracticeKey); } catch (e2) {}
+      }
     } catch (e) {
       /* ignore */
     }
@@ -15646,7 +16169,7 @@ html.auth-required body.auth-ok #auth-panel {
       if (!state.examResult) return;
       const r = state.examResult;
       localStorage.setItem(
-        EXAM_STORAGE_KEY,
+        storageExamLastKey(),
         JSON.stringify({
           result: {
             correct: r.correct,
@@ -15663,6 +16186,10 @@ html.auth-required body.auth-ok #auth-panel {
           flags: state.examFlags,
         })
       );
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyExamLastKey) {
+        try { localStorage.removeItem(exam.legacyExamLastKey); } catch (e2) {}
+      }
     } catch (e) {
       /* ignore */
     }
@@ -15670,7 +16197,7 @@ html.auth-required body.auth-ok #auth-panel {
 
   function loadExamLast() {
     try {
-      const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+      const raw = readExamLastRaw();
       if (!raw) return false;
       const data = JSON.parse(raw);
       const byId = {};
@@ -15702,7 +16229,7 @@ html.auth-required body.auth-ok #auth-panel {
 
   function hasExamLast() {
     try {
-      return !!localStorage.getItem(EXAM_STORAGE_KEY);
+      return !!readExamLastRaw();
     } catch (e) {
       return false;
     }
@@ -15711,7 +16238,7 @@ html.auth-required body.auth-ok #auth-panel {
   /** Read last exam summary without mutating in-progress exam state. */
   function peekExamLast() {
     try {
-      const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+      const raw = readExamLastRaw();
       if (!raw) return null;
       const data = JSON.parse(raw);
       if (!data || !data.result) return null;
@@ -15778,7 +16305,9 @@ html.auth-required body.auth-ok #auth-panel {
       if (q.boxes.every(isYNBox)) return "yn";
       return "select";
     }
+    // AI-103 uses type=multi; DOP-C02 uses type=multi for multi-letter answers
     if (q.type === "multi") return "multi";
+    // DOP-C02 type=choice → single-select (same as AI-103 type=single)
     return "single";
   }
 
@@ -15906,6 +16435,11 @@ html.auth-required body.auth-ok #auth-panel {
 
 
   function weightedSample(n) {
+    if (!DOMAIN_ORDER.length) {
+      return shuffle(QUESTIONS.slice())
+        .slice(0, Math.min(n, QUESTIONS.length))
+        .map(shuffleOptions);
+    }
     const pools = {};
     DOMAIN_ORDER.forEach((d) => {
       pools[d] = shuffle(byDomain(d));
@@ -16099,8 +16633,15 @@ html.auth-required body.auth-ok #auth-panel {
   }
 
   function sampleExamQuestions(n) {
-    if (n === 58) return sampleRealExam58();
-    return weightedSample(n);
+    const exam = currentExam();
+    if (exam && exam.specialExam58 && n === 58) return sampleRealExam58();
+    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
+      return weightedSample(n);
+    }
+    // DOP-C02 and other banks: simple random sample (no AI-103 case/58 structure)
+    return shuffle(QUESTIONS.slice())
+      .slice(0, Math.min(n, QUESTIONS.length))
+      .map(shuffleOptions);
   }
 
   /** Tolerant key compare: trims, collapses whitespace/NBSP, unifies smart quotes */
@@ -16134,15 +16675,181 @@ html.auth-required body.auth-ok #auth-panel {
 
   /* ---- Home ---- */
   function renderHome() {
-    const counts = domainCounts();
-    $("#stat-total").textContent = QUESTIONS.length;
-    DOMAIN_ORDER.forEach((d) => {
-      const el = $("#stat-" + d);
-      if (el) el.textContent = counts[d];
-    });
+    rebuildHomeStats();
     applyChrome();
     updateHomeReviewButtons();
+    updateExamSwitcherUI();
     showView("home");
+  }
+
+  function rebuildHomeStats() {
+    const wrap = $("#home-stats");
+    if (!wrap) return;
+    const exam = currentExam();
+    const pack = t();
+    const parts = [];
+    parts.push(
+      '<div class="stat"><div class="n" id="stat-total">' +
+        QUESTIONS.length +
+        '</div><div class="l">' +
+        escapeHtml(pack.statAll) +
+        "</div></div>"
+    );
+    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
+      const counts = domainCounts();
+      const labels = state.lang === "en" ? (exam.domainLabelsEn || {}) : (exam.domainLabelsZh || pack.domain || {});
+      // pack.domain for zh chrome; for both use zh labels
+      const zhLabels = (exam.domainLabelsZh || pack.domain || {});
+      const enLabels = (exam.domainLabelsEn || {});
+      DOMAIN_ORDER.forEach((d) => {
+        let lab = zhLabels[d] || d;
+        if (state.lang === "en") lab = enLabels[d] || lab;
+        else if (state.lang === "both" && enLabels[d] && enLabels[d] !== lab) lab = lab; // keep zh short on cards
+        // Prefer short I18N labels when available
+        if (pack.statPlan && d === "plan") lab = pack.statPlan;
+        if (pack.statGenai && d === "genai") lab = pack.statGenai;
+        if (pack.statVision && d === "vision") lab = pack.statVision;
+        if (pack.statText && d === "text") lab = pack.statText;
+        if (pack.statExtract && d === "extract") lab = pack.statExtract;
+        parts.push(
+          '<div class="stat"><div class="n" id="stat-' +
+            d +
+            '">' +
+            (counts[d] || 0) +
+            '</div><div class="l">' +
+            escapeHtml(lab) +
+            "</div></div>"
+        );
+      });
+    } else {
+      let choice = 0, multi = 0;
+      QUESTIONS.forEach((q) => {
+        if (getControl(q) === "multi") multi++;
+        else choice++;
+      });
+      parts.push(
+        '<div class="stat"><div class="n">' +
+          choice +
+          '</div><div class="l">' +
+          escapeHtml(state.lang === "en" ? "Single / choice" : "单选") +
+          "</div></div>"
+      );
+      parts.push(
+        '<div class="stat"><div class="n">' +
+          multi +
+          '</div><div class="l">' +
+          escapeHtml(state.lang === "en" ? "Multi-select" : "多选") +
+          "</div></div>"
+      );
+    }
+    wrap.innerHTML = parts.join("");
+  }
+
+  function rebuildPracticeFilter() {
+    const sel = $("#practice-filter");
+    if (!sel) return;
+    const pack = t();
+    const exam = currentExam();
+    const cur = sel.value;
+    let html = "";
+    html += '<option value="all">' + escapeHtml(pack.filterAll) + "</option>";
+    html += '<option value="flagged">' + escapeHtml(pack.filterFlagged) + "</option>";
+    html += '<option value="wrong">' + escapeHtml(pack.filterWrong) + "</option>";
+    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
+      const zh = exam.domainLabelsZh || pack.domain || {};
+      const en = exam.domainLabelsEn || {};
+      DOMAIN_ORDER.forEach((d) => {
+        let lab = state.lang === "en" ? en[d] || zh[d] || d : zh[d] || d;
+        html += '<option value="' + d + '">' + escapeHtml(lab) + "</option>";
+      });
+    }
+    sel.innerHTML = html;
+    const ok = Array.from(sel.options).some((o) => o.value === cur);
+    sel.value = ok ? cur : "all";
+  }
+
+  function rebuildExamConfigControls() {
+    const exam = currentExam();
+    const pack = t();
+    const countSel = $("#exam-count");
+    const minSel = $("#exam-minutes");
+    if (countSel && exam) {
+      const counts = exam.mockCounts || [30, 50, 75];
+      const def = exam.mockDefaultCount || counts[0];
+      countSel.innerHTML = counts
+        .map((n) => {
+          let label = n + (state.lang === "en" ? " questions" : " 题");
+          if (exam.specialExam58 && n === 58) {
+            label = state.lang === "en" ? "58 questions (default, real exam)" : "58 题（默认，真实考试）";
+          } else if (n === def) {
+            label += state.lang === "en" ? " (default)" : "（默认）";
+          }
+          return (
+            '<option value="' +
+            n +
+            '"' +
+            (n === def ? " selected" : "") +
+            ">" +
+            escapeHtml(label) +
+            "</option>"
+          );
+        })
+        .join("");
+    }
+    if (minSel && exam) {
+      const mins = exam.mockMinutes || [60, 90, 120];
+      const defM = exam.mockDefaultMinutes || mins[0];
+      minSel.innerHTML = mins
+        .map((m) => {
+          let label = String(m);
+          if (m === defM) label += state.lang === "en" ? " (default)" : "（默认）";
+          return (
+            '<option value="' +
+            m +
+            '"' +
+            (m === defM ? " selected" : "") +
+            ">" +
+            escapeHtml(label) +
+            "</option>"
+          );
+        })
+        .join("");
+    }
+    const intro = $("#view-exam-config > p.muted");
+    if (intro && exam) {
+      if (exam.specialExam58) intro.textContent = pack.examConfigIntro;
+      else {
+        intro.textContent =
+          state.lang === "en"
+            ? "Random sample from the current bank (default " +
+              (exam.mockDefaultCount || 75) +
+              " Q / " +
+              (exam.mockDefaultMinutes || 180) +
+              " min). No feedback until you finish."
+            : "从当前题库随机抽题（默认 " +
+              (exam.mockDefaultCount || 75) +
+              " 题 / " +
+              (exam.mockDefaultMinutes || 180) +
+              " 分钟）。考试过程中不显示对错。";
+      }
+    }
+  }
+
+  function updateExamSwitcherUI() {
+    const wrap = $("#exam-switcher");
+    if (!wrap) return;
+    const api = examApi();
+    if (!api) return;
+    $("#exam-switcher [data-exam-id]").forEach((btn) => {
+      const id = btn.getAttribute("data-exam-id");
+      btn.classList.toggle("active", id === currentExamId);
+      btn.setAttribute("aria-pressed", id === currentExamId ? "true" : "false");
+    });
+    const icon = $(".brand-icon");
+    if (icon) {
+      const exam = currentExam();
+      icon.textContent = exam ? (exam.shortLabel || "IT").replace(/-C02$/, "").slice(0, 6) : "IT";
+    }
   }
 
   function updateHomeReviewButtons() {
@@ -16204,17 +16911,38 @@ html.auth-required body.auth-ok #auth-panel {
       const el = $(sel);
       if (el) el.innerHTML = val;
     };
-    setTxt(".brand h1", pack.brandTitle);
-    setTxt(".brand .sub", pack.brandSub);
-    document.title = pack.brandTitle;
+    const exam = currentExam();
+    const examTitle = exam ? exam.title : "";
+    const subCore =
+      exam && state.lang === "en"
+        ? exam.subtitleEn || exam.subtitleZh || ""
+        : exam
+          ? exam.subtitleZh || exam.subtitleEn || ""
+          : pack.brandSub;
+    const h1 =
+      pack.brandTitle + (examTitle ? " · " + examTitle : "");
+    setTxt(".brand h1", h1);
+    setTxt(
+      ".brand .sub",
+      subCore +
+        (QUESTIONS.length
+          ? (state.lang === "en" ? " · " : " · ") + QUESTIONS.length + (state.lang === "en" ? " Q" : " 题")
+          : "")
+    );
+    document.title = h1;
     setTxt("#view-home h2", pack.homeTitle);
     const intro = $("#view-home > p.muted");
-    if (intro) intro.textContent = pack.homeIntro;
-    const stats = $$("#view-home .stat .l");
-    const statLabels = [pack.statAll, pack.statPlan, pack.statGenai, pack.statVision, pack.statText, pack.statExtract];
-    stats.forEach((el, i) => {
-      if (statLabels[i]) el.textContent = statLabels[i];
-    });
+    if (intro) {
+      if (exam && exam.id === "dop-c02") {
+        intro.textContent =
+          state.lang === "en"
+            ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
+            : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
+      } else {
+        intro.textContent = pack.homeIntro;
+      }
+    }
+    rebuildHomeStats();
     const bp = $("#btn-go-practice");
     if (bp) {
       bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>";
@@ -16258,17 +16986,10 @@ html.auth-required body.auth-ok #auth-panel {
     setTxt("#view-exam-config h2", pack.examConfigTitle);
     const exIntro = $("#view-exam-config > p.muted");
     if (exIntro) exIntro.textContent = pack.examConfigIntro;
-    const exLabs = $$("#view-exam-config .exam-config label > span");
+    const exLabs = $("#view-exam-config .exam-config label > span");
     if (exLabs[0]) exLabs[0].textContent = pack.examCount;
     if (exLabs[1]) exLabs[1].textContent = pack.examMinutes;
-    const countSel = $("#exam-count");
-    if (countSel) {
-      const o = countSel.options;
-      if (o[0]) o[0].textContent = pack.examCount30;
-      if (o[1]) o[1].textContent = pack.examCount50;
-      if (o[2]) o[2].textContent = pack.examCount58;
-      if (o[3]) o[3].textContent = pack.examCount60;
-    }
+    rebuildExamConfigControls();
     setTxt("#btn-exam-config-back", pack.back);
     setTxt("#btn-exam-start", pack.startExam);
     setTxt("#btn-exam-back", pack.leaveExam);
@@ -16286,7 +17007,7 @@ html.auth-required body.auth-ok #auth-panel {
     setTxt("#btn-result-review", pack.reviewQs);
     setTxt("#btn-result-retry", pack.retry);
     setTxt("#btn-result-home", state.lang === "en" ? "Home" : "回首页");
-    const wrongH = $$("#view-result h2");
+    const wrongH = $("#view-result h2");
     if (wrongH[1]) wrongH[1].textContent = pack.wrongTitle;
     setTxt(".app-foot .foot-text", pack.foot);
     const authorTxt =
@@ -16295,7 +17016,7 @@ html.auth-required body.auth-ok #auth-panel {
     setTxt(".app-foot .foot-author", authorTxt);
 
     // lang toggle active state
-    $$(".lang-toggle button").forEach((btn) => {
+    $(".lang-toggle button").forEach((btn) => {
       btn.classList.toggle("active", btn.getAttribute("data-lang") === state.lang);
     });
   }
@@ -16305,17 +17026,14 @@ html.auth-required body.auth-ok #auth-panel {
     state.lang = lang;
     saveLang(lang);
     setJumpHint("");
+    rebuildPracticeFilter();
+    rebuildExamConfigControls();
     applyChrome();
     if (state.mode === "home") renderHome();
     else if (state.mode === "practice") renderPractice();
-    else if (state.mode === "examConfig") {
-      applyChrome();
-      showView("examConfig");
-    } else if (state.mode === "exam") renderExam();
-    else if (state.mode === "result") {
-      applyChrome();
-      renderResult();
-    }
+    else if (state.mode === "examConfig") applyChrome();
+    else if (state.mode === "exam") renderExam();
+    else if (state.mode === "result") renderResult();
   }
 
 
@@ -16844,7 +17562,7 @@ html.auth-required body.auth-ok #auth-panel {
         revealOnly = false;
       }
     } else {
-      if (q.type === "multi") {
+      if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
       html += '<div class="options" id="practice-options">';
@@ -16930,7 +17648,7 @@ html.auth-required body.auth-ok #auth-panel {
 
     bindBoxControls(q, "practice", showing);
     if (!isBoxQ(q)) {
-      $$("#practice-options .option").forEach((btn) => {
+      $("#practice-options .option").forEach((btn) => {
         btn.addEventListener("click", () => {
           if (state.practiceSubmitted[q.id] || isPracticeRevealed(q)) return;
           toggleSelect(q, btn.getAttribute("data-oid"), "practice");
@@ -16982,7 +17700,7 @@ html.auth-required body.auth-ok #auth-panel {
     const prefix = mode === "practice" ? "#practice-boxes" : "#exam-boxes";
     const ctrl = getControl(q);
     if (ctrl === "select") {
-      $$(prefix + " .box-select").forEach((sel) => {
+      $(prefix + " .box-select").forEach((sel) => {
         sel.addEventListener("change", () => {
           setBoxAnswer(q, sel.getAttribute("data-boxid"), sel.value, mode);
         });
@@ -16990,7 +17708,7 @@ html.auth-required body.auth-ok #auth-panel {
       return;
     }
     if (ctrl === "yn") {
-      $$(prefix + " .yn-btn").forEach((btn) => {
+      $(prefix + " .yn-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           setBoxAnswer(q, btn.getAttribute("data-boxid"), btn.getAttribute("data-key"), mode);
         });
@@ -16998,12 +17716,12 @@ html.auth-required body.auth-ok #auth-panel {
       return;
     }
     if (ctrl === "drag") {
-      $$(prefix + " .drag-chip").forEach((btn) => {
+      $(prefix + " .drag-chip").forEach((btn) => {
         btn.addEventListener("click", () => {
           assignDragNext(q, btn.getAttribute("data-key"), mode);
         });
       });
-      $$(prefix + ' .slot-value.filled').forEach((btn) => {
+      $(prefix + ' .slot-value.filled').forEach((btn) => {
         btn.addEventListener("click", () => {
           clearDragSlot(q, btn.getAttribute("data-boxid"), mode);
         });
@@ -17018,7 +17736,7 @@ html.auth-required body.auth-ok #auth-panel {
   function toggleSelect(q, oid, mode) {
     const key = mode === "practice" ? "practiceAnswers" : "examAnswers";
     let sel = (state[key][q.id] || []).slice();
-    if (q.type === "single") {
+    if (getControl(q) === "single") {
       sel = [oid];
     } else {
       const i = sel.indexOf(oid);
@@ -17082,8 +17800,15 @@ html.auth-required body.auth-ok #auth-panel {
   }
 
   function startExam() {
-    const count = parseInt($("#exam-count").value, 10) || 58;
-    const minutes = parseInt($("#exam-minutes").value, 10) || 90;
+    const exam = currentExam();
+    const count =
+      parseInt($("#exam-count").value, 10) ||
+      (exam && exam.mockDefaultCount) ||
+      58;
+    const minutes =
+      parseInt($("#exam-minutes").value, 10) ||
+      (exam && exam.mockDefaultMinutes) ||
+      90;
     const n = Math.min(count, QUESTIONS.length);
     state.examQuestions = sampleExamQuestions(n);
     state.examIndex = 0;
@@ -17169,7 +17894,7 @@ html.auth-required body.auth-ok #auth-panel {
       html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pickHintFor(q, pack)) + "</p>";
       html += renderBoxesHtml(q, selected, reviewMode, "exam");
     } else {
-      if (q.type === "multi") {
+      if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
       html += '<div class="options" id="exam-options">';
@@ -17237,7 +17962,7 @@ html.auth-required body.auth-ok #auth-panel {
         "</button>";
     });
     $("#exam-grid").innerHTML = grid;
-    $$("#exam-grid button").forEach((b) => {
+    $("#exam-grid button").forEach((b) => {
       b.addEventListener("click", () => {
         state.examIndex = parseInt(b.getAttribute("data-i"), 10);
         renderExam();
@@ -17253,7 +17978,7 @@ html.auth-required body.auth-ok #auth-panel {
     if (!state.examSubmitted) {
       bindBoxControls(q, "exam", false);
       if (!isBoxQ(q)) {
-        $$("#exam-options .option").forEach((btn) => {
+        $("#exam-options .option").forEach((btn) => {
           btn.addEventListener("click", () => {
             toggleSelect(q, btn.getAttribute("data-oid"), "exam");
           });
@@ -17471,14 +18196,29 @@ html.auth-required body.auth-ok #auth-panel {
 
   /* Wire UI */
   function init() {
-    if (typeof QUESTIONS === "undefined" || !QUESTIONS.length) {
+    const api = examApi();
+    if (!api) {
       document.body.innerHTML =
-        "<p style='padding:2rem;color:#fff'>题库加载失败：未找到 QUESTIONS。</p>";
+        "<p style='padding:2rem;color:#fff'>题库加载失败：未找到考试注册表 ITCERT_EXAMS。</p>";
       return;
     }
+    const startId = api.loadSavedExamId ? api.loadSavedExamId() : api.defaultId;
+    applyExamConfig(api.get(startId));
+    if (!QUESTIONS.length) {
+      document.body.innerHTML =
+        "<p style='padding:2rem;color:#fff'>题库加载失败：当前考试无题目（" +
+        currentExamId +
+        "）。</p>";
+      return;
+    }
+    state.practiceOrder = loadOrderMap();
     loadProgress();
-    loadExamLast();
+    // Last exam is opened on demand from home — do not clobber via loadExamLast at boot
     applyChrome();
+    rebuildExamConfigControls();
+    rebuildPracticeFilter();
+    rebuildHomeStats();
+    updateExamSwitcherUI();
     document.addEventListener("ai103-auth-change", onAuthGateChange);
     if (authAllowsApp()) {
       renderHome();
@@ -17486,9 +18226,23 @@ html.auth-required body.auth-ok #auth-panel {
       hideAllAppViews();
     }
 
-    $$(".lang-toggle button").forEach((btn) => {
+    $(".lang-toggle button").forEach((btn) => {
       btn.addEventListener("click", () => setLang(btn.getAttribute("data-lang")));
     });
+
+    const switcher = $("#exam-switcher");
+    if (switcher) {
+      switcher.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-exam-id]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-exam-id");
+        if (!id || id === currentExamId) return;
+        if (state.mode === "exam" && !state.examSubmitted) {
+          if (!confirm(t().confirmLeave)) return;
+        }
+        switchExam(id);
+      });
+    }
 
     $("#btn-go-practice").addEventListener("click", () => startPractice("all"));
     $("#btn-go-exam").addEventListener("click", openExamConfig);

@@ -13458,3 +13458,11 @@ const QUESTIONS = [
   "pdfQNum": 16
  }
 ];
+const QUESTIONS_AI103 = QUESTIONS;
+if (typeof window !== "undefined") {
+  window.QUESTIONS = QUESTIONS;
+  window.QUESTIONS_AI103 = QUESTIONS_AI103;
+}
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { QUESTIONS: QUESTIONS, QUESTIONS_AI103: QUESTIONS_AI103 };
+}

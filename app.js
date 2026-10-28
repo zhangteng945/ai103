@@ -1,21 +1,142 @@
-/* AI-103 Practice App — Teng */
+/* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02) — Teng */
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "ai103_practice_v3";
-  const EXAM_STORAGE_KEY = "ai103_exam_last_v1";
-  const LANG_KEY = "ai103-lang";
-  const SHOWANS_KEY = "ai103-showans";
-  const QORDER_KEY = "ai103-qorder";
-  const DOMAIN_ORDER = ["plan", "genai", "vision", "text", "extract"];
-  const DOMAIN_WEIGHTS = { plan: 0.275, genai: 0.325, vision: 0.125, text: 0.125, extract: 0.125 };
+  const LANG_KEY = "ai103-lang"; // site-wide language preference (legacy key kept)
+  const SHOWANS_KEY = "ai103-showans"; // site-wide show-answer preference
   const PASS_SCORE = 700;
+  const IMAGE_ONLY_NOTE = "本题选项为 PDF 截图，暂无文字，请对照原题";
+
+  /* Active bank — reassigned when switching exams (shadows any global QUESTIONS). */
+  let QUESTIONS = [];
+  let DOMAIN_ORDER = ["plan", "genai", "vision", "text", "extract"];
+  let DOMAIN_WEIGHTS = { plan: 0.275, genai: 0.325, vision: 0.125, text: 0.125, extract: 0.125 };
+  let currentExamId = "ai103";
+
+  function examApi() {
+    return (typeof window !== "undefined" && window.ITCERT_EXAMS) || null;
+  }
+  function currentExam() {
+    const api = examApi();
+    return api ? api.get(currentExamId) : null;
+  }
+  function storagePracticeKey() {
+    const api = examApi();
+    return api ? api.practiceKey(currentExamId) : "itcert_practice_v1_" + currentExamId;
+  }
+  function storageExamLastKey() {
+    const api = examApi();
+    return api ? api.examLastKey(currentExamId) : "itcert_exam_last_v1_" + currentExamId;
+  }
+  function storageQOrderKey() {
+    const api = examApi();
+    return api ? api.qOrderKey(currentExamId) : "itcert_qorder_v1_" + currentExamId;
+  }
+  /** Resolve practice raw JSON: namespaced key, else AI-103 legacy once. */
+  function readPracticeRaw() {
+    try {
+      let raw = localStorage.getItem(storagePracticeKey());
+      if (raw) return { raw: raw, fromLegacy: false };
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyPracticeKey) {
+        raw = localStorage.getItem(exam.legacyPracticeKey);
+        if (raw) return { raw: raw, fromLegacy: true };
+      }
+    } catch (e) {}
+    return { raw: null, fromLegacy: false };
+  }
+  function readExamLastRaw() {
+    try {
+      let raw = localStorage.getItem(storageExamLastKey());
+      if (raw) return raw;
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyExamLastKey) {
+        return localStorage.getItem(exam.legacyExamLastKey);
+      }
+    } catch (e) {}
+    return null;
+  }
+  function readQOrderRaw() {
+    try {
+      let raw = localStorage.getItem(storageQOrderKey());
+      if (raw) return raw;
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyQOrderKey) {
+        return localStorage.getItem(exam.legacyQOrderKey);
+      }
+    } catch (e) {}
+    return null;
+  }
+  function applyExamConfig(exam) {
+    if (!exam) return;
+    currentExamId = exam.id;
+    DOMAIN_ORDER = (exam.domainOrder && exam.domainOrder.length) ? exam.domainOrder.slice() : [];
+    DOMAIN_WEIGHTS = Object.assign({}, exam.domainWeights || {});
+    const qs = typeof exam.getQuestions === "function" ? exam.getQuestions() : [];
+    QUESTIONS = Array.isArray(qs) ? qs.slice() : [];
+  }
+  function clearSessionProgressState() {
+    state.practiceFilter = "all";
+    state.practiceList = [];
+    state.practiceIndex = 0;
+    state.practiceAnswers = {};
+    state.practiceSubmitted = {};
+    state.practiceFlags = {};
+    state.wrongIds = {};
+    state.practiceReveal = {};
+    state.boxChoiceOrder = {};
+    state.practiceOrder = {};
+    if (state.examTimerId) {
+      clearInterval(state.examTimerId);
+      state.examTimerId = null;
+    }
+    state.examQuestions = [];
+    state.examIndex = 0;
+    state.examAnswers = {};
+    state.examFlags = {};
+    state.examSecondsLeft = 0;
+    state.examSubmitted = false;
+    state.examResult = null;
+    state.revealed = false;
+  }
+  function switchExam(examId, opts) {
+    const api = examApi();
+    if (!api) return false;
+    const exam = api.get(examId);
+    if (!exam || (exam.id === currentExamId && QUESTIONS.length)) {
+      if (exam && exam.id === currentExamId) {
+        // still refresh UI
+        if (!opts || !opts.silent) {
+          rebuildExamConfigControls();
+          rebuildPracticeFilter();
+          rebuildHomeStats();
+          applyChrome();
+          updateExamSwitcherUI();
+        }
+        return true;
+      }
+      return false;
+    }
+    if (api.saveExamId) api.saveExamId(exam.id);
+    applyExamConfig(exam);
+    clearSessionProgressState();
+    state.practiceOrder = loadOrderMap();
+    loadProgress();
+    // Do not auto-load last exam into live state on switch; peek only via home button
+    rebuildExamConfigControls();
+    rebuildPracticeFilter();
+    rebuildHomeStats();
+    applyChrome();
+    updateExamSwitcherUI();
+    if (!opts || !opts.skipHome) renderHome();
+    return true;
+  }
 
   /* Lang: zh | en | both — default 对照 */
   const I18N = {
     zh: {
-      brandTitle: "AI-103 练习助手 · 187题中英对照",
-      brandSub: "Developing AI Apps and Agents on Azure · 可切换中/英/对照",
+      brandTitle: "IT认证练习",
+      brandSub: "多题库练习 · 可切换中/英/对照",
       homeTitle: "题库概览",
       homeIntro: "题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。",
       statAll: "全部题目",
@@ -139,11 +260,11 @@
       confirmHandIn: "确定交卷并查看成绩？",
       kbdPractice: "选择 · Enter 提交 / 下一题",
       kbdExam: "选择 · Enter 下一题",
-      foot: "AI-103 练习助手 · 187 题（PDF 题源）· 本地运行 · 进度保存在浏览器 localStorage",
+      foot: "IT认证练习 · 本地运行 · 进度按题库隔离保存在 localStorage",
     },
     en: {
-      brandTitle: "AI-103 Practice · 187 bilingual questions",
-      brandSub: "Developing AI Apps and Agents on Azure · CN / EN / Both",
+      brandTitle: "IT Cert Practice",
+      brandSub: "Multi-exam practice · ZH / EN / both",
       homeTitle: "Question bank",
       homeIntro: "Sourced from your PDF; answers checked against docs. Covers official skills measured (ref. 2026-04 outline). Unofficial practice only.",
       statAll: "All",
@@ -267,7 +388,7 @@
       confirmHandIn: "Submit and view score?",
       kbdPractice: "select · Enter submit / next",
       kbdExam: "select · Enter next",
-      foot: "AI-103 Practice · 187 questions (PDF) · local · progress in localStorage",
+      foot: "IT Cert Practice · local · progress isolated per exam in localStorage",
     },
   };
   // 对照 uses ZH chrome (friendliest) but dual stems/options
@@ -299,14 +420,20 @@
   }
   function loadOrderMap() {
     try {
-      const m = JSON.parse(localStorage.getItem(QORDER_KEY) || "{}");
+      const raw = readQOrderRaw();
+      const m = JSON.parse(raw || "{}");
       if (m && typeof m === "object") return m;
     } catch (e) {}
     return {};
   }
   function saveOrderMap(m) {
     try {
-      localStorage.setItem(QORDER_KEY, JSON.stringify(m));
+      localStorage.setItem(storageQOrderKey(), JSON.stringify(m));
+      // one-time migrate away from legacy key for ai103
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyQOrderKey) {
+        try { localStorage.removeItem(exam.legacyQOrderKey); } catch (e2) {}
+      }
     } catch (e) {}
   }
   /* true while rendering a practice question whose answer is revealed (not submitted) */
@@ -364,7 +491,12 @@
     return zh || en;
   }
   function optionText(opt) {
-    return pickText(opt.textZh || opt.text, opt.textEn || opt.text);
+    if (!opt) return "";
+    if (opt.imageOnly) return IMAGE_ONLY_NOTE;
+    const zh = opt.textZh || opt.text || "";
+    const en = opt.textEn || opt.text || "";
+    if (!String(zh).trim() && !String(en).trim()) return IMAGE_ONLY_NOTE;
+    return pickText(zh, en);
   }
   function boxLabel(b) {
     return pickText(b.labelZh || b.label, b.labelEn || b.label);
@@ -511,7 +643,8 @@
 
   function loadProgress() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const got = readPracticeRaw();
+      const raw = got.raw;
       if (!raw) return;
       const data = JSON.parse(raw);
       if (data.answers) state.practiceAnswers = data.answers;
@@ -605,15 +738,18 @@
       Object.keys(state.wrongIds).forEach((id) => {
         if (state.wrongIds[id]) wrongIds[id] = true;
       });
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          answers: state.practiceAnswers,
-          submitted: state.practiceSubmitted,
-          flags: flags,
-          wrongIds: wrongIds,
-        })
-      );
+      const payload = JSON.stringify({
+        answers: state.practiceAnswers,
+        submitted: state.practiceSubmitted,
+        flags: flags,
+        wrongIds: wrongIds,
+      });
+      localStorage.setItem(storagePracticeKey(), payload);
+      // Migrate: once written to namespaced key, drop legacy ai103 key to avoid split brain
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyPracticeKey) {
+        try { localStorage.removeItem(exam.legacyPracticeKey); } catch (e2) {}
+      }
     } catch (e) {
       /* ignore */
     }
@@ -643,7 +779,7 @@
       if (!state.examResult) return;
       const r = state.examResult;
       localStorage.setItem(
-        EXAM_STORAGE_KEY,
+        storageExamLastKey(),
         JSON.stringify({
           result: {
             correct: r.correct,
@@ -660,6 +796,10 @@
           flags: state.examFlags,
         })
       );
+      const exam = currentExam();
+      if (exam && exam.id === "ai103" && exam.legacyExamLastKey) {
+        try { localStorage.removeItem(exam.legacyExamLastKey); } catch (e2) {}
+      }
     } catch (e) {
       /* ignore */
     }
@@ -667,7 +807,7 @@
 
   function loadExamLast() {
     try {
-      const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+      const raw = readExamLastRaw();
       if (!raw) return false;
       const data = JSON.parse(raw);
       const byId = {};
@@ -699,7 +839,7 @@
 
   function hasExamLast() {
     try {
-      return !!localStorage.getItem(EXAM_STORAGE_KEY);
+      return !!readExamLastRaw();
     } catch (e) {
       return false;
     }
@@ -708,7 +848,7 @@
   /** Read last exam summary without mutating in-progress exam state. */
   function peekExamLast() {
     try {
-      const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+      const raw = readExamLastRaw();
       if (!raw) return null;
       const data = JSON.parse(raw);
       if (!data || !data.result) return null;
@@ -775,7 +915,9 @@
       if (q.boxes.every(isYNBox)) return "yn";
       return "select";
     }
+    // AI-103 uses type=multi; DOP-C02 uses type=multi for multi-letter answers
     if (q.type === "multi") return "multi";
+    // DOP-C02 type=choice → single-select (same as AI-103 type=single)
     return "single";
   }
 
@@ -903,6 +1045,11 @@
 
 
   function weightedSample(n) {
+    if (!DOMAIN_ORDER.length) {
+      return shuffle(QUESTIONS.slice())
+        .slice(0, Math.min(n, QUESTIONS.length))
+        .map(shuffleOptions);
+    }
     const pools = {};
     DOMAIN_ORDER.forEach((d) => {
       pools[d] = shuffle(byDomain(d));
@@ -1096,8 +1243,15 @@
   }
 
   function sampleExamQuestions(n) {
-    if (n === 58) return sampleRealExam58();
-    return weightedSample(n);
+    const exam = currentExam();
+    if (exam && exam.specialExam58 && n === 58) return sampleRealExam58();
+    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
+      return weightedSample(n);
+    }
+    // DOP-C02 and other banks: simple random sample (no AI-103 case/58 structure)
+    return shuffle(QUESTIONS.slice())
+      .slice(0, Math.min(n, QUESTIONS.length))
+      .map(shuffleOptions);
   }
 
   /** Tolerant key compare: trims, collapses whitespace/NBSP, unifies smart quotes */
@@ -1131,15 +1285,181 @@
 
   /* ---- Home ---- */
   function renderHome() {
-    const counts = domainCounts();
-    $("#stat-total").textContent = QUESTIONS.length;
-    DOMAIN_ORDER.forEach((d) => {
-      const el = $("#stat-" + d);
-      if (el) el.textContent = counts[d];
-    });
+    rebuildHomeStats();
     applyChrome();
     updateHomeReviewButtons();
+    updateExamSwitcherUI();
     showView("home");
+  }
+
+  function rebuildHomeStats() {
+    const wrap = $("#home-stats");
+    if (!wrap) return;
+    const exam = currentExam();
+    const pack = t();
+    const parts = [];
+    parts.push(
+      '<div class="stat"><div class="n" id="stat-total">' +
+        QUESTIONS.length +
+        '</div><div class="l">' +
+        escapeHtml(pack.statAll) +
+        "</div></div>"
+    );
+    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
+      const counts = domainCounts();
+      const labels = state.lang === "en" ? (exam.domainLabelsEn || {}) : (exam.domainLabelsZh || pack.domain || {});
+      // pack.domain for zh chrome; for both use zh labels
+      const zhLabels = (exam.domainLabelsZh || pack.domain || {});
+      const enLabels = (exam.domainLabelsEn || {});
+      DOMAIN_ORDER.forEach((d) => {
+        let lab = zhLabels[d] || d;
+        if (state.lang === "en") lab = enLabels[d] || lab;
+        else if (state.lang === "both" && enLabels[d] && enLabels[d] !== lab) lab = lab; // keep zh short on cards
+        // Prefer short I18N labels when available
+        if (pack.statPlan && d === "plan") lab = pack.statPlan;
+        if (pack.statGenai && d === "genai") lab = pack.statGenai;
+        if (pack.statVision && d === "vision") lab = pack.statVision;
+        if (pack.statText && d === "text") lab = pack.statText;
+        if (pack.statExtract && d === "extract") lab = pack.statExtract;
+        parts.push(
+          '<div class="stat"><div class="n" id="stat-' +
+            d +
+            '">' +
+            (counts[d] || 0) +
+            '</div><div class="l">' +
+            escapeHtml(lab) +
+            "</div></div>"
+        );
+      });
+    } else {
+      let choice = 0, multi = 0;
+      QUESTIONS.forEach((q) => {
+        if (getControl(q) === "multi") multi++;
+        else choice++;
+      });
+      parts.push(
+        '<div class="stat"><div class="n">' +
+          choice +
+          '</div><div class="l">' +
+          escapeHtml(state.lang === "en" ? "Single / choice" : "单选") +
+          "</div></div>"
+      );
+      parts.push(
+        '<div class="stat"><div class="n">' +
+          multi +
+          '</div><div class="l">' +
+          escapeHtml(state.lang === "en" ? "Multi-select" : "多选") +
+          "</div></div>"
+      );
+    }
+    wrap.innerHTML = parts.join("");
+  }
+
+  function rebuildPracticeFilter() {
+    const sel = $("#practice-filter");
+    if (!sel) return;
+    const pack = t();
+    const exam = currentExam();
+    const cur = sel.value;
+    let html = "";
+    html += '<option value="all">' + escapeHtml(pack.filterAll) + "</option>";
+    html += '<option value="flagged">' + escapeHtml(pack.filterFlagged) + "</option>";
+    html += '<option value="wrong">' + escapeHtml(pack.filterWrong) + "</option>";
+    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
+      const zh = exam.domainLabelsZh || pack.domain || {};
+      const en = exam.domainLabelsEn || {};
+      DOMAIN_ORDER.forEach((d) => {
+        let lab = state.lang === "en" ? en[d] || zh[d] || d : zh[d] || d;
+        html += '<option value="' + d + '">' + escapeHtml(lab) + "</option>";
+      });
+    }
+    sel.innerHTML = html;
+    const ok = Array.from(sel.options).some((o) => o.value === cur);
+    sel.value = ok ? cur : "all";
+  }
+
+  function rebuildExamConfigControls() {
+    const exam = currentExam();
+    const pack = t();
+    const countSel = $("#exam-count");
+    const minSel = $("#exam-minutes");
+    if (countSel && exam) {
+      const counts = exam.mockCounts || [30, 50, 75];
+      const def = exam.mockDefaultCount || counts[0];
+      countSel.innerHTML = counts
+        .map((n) => {
+          let label = n + (state.lang === "en" ? " questions" : " 题");
+          if (exam.specialExam58 && n === 58) {
+            label = state.lang === "en" ? "58 questions (default, real exam)" : "58 题（默认，真实考试）";
+          } else if (n === def) {
+            label += state.lang === "en" ? " (default)" : "（默认）";
+          }
+          return (
+            '<option value="' +
+            n +
+            '"' +
+            (n === def ? " selected" : "") +
+            ">" +
+            escapeHtml(label) +
+            "</option>"
+          );
+        })
+        .join("");
+    }
+    if (minSel && exam) {
+      const mins = exam.mockMinutes || [60, 90, 120];
+      const defM = exam.mockDefaultMinutes || mins[0];
+      minSel.innerHTML = mins
+        .map((m) => {
+          let label = String(m);
+          if (m === defM) label += state.lang === "en" ? " (default)" : "（默认）";
+          return (
+            '<option value="' +
+            m +
+            '"' +
+            (m === defM ? " selected" : "") +
+            ">" +
+            escapeHtml(label) +
+            "</option>"
+          );
+        })
+        .join("");
+    }
+    const intro = $("#view-exam-config > p.muted");
+    if (intro && exam) {
+      if (exam.specialExam58) intro.textContent = pack.examConfigIntro;
+      else {
+        intro.textContent =
+          state.lang === "en"
+            ? "Random sample from the current bank (default " +
+              (exam.mockDefaultCount || 75) +
+              " Q / " +
+              (exam.mockDefaultMinutes || 180) +
+              " min). No feedback until you finish."
+            : "从当前题库随机抽题（默认 " +
+              (exam.mockDefaultCount || 75) +
+              " 题 / " +
+              (exam.mockDefaultMinutes || 180) +
+              " 分钟）。考试过程中不显示对错。";
+      }
+    }
+  }
+
+  function updateExamSwitcherUI() {
+    const wrap = $("#exam-switcher");
+    if (!wrap) return;
+    const api = examApi();
+    if (!api) return;
+    $$("#exam-switcher [data-exam-id]").forEach((btn) => {
+      const id = btn.getAttribute("data-exam-id");
+      btn.classList.toggle("active", id === currentExamId);
+      btn.setAttribute("aria-pressed", id === currentExamId ? "true" : "false");
+    });
+    const icon = $(".brand-icon");
+    if (icon) {
+      const exam = currentExam();
+      icon.textContent = exam ? (exam.shortLabel || "IT").replace(/-C02$/, "").slice(0, 6) : "IT";
+    }
   }
 
   function updateHomeReviewButtons() {
@@ -1201,17 +1521,38 @@
       const el = $(sel);
       if (el) el.innerHTML = val;
     };
-    setTxt(".brand h1", pack.brandTitle);
-    setTxt(".brand .sub", pack.brandSub);
-    document.title = pack.brandTitle;
+    const exam = currentExam();
+    const examTitle = exam ? exam.title : "";
+    const subCore =
+      exam && state.lang === "en"
+        ? exam.subtitleEn || exam.subtitleZh || ""
+        : exam
+          ? exam.subtitleZh || exam.subtitleEn || ""
+          : pack.brandSub;
+    const h1 =
+      pack.brandTitle + (examTitle ? " · " + examTitle : "");
+    setTxt(".brand h1", h1);
+    setTxt(
+      ".brand .sub",
+      subCore +
+        (QUESTIONS.length
+          ? (state.lang === "en" ? " · " : " · ") + QUESTIONS.length + (state.lang === "en" ? " Q" : " 题")
+          : "")
+    );
+    document.title = h1;
     setTxt("#view-home h2", pack.homeTitle);
     const intro = $("#view-home > p.muted");
-    if (intro) intro.textContent = pack.homeIntro;
-    const stats = $$("#view-home .stat .l");
-    const statLabels = [pack.statAll, pack.statPlan, pack.statGenai, pack.statVision, pack.statText, pack.statExtract];
-    stats.forEach((el, i) => {
-      if (statLabels[i]) el.textContent = statLabels[i];
-    });
+    if (intro) {
+      if (exam && exam.id === "dop-c02") {
+        intro.textContent =
+          state.lang === "en"
+            ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
+            : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
+      } else {
+        intro.textContent = pack.homeIntro;
+      }
+    }
+    rebuildHomeStats();
     const bp = $("#btn-go-practice");
     if (bp) {
       bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>";
@@ -1258,14 +1599,7 @@
     const exLabs = $$("#view-exam-config .exam-config label > span");
     if (exLabs[0]) exLabs[0].textContent = pack.examCount;
     if (exLabs[1]) exLabs[1].textContent = pack.examMinutes;
-    const countSel = $("#exam-count");
-    if (countSel) {
-      const o = countSel.options;
-      if (o[0]) o[0].textContent = pack.examCount30;
-      if (o[1]) o[1].textContent = pack.examCount50;
-      if (o[2]) o[2].textContent = pack.examCount58;
-      if (o[3]) o[3].textContent = pack.examCount60;
-    }
+    rebuildExamConfigControls();
     setTxt("#btn-exam-config-back", pack.back);
     setTxt("#btn-exam-start", pack.startExam);
     setTxt("#btn-exam-back", pack.leaveExam);
@@ -1302,17 +1636,14 @@
     state.lang = lang;
     saveLang(lang);
     setJumpHint("");
+    rebuildPracticeFilter();
+    rebuildExamConfigControls();
     applyChrome();
     if (state.mode === "home") renderHome();
     else if (state.mode === "practice") renderPractice();
-    else if (state.mode === "examConfig") {
-      applyChrome();
-      showView("examConfig");
-    } else if (state.mode === "exam") renderExam();
-    else if (state.mode === "result") {
-      applyChrome();
-      renderResult();
-    }
+    else if (state.mode === "examConfig") applyChrome();
+    else if (state.mode === "exam") renderExam();
+    else if (state.mode === "result") renderResult();
   }
 
 
@@ -1841,7 +2172,7 @@
         revealOnly = false;
       }
     } else {
-      if (q.type === "multi") {
+      if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
       html += '<div class="options" id="practice-options">';
@@ -2015,7 +2346,7 @@
   function toggleSelect(q, oid, mode) {
     const key = mode === "practice" ? "practiceAnswers" : "examAnswers";
     let sel = (state[key][q.id] || []).slice();
-    if (q.type === "single") {
+    if (getControl(q) === "single") {
       sel = [oid];
     } else {
       const i = sel.indexOf(oid);
@@ -2079,8 +2410,15 @@
   }
 
   function startExam() {
-    const count = parseInt($("#exam-count").value, 10) || 58;
-    const minutes = parseInt($("#exam-minutes").value, 10) || 90;
+    const exam = currentExam();
+    const count =
+      parseInt($("#exam-count").value, 10) ||
+      (exam && exam.mockDefaultCount) ||
+      58;
+    const minutes =
+      parseInt($("#exam-minutes").value, 10) ||
+      (exam && exam.mockDefaultMinutes) ||
+      90;
     const n = Math.min(count, QUESTIONS.length);
     state.examQuestions = sampleExamQuestions(n);
     state.examIndex = 0;
@@ -2166,7 +2504,7 @@
       html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pickHintFor(q, pack)) + "</p>";
       html += renderBoxesHtml(q, selected, reviewMode, "exam");
     } else {
-      if (q.type === "multi") {
+      if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
       html += '<div class="options" id="exam-options">';
@@ -2468,14 +2806,29 @@
 
   /* Wire UI */
   function init() {
-    if (typeof QUESTIONS === "undefined" || !QUESTIONS.length) {
+    const api = examApi();
+    if (!api) {
       document.body.innerHTML =
-        "<p style='padding:2rem;color:#fff'>题库加载失败：未找到 QUESTIONS。</p>";
+        "<p style='padding:2rem;color:#fff'>题库加载失败：未找到考试注册表 ITCERT_EXAMS。</p>";
       return;
     }
+    const startId = api.loadSavedExamId ? api.loadSavedExamId() : api.defaultId;
+    applyExamConfig(api.get(startId));
+    if (!QUESTIONS.length) {
+      document.body.innerHTML =
+        "<p style='padding:2rem;color:#fff'>题库加载失败：当前考试无题目（" +
+        currentExamId +
+        "）。</p>";
+      return;
+    }
+    state.practiceOrder = loadOrderMap();
     loadProgress();
-    loadExamLast();
+    // Last exam is opened on demand from home — do not clobber via loadExamLast at boot
     applyChrome();
+    rebuildExamConfigControls();
+    rebuildPracticeFilter();
+    rebuildHomeStats();
+    updateExamSwitcherUI();
     document.addEventListener("ai103-auth-change", onAuthGateChange);
     if (authAllowsApp()) {
       renderHome();
@@ -2486,6 +2839,20 @@
     $$(".lang-toggle button").forEach((btn) => {
       btn.addEventListener("click", () => setLang(btn.getAttribute("data-lang")));
     });
+
+    const switcher = $("#exam-switcher");
+    if (switcher) {
+      switcher.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-exam-id]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-exam-id");
+        if (!id || id === currentExamId) return;
+        if (state.mode === "exam" && !state.examSubmitted) {
+          if (!confirm(t().confirmLeave)) return;
+        }
+        switchExam(id);
+      });
+    }
 
     $("#btn-go-practice").addEventListener("click", () => startPractice("all"));
     $("#btn-go-exam").addEventListener("click", openExamConfig);
