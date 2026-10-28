@@ -7,7 +7,7 @@
   <meta name="description" content="AI-103 练习助手 · 187题中英对照 — Developing AI Apps and Agents on Azure" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>AI-103 练习助手 · 187题中英对照</title>
-  <link rel="stylesheet" href="styles.css?v=202610281210" />
+  <link rel="stylesheet" href="styles.css?v=202610281240" />
   <!-- Config early so auth-required can hide app before paint; real keys never committed -->
   <script src="js/supabase-config.js"></script>
   <script>
@@ -41,16 +41,16 @@
 
       <div id="auth-panel" class="auth-panel hidden" aria-label="账号">
         <div id="auth-status" class="auth-status">账号功能未启用（离线模式）</div>
-        <div id="auth-form-fields" class="auth-form-fields">
-          <input type="email" id="auth-email" class="auth-input" placeholder="邮箱" autocomplete="username" />
-          <input type="password" id="auth-password" class="auth-input" placeholder="密码" autocomplete="current-password" />
-        </div>
+        <form id="auth-form" class="auth-form-fields" autocomplete="on" action="#" method="post" novalidate>
+          <input type="email" id="auth-email" class="auth-input" name="email" placeholder="姓名@ai103.local" autocomplete="username" inputmode="email" />
+          <input type="password" id="auth-password" class="auth-input" name="password" placeholder="密码" autocomplete="current-password" />
+        </form>
         <div class="auth-actions">
-          <button type="button" class="btn btn-sm" id="btn-auth-login">登录</button>
+          <button type="submit" form="auth-form" class="btn btn-sm" id="btn-auth-login">登录</button>
           <button type="button" class="btn btn-sm btn-ghost" id="btn-auth-register" title="默认由管理员开通">注册/开通</button>
           <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出</button>
         </div>
-        <p class="auth-hint muted">请先登录后访问题库与练习 · 账号由管理员分配 · 详见 docs/auth-plan.md</p>
+        <p class="auth-hint muted">请先登录 · 可用短名（如 fanjie）自动补全 @ai103.local · 账号由管理员分配</p>
       </div>
     </header>
 
@@ -217,9 +217,9 @@
   </div>
 
   <!-- supabase-js CDN + auth client（config 已在 head；supabase-config.js 勿提交） -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js?v=202610281210"></script>
-  <script src="questions.js?v=202610281210"></script>
-  <script src="app.js?v=202610281210"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" onerror="window.__AI103_CDN_FAIL__=1;var e=document.getElementById('auth-status');if(e)e.textContent='登录组件加载失败（CDN），请刷新或检查网络';"></script>
+  <script src="js/supabase-client.js?v=202610281240"></script>
+  <script src="questions.js?v=202610281240"></script>
+  <script src="app.js?v=202610281240"></script>
 </body>
 </html>

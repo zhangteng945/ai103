@@ -27,6 +27,69 @@
   var EXPIRED_MSG = "账号已过期，请联系管理员";
   var enforcingExpiry = false;
 
+
+  function normalizeEmail(raw) {
+    var e = String(raw || "").trim().toLowerCase();
+    if (!e) return e;
+    if (e.indexOf("@") < 0) e += "@ai103.local";
+    return e;
+  }
+
+  var SIGNIN_TIMEOUT_MS = 15000;
+  var TIMEOUT_MSG = "网络超时，请重试";
+
+  function mapAuthError(err) {
+    var raw = (err && (err.message || err.error_description || err.msg)) || "";
+    var msg = String(raw);
+    var low = msg.toLowerCase();
+    var code = String((err && (err.code || err.error_code)) || "").toLowerCase();
+    if (
+      low.indexOf("invalid login credentials") >= 0 ||
+      code === "invalid_credentials" ||
+      low.indexOf("invalid_credentials") >= 0
+    ) {
+      return "邮箱或密码错误（邮箱格式：姓名@ai103.local）";
+    }
+    if (
+      low.indexOf("email not confirmed") >= 0 ||
+      code === "email_not_confirmed" ||
+      low.indexOf("email_not_confirmed") >= 0
+    ) {
+      return "账号未确认，请联系管理员";
+    }
+    if (low.indexOf("network") >= 0 || low.indexOf("failed to fetch") >= 0) {
+      return "网络异常，请检查网络后重试";
+    }
+    return msg || "登录失败";
+  }
+
+  function withTimeout(promise, ms, timeoutMsg) {
+    return new Promise(function (resolve, reject) {
+      var done = false;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        var err = new Error(timeoutMsg || TIMEOUT_MSG);
+        err.name = "TimeoutError";
+        reject(err);
+      }, ms);
+      Promise.resolve(promise).then(
+        function (v) {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          resolve(v);
+        },
+        function (e) {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          reject(e);
+        }
+      );
+    });
+  }
+
   var state = {
     user: null,
     ready: false,
@@ -50,7 +113,7 @@
       return "未配置 Supabase（离线模式）。进度仅保存在本机 localStorage。";
     }
     if (state.mode === "no-sdk") {
-      return "已配置云端，但 supabase-js 未加载。请检查 CDN。";
+      return "登录组件加载失败（CDN/网络），请刷新页面重试。";
     }
     if (state.user && state.user.email) {
       return "已登录：" + state.user.email;
@@ -178,7 +241,7 @@
     var loginBtn = document.getElementById("btn-auth-login");
     var regBtn = document.getElementById("btn-auth-register");
     var logoutBtn = document.getElementById("btn-auth-logout");
-    var form = document.getElementById("auth-form-fields");
+    var form = document.getElementById("auth-form");
     if (loginBtn) loginBtn.classList.toggle("hidden", loggedIn);
     // Public sign-up disabled: keep register visible when logged out so it can explain admin-assigned accounts
     if (regBtn) regBtn.classList.toggle("hidden", loggedIn);
@@ -228,14 +291,31 @@
       return { ok: false, reason: "no-sdk" };
     }
     setStatusEl("正在登录…");
-    var result = await c.auth.signInWithPassword({
-      email: String(email || "").trim(),
-      password: String(password || ""),
-    });
+    var result;
+    try {
+      result = await withTimeout(
+        c.auth.signInWithPassword({
+          email: normalizeEmail(email),
+          password: String(password || ""),
+        }),
+        SIGNIN_TIMEOUT_MS,
+        TIMEOUT_MSG
+      );
+    } catch (e) {
+      if (e && e.name === "TimeoutError") {
+        setStatusEl(TIMEOUT_MSG);
+        log("signIn timeout");
+        return { ok: false, reason: "timeout" };
+      }
+      var netMsg = mapAuthError(e) || TIMEOUT_MSG;
+      setStatusEl("登录失败：" + netMsg);
+      log("signIn exception", e && e.message ? e.message : e);
+      return { ok: false, reason: "network-error", error: e };
+    }
     if (result.error) {
-      var msg = result.error.message || "登录失败";
+      var msg = mapAuthError(result.error);
       setStatusEl("登录失败：" + msg);
-      log("signIn error", msg);
+      log("signIn error", result.error.message || msg);
       return { ok: false, reason: "auth-error", error: result.error };
     }
     var user = result.data && result.data.user ? result.data.user : null;
@@ -376,17 +456,38 @@
       };
     }
 
-    if (loginBtn) {
-      loginBtn.addEventListener("click", function () {
-        var creds = readCreds();
-        if (!creds.email || !creds.password) {
-          setStatusEl("请输入邮箱和密码。");
-          return;
-        }
-        setBusy(true);
-        Promise.resolve(signIn(creds.email, creds.password)).finally(function () {
-          setBusy(false);
-          refreshUi();
+    var loginInFlight = false;
+    function doLogin(ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (loginInFlight) return;
+      var creds = readCreds();
+      if (!creds.email || !creds.password) {
+        setStatusEl("请输入邮箱和密码（可用姓名，将自动补全 @ai103.local）。");
+        return;
+      }
+      loginInFlight = true;
+      setBusy(true);
+      Promise.resolve(signIn(creds.email, creds.password)).finally(function () {
+        loginInFlight = false;
+        setBusy(false);
+        refreshUi();
+      });
+    }
+
+    var authForm = document.getElementById("auth-form");
+    if (authForm) {
+      // Form submit covers Enter-in-field and #btn-auth-login type=submit
+      authForm.addEventListener("submit", doLogin);
+    } else {
+      if (loginBtn) loginBtn.addEventListener("click", doLogin);
+      ["auth-email", "auth-password"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("keydown", function (ev) {
+          if (ev.key === "Enter" || ev.keyCode === 13) {
+            ev.preventDefault();
+            doLogin(ev);
+          }
         });
       });
     }
