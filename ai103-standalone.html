@@ -1260,6 +1260,11 @@ footer.app-foot {
   font-size: 0.75rem;
   margin: 0;
 }
+.auth-wechat-tip {
+  flex: 1 1 100%;
+  font-size: 0.75rem;
+  margin: 0;
+}
 
 /* Login gate: real Supabase keys → hide app until body.auth-ok (session). Title/credit stay. */
 html.auth-required body:not(.auth-ok) #view-home,
@@ -1348,9 +1353,9 @@ window.__AI103_SUPABASE__ = {
       </div>
 
       <div id="auth-panel" class="auth-panel hidden" aria-label="账号">
-        <div id="auth-status" class="auth-status">账号功能未启用（离线模式）</div>
+        <div id="auth-status" class="auth-status">正在加载登录组件…</div>
         <form id="auth-form" class="auth-form-fields" autocomplete="on" action="#" method="post" novalidate>
-          <input type="email" id="auth-email" class="auth-input" name="email" placeholder="邮箱或短名（如 fanjie）" autocomplete="username" inputmode="email" />
+          <input type="text" id="auth-email" class="auth-input" name="email" placeholder="邮箱或短名（如 fanjie）" autocomplete="username" inputmode="email" />
           <input type="password" id="auth-password" class="auth-input" name="password" placeholder="密码" autocomplete="current-password" />
         </form>
         <div class="auth-actions">
@@ -1359,6 +1364,7 @@ window.__AI103_SUPABASE__ = {
           <button type="button" class="btn btn-sm btn-ghost hidden" id="btn-auth-logout">退出</button>
         </div>
         <p class="auth-hint muted">请先登录 · 支持完整邮箱；学员也可用短名（如 fanjie）自动补全 @ai103.local · 账号由管理员分配</p>
+        <p class="auth-wechat-tip muted">请用 Chrome 或系统浏览器打开，不要用微信内置浏览器</p>
       </div>
     </header>
 
@@ -2004,7 +2010,10 @@ window.__AI103_SUPABASE__ = {
     });
   }
 
+  var wired = false;
   function wireDom() {
+    if (wired) return;
+    wired = true;
     // Early gate class before session restore (prevents home flash when keys present)
     if (enabled) {
       document.documentElement.classList.add("auth-required");
@@ -2125,7 +2134,12 @@ window.__AI103_SUPABASE__ = {
 
   global.AI103Auth = API;
 
-  if (document.readyState === "loading") {
+  // Scripts are at end of <body> after #auth-panel. Init as soon as the panel
+  // exists so login wiring is not blocked by the large sync questions.js that
+  // follows. DOMContentLoaded only fires after all sync scripts finish.
+  if (document.getElementById("auth-panel")) {
+    wireDom();
+  } else if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", wireDom);
   } else {
     wireDom();

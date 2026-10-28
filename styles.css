@@ -1251,6 +1251,11 @@ footer.app-foot {
   font-size: 0.75rem;
   margin: 0;
 }
+.auth-wechat-tip {
+  flex: 1 1 100%;
+  font-size: 0.75rem;
+  margin: 0;
+}
 
 /* Login gate: real Supabase keys → hide app until body.auth-ok (session). Title/credit stay. */
 html.auth-required body:not(.auth-ok) #view-home,

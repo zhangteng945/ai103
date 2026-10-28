@@ -479,7 +479,10 @@
     });
   }
 
+  var wired = false;
   function wireDom() {
+    if (wired) return;
+    wired = true;
     // Early gate class before session restore (prevents home flash when keys present)
     if (enabled) {
       document.documentElement.classList.add("auth-required");
@@ -600,7 +603,12 @@
 
   global.AI103Auth = API;
 
-  if (document.readyState === "loading") {
+  // Scripts are at end of <body> after #auth-panel. Init as soon as the panel
+  // exists so login wiring is not blocked by the large sync questions.js that
+  // follows. DOMContentLoaded only fires after all sync scripts finish.
+  if (document.getElementById("auth-panel")) {
+    wireDom();
+  } else if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", wireDom);
   } else {
     wireDom();
