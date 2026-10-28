@@ -26,7 +26,8 @@
   var client = null;
   var EXPIRED_MSG = "账号已过期，请联系管理员";
   var enforcingExpiry = false;
-
+  /** Sticky status survives refreshUi so login errors are not wiped by finally→refreshUi. */
+  var stickyStatus = null;
 
   function normalizeEmail(raw) {
     var e = String(raw || "").trim().toLowerCase();
@@ -109,6 +110,9 @@
     if (state.expired) {
       return EXPIRED_MSG;
     }
+    if (stickyStatus) {
+      return stickyStatus;
+    }
     if (!enabled) {
       return "未配置 Supabase（离线模式）。进度仅保存在本机 localStorage。";
     }
@@ -124,7 +128,18 @@
     return "已配置云端，尚未登录。账号由管理员分配。";
   }
 
-  function setStatusEl(text) {
+  function clearStickyStatus() {
+    stickyStatus = null;
+  }
+
+  /**
+   * @param {string=} text  If omitted/empty, fall back to statusMessage().
+   * @param {boolean=} sticky  When true, keep this text across refreshUi until cleared.
+   */
+  function setStatusEl(text, sticky) {
+    if (sticky) {
+      stickyStatus = text || null;
+    }
     var el = document.getElementById("auth-status");
     if (el) el.textContent = text || statusMessage();
   }
@@ -185,7 +200,7 @@
         } catch (e) {}
       }
       state.ready = true;
-      setStatusEl(EXPIRED_MSG);
+      setStatusEl(EXPIRED_MSG, true);
       refreshUi();
     } finally {
       enforcingExpiry = false;
@@ -280,14 +295,15 @@
 
   async function signIn(email, password) {
     state.expired = false;
+    clearStickyStatus();
     if (!enabled) {
-      setStatusEl("请先创建 Supabase 项目，并填写 js/supabase-config.js（见 docs/auth-plan.md）。");
+      setStatusEl("请先创建 Supabase 项目，并填写 js/supabase-config.js（见 docs/auth-plan.md）。", true);
       log("signIn no-op: missing config");
       return { ok: false, reason: "no-config" };
     }
     var c = ensureClient();
     if (!c) {
-      setStatusEl(statusMessage());
+      setStatusEl(statusMessage() || "登录组件加载失败（脚本/网络），请强制刷新或换 Chrome 重试。", true);
       return { ok: false, reason: "no-sdk" };
     }
     setStatusEl("正在登录…");
@@ -303,27 +319,44 @@
       );
     } catch (e) {
       if (e && e.name === "TimeoutError") {
-        setStatusEl(TIMEOUT_MSG);
+        setStatusEl(TIMEOUT_MSG, true);
         log("signIn timeout");
         return { ok: false, reason: "timeout" };
       }
       var netMsg = mapAuthError(e) || TIMEOUT_MSG;
-      setStatusEl("登录失败：" + netMsg);
+      setStatusEl("登录失败：" + netMsg, true);
       log("signIn exception", e && e.message ? e.message : e);
       return { ok: false, reason: "network-error", error: e };
     }
+    if (!result) {
+      setStatusEl("登录失败：无响应，请重试", true);
+      log("signIn empty result");
+      return { ok: false, reason: "empty-result" };
+    }
     if (result.error) {
-      var msg = mapAuthError(result.error);
-      setStatusEl("登录失败：" + msg);
+      var msg = mapAuthError(result.error) || "登录失败";
+      setStatusEl("登录失败：" + msg, true);
       log("signIn error", result.error.message || msg);
       return { ok: false, reason: "auth-error", error: result.error };
     }
     var user = result.data && result.data.user ? result.data.user : null;
-    if (await rejectIfExpired(user)) {
+    var session = result.data && result.data.session ? result.data.session : null;
+    if (!user && !session) {
+      setStatusEl("登录失败：未建立会话，请检查账号或联系管理员", true);
+      log("signIn null session/user without error");
+      return { ok: false, reason: "null-session" };
+    }
+    if (await rejectIfExpired(user || (session && session.user))) {
       return { ok: false, reason: "expired" };
     }
     state.expired = false;
-    applyUser(user);
+    clearStickyStatus();
+    applyUser(user || (session && session.user) || null);
+    if (!isLoggedIn()) {
+      setStatusEl("登录失败：会话无效，请重试", true);
+      log("signIn applied user but not logged in");
+      return { ok: false, reason: "invalid-user" };
+    }
     state.ready = true;
     setStatusEl(statusMessage());
     refreshUi();
@@ -333,7 +366,7 @@
 
   async function signUp(_email, _password) {
     // Public sign-up disabled in Supabase; do not call auth.signUp.
-    setStatusEl("公开注册已关闭。账号由管理员（Teng）在后台分配，请联系管理员开通。");
+    setStatusEl("公开注册已关闭。账号由管理员（Teng）在后台分配，请联系管理员开通。", true);
     log("signUp blocked: admin-assigned accounts only");
     return { ok: false, reason: "invite-only" };
   }
@@ -348,11 +381,13 @@
     if (c) {
       var result = await c.auth.signOut();
       if (result && result.error) {
-        setStatusEl("退出失败：" + (result.error.message || "未知错误"));
+        setStatusEl("退出失败：" + (result.error.message || "未知错误"), true);
         log("signOut error", result.error.message);
         return { ok: false, reason: "auth-error", error: result.error };
       }
     }
+    clearStickyStatus();
+    state.expired = false;
     applyUser(null);
     state.ready = true;
     setStatusEl(statusMessage());
@@ -427,7 +462,12 @@
         Promise.resolve(rejectIfExpired(user));
         return;
       }
-      if (user) state.expired = false;
+      if (user) {
+        state.expired = false;
+        clearStickyStatus();
+      }
+      // Keep stickyStatus / state.expired when session is null (failed login or
+      // signOut-after-expiry); refreshUi must not wipe the Chinese error.
       applyUser(user);
       state.ready = true;
       refreshUi();
@@ -462,7 +502,7 @@
       if (loginInFlight) return;
       var creds = readCreds();
       if (!creds.email || !creds.password) {
-        setStatusEl("请输入邮箱和密码（可用姓名，将自动补全 @ai103.local）。");
+        setStatusEl("请输入邮箱和密码（可用姓名，将自动补全 @ai103.local）。", true);
         return;
       }
       loginInFlight = true;
@@ -470,6 +510,7 @@
       Promise.resolve(signIn(creds.email, creds.password)).finally(function () {
         loginInFlight = false;
         setBusy(false);
+        // refreshUi reads stickyStatus / state.expired — do not clear them here
         refreshUi();
       });
     }
