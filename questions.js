@@ -7657,7 +7657,7 @@ const QUESTIONS = [
     "id": "A",
     "text": "Add // what does function F do? to the prompt",
     "textEn": "Add // what does function F do? to the prompt.",
-    "textZh": "在提示中添加 // function F 的作用是什么？。"
+    "textZh": "在提示中添加 // function F 的作用是什么？"
    },
    {
     "id": "B",
