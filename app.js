@@ -974,6 +974,23 @@
     startPractice("search");
   }
 
+  // Post-submit option states: ok-sel / bad-sel / missed / dim (or ans when only revealed)
+  function optGrade(q, opt, isSel, graded) {
+    const isAns = (q.answer || []).indexOf(opt.id) >= 0;
+    const tg = (c, zh, en) => '<span class="otag ' + c + '">' + escapeHtml(L(zh, en)) + "</span>";
+    if (!graded) return isAns ? { cls: " correct st-ans", tag: tg("t-ok", "✓ 正确答案", "✓ Answer") } : { cls: " st-dim", tag: "" };
+    if (isAns && isSel) return { cls: " correct st-ok", tag: tg("t-ok", "✓ 你的选择", "✓ Your pick") };
+    if (isSel) return { cls: " wrong st-bad", tag: tg("t-bad", "✗ 你的选择", "✗ Your pick") };
+    if (isAns) return { cls: " st-miss", tag: tg("t-miss", "漏选", "Missed") };
+    return { cls: " st-dim", tag: "" };
+  }
+  function answerSummary(q, sel, graded) {
+    const a = (q.answer || []).join(" ");
+    const y = (sel || []).slice().sort().join(" ") || "—";
+    const ok = graded && isCorrect(q, sel);
+    return '<p class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + "：") + "<b>" + escapeHtml(a) + "</b>" +
+      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + "：") + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
+  }
   function questionsByFilter(filter) {
     if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
     if (filter === "search") return state.searchQ ? QUESTIONS.filter((q) => searchMatch(q, state.searchQ)) : [];
@@ -2424,15 +2441,14 @@
       if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
+      if (showing) html += answerSummary(q, shownSel, !!state.practiceSubmitted[q.id]);
       html += '<div class="options" id="practice-options">';
       (q.options || []).forEach((opt) => {
         const isSel = (shownSel || []).indexOf(opt.id) >= 0;
         let cls = "option";
-        if (isSel) cls += " selected";
-        if (showing) {
-          if ((q.answer || []).indexOf(opt.id) >= 0) cls += " correct";
-          else if (isSel) cls += " wrong";
-        }
+        let gtag = "";
+        if (showing) { const g = optGrade(q, opt, isSel, !!state.practiceSubmitted[q.id]); cls += g.cls; gtag = g.tag; }
+        else if (isSel) cls += " selected";
         html +=
           '<button type="button" class="' +
           cls +
@@ -2446,7 +2462,7 @@
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span></button>";
+          "</span>" + gtag + "</button>";
       });
       html += "</div>";
     }
@@ -2916,15 +2932,14 @@
       if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
+      if (reviewMode) html += answerSummary(q, selected, true);
       html += '<div class="options" id="exam-options">';
       (q.options || []).forEach((opt) => {
         const isSel = (selected || []).indexOf(opt.id) >= 0;
         let cls = "option";
-        if (isSel) cls += " selected";
-        if (reviewMode) {
-          if ((q.answer || []).indexOf(opt.id) >= 0) cls += " correct";
-          else if (isSel) cls += " wrong";
-        }
+        let gtag = "";
+        if (reviewMode) { const g = optGrade(q, opt, isSel, true); cls += g.cls; gtag = g.tag; }
+        else if (isSel) cls += " selected";
         html +=
           '<button type="button" class="' +
           cls +
@@ -2938,7 +2953,7 @@
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span></button>";
+          "</span>" + gtag + "</button>";
       });
       html += "</div>";
     }

@@ -2007,6 +2007,23 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .wb-hint{font-size:.82rem;color:#b45309}
 .qx-note{margin-top:.4rem}.qx-note textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:.4rem;border-radius:8px;border:1px solid var(--border,#ccc);background:transparent;color:inherit}
 .hx-row input[type=date]{font-size:16px;min-height:36px}
+/* graded option states */
+.option.st-ok{border:2px solid var(--success);background:var(--success);color:#fff}
+.option.st-ok .oid{background:#fff;color:var(--success);border-color:#fff}
+.option.st-ok .otext{color:#fff}
+.option.st-bad{border:2px solid var(--danger);background:var(--danger-bg)}
+.option.st-miss{border:2px dashed var(--success);background:var(--success-bg)}
+.option.st-miss .oid{background:transparent;color:var(--success);border:2px dashed var(--success)}
+.option.st-ans{border:2px solid var(--success)}
+.option.st-dim{opacity:.5;filter:grayscale(1)}
+.option:disabled.st-ok,.option:disabled.st-bad,.option:disabled.st-miss,.option:disabled.st-ans{opacity:1}
+.otag{margin-left:auto;align-self:center;white-space:nowrap;font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:999px}
+.otag.t-ok{background:#fff;color:var(--success-strong,#15803d)}
+.option.st-ans .otag.t-ok{background:var(--success);color:#fff}
+.otag.t-bad{background:var(--danger);color:#fff}
+.otag.t-miss{border:1.5px dashed var(--success);color:var(--success-strong,#15803d);background:transparent}
+.ans-summary{margin:0 0 .6rem;padding:.45rem .7rem;border-radius:10px;background:var(--bg-soft,rgba(127,127,127,.12));font-size:.92rem}
+.ans-summary.ok{border-left:4px solid var(--success)}.ans-summary.bad{border-left:4px solid var(--danger)}
 </style>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
@@ -17044,6 +17061,23 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     startPractice("search");
   }
 
+  // Post-submit option states: ok-sel / bad-sel / missed / dim (or ans when only revealed)
+  function optGrade(q, opt, isSel, graded) {
+    const isAns = (q.answer || []).indexOf(opt.id) >= 0;
+    const tg = (c, zh, en) => '<span class="otag ' + c + '">' + escapeHtml(L(zh, en)) + "</span>";
+    if (!graded) return isAns ? { cls: " correct st-ans", tag: tg("t-ok", "✓ 正确答案", "✓ Answer") } : { cls: " st-dim", tag: "" };
+    if (isAns && isSel) return { cls: " correct st-ok", tag: tg("t-ok", "✓ 你的选择", "✓ Your pick") };
+    if (isSel) return { cls: " wrong st-bad", tag: tg("t-bad", "✗ 你的选择", "✗ Your pick") };
+    if (isAns) return { cls: " st-miss", tag: tg("t-miss", "漏选", "Missed") };
+    return { cls: " st-dim", tag: "" };
+  }
+  function answerSummary(q, sel, graded) {
+    const a = (q.answer || []).join(" ");
+    const y = (sel || []).slice().sort().join(" ") || "—";
+    const ok = graded && isCorrect(q, sel);
+    return '<p class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + "：") + "<b>" + escapeHtml(a) + "</b>" +
+      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + "：") + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
+  }
   function questionsByFilter(filter) {
     if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
     if (filter === "search") return state.searchQ ? QUESTIONS.filter((q) => searchMatch(q, state.searchQ)) : [];
@@ -18494,15 +18528,14 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
       if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
+      if (showing) html += answerSummary(q, shownSel, !!state.practiceSubmitted[q.id]);
       html += '<div class="options" id="practice-options">';
       (q.options || []).forEach((opt) => {
         const isSel = (shownSel || []).indexOf(opt.id) >= 0;
         let cls = "option";
-        if (isSel) cls += " selected";
-        if (showing) {
-          if ((q.answer || []).indexOf(opt.id) >= 0) cls += " correct";
-          else if (isSel) cls += " wrong";
-        }
+        let gtag = "";
+        if (showing) { const g = optGrade(q, opt, isSel, !!state.practiceSubmitted[q.id]); cls += g.cls; gtag = g.tag; }
+        else if (isSel) cls += " selected";
         html +=
           '<button type="button" class="' +
           cls +
@@ -18516,7 +18549,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span></button>";
+          "</span>" + gtag + "</button>";
       });
       html += "</div>";
     }
@@ -18986,15 +19019,14 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
       if (getControl(q) === "multi") {
         html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pack.pickMulti) + "</p>";
       }
+      if (reviewMode) html += answerSummary(q, selected, true);
       html += '<div class="options" id="exam-options">';
       (q.options || []).forEach((opt) => {
         const isSel = (selected || []).indexOf(opt.id) >= 0;
         let cls = "option";
-        if (isSel) cls += " selected";
-        if (reviewMode) {
-          if ((q.answer || []).indexOf(opt.id) >= 0) cls += " correct";
-          else if (isSel) cls += " wrong";
-        }
+        let gtag = "";
+        if (reviewMode) { const g = optGrade(q, opt, isSel, true); cls += g.cls; gtag = g.tag; }
+        else if (isSel) cls += " selected";
         html +=
           '<button type="button" class="' +
           cls +
@@ -19008,7 +19040,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span></button>";
+          "</span>" + gtag + "</button>";
       });
       html += "</div>";
     }
