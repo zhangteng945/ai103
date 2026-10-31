@@ -784,6 +784,9 @@
     if (filter === "wrong") {
       return QUESTIONS.filter((q) => !!state.wrongIds[q.id]);
     }
+    if (filter === "unanswered") {
+      return QUESTIONS.filter((q) => !state.practiceSubmitted[q.id]);
+    }
     if (filter === "all" || !filter) return QUESTIONS.slice();
     return byDomain(filter);
   }
@@ -1369,6 +1372,25 @@
     wrap.innerHTML = parts.join("");
   }
 
+  function unansLabel() {
+    return state.lang === "en" ? "Unanswered" : state.lang === "both" ? "未作答 / Unanswered" : "未作答";
+  }
+  /* Per-exam practice progress line for the home card */
+  function practiceStatsLine() {
+    const total = QUESTIONS.length;
+    let done = 0, wrong = 0;
+    QUESTIONS.forEach((q) => {
+      if (state.practiceSubmitted[q.id]) {
+        done++;
+        if (state.wrongIds[q.id]) wrong++;
+      }
+    });
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    const acc = done ? Math.round(((done - wrong) / done) * 100) : 0;
+    if (state.lang === "en") return "Progress " + done + "/" + total + " (" + pct + "%)" + (done ? " · accuracy " + acc + "%" : "");
+    return "进度 " + done + "/" + total + "（" + pct + "%）" + (done ? " · 正确率 " + acc + "%" : "");
+  }
+
   function rebuildPracticeFilter() {
     const sel = $("#practice-filter");
     if (!sel) return;
@@ -1379,6 +1401,7 @@
     html += '<option value="all">' + escapeHtml(pack.filterAll) + "</option>";
     html += '<option value="flagged">' + escapeHtml(pack.filterFlagged) + "</option>";
     html += '<option value="wrong">' + escapeHtml(pack.filterWrong) + "</option>";
+    html += '<option value="unanswered">' + escapeHtml(unansLabel()) + "</option>";
     if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
       const zh = exam.domainLabelsZh || pack.domain || {};
       const en = exam.domainLabelsEn || {};
@@ -1572,7 +1595,9 @@
     rebuildHomeStats();
     const bp = $("#btn-go-practice");
     if (bp) {
-      bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>";
+      bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>" +
+        '<span class="desc prog-line">' + escapeHtml(practiceStatsLine()) + '</span><span class="prog-bar"><i style="width:' +
+        (QUESTIONS.length ? Math.round((Object.keys(state.practiceSubmitted).filter((k) => state.practiceSubmitted[k]).length / QUESTIONS.length) * 100) : 0) + '%"></i></span>';
     }
     const be = $("#btn-go-exam");
     if (be) {
@@ -1603,6 +1628,7 @@
           if (opt.value === "all") opt.textContent = pack.filterAll;
           else if (opt.value === "flagged") opt.textContent = pack.filterFlagged;
           else if (opt.value === "wrong") opt.textContent = pack.filterWrong;
+          else if (opt.value === "unanswered") opt.textContent = unansLabel();
           else if (pack.domain[opt.value]) opt.textContent = pack.domain[opt.value];
         });
       }
@@ -3182,6 +3208,9 @@
     $("#btn-result-retry").addEventListener("click", openExamConfig);
 
     document.addEventListener("keydown", onKey);
+    const bl = document.getElementById("boot-loader");
+    if (bl) bl.remove();
+    document.body.classList.toggle("touch", "ontouchstart" in window || navigator.maxTouchPoints > 0);
   }
 
   if (document.readyState === "loading") {

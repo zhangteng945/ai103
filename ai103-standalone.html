@@ -1950,6 +1950,40 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
 @media (prefers-color-scheme: dark){.case-tab.active{background:#3a3a3c}}
 .case-tabpanel{max-height:60vh;overflow:auto;line-height:1.55}
 .exam-grid button.locked{opacity:.3;cursor:not-allowed}
+
+/* ---- 2026-10-31 mobile / UX polish ---- */
+#boot-loader { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 9999;
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px;
+  background: rgba(28,28,30,.88); color: #fff; font-size: 14px; box-shadow: 0 6px 24px rgba(0,0,0,.18);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+#boot-loader .spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
+  border-radius: 50%; animation: bootspin .8s linear infinite; }
+@keyframes bootspin { to { transform: rotate(360deg); } }
+.btn .prog-line { margin-top: 4px; font-variant-numeric: tabular-nums; }
+.btn .prog-bar { display: block; height: 4px; margin-top: 8px; border-radius: 2px; background: rgba(127,127,127,.22); overflow: hidden; }
+.btn .prog-bar i { display: block; height: 100%; background: currentColor; opacity: .85; border-radius: 2px; }
+body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !important; }
+@media (max-width: 520px) {
+  .btn, button.btn, .lang-switch button, #practice-filter, #practice-jump-select, #practice-jump-input,
+  #exam-count, #exam-minutes { min-height: 44px; }
+  #btn-auth-logout { min-height: 36px; }
+  button[data-lang] { min-height: 40px; }
+  #practice-body select, #exam-body select { min-height: 44px; }
+  input[type="checkbox"] { width: 20px; height: 20px; }
+  #lbl-practice-showall { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+  #view-practice .nav-row, #view-exam .nav-row { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  #view-practice .nav-row .btn, #view-exam .nav-row .btn { width: 100%; margin: 0; padding-left: 6px; padding-right: 6px; }
+  .option { min-height: 48px; }
+  #view-practice .nav-row .spacer, #view-exam .nav-row .spacer { display: none; }
+  #btn-exam-submit, #btn-exam-to-result { grid-column: 1 / -1; }
+  body { -webkit-text-size-adjust: 100%; }
+}
+@media (max-width: 520px) {
+  .topbar .brand { min-width: 0; flex: 1 1 auto; }
+  .topbar .brand h1 { font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .lang-toggle { flex: 0 0 auto; }
+  .topbar .lang-toggle button { padding-left: 10px; padding-right: 10px; }
+}
 </style>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
@@ -2050,6 +2084,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
             <option value="all">全部</option>
             <option value="flagged">已标记</option>
             <option value="wrong">错题</option>
+            <option value="unanswered">未作答</option>
             <option value="plan">规划和管理 Azure AI 解决方案</option>
             <option value="genai">实现生成式 AI 与智能体解决方案</option>
             <option value="vision">实现计算机视觉解决方案</option>
@@ -2165,6 +2200,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     </footer>
   </div>
 
+  <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>题库加载中… / Loading question banks…</div>
   
   <script>/**
  * AI-103 temporary shared-password gate (replaces Supabase Auth UI for now).
@@ -16795,6 +16831,9 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     if (filter === "wrong") {
       return QUESTIONS.filter((q) => !!state.wrongIds[q.id]);
     }
+    if (filter === "unanswered") {
+      return QUESTIONS.filter((q) => !state.practiceSubmitted[q.id]);
+    }
     if (filter === "all" || !filter) return QUESTIONS.slice();
     return byDomain(filter);
   }
@@ -17380,6 +17419,25 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     wrap.innerHTML = parts.join("");
   }
 
+  function unansLabel() {
+    return state.lang === "en" ? "Unanswered" : state.lang === "both" ? "未作答 / Unanswered" : "未作答";
+  }
+  /* Per-exam practice progress line for the home card */
+  function practiceStatsLine() {
+    const total = QUESTIONS.length;
+    let done = 0, wrong = 0;
+    QUESTIONS.forEach((q) => {
+      if (state.practiceSubmitted[q.id]) {
+        done++;
+        if (state.wrongIds[q.id]) wrong++;
+      }
+    });
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    const acc = done ? Math.round(((done - wrong) / done) * 100) : 0;
+    if (state.lang === "en") return "Progress " + done + "/" + total + " (" + pct + "%)" + (done ? " · accuracy " + acc + "%" : "");
+    return "进度 " + done + "/" + total + "（" + pct + "%）" + (done ? " · 正确率 " + acc + "%" : "");
+  }
+
   function rebuildPracticeFilter() {
     const sel = $("#practice-filter");
     if (!sel) return;
@@ -17390,6 +17448,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     html += '<option value="all">' + escapeHtml(pack.filterAll) + "</option>";
     html += '<option value="flagged">' + escapeHtml(pack.filterFlagged) + "</option>";
     html += '<option value="wrong">' + escapeHtml(pack.filterWrong) + "</option>";
+    html += '<option value="unanswered">' + escapeHtml(unansLabel()) + "</option>";
     if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
       const zh = exam.domainLabelsZh || pack.domain || {};
       const en = exam.domainLabelsEn || {};
@@ -17583,7 +17642,9 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     rebuildHomeStats();
     const bp = $("#btn-go-practice");
     if (bp) {
-      bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>";
+      bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>" +
+        '<span class="desc prog-line">' + escapeHtml(practiceStatsLine()) + '</span><span class="prog-bar"><i style="width:' +
+        (QUESTIONS.length ? Math.round((Object.keys(state.practiceSubmitted).filter((k) => state.practiceSubmitted[k]).length / QUESTIONS.length) * 100) : 0) + '%"></i></span>';
     }
     const be = $("#btn-go-exam");
     if (be) {
@@ -17614,6 +17675,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           if (opt.value === "all") opt.textContent = pack.filterAll;
           else if (opt.value === "flagged") opt.textContent = pack.filterFlagged;
           else if (opt.value === "wrong") opt.textContent = pack.filterWrong;
+          else if (opt.value === "unanswered") opt.textContent = unansLabel();
           else if (pack.domain[opt.value]) opt.textContent = pack.domain[opt.value];
         });
       }
@@ -19193,6 +19255,9 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     $("#btn-result-retry").addEventListener("click", openExamConfig);
 
     document.addEventListener("keydown", onKey);
+    const bl = document.getElementById("boot-loader");
+    if (bl) bl.remove();
+    document.body.classList.toggle("touch", "ontouchstart" in window || navigator.maxTouchPoints > 0);
   }
 
   if (document.readyState === "loading") {
