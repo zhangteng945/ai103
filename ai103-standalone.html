@@ -2085,6 +2085,8 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
       <div class="exam-switcher" id="exam-switcher" role="tablist" aria-label="选择题库">
         <button type="button" class="exam-tab active" role="tab" data-exam-id="ai103" aria-pressed="true">AI-103</button>
         <button type="button" class="exam-tab" role="tab" data-exam-id="dop-c02" aria-pressed="false">DOP-C02</button>
+        <button type="button" class="exam-tab" role="tab" data-exam-id="dp-700" aria-pressed="false">DP-700</button>
+        <button type="button" class="exam-tab" role="tab" data-exam-id="dp-420" aria-pressed="false">DP-420</button>
       </div>
       <p class="muted">题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。</p>
       <div class="stats" id="home-stats" aria-label="题库统计">
@@ -2248,7 +2250,7 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
   </div>
 
   <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>题库加载中… / Loading question banks…</div>
-  
+  <!-- Temporary shared-password gate (Supabase Auth UI off; vendor/client kept in repo unused) -->
   <script>/**
  * AI-103 temporary shared-password gate (replaces Supabase Auth UI for now).
  * Unlock persists in localStorage key ai103_gate_v1.
@@ -2491,7 +2493,7 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 </script>
   <script>/**
  * Multi-exam registry for IT认证练习.
- * Banks: AI-103 (questions.js → QUESTIONS_AI103), DOP-C02 (banks/questions-dop-c02.js).
+ * Banks: AI-103 (questions.js → QUESTIONS_AI103), DOP-C02 (banks/questions-dop-c02.js), DP-700, DP-420 (banks/questions-dp-*.js).
  */
 (function (global) {
   "use strict";
@@ -2565,6 +2567,64 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
       legacyQOrderKey: null,
       getQuestions: function () {
         return global.QUESTIONS_DOP_C02 || [];
+      },
+    },
+    {
+      id: "dp-700",
+      title: "DP-700",
+      shortLabel: "DP-700",
+      subtitleZh: "Implementing Data Engineering Solutions Using Microsoft Fabric",
+      subtitleEn: "Implementing Data Engineering Solutions Using Microsoft Fabric",
+      // Mock settings: Microsoft role-based exams ~100 min, passing score 700 (scaled 1–1000).
+      // Sources: https://learn.microsoft.com/en-us/credentials/support/exam-duration-exam-experience
+      //          https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-700
+      // Question count varies (~40–60) on the real exam; 50 is the default here.
+      mockDefaultCount: 50,
+      mockCounts: [30, 50, 60],
+      mockDefaultMinutes: 100,
+      mockMinutes: [60, 100, 120],
+      passScore: 700,
+      scoreMin: 0,
+      specialExam58: false,
+      domainOrder: ["implement", "ingest", "monitor"],
+      domainWeights: {"implement": 0.325, "ingest": 0.325, "monitor": 0.325},
+      domainLabelsZh: {"implement": "实施和管理分析解决方案 (估)", "ingest": "引入和转换数据 (估)", "monitor": "监视和优化分析解决方案 (估)"},
+      domainLabelsEn: {"implement": "Implement & manage an analytics solution (est.)", "ingest": "Ingest & transform data (est.)", "monitor": "Monitor & optimize an analytics solution (est.)"},
+      statMode: "domains",
+      legacyPracticeKey: null,
+      legacyExamLastKey: null,
+      legacyQOrderKey: null,
+      getQuestions: function () {
+        return global.QUESTIONS_DP_700 || [];
+      },
+    },
+    {
+      id: "dp-420",
+      title: "DP-420",
+      shortLabel: "DP-420",
+      subtitleZh: "Designing and Implementing Cloud-Native Applications Using Microsoft Azure Cosmos DB",
+      subtitleEn: "Designing and Implementing Cloud-Native Applications Using Microsoft Azure Cosmos DB",
+      // Mock settings: Microsoft role-based exams ~100 min, passing score 700 (scaled 1–1000).
+      // Sources: https://learn.microsoft.com/en-us/credentials/support/exam-duration-exam-experience
+      //          https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-420
+      // Question count varies (~40–60) on the real exam; 50 is the default here.
+      mockDefaultCount: 50,
+      mockCounts: [30, 50, 60],
+      mockDefaultMinutes: 100,
+      mockMinutes: [60, 100, 120],
+      passScore: 700,
+      scoreMin: 0,
+      specialExam58: false,
+      domainOrder: ["design", "secure", "ai"],
+      domainWeights: {"design": 0.425, "secure": 0.325, "ai": 0.225},
+      domainLabelsZh: {"design": "设计和开发数据库解决方案 (估)", "secure": "保护、优化和部署数据库解决方案 (估)", "ai": "实现 AI 和分析功能 (估)"},
+      domainLabelsEn: {"design": "Design & develop database solutions (est.)", "secure": "Secure, optimize & deploy database solutions (est.)", "ai": "Implement AI & analytics capabilities (est.)"},
+      statMode: "domains",
+      legacyPracticeKey: null,
+      legacyExamLastKey: null,
+      legacyQOrderKey: null,
+      getQuestions: function () {
+        return global.QUESTIONS_DP_420 || [];
       },
     },
   ];
@@ -16088,11 +16148,10 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = { QUESTIONS: QUESTIONS, QUESTIONS_AI103: QUESTIONS_AI103 };
 }
 </script>
-  <script>/* standalone: DOP bank omitted (~4MB); use index.html for multi-bank */
-const QUESTIONS_DOP_C02 = [];
-if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
+  <script>/* standalone: DOP-C02 / DP-700 / DP-420 banks omitted (size); use index.html for multi-bank */
+window.QUESTIONS_DOP_C02=[];window.QUESTIONS_DP_700=[];window.QUESTIONS_DP_420=[];
 </script>
-  <script>/* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02) — Teng */
+  <script>/* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02 / DP-700 / DP-420) — Teng */
 (function () {
   "use strict";
 
@@ -17899,6 +17958,11 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           state.lang === "en"
             ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
             : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
+      } else if (exam && (exam.id === "dp-700" || exam.id === "dp-420")) {
+        intro.textContent =
+          state.lang === "en"
+            ? "Bank from your " + exam.title + " PDF; answers strictly from the PDF (answer image when present; text/image conflicts are flagged in the explanation). Domains marked (est.) are keyword guesses. Unofficial practice only."
+            : "题源来自你提供的 " + exam.title + " PDF；答案严格取自 PDF（有答案图以图为准，文字版与答案图不一致处在解析中标注）。标「(估)」的考点为关键词估算。非官方真题，仅供备考练习。";
       } else {
         intro.textContent = pack.homeIntro;
       }
@@ -19363,13 +19427,15 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
   }
 
   function ensureBank(id, cb) {
-    if (id !== "dop-c02" || typeof window.QUESTIONS_DOP_C02 !== "undefined") { cb(); return; }
+    const LAZY = { "dop-c02": ["QUESTIONS_DOP_C02", "DOP-C02"], "dp-700": ["QUESTIONS_DP_700", "DP-700"], "dp-420": ["QUESTIONS_DP_420", "DP-420"] };
+    const lz = LAZY[id];
+    if (!lz || typeof window[lz[0]] !== "undefined") { cb(); return; }
     let bl = document.getElementById("boot-loader");
-    if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L("DOP-C02 题库加载中…", "Loading DOP-C02 bank…")); document.body.appendChild(bl); }
+    if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L(lz[1] + " 题库加载中…", "Loading " + lz[1] + " bank…")); document.body.appendChild(bl); }
     const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
     const me = document.querySelector('script[src*="app.js"]');
     const sc = document.createElement("script");
-    sc.src = me ? me.src.replace(/app\.js/, "banks/questions-dop-c02.js") : "banks/questions-dop-c02.js";
+    sc.src = me ? me.src.replace(/app\.js/, "banks/questions-" + id + ".js") : "banks/questions-" + id + ".js";
     sc.onload = () => { bl.remove(); ov.remove(); cb(); };
     sc.onerror = () => { bl.remove(); ov.remove(); sc.remove(); alert(L("题库加载失败，请检查网络后重试", "Failed to load the question bank. Check your connection and retry.")); };
     document.head.appendChild(sc);

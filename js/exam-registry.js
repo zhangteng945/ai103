@@ -1,6 +1,6 @@
 /**
  * Multi-exam registry for IT认证练习.
- * Banks: AI-103 (questions.js → QUESTIONS_AI103), DOP-C02 (banks/questions-dop-c02.js).
+ * Banks: AI-103 (questions.js → QUESTIONS_AI103), DOP-C02 (banks/questions-dop-c02.js), DP-700, DP-420 (banks/questions-dp-*.js).
  */
 (function (global) {
   "use strict";
@@ -74,6 +74,64 @@
       legacyQOrderKey: null,
       getQuestions: function () {
         return global.QUESTIONS_DOP_C02 || [];
+      },
+    },
+    {
+      id: "dp-700",
+      title: "DP-700",
+      shortLabel: "DP-700",
+      subtitleZh: "Implementing Data Engineering Solutions Using Microsoft Fabric",
+      subtitleEn: "Implementing Data Engineering Solutions Using Microsoft Fabric",
+      // Mock settings: Microsoft role-based exams ~100 min, passing score 700 (scaled 1–1000).
+      // Sources: https://learn.microsoft.com/en-us/credentials/support/exam-duration-exam-experience
+      //          https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-700
+      // Question count varies (~40–60) on the real exam; 50 is the default here.
+      mockDefaultCount: 50,
+      mockCounts: [30, 50, 60],
+      mockDefaultMinutes: 100,
+      mockMinutes: [60, 100, 120],
+      passScore: 700,
+      scoreMin: 0,
+      specialExam58: false,
+      domainOrder: ["implement", "ingest", "monitor"],
+      domainWeights: {"implement": 0.325, "ingest": 0.325, "monitor": 0.325},
+      domainLabelsZh: {"implement": "实施和管理分析解决方案 (估)", "ingest": "引入和转换数据 (估)", "monitor": "监视和优化分析解决方案 (估)"},
+      domainLabelsEn: {"implement": "Implement & manage an analytics solution (est.)", "ingest": "Ingest & transform data (est.)", "monitor": "Monitor & optimize an analytics solution (est.)"},
+      statMode: "domains",
+      legacyPracticeKey: null,
+      legacyExamLastKey: null,
+      legacyQOrderKey: null,
+      getQuestions: function () {
+        return global.QUESTIONS_DP_700 || [];
+      },
+    },
+    {
+      id: "dp-420",
+      title: "DP-420",
+      shortLabel: "DP-420",
+      subtitleZh: "Designing and Implementing Cloud-Native Applications Using Microsoft Azure Cosmos DB",
+      subtitleEn: "Designing and Implementing Cloud-Native Applications Using Microsoft Azure Cosmos DB",
+      // Mock settings: Microsoft role-based exams ~100 min, passing score 700 (scaled 1–1000).
+      // Sources: https://learn.microsoft.com/en-us/credentials/support/exam-duration-exam-experience
+      //          https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-420
+      // Question count varies (~40–60) on the real exam; 50 is the default here.
+      mockDefaultCount: 50,
+      mockCounts: [30, 50, 60],
+      mockDefaultMinutes: 100,
+      mockMinutes: [60, 100, 120],
+      passScore: 700,
+      scoreMin: 0,
+      specialExam58: false,
+      domainOrder: ["design", "secure", "ai"],
+      domainWeights: {"design": 0.425, "secure": 0.325, "ai": 0.225},
+      domainLabelsZh: {"design": "设计和开发数据库解决方案 (估)", "secure": "保护、优化和部署数据库解决方案 (估)", "ai": "实现 AI 和分析功能 (估)"},
+      domainLabelsEn: {"design": "Design & develop database solutions (est.)", "secure": "Secure, optimize & deploy database solutions (est.)", "ai": "Implement AI & analytics capabilities (est.)"},
+      statMode: "domains",
+      legacyPracticeKey: null,
+      legacyExamLastKey: null,
+      legacyQOrderKey: null,
+      getQuestions: function () {
+        return global.QUESTIONS_DP_420 || [];
       },
     },
   ];

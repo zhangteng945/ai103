@@ -1,4 +1,4 @@
-/* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02) — Teng */
+/* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02 / DP-700 / DP-420) — Teng */
 (function () {
   "use strict";
 
@@ -1805,6 +1805,11 @@
           state.lang === "en"
             ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
             : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
+      } else if (exam && (exam.id === "dp-700" || exam.id === "dp-420")) {
+        intro.textContent =
+          state.lang === "en"
+            ? "Bank from your " + exam.title + " PDF; answers strictly from the PDF (answer image when present; text/image conflicts are flagged in the explanation). Domains marked (est.) are keyword guesses. Unofficial practice only."
+            : "题源来自你提供的 " + exam.title + " PDF；答案严格取自 PDF（有答案图以图为准，文字版与答案图不一致处在解析中标注）。标「(估)」的考点为关键词估算。非官方真题，仅供备考练习。";
       } else {
         intro.textContent = pack.homeIntro;
       }
@@ -3269,13 +3274,15 @@
   }
 
   function ensureBank(id, cb) {
-    if (id !== "dop-c02" || typeof window.QUESTIONS_DOP_C02 !== "undefined") { cb(); return; }
+    const LAZY = { "dop-c02": ["QUESTIONS_DOP_C02", "DOP-C02"], "dp-700": ["QUESTIONS_DP_700", "DP-700"], "dp-420": ["QUESTIONS_DP_420", "DP-420"] };
+    const lz = LAZY[id];
+    if (!lz || typeof window[lz[0]] !== "undefined") { cb(); return; }
     let bl = document.getElementById("boot-loader");
-    if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L("DOP-C02 题库加载中…", "Loading DOP-C02 bank…")); document.body.appendChild(bl); }
+    if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L(lz[1] + " 题库加载中…", "Loading " + lz[1] + " bank…")); document.body.appendChild(bl); }
     const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
     const me = document.querySelector('script[src*="app.js"]');
     const sc = document.createElement("script");
-    sc.src = me ? me.src.replace(/app\.js/, "banks/questions-dop-c02.js") : "banks/questions-dop-c02.js";
+    sc.src = me ? me.src.replace(/app\.js/, "banks/questions-" + id + ".js") : "banks/questions-" + id + ".js";
     sc.onload = () => { bl.remove(); ov.remove(); cb(); };
     sc.onerror = () => { bl.remove(); ov.remove(); sc.remove(); alert(L("题库加载失败，请检查网络后重试", "Failed to load the question bank. Check your connection and retry.")); };
     document.head.appendChild(sc);
