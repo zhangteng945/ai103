@@ -3768,8 +3768,8 @@ const QUESTIONS_DOP_C02 = [
       {
         "key": "D",
         "id": "D",
-        "text": "Use AWS Elastic Beanstalk with the configuration set to Immutable. Create an.ebextension using the Resources key that sets the deletion policy of the ALB to 1 hour, and deploy the application.",
-        "textEn": "Use AWS Elastic Beanstalk with the configuration set to Immutable. Create an.ebextension using the Resources key that sets the deletion policy of the ALB to 1 hour, and deploy the application.",
+        "text": "Use AWS Elastic Beanstalk with the configuration set to Immutable. Create an .ebextension using the Resources key that sets the deletion policy of the ALB to 1 hour, and deploy the application.",
+        "textEn": "Use AWS Elastic Beanstalk with the configuration set to Immutable. Create an .ebextension using the Resources key that sets the deletion policy of the ALB to 1 hour, and deploy the application.",
         "textZh": "使用AWS Elastic Beanstalk，配置设置为Immutable。创建一个使用Resources 键的.ebextension，该键将ALB 的删除策略设置为1小时，并部署应用程序。"
       }
     ],
@@ -4200,8 +4200,8 @@ const QUESTIONS_DOP_C02 = [
       {
         "key": "C",
         "id": "C",
-        "text": "Designate an AWS Config management account. Create AWS Config recorders in all accounts by using AWS CloudFormation StackSets. Deploy AWS Config rules to the organization by using the AWS Config management account. Create a CloudTrail organization trail in the organization’s management account. Deny modification or deletion of the AWS Config recorders by using an SCP .",
-        "textEn": "Designate an AWS Config management account. Create AWS Config recorders in all accounts by using AWS CloudFormation StackSets. Deploy AWS Config rules to the organization by using the AWS Config management account. Create a CloudTrail organization trail in the organization’s management account. Deny modification or deletion of the AWS Config recorders by using an SCP .",
+        "text": "Designate an AWS Config management account. Create AWS Config recorders in all accounts by using AWS CloudFormation StackSets. Deploy AWS Config rules to the organization by using the AWS Config management account. Create a CloudTrail organization trail in the organization’s management account. Deny modification or deletion of the AWS Config recorders by using an SCP.",
+        "textEn": "Designate an AWS Config management account. Create AWS Config recorders in all accounts by using AWS CloudFormation StackSets. Deploy AWS Config rules to the organization by using the AWS Config management account. Create a CloudTrail organization trail in the organization’s management account. Deny modification or deletion of the AWS Config recorders by using an SCP.",
         "textZh": "指定一个AWS Config 管理账户。通过使用AWS CloudFormation StackSets 在所有账户中创建AWS Config 记录器。通过AWS Config管理账户将AWS Config 规则部署到组织中。在组织的管理账户中创建一个CloudTrail 组织跟踪。通过使用SCP 拒绝对AWS Config记录器的修改或删除。",
         "mostVoted": true
       },
@@ -7382,7 +7382,7 @@ const QUESTIONS_DOP_C02 = [
     "domainLabel": "Topic 1",
     "type": "multi",
     "stem": "一家公司在一个Amazon S3 存储桶中以.csv 格式存储了100 GB 的日志数据。SQL 开发人员希望查询这些数据并生成图表以进行可视化。SQL 开发人员还需要一种高效的自动化方式来存储.csv 文件中的元数据。\n以下步骤组合能够以最少的努力满足这些需求？（选择三个。 ）",
-    "stemEn": "A company is storing 100 GB of log data in.csv format in an Amazon S3 bucket. SQL developers want to query this data and generate graphs to visualize it. The SQL developers also need an efficient, automated way to store metadata from the.csv file.\nWhich combination of steps will meet these requirements with the LEAST amount of effort? (Choose three.)",
+    "stemEn": "A company is storing 100 GB of log data in .csv format in an Amazon S3 bucket. SQL developers want to query this data and generate graphs to visualize it. The SQL developers also need an efficient, automated way to store metadata from the .csv file.\nWhich combination of steps will meet these requirements with the LEAST amount of effort? (Choose three.)",
     "stemZh": "一家公司在一个Amazon S3 存储桶中以.csv 格式存储了100 GB 的日志数据。SQL 开发人员希望查询这些数据并生成图表以进行可视化。SQL 开发人员还需要一种高效的自动化方式来存储.csv 文件中的元数据。\n以下步骤组合能够以最少的努力满足这些需求？（选择三个。 ）",
     "options": [
       {
@@ -16386,7 +16386,7 @@ const QUESTIONS_DOP_C02 = [
     "domainLabel": "Topic 1",
     "type": "multi",
     "stem": "开发人员正在使用AWS Serverless Application Model (AWS SAM) 创建一个AWS Lambda 函数的原型。AWS SAM 模板包含一个AWS::Serverless::Function 资源，该资源的CodeUri 属性指向一个Amazon S3 位置。开发人员希望在创建CI/CD 管道之前确定正确的部署命令。\n开发人员创建了一个名为package.zip 的Lambda 函数代码归档文件。开发人员将.zip 文件归档上传到CodeUri 属性中指定的S3 位置。开发人员运行sam deploy 命令并部署了Lambda 函数。开发人员更新了Lambda 函数代码，并使用相同的步骤部署Lambda 函数的新版本。sam deploy 命令失败并返回错误：没有可部署的更改。\n哪些解决方案可以部署新版本？（选择两个。 ）",
-    "stemEn": "A developer is using the AWS Serverless Application Model (AWS SAM) to create a prototype for an AWS Lambda function. The AWS SAM template contains an AWS::Serverless::Function resource that has the CodeUri property that points to an Amazon S3 location. The developer wants to identify the correct commands for deployment before creating a CI/CD pipeline.\nThe developer creates an archive of the Lambda function code named package.zip. The developer uploads the.zip file archive to the S3 location specified in the CodeUri property. The developer runs the sam deploy command and deploys the Lambda function. The developer updates the Lambda function code and uses the same steps to deploy the new version of the Lambda function. The sam deploy command fails and returns an error of no changes to deploy.\nWhich solutions will deploy the new version? (Choose two.)",
+    "stemEn": "A developer is using the AWS Serverless Application Model (AWS SAM) to create a prototype for an AWS Lambda function. The AWS SAM template contains an AWS::Serverless::Function resource that has the CodeUri property that points to an Amazon S3 location. The developer wants to identify the correct commands for deployment before creating a CI/CD pipeline.\nThe developer creates an archive of the Lambda function code named package.zip. The developer uploads the .zip file archive to the S3 location specified in the CodeUri property. The developer runs the sam deploy command and deploys the Lambda function. The developer updates the Lambda function code and uses the same steps to deploy the new version of the Lambda function. The sam deploy command fails and returns an error of no changes to deploy.\nWhich solutions will deploy the new version? (Choose two.)",
     "stemZh": "开发人员正在使用AWS Serverless Application Model (AWS SAM) 创建一个AWS Lambda 函数的原型。AWS SAM 模板包含一个AWS::Serverless::Function 资源，该资源的CodeUri 属性指向一个Amazon S3 位置。开发人员希望在创建CI/CD 管道之前确定正确的部署命令。\n开发人员创建了一个名为package.zip 的Lambda 函数代码归档文件。开发人员将.zip 文件归档上传到CodeUri 属性中指定的S3 位置。开发人员运行sam deploy 命令并部署了Lambda 函数。开发人员更新了Lambda 函数代码，并使用相同的步骤部署Lambda 函数的新版本。sam deploy 命令失败并返回错误：没有可部署的更改。\n哪些解决方案可以部署新版本？（选择两个。 ）",
     "options": [
       {
@@ -19901,8 +19901,8 @@ const QUESTIONS_DOP_C02 = [
       {
         "key": "A",
         "id": "A",
-        "text": "Modify the CloudFormation template to include a parameter for the Lambda function code's.zip file location. Create a new CloudFormation deploy action for us-east-1 in the pipeline. Configure the new deploy action to pass in the us-east-1 artifact location as a parameter override.",
-        "textEn": "Modify the CloudFormation template to include a parameter for the Lambda function code's.zip file location. Create a new CloudFormation deploy action for us-east-1 in the pipeline. Configure the new deploy action to pass in the us-east-1 artifact location as a parameter override.",
+        "text": "Modify the CloudFormation template to include a parameter for the Lambda function code's .zip file location. Create a new CloudFormation deploy action for us-east-1 in the pipeline. Configure the new deploy action to pass in the us-east-1 artifact location as a parameter override.",
+        "textEn": "Modify the CloudFormation template to include a parameter for the Lambda function code's .zip file location. Create a new CloudFormation deploy action for us-east-1 in the pipeline. Configure the new deploy action to pass in the us-east-1 artifact location as a parameter override.",
         "textZh": "修改CloudFormation 模板以包含Lambda 函数代码的.zip 文件位置的参数。在管道中为us-east-1 创建一个新的CloudFormation 部署操作。配置新的部署操作以将us-east-1 工件位置作为参数覆盖传递。"
       },
       {
@@ -25585,8 +25585,8 @@ const QUESTIONS_DOP_C02 = [
       {
         "key": "D",
         "id": "D",
-        "text": "Create a new SCP . Include a conditional statement that uses a Null condition operator to determine whether the lambda Vpclds condition key is absent. Configure the SCP to deny the lambda CreateFunction action and the lambda UpdateFunctionConfiguration action if the condition key is absent.",
-        "textEn": "Create a new SCP . Include a conditional statement that uses a Null condition operator to determine whether the lambda Vpclds condition key is absent. Configure the SCP to deny the lambda CreateFunction action and the lambda UpdateFunctionConfiguration action if the condition key is absent.",
+        "text": "Create a new SCP. Include a conditional statement that uses a Null condition operator to determine whether the lambda Vpclds condition key is absent. Configure the SCP to deny the lambda CreateFunction action and the lambda UpdateFunctionConfiguration action if the condition key is absent.",
+        "textEn": "Create a new SCP. Include a conditional statement that uses a Null condition operator to determine whether the lambda Vpclds condition key is absent. Configure the SCP to deny the lambda CreateFunction action and the lambda UpdateFunctionConfiguration action if the condition key is absent.",
         "textZh": "创建一个新的 SCP。包含一个条件语句，该语句使用 Null 条件运算符来确定 lambda:VpcIds 条件键是否缺失。如果该条件键缺失，则将该 SCP 配置为拒绝 lambda:CreateFunction 操作和 lambda:UpdateFunctionConfiguration 操作。"
       }
     ],
@@ -27014,8 +27014,8 @@ const QUESTIONS_DOP_C02 = [
       {
         "key": "D",
         "id": "D",
-        "text": "Create a resource inventory by using AWS Config. Filter by the Lambda resource type. Export the inventory to a.csv file. Write an AWS CDK application that references the Lambda functions from the.csv file. For each Lambda function, set the from_asset parameter for the Lambda handler code object.",
-        "textEn": "Create a resource inventory by using AWS Config. Filter by the Lambda resource type. Export the inventory to a.csv file. Write an AWS CDK application that references the Lambda functions from the.csv file. For each Lambda function, set the from_asset parameter for the Lambda handler code object.",
+        "text": "Create a resource inventory by using AWS Config. Filter by the Lambda resource type. Export the inventory to a .csv file. Write an AWS CDK application that references the Lambda functions from the .csv file. For each Lambda function, set the from_asset parameter for the Lambda handler code object.",
+        "textEn": "Create a resource inventory by using AWS Config. Filter by the Lambda resource type. Export the inventory to a .csv file. Write an AWS CDK application that references the Lambda functions from the .csv file. For each Lambda function, set the from_asset parameter for the Lambda handler code object.",
         "textZh": "使用 AWS Config 创建资源清单。按 Lambda 资源类型进行筛选。将清单导出为 .csv 文件。编写一个 AWS CDK 应用程序，从 .csv文件中引用这些 Lambda 函数。针对每个 Lambda 函数，为 Lambda 处理程序代码对象设置 from_asset 参数。"
       }
     ],
