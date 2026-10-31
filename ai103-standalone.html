@@ -1877,6 +1877,61 @@ body.auth-ok .auth-wechat-tip { display: none; }
 @media (prefers-color-scheme: dark) { body.auth-ok .auth-panel { border: 0; } }
 html.auth-required body:not(.auth-ok) .app-foot .foot-author { border-left: 0; margin-left: 0; padding-left: 0; }
 @media (max-width: 520px) { body.auth-ok .brand .sub { display: none; } }
+
+/* ===== Frosted glass (毛玻璃) v2 — 2026-10-31 ===== */
+:root { --glass: rgba(255, 255, 255, 0.6); --glass-solid: #f7f7f9; --glass-line: rgba(0, 0, 0, 0.08); }
+@media (prefers-color-scheme: dark) {
+  :root { --glass: rgba(30, 30, 30, 0.6); --glass-solid: #1c1c1e; --glass-line: rgba(255, 255, 255, 0.1); }
+}
+/* solid fallback first */
+.topbar,
+#view-practice .nav-row,
+#view-exam .nav-row {
+  background: var(--glass-solid);
+}
+/* sticky bottom action bars */
+#view-practice .nav-row,
+#view-exam .nav-row {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  margin: 1.1rem -1.25rem -1.4rem;
+  padding: 0.65rem 1.25rem;
+  padding-bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
+  border-top: 0.5px solid var(--glass-line);
+  border-radius: 0 0 16px 16px;
+}
+@media (max-width: 520px) {
+  #view-practice .nav-row, #view-exam .nav-row { margin: 1rem -1rem -1.15rem; padding-left: 1rem; padding-right: 1rem; border-radius: 0 0 14px 14px; }
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .topbar,
+  #view-practice .nav-row,
+  #view-exam .nav-row,
+  html.auth-required body:not(.auth-ok) #auth-panel {
+    background: var(--glass) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+    backdrop-filter: saturate(180%) blur(20px) !important;
+  }
+  .topbar { border-bottom: 0.5px solid var(--glass-line); }
+}
+/* Gate: soft colourful backdrop so the frosted card is visible */
+html.auth-required body:not(.auth-ok) {
+  background:
+    radial-gradient(60% 45% at 15% 20%, rgba(0, 122, 255, 0.35), transparent 70%),
+    radial-gradient(55% 40% at 85% 35%, rgba(175, 82, 222, 0.30), transparent 70%),
+    radial-gradient(60% 45% at 50% 85%, rgba(52, 199, 89, 0.28), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+html.auth-required body:not(.auth-ok) .topbar {
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 0;
+}
+html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--glass-line); }
 </style>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
