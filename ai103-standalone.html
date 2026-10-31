@@ -17020,11 +17020,12 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     h += '<div class="hx-row"><label>' + escapeHtml(L("考试日期", "Exam date")) + ' <input type="date" id="hx-date" value="' + escapeHtml(e.examDate || "") + '"></label>';
     const remainQ = Math.max(0, cov.total - cov.seen); const a7 = avg7();
     if (e.examDate) {
-      const days = Math.ceil((new Date(e.examDate + "T23:59:59") - new Date()) / 86400000);
+      const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+      const days = Math.round((new Date(e.examDate + "T00:00:00") - t0) / 86400000);
       if (days >= 0) {
         const need = days > 0 ? Math.ceil(remainQ / days) : remainQ;
-        const ok = a7 >= need;
-        h += ' <span>' + escapeHtml(L("剩 " + days + " 天", days + " days left")) + "</span></div>";
+        const ok = remainQ === 0 || a7 >= need;
+        h += ' <span>' + escapeHtml(days === 0 ? L("今天考试，加油！", "Exam is today, good luck!") : L("剩 " + days + " 天", days + " days left")) + "</span></div>";
         h += '<div class="hx-row small">' + escapeHtml(L("需每天 " + need + " 题 · 近7天均 " + a7.toFixed(1) + " 题", "Need " + need + "/day · 7-day avg " + a7.toFixed(1))) +
           ' <span class="hx-badge ' + (ok ? "ok" : "behind") + '">' + escapeHtml(ok ? L("进度达标", "On track") : L("进度落后", "Behind")) + "</span></div>";
       } else h += ' <span class="muted">' + escapeHtml(L("考试日期已过", "Exam date passed")) + "</span></div>";
@@ -17082,8 +17083,8 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     const a = (q.answer || []).join(" ");
     const y = (sel || []).slice().sort().join(" ") || "—";
     const ok = graded && isCorrect(q, sel);
-    return '<p class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + "：") + "<b>" + escapeHtml(a) + "</b>" +
-      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + "：") + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
+    return '<p role="status" class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + (state.lang === "en" ? ": " : "：")) + "<b>" + escapeHtml(a) + "</b>" +
+      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (state.lang === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
   }
   function questionsByFilter(filter) {
     if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
@@ -17694,7 +17695,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     QUESTIONS.forEach((q) => {
       if (state.practiceSubmitted[q.id]) {
         done++;
-        if (state.wrongIds[q.id]) wrong++;
+        if (!isCorrect(q, state.practiceAnswers[q.id])) wrong++;
       }
     });
     const pct = total ? Math.round((done / total) * 100) : 0;
@@ -18739,6 +18740,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     const q = currentPracticeQ();
     if (!q) return;
     const sel = state.practiceAnswers[q.id];
+    if (state.practiceSubmitted[q.id]) return; // no double-submit
     if (isPracticeRevealed(q)) return; // revealed answers are never scored
     if (!allBoxesSelected(q, sel)) return;
     state.practiceSubmitted[q.id] = true;
@@ -18823,6 +18825,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     state.caseTab = "q";
     state.examSecondsLeft = d.secondsLeft;
     if (state.examTimerId) clearInterval(state.examTimerId);
+    state.examDeadline = Date.now() + state.examSecondsLeft * 1000;
     state.examTimerId = setInterval(tickExam, 1000);
     showView("exam");
     renderExam();
@@ -18931,6 +18934,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     state.revealed = false;
     state.examSecondsLeft = minutes * 60;
     if (state.examTimerId) clearInterval(state.examTimerId);
+    state.examDeadline = Date.now() + state.examSecondsLeft * 1000;
     state.examTimerId = setInterval(tickExam, 1000);
     showView("exam");
     renderExam();
@@ -18938,8 +18942,11 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
   }
 
   function tickExam() {
-    state.examSecondsLeft--;
-    if (state.examSecondsLeft % 10 === 0) saveExamProgress();
+    // wall-clock based so background-tab throttling / sleep cannot stretch the exam
+    if (!state.examDeadline) state.examDeadline = Date.now() + state.examSecondsLeft * 1000;
+    const prev = state.examSecondsLeft;
+    state.examSecondsLeft = Math.max(0, Math.ceil((state.examDeadline - Date.now()) / 1000));
+    if (Math.floor(prev / 10) !== Math.floor(state.examSecondsLeft / 10)) saveExamProgress();
     updateTimerDisplay();
     if (state.examSecondsLeft <= 0) {
       clearInterval(state.examTimerId);
@@ -19187,6 +19194,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
       state.wrongIds[q.id] = true;
       try { ex().ws[q.id] = 0; } catch (err) {}
     });
+    try { saveEx(); } catch (err) {}
     saveProgress();
     saveExamLast();
     showView("result");
@@ -19568,6 +19576,9 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     $("#btn-result-retry").addEventListener("click", openExamConfig);
 
     document.addEventListener("keydown", onKey);
+    const examLive = () => state.mode === "exam" && !state.examSubmitted && state.examTimerId;
+    document.addEventListener("visibilitychange", () => { if (!examLive()) return; if (document.hidden) saveExamProgress(); else tickExam(); });
+    window.addEventListener("pagehide", () => { if (examLive()) saveExamProgress(); });
     try { if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (err) {}
     const bl = document.getElementById("boot-loader");
     if (bl) bl.remove();
