@@ -2015,3 +2015,5 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .otag.t-miss{border:1.5px dashed var(--success);color:var(--success-strong,#15803d);background:transparent}
 .ans-summary{margin:0 0 .6rem;padding:.45rem .7rem;border-radius:10px;background:var(--bg-soft,rgba(127,127,127,.12));font-size:.92rem}
 .ans-summary.ok{border-left:4px solid var(--success)}.ans-summary.bad{border-left:4px solid var(--danger)}
+.otext .otag{display:table;margin:.4rem 0 0;margin-left:0}
+.bank-block{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.08)}

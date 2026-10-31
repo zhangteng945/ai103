@@ -7,6 +7,11 @@
   <meta name="description" content="IT认证练习 — AI-103 / DOP-C02 多题库中英对照练习" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>IT认证练习</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="IT认证练习" />
   <style>:root {
   --bg: #0f1419;
   --bg-elevated: #1a2332;
@@ -2024,6 +2029,8 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .otag.t-miss{border:1.5px dashed var(--success);color:var(--success-strong,#15803d);background:transparent}
 .ans-summary{margin:0 0 .6rem;padding:.45rem .7rem;border-radius:10px;background:var(--bg-soft,rgba(127,127,127,.12));font-size:.92rem}
 .ans-summary.ok{border-left:4px solid var(--success)}.ans-summary.bad{border-left:4px solid var(--danger)}
+.otext .otag{display:table;margin:.4rem 0 0;margin-left:0}
+.bank-block{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.08)}
 </style>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
@@ -2158,7 +2165,7 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
         <select id="practice-jump-select" aria-label="选择题号"></select>
         <span class="jump-hint" id="practice-jump-hint" role="status" aria-live="polite"></span>
       </form>
-      <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题</p>
+      <p class="kbd-hint"><kbd>A</kbd>–<kbd>F</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题 · <kbd>←</kbd><kbd>→</kbd> 切题 · <kbd>?</kbd> 帮助</p>
     </section>
 
     <section id="view-exam-config" class="card hidden">
@@ -2212,7 +2219,7 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
         <button type="button" class="btn btn-primary" id="btn-exam-submit">交卷</button>
         <button type="button" class="btn btn-primary hidden" id="btn-exam-to-result">查看成绩</button>
       </div>
-      <p class="kbd-hint"><kbd>1</kbd>–<kbd>6</kbd> 选择 · <kbd>Enter</kbd> 下一题</p>
+      <p class="kbd-hint"><kbd>A</kbd>–<kbd>F</kbd> 选择 · <kbd>Enter</kbd> 下一题 · <kbd>←</kbd><kbd>→</kbd> 切题 · <kbd>?</kbd> 帮助</p>
     </section>
 
     <section id="view-result" class="hidden">
@@ -17939,7 +17946,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     }
     updateHomeReviewButtons();
     const kbdP = $("#view-practice .kbd-hint");
-    if (kbdP) kbdP.innerHTML = "<kbd>1</kbd>–<kbd>6</kbd> " + pack.kbdPractice;
+    if (kbdP) kbdP.innerHTML = "<kbd>A</kbd>–<kbd>F</kbd> " + pack.kbdPractice + " · <kbd>←</kbd><kbd>→</kbd> " + escapeHtml(L("切题", "prev/next")) + " · <kbd>?</kbd> " + escapeHtml(L("帮助", "help"));
     setTxt("#view-exam-config h2", pack.examConfigTitle);
     const exIntro = $("#view-exam-config > p.muted");
     if (exIntro) exIntro.textContent = examIntroText(currentExam(), pack);
@@ -18549,7 +18556,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span>" + gtag + "</button>";
+          gtag + "</span></button>";
       });
       html += "</div>";
     }
@@ -18566,7 +18573,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
         "</strong><br>" +
         formatMultiline(formatCorrectAnswer(q)) +
         "<br>" +
-        formatMultiline(explanationOf(q)) +
+        formatExplanation(explanationOf(q)) +
         "</div>";
       if (q.answerFixed && q.fixNote) {
         html += '<div class="fix-note"><strong>' + pack.answerFixed + "</strong>" + escapeHtml(q.fixNote) +
@@ -19040,7 +19047,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span>" + gtag + "</button>";
+          gtag + "</span></button>";
       });
       html += "</div>";
     }
@@ -19057,7 +19064,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
         "</strong><br>" +
         formatMultiline(formatCorrectAnswer(q)) +
         "<br>" +
-        formatMultiline(explanationOf(q)) +
+        formatExplanation(explanationOf(q)) +
         "</div></div>";
     }
 
@@ -19248,7 +19255,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
           formatMultiline(formatCorrectAnswer(q)) +
           "</div>";
         wrongHtml +=
-          '<div class="r-expl">' + formatMultiline(explanationOf(q)) + "</div>";
+          '<div class="r-expl">' + formatExplanation(explanationOf(q)) + "</div>";
         if (q.answerFixed && q.fixNote) {
           wrongHtml += '<div class="fix-note"><strong>' + pack.answerFixed + "</strong>" + escapeHtml(q.fixNote) + "</div>";
         }
@@ -19270,6 +19277,15 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
       .join("");
   }
 
+  function formatExplanation(s) {
+    const linkify = (h) => h.replace(/https?:\/\/[^\s<>"'）)\]，。]+/g, (u) => {
+      const m = u.match(/[.,;:!?]+$/); const tail = m ? m[0] : ""; const url = tail ? u.slice(0, -tail.length) : u;
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + "</a>" + tail;
+    });
+    const paras = String(s || "").replace(/\r/g, "").split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+    if (paras.length <= 1) return linkify(formatMultiline(s));
+    return paras.map((p) => "<p>" + linkify(escapeHtml(p).replace(/\n/g, "<br>")) + "</p>").join("");
+  }
   function formatMultiline(s) {
     return escapeHtml(s).replace(/\n/g, "<br>");
   }
@@ -19287,7 +19303,19 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA")) {
       return;
     }
-    const map = { Digit1: "A", Digit2: "B", Digit3: "C", Digit4: "D", Digit5: "E", Digit6: "F",
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "?") {
+      e.preventDefault();
+      alert(L("键盘快捷键\n\nA–F 或 1–6：选择选项\nEnter：提交 / 下一题\n← / →：上一题 / 下一题\n?：显示本帮助", "Keyboard shortcuts\n\nA–F or 1–6: choose option\nEnter: submit / next\n← / →: previous / next\n?: this help"));
+      return;
+    }
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      const pre = state.mode === "practice" ? "#btn-practice-" : state.mode === "exam" ? "#btn-exam-" : "";
+      const b = pre && $(pre + (e.key === "ArrowLeft" ? "prev" : "next"));
+      if (b && !b.disabled && b.offsetParent) { e.preventDefault(); b.click(); }
+      return;
+    }
+    const map = { KeyA: "A", KeyB: "B", KeyC: "C", KeyD: "D", KeyE: "E", KeyF: "F", Digit1: "A", Digit2: "B", Digit3: "C", Digit4: "D", Digit5: "E", Digit6: "F",
       Numpad1: "A", Numpad2: "B", Numpad3: "C", Numpad4: "D", Numpad5: "E", Numpad6: "F" };
 
     if (state.mode === "practice") {
@@ -19324,6 +19352,19 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
         $("#btn-exam-next").click();
       }
     }
+  }
+
+  function ensureBank(id, cb) {
+    if (id !== "dop-c02" || typeof window.QUESTIONS_DOP_C02 !== "undefined") { cb(); return; }
+    let bl = document.getElementById("boot-loader");
+    if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L("DOP-C02 题库加载中…", "Loading DOP-C02 bank…")); document.body.appendChild(bl); }
+    const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
+    const me = document.querySelector('script[src*="app.js"]');
+    const sc = document.createElement("script");
+    sc.src = me ? me.src.replace(/app\.js/, "banks/questions-dop-c02.js") : "banks/questions-dop-c02.js";
+    sc.onload = () => { bl.remove(); ov.remove(); cb(); };
+    sc.onerror = () => { bl.remove(); ov.remove(); sc.remove(); alert(L("题库加载失败，请检查网络后重试", "Failed to load the question bank. Check your connection and retry.")); };
+    document.head.appendChild(sc);
   }
 
   /* Wire UI */
@@ -19372,7 +19413,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
         if (state.mode === "exam" && !state.examSubmitted) {
           if (!confirm(t().confirmLeave)) return;
         }
-        switchExam(id);
+        ensureBank(id, () => switchExam(id));
       });
     }
 
@@ -19527,6 +19568,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     $("#btn-result-retry").addEventListener("click", openExamConfig);
 
     document.addEventListener("keydown", onKey);
+    try { if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (err) {}
     const bl = document.getElementById("boot-loader");
     if (bl) bl.remove();
     document.body.classList.toggle("touch", "ontouchstart" in window || navigator.maxTouchPoints > 0);

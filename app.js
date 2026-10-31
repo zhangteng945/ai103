@@ -1852,7 +1852,7 @@
     }
     updateHomeReviewButtons();
     const kbdP = $("#view-practice .kbd-hint");
-    if (kbdP) kbdP.innerHTML = "<kbd>1</kbd>–<kbd>6</kbd> " + pack.kbdPractice;
+    if (kbdP) kbdP.innerHTML = "<kbd>A</kbd>–<kbd>F</kbd> " + pack.kbdPractice + " · <kbd>←</kbd><kbd>→</kbd> " + escapeHtml(L("切题", "prev/next")) + " · <kbd>?</kbd> " + escapeHtml(L("帮助", "help"));
     setTxt("#view-exam-config h2", pack.examConfigTitle);
     const exIntro = $("#view-exam-config > p.muted");
     if (exIntro) exIntro.textContent = examIntroText(currentExam(), pack);
@@ -2462,7 +2462,7 @@
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span>" + gtag + "</button>";
+          gtag + "</span></button>";
       });
       html += "</div>";
     }
@@ -2479,7 +2479,7 @@
         "</strong><br>" +
         formatMultiline(formatCorrectAnswer(q)) +
         "<br>" +
-        formatMultiline(explanationOf(q)) +
+        formatExplanation(explanationOf(q)) +
         "</div>";
       if (q.answerFixed && q.fixNote) {
         html += '<div class="fix-note"><strong>' + pack.answerFixed + "</strong>" + escapeHtml(q.fixNote) +
@@ -2953,7 +2953,7 @@
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
-          "</span>" + gtag + "</button>";
+          gtag + "</span></button>";
       });
       html += "</div>";
     }
@@ -2970,7 +2970,7 @@
         "</strong><br>" +
         formatMultiline(formatCorrectAnswer(q)) +
         "<br>" +
-        formatMultiline(explanationOf(q)) +
+        formatExplanation(explanationOf(q)) +
         "</div></div>";
     }
 
@@ -3161,7 +3161,7 @@
           formatMultiline(formatCorrectAnswer(q)) +
           "</div>";
         wrongHtml +=
-          '<div class="r-expl">' + formatMultiline(explanationOf(q)) + "</div>";
+          '<div class="r-expl">' + formatExplanation(explanationOf(q)) + "</div>";
         if (q.answerFixed && q.fixNote) {
           wrongHtml += '<div class="fix-note"><strong>' + pack.answerFixed + "</strong>" + escapeHtml(q.fixNote) + "</div>";
         }
@@ -3183,6 +3183,15 @@
       .join("");
   }
 
+  function formatExplanation(s) {
+    const linkify = (h) => h.replace(/https?:\/\/[^\s<>"'）)\]，。]+/g, (u) => {
+      const m = u.match(/[.,;:!?]+$/); const tail = m ? m[0] : ""; const url = tail ? u.slice(0, -tail.length) : u;
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + "</a>" + tail;
+    });
+    const paras = String(s || "").replace(/\r/g, "").split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+    if (paras.length <= 1) return linkify(formatMultiline(s));
+    return paras.map((p) => "<p>" + linkify(escapeHtml(p).replace(/\n/g, "<br>")) + "</p>").join("");
+  }
   function formatMultiline(s) {
     return escapeHtml(s).replace(/\n/g, "<br>");
   }
@@ -3200,7 +3209,19 @@
     if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA")) {
       return;
     }
-    const map = { Digit1: "A", Digit2: "B", Digit3: "C", Digit4: "D", Digit5: "E", Digit6: "F",
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "?") {
+      e.preventDefault();
+      alert(L("键盘快捷键\n\nA–F 或 1–6：选择选项\nEnter：提交 / 下一题\n← / →：上一题 / 下一题\n?：显示本帮助", "Keyboard shortcuts\n\nA–F or 1–6: choose option\nEnter: submit / next\n← / →: previous / next\n?: this help"));
+      return;
+    }
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      const pre = state.mode === "practice" ? "#btn-practice-" : state.mode === "exam" ? "#btn-exam-" : "";
+      const b = pre && $(pre + (e.key === "ArrowLeft" ? "prev" : "next"));
+      if (b && !b.disabled && b.offsetParent) { e.preventDefault(); b.click(); }
+      return;
+    }
+    const map = { KeyA: "A", KeyB: "B", KeyC: "C", KeyD: "D", KeyE: "E", KeyF: "F", Digit1: "A", Digit2: "B", Digit3: "C", Digit4: "D", Digit5: "E", Digit6: "F",
       Numpad1: "A", Numpad2: "B", Numpad3: "C", Numpad4: "D", Numpad5: "E", Numpad6: "F" };
 
     if (state.mode === "practice") {
@@ -3237,6 +3258,19 @@
         $("#btn-exam-next").click();
       }
     }
+  }
+
+  function ensureBank(id, cb) {
+    if (id !== "dop-c02" || typeof window.QUESTIONS_DOP_C02 !== "undefined") { cb(); return; }
+    let bl = document.getElementById("boot-loader");
+    if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L("DOP-C02 题库加载中…", "Loading DOP-C02 bank…")); document.body.appendChild(bl); }
+    const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
+    const me = document.querySelector('script[src*="app.js"]');
+    const sc = document.createElement("script");
+    sc.src = me ? me.src.replace(/app\.js/, "banks/questions-dop-c02.js") : "banks/questions-dop-c02.js";
+    sc.onload = () => { bl.remove(); ov.remove(); cb(); };
+    sc.onerror = () => { bl.remove(); ov.remove(); sc.remove(); alert(L("题库加载失败，请检查网络后重试", "Failed to load the question bank. Check your connection and retry.")); };
+    document.head.appendChild(sc);
   }
 
   /* Wire UI */
@@ -3285,7 +3319,7 @@
         if (state.mode === "exam" && !state.examSubmitted) {
           if (!confirm(t().confirmLeave)) return;
         }
-        switchExam(id);
+        ensureBank(id, () => switchExam(id));
       });
     }
 
@@ -3440,6 +3474,7 @@
     $("#btn-result-retry").addEventListener("click", openExamConfig);
 
     document.addEventListener("keydown", onKey);
+    try { if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (err) {}
     const bl = document.getElementById("boot-loader");
     if (bl) bl.remove();
     document.body.classList.toggle("touch", "ontouchstart" in window || navigator.maxTouchPoints > 0);
