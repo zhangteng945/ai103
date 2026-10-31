@@ -2788,7 +2788,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您的公司正在 Microsoft Foundry 项目名称为 Project1 的客户支持代理试点。Project1连接到现有的 Application Insights 资源，公司支持团队在跟踪选项卡中查看运行情况。\nFoundry Agent 服务配置为执行以下操作：\n通过调用 project_client.telemetry.get_application_insights_connection_string() 来检索 Application Insights 连接字符串。\n调用 configure_azure_monitor(connection_string=...) 以启用遥测。\n一个单独的 LangChain 服务配置为使用 OpenTelemetry，并具有以下配置：\n使用 AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\n通过使用 config={“callbacks”:[azure_tracer]} 传递跟踪器。公司政策有以下要求：\n来自 LangChain 和 OpenTelemetry 的遥测必须在同一个 ApplicationInsights 资源中可区分。\n秘密和凭据必须 不 存储在提示、工具参数或跨度属性中。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stem": "您的公司正在 Microsoft Foundry 项目名称为 Project1 的客户支持代理试点。Project1连接到现有的 Application Insights 资源，公司支持团队在跟踪选项卡中查看运行情况。\nFoundry Agent 服务配置为执行以下操作：\n通过调用 project_client.telemetry.get_application_insights_connection_string() 来检索 Application Insights 连接字符串。\n调用 configure_azure_monitor(connection_string=...) 以启用遥测。\n一个单独的 LangChain 服务配置为使用 OpenTelemetry，并具有以下配置：\n使用 AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\n通过使用 config={“callbacks”:[azure_tracer]} 传递跟踪器。\n公司政策有以下要求：\n来自 LangChain 和 OpenTelemetry 的遥测必须在同一个 Application Insights 资源中可区分。\n秘密和凭据不得存储在提示、工具参数或跨度属性中。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "No",
@@ -2868,7 +2868,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "No"
    }
   ],
-  "stemZh": "您的公司正在 Microsoft Foundry 项目名称为 Project1 的客户支持代理试点。Project1连接到现有的 Application Insights 资源，公司支持团队在跟踪选项卡中查看运行情况。\nFoundry Agent 服务配置为执行以下操作：\n通过调用 project_client.telemetry.get_application_insights_connection_string() 来检索 Application Insights 连接字符串。\n调用 configure_azure_monitor(connection_string=...) 以启用遥测。\n一个单独的 LangChain 服务配置为使用 OpenTelemetry，并具有以下配置：\n使用 AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\n通过使用 config={“callbacks”:[azure_tracer]} 传递跟踪器。公司政策有以下要求：\n来自 LangChain 和 OpenTelemetry 的遥测必须在同一个 ApplicationInsights 资源中可区分。\n秘密和凭据必须 不 存储在提示、工具参数或跨度属性中。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您的公司正在 Microsoft Foundry 项目名称为 Project1 的客户支持代理试点。Project1连接到现有的 Application Insights 资源，公司支持团队在跟踪选项卡中查看运行情况。\nFoundry Agent 服务配置为执行以下操作：\n通过调用 project_client.telemetry.get_application_insights_connection_string() 来检索 Application Insights 连接字符串。\n调用 configure_azure_monitor(connection_string=...) 以启用遥测。\n一个单独的 LangChain 服务配置为使用 OpenTelemetry，并具有以下配置：\n使用 AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\n通过使用 config={“callbacks”:[azure_tracer]} 传递跟踪器。\n公司政策有以下要求：\n来自 LangChain 和 OpenTelemetry 的遥测必须在同一个 Application Insights 资源中可区分。\n秘密和凭据不得存储在提示、工具参数或跨度属性中。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
   "stemEn": "Your company is piloting a customer support agent in a Microsoft Foundry project name Project1. Project1 is connected to an existing Application Insights resource, and the company’s support team reviews runs in the Traces tab.\nThe Foundry Agent Service is configured to perform the following actions:\nRetrieve, the Application Insights connection string by calling project_client.telemetry.get_application_insights_connection_string().\nCall configure_azure_monitor(connection_string=...) to enable telemetry.\nA separate LangChain service is configured to use OpenTelemetry and has the following configurations:\nUses AzureAIOpenTelemetryTracer(connection_string=...,\nenable_content_recording=False)\nPasses the tracer by using config={“callbacks”:[azure_tracer]}\nCompany policy has the following requirements:\nTelemetry from LangChain and OpenTelemetry must be distinguishable within the same Application Insights resource.\nSecrets and credentials must NOT be stored in prompts, tool arguments, or span attributes.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1: 否\n否 - LangChain 服务将在 Traces 中出现，而无需配置追踪器。\nLangChain 服务在未配置追踪器的情况下不会出现在 Traces 中。\n因为 OpenTelemetry 需要显式的导出器或追踪器提供者来收集和发送数据，您必须提供有效的追踪器注册。然而，由于 configure_azure_monitor() 在后台设置了全局 OpenTelemetry 追踪器提供者，任何共享同一进程的标准 OpenTelemetry 仪器化服务理论上都可以全局导出追踪。尽管如此，LangChain 特别依赖于通过配置传递的显式回调处理程序（如 AzureAIOpenTelemetryTracer）来将LangChain 特定的执行块（链、工具和提示）映射到 OpenTelemetry 跨度中。未配置并传递此追踪器，您的 LangChain 编排将不会向 ApplicationInsights 发送遥测数据。\n框 2: 是\n是 - 设置不同的 OTEL_SERVICE_NAME 值可以在 Application Insights 中区分服务。设置不同的 OTEL_SERVICE_NAME 值可以在同一 ApplicationInsights 资源内区分服务。\n在 Azure Monitor 和 Application Insights 中，OpenTelemetry 的 service.name 属性会自动映射to 您的遥测日志和跨度上的 cloud_RoleName 属性。通过通过 OTEL_SERVICE_NAME 指定不同的名称（或在追踪器提供者中设置），您可以隔离和过滤来自核心 Foundry Agent Service 与 LangChain 组件的遥测。\n框 3：否\n否 - 当使用 enable_content_recording=False 时，提示和工具数据将被捕获在遥测中。\n提示文本和工具数据将不会被捕获在遥测中。\n将 enable_content_recording=False 设置为特定指示 AzureAIOpenTelemetryTracer 从跨度属性中删除和屏蔽用户提示、LLM 响应和工具调用参数。此配置成功防止凭据、秘密或敏感个人身份信息在文本中泄露到您的 Azure 应用程序洞察资源中。",
   "explanationEn": "Box 1: No\nNo - The LangChain service will appear in Traces without configuring a tracer.\nThe LangChain service will not appear in Traces without configuring a tracer.\nBecause OpenTelemetry requires an explicit exporter or tracer provider to collect and send data, you must provide a valid tracer registration. However, since configure_azure_monitor() sets up a global OpenTelemetry tracer provider under the hood, any standard OpenTelemetry-instrumented service sharing the same process could theoretically export traces globally. Despite this, LangChain specifically relies on explicit callback handlers (like AzureAIOpenTelemetryTracer) passed in the config to map LangChain-specific execution blocks (chains, tools, and prompts) into OpenTelemetry spans. Without configuring and passing this tracer, your LangChain orchestrations will not emit telemetry to Application Insights.\nBox 2: Yes\nYes - Setting different OTEL_SERVICE_NAME values separates the services in Application Insights. Setting different OTEL_SERVICE_NAME values distinguishes the services within the same Application Insights resource.\nIn Azure Monitor and Application Insights, the OpenTelemetry service.name attribute automatically maps to the cloud_RoleName property on your telemetry logs and spans. By specifying distinct names via OTEL_SERVICE_NAME (or setting it in the tracer providers), you can isolate and filter telemetry originating from the core Foundry Agent Service versus the LangChain components.\nBox 3: No\nNo - When using enable_content_recording=False, prompts and tool data will be captured in the telemetry.\nPrompt text and tool data will not be captured in the telemetry.\nSetting enable_content_recording=False specifically instructs the AzureAIOpenTelemetryTracer to redact and mask user prompts, LLM responses, and tool call arguments from being emitted into span attributes. This configuration successfully prevents credentials, secrets, or sensitive PII residing inside the text from bleeding into your Azure Application Insights resource.",
@@ -2985,7 +2985,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个名为 App1 的 Python 应用程序，它与一个名为Project1 的 Microsoft Foundry 项目集成。\n您需要确保 App1 满足以下要求：\n使用 Microsoft Entra 管理的身份进行身份验证通过 Azure OpenAI Responses API 向已部署的模型发送提示您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个名为 App1 的 Python 应用程序，它与一个名为 Project1 的 Microsoft Foundry 项目集成。\n您需要确保 App1 满足以下要求：\n使用 Microsoft Entra 管理的身份进行身份验证\n通过 Azure OpenAI Responses API 向已部署的模型发送提示\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "DefaultAzureCredential",
@@ -3050,7 +3050,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "create"
    }
   ],
-  "stemZh": "您有一个名为 App1 的 Python 应用程序，它与一个名为Project1 的 Microsoft Foundry 项目集成。\n您需要确保 App1 满足以下要求：\n使用 Microsoft Entra 管理的身份进行身份验证通过 Azure OpenAI Responses API 向已部署的模型发送提示您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您有一个名为 App1 的 Python 应用程序，它与一个名为 Project1 的 Microsoft Foundry 项目集成。\n您需要确保 App1 满足以下要求：\n使用 Microsoft Entra 管理的身份进行身份验证\n通过 Azure OpenAI Responses API 向已部署的模型发送提示\n您应该如何完成 Python 代码？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "stemEn": "You have a Python application named App1 that integrates with a Microsoft Foundry project named Project1.\nYou need to ensure that App1 meets the following requirements:\nAuthenticates by using a Microsoft Entra managed identity\nSends prompts to a deployed model by using the Azure OpenAI Responses API\nHow should you complete the Python code? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "解释：\n框 1：DefaultAzureCredential\nazure.identity 包提供 DefaultAzureCredential，它会自动评估 environment 以找到有效的身份验证机制。当在 Azure 中部署时，它会原生获取配置的 Microsoft Entra 管理身份，而无需硬编码的密钥。\n框 2：create\nget_openai_client() 上下文管理器返回一个与 OpenAI 兼容的实例，预先为您的项目端点配置。要使用 Microsoft Foundry 的 Responses API 协议生成响应，您需要与.responses 资源进行交互并调用其 create 方法。",
   "explanationEn": "Box 1: DefaultAzureCredential\nThe azure.identity package provides DefaultAzureCredential, which automatically evaluates the environment to find a valid authentication mechanism. When deployed in Azure, it natively picks up the configured Microsoft Entra managed identity without requiring hardcoded secrets.\nBox 2: create\nThe get_openai_client() context manager returns an OpenAI-compatible instance pre-configured for your project endpoint. To generate responses using Microsoft Foundry's Responses API protocol, you interact with the .responses resource and call its create method.",
@@ -3073,7 +3073,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个 Microsoft Foundry 项目，其中包含客户支持分流流程的工作流。\n您有一个 Ask a question 节点，用于将用户响应存储在名为 Var01 的本地变量中。\n您需要创建以下 Power Fx 表达式：\n一个 if/else 条件表达式，确保 Var01 包含一个值一个 发送消息 表达式，返回存储的用户响应的大写形式您应该如何配置这些表达式？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含客户支持分流流程的工作流。\n您有一个 Ask a question 节点，用于将用户响应存储在名为 Var01 的本地变量中。\n您需要创建以下 Power Fx 表达式：\n一个 if/else 条件表达式，确保 Var01 包含一个值\n一个“发送消息”(Send message) 表达式，返回存储的用户响应的大写形式\n您应该如何配置这些表达式？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "Not(IsBlank(Local.Var01))",
@@ -3144,7 +3144,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "positionNote": "发送消息表达式"
    }
   ],
-  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含客户支持分流流程的工作流。\n您有一个 Ask a question 节点，用于将用户响应存储在名为 Var01 的本地变量中。\n您需要创建以下 Power Fx 表达式：\n一个 if/else 条件表达式，确保 Var01 包含一个值一个 发送消息 表达式，返回存储的用户响应的大写形式您应该如何配置这些表达式？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含客户支持分流流程的工作流。\n您有一个 Ask a question 节点，用于将用户响应存储在名为 Var01 的本地变量中。\n您需要创建以下 Power Fx 表达式：\n一个 if/else 条件表达式，确保 Var01 包含一个值\n一个“发送消息”(Send message) 表达式，返回存储的用户响应的大写形式\n您应该如何配置这些表达式？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "stemEn": "You have a Microsoft Foundry project that contains a workflow for a customer support triage process.\nYou have an Ask a question node that stores user responses in a local variable named Var01.\nYou need to create the following Power Fx expressions:\nAn if/else condition expression that ensures that Var01 contains a value\nA Send message expression that returns the stored user response in uppercase\nHow should you configure the expressions? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1: Not(IsBlank(Topic.Var01)\n一个 if/else 条件表达式，确保 Var01 包含一个值\n要验证 Microsoft Foundry 工作流中的局部变量是否有值（使用 Power Fx 表达式语言），最合适的表达式是：\nIf(Not(IsBlank(Topic.VariableName)), \"有值操作\", \"为空操作\")\n表达式分解主题。\nVariableName: 指当前工作流主题范围内的局部变量。\nIsBlank(): 检查变量是否完全为 null 或包含空字符串 (\"\")。\nNot(): 反转布尔结果，使得包含内容的变量评估为真。\nIf(): 如果条件为真（包含值），则执行第一个操作路径；如果为假（为空），则执行第二个操作路径。\n框 2: {Upper(Local.Var01)}\nA 发送消息 表达式，返回存储的用户响应的大写形式\n在发送消息区域中使用的适当 Power Fx 表达式是 {Upper(Local.Var01)}.\n关键实施规则\n变量作用域前缀：\n在 Microsoft Foundry 工作流中，所有在工作流作用域内定义的变量必须使用 Local。\n前缀。大写函数：\nUpper() 函数将文本字符串转换为全大写字母。\n消息插值：在发送消息节点中，Power Fx 表达式必须用大括号{ } 括起来，以便在运行时动态评估。",
   "explanationEn": "Box 1: Not(IsBlank(Topic.Var01)\nAn if/else condition expression that ensures that Var01 contains a value\nTo validate that a local variable has a value in Microsoft Foundry workflows (which use the Power Fx expression language), the most adequate expression is:\nIf(Not(IsBlank(Topic.VariableName)), \"Has Value Action\", \"Is Blank Action\")\nExpression BreakdownTopic.\nVariableName: Refers to a local variable scoped to the current workflow topic.\nIsBlank(): Checks if the variable is completely null or contains an empty string (\"\").\nNot(): Inverts the boolean result so that a variable with contents evaluates to true.\nIf(): Executes the first action path if the condition is true (contains a value) and the second action path if it is false (blank).\nBox 2: {Upper(Local.Var01)}\nA Send message expression that returns the stored user response in uppercase\nThe adequate Power Fx expression to use in the Message to send area is {Upper(Local.Var01)}.\nKey Implementation Rules\nVariable Scope Prefix:\nIn Microsoft Foundry Workflows, all variables defined within the scope of the workflow must use the Local.\nprefix.Uppercase Function:\nThe Upper() function converts text strings to all capital letters.\nMessage Interpolation: In a Send message node, Power Fx expressions must be enclosed in curly braces { } to be dynamically evaluated at runtime.",
@@ -3475,7 +3475,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "id": "B",
     "text": "Speech recognition requests will continue to use the expired custom model until the model is removed manually",
     "textEn": "Speech recognition requests will continue to use the expired custom model until the model is removed manually.",
-    "textZh": "语音识别请求将继续使用过期的自定义模型，直到该模型被手动移除 。"
+    "textZh": "语音识别请求将继续使用过期的自定义模型，直到该模型被手动移除。"
    },
    {
     "id": "C",
@@ -3519,7 +3519,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "single",
-  "stem": "您有一个包含模型部署的 Microsoft Foundry 项目。\n您有一个应用程序，通过使用 Azure OpenAI v1 API 和默认AzureCredential。您公司的开发人员在发送推理请求时收到 HTTP 403 错误，即使在运行 az login 之后也是如此。\n您需要确保开发人员能够执行模型推理。解决方案必须遵循最小权限原则。\n您应该将哪个基于角色的访问控制 (RBAC) 角色分配给开发人员？",
+  "stem": "您有一个包含模型部署的 Microsoft Foundry 项目。\n您有一个应用程序，它通过使用 Azure OpenAI v1 API 和 DefaultAzureCredential 调用该部署。\n您公司的开发人员在发送推理请求时收到 HTTP 403 错误，即使在运行 az login 之后也是如此。\n您需要确保开发人员能够执行模型推理。解决方案必须遵循最小权限原则。\n您应该将哪个基于角色的访问控制 (RBAC) 角色分配给开发人员？",
   "options": [
    {
     "id": "A",
@@ -3556,7 +3556,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个包含模型部署的 Microsoft Foundry 项目。\n您有一个应用程序，通过使用 Azure OpenAI v1 API 和默认AzureCredential。您公司的开发人员在发送推理请求时收到 HTTP 403 错误，即使在运行 az login 之后也是如此。\n您需要确保开发人员能够执行模型推理。解决方案必须遵循最小权限原则。\n您应该将哪个基于角色的访问控制 (RBAC) 角色分配给开发人员？",
+  "stemZh": "您有一个包含模型部署的 Microsoft Foundry 项目。\n您有一个应用程序，它通过使用 Azure OpenAI v1 API 和 DefaultAzureCredential 调用该部署。\n您公司的开发人员在发送推理请求时收到 HTTP 403 错误，即使在运行 az login 之后也是如此。\n您需要确保开发人员能够执行模型推理。解决方案必须遵循最小权限原则。\n您应该将哪个基于角色的访问控制 (RBAC) 角色分配给开发人员？",
   "stemEn": "You have a Microsoft Foundry project that contains a model deployment.\nYou have an application that calls the deployment by using the Azure OpenAI v1 API and DefaultAzureCredential.\nThe developers at your company receive HTTP 403 errors when they send inference requests, even after running az login.\nYou need to ensure that the developers can perform model inference. The solution must follow the principle of least privilege.\nWhich role-based access control (RBAC) role should you assign to the developers?",
   "explanationZh": "要解决通过 Azure OpenAI v1 API 和DefaultAzureCredential 进行推理调用时出现的 HTTP 403 Forbidden 错误，用户必须被分配认知服务 OpenAI 用户内置的 Azure RBAC角色。\n为什么会发生这种情况\n成功运行 az login 可以使用 Microsoft Entra ID 进行用户身份验证，但它并不授予数据-平面访问权限。默认情况下，标准控制平面角色（如读取者或 Foundry 用户）仅允许用户查看项目元数据或管理设置，而不能向模型部署端点本身发送提示。\n推荐角色定义\n角色名称：认知服务 OpenAI 用户\n授予的权限：此角色提供执行聊天完成、嵌入和一般推理任务所需的绝对最低权限（Microsoft.CognitiveServices/accounts/OpenAI/deployments/search/action 和 Microsoft.CognitiveServices/accounts/OpenAI/deployments/causalLanguageModeling/action）。它不允许用户部署新模型、查看访问密钥或更改配置\n范围分配：将此角色分配给 Azure OpenAI 资源级别或包含您的 Microsoft Foundry 基础设施的资源组级别的用户（或 Microsoft Entra ID 组）。",
   "explanationEn": "To resolve the HTTP 403 Forbidden errors when making inference calls via the Azure OpenAI v1 API and DefaultAzureCredential, users must be assigned the Cognitive Services OpenAI User built-in Azure RBAC role.\nWhy This Happens\nRunning az login successfully authenticates the user with Microsoft Entra ID, but it does not grant data-plane access permissions. By default, standard control-plane roles (like Reader or Foundry User) only allow users to view project metadata or manage settings, not send prompts to the model deployment endpoint itself.\nRecommended Role Definition\nRole Name: Cognitive Services OpenAI User\nPermissions Granted: This role provides the absolute minimum privileges required to execute chat completions, embeddings, and general inference tasks (Microsoft.CognitiveServices/accounts/OpenAI/deployments/search/action and Microsoft.CognitiveServices/accounts/OpenAI/deployments/causalLanguageModeling/action). It does not allow users to deploy new models, view access keys, or alter configurations\nScope Placement: Assign this role to the users (or a Microsoft Entra ID Group) at the Azure OpenAI resource level or the Resource Group level containing your Microsoft Foundry infrastructure.",
@@ -3575,7 +3575,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "single",
-  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理具有一个模型上下文协议（MCP）工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要在代码中添加正确的 tool _choice 参数，以确定性地强制代理在每次运行时调用 MCP 工具。",
+  "stem": "您有一个包含代理的 Microsoft Foundry 项目。该代理具有一个模型上下文协议（MCP）工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要在代码中添加正确的 tool _choice 参数，以确定性地强制代理在每次运行时调用 MCP 工具。\n您应该添加什么？",
   "options": [
    {
     "id": "A",
@@ -3612,7 +3612,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理具有一个模型上下文协议（MCP）工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要在代码中添加正确的 tool _choice 参数，以确定性地强制代理在每次运行时调用 MCP 工具。",
+  "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。该代理具有一个模型上下文协议（MCP）工具，用于查询存储在 Azure AI Search 中的知识库。\n某些代理运行返回来自基础模型的答案，而不调用知识库，这导致响应没有基于引用。\n您提供了以下运行代理的代码片段。\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\n您需要在代码中添加正确的 tool _choice 参数，以确定性地强制代理在每次运行时调用 MCP 工具。\n您应该添加什么？",
   "stemEn": "You have a Microsoft Foundry project that contains an agent. The agent has a Model Context Protocol (MCP) tool that queries a knowledge base stored in Azure AI Search.\nSome agent runs return answers from the base model without invoking the knowledge base, which results in responses without grounded citations.\nYou are provided with the following code snippet that runs the agent.\n```\nrun = project_client.agents.runs.create_and_process(\n    thread_id=thread.id,\n    agent_id=agent.id\n)\n```\nYou need to add the correct tool _choice parameter to the code to deterministically force the agent to invoke the MCP tool on each run.\nWhat should you add?",
   "explanationZh": "要强制代理在每次运行时确定性地调用您的模型上下文协议（MCP）工具，您必须将 tool_choice=\"required\" 传递给 run_create_and_process 方法。\n“required”工具选择：将此参数设置为“required”会强制底层的 Azure OpenAI 模型在每个响应中调用您可用的工具之一，确保代理不会从基础模型中猜测答案。",
   "explanationEn": "To deterministically force the agent to invoke your Model Context Protocol (MCP) tool on every run, you must pass tool_choice=\"required\" into the run_create_and_process method.\nThe 'required' tool choice: Setting this parameter to 'required' forces the underlying Azure OpenAI model to invoke one of your available tools on every response, ensuring the agent doesn't guess answers from the base model.",
@@ -3837,7 +3837,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个包含内部问答代理的 Microsoft Foundry 项目。\n用户在向代理提问时报告以下问题：\n以下响应的增加：“未找到相关信息”高峰时段周期性出现 HTTP 429 速率限制超出错误您需要确定每个问题是由于模型不可用、资源限制还是推理失败造成的。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个包含内部问答代理的 Microsoft Foundry 项目。\n用户在向代理提问时报告以下问题：\n以下响应的增加：“未找到相关信息”\n高峰时段周期性出现 HTTP 429 速率限制超出错误\n您需要确定每个问题是由于模型不可用、资源限制还是推理失败造成的。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "Model Availability Rate and Provisioned Utilization",
@@ -3918,7 +3918,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "positionNote": "要收集的诊断日志"
    }
   ],
-  "stemZh": "您有一个包含内部问答代理的 Microsoft Foundry 项目。\n用户在向代理提问时报告以下问题：\n以下响应的增加：“未找到相关信息”高峰时段周期性出现 HTTP 429 速率限制超出错误您需要确定每个问题是由于模型不可用、资源限制还是推理失败造成的。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您有一个包含内部问答代理的 Microsoft Foundry 项目。\n用户在向代理提问时报告以下问题：\n以下响应的增加：“未找到相关信息”\n高峰时段周期性出现 HTTP 429 速率限制超出错误\n您需要确定每个问题是由于模型不可用、资源限制还是推理失败造成的。\n您应该怎么做？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "stemEn": "You have a Microsoft Foundry project that contains an internal Q&A agent.\nUsers report the following issues when they ask the agent questions:\nAn increase in the following response: “No relevant information found”\nPeriodic HTTP 429 rate limit exceeded errors during peak hours\nYou need to identify whether each issue is caused by model unavailability, resource limits, or inference failures.\nWhat should you do? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1：模型可用性率和预配置利用率。\n需要启用的指标\n要诊断这些问题，需要模型可用性率和预配置利用率指标。\n问题 1 (\"未找到相关信息\"): 这指向推理失败（RAG 幻觉或检索缺口），通常是由于模型在缺乏上下文基础时产生幻觉所致。\n问题 2 (HTTP 429 速率限制超出)：这表示资源限制。监控已分配的使用情况有助于识别在高峰时段您的分配容量是否达到了上限。\n框 2：请求响应\n要收集的诊断日志\n为了确定您的问题是由于模型不可用、资源限制还是推理失败引起的，您需要收集和分析请求响应诊断日志类别（也称为请求响应日志）。\n虽然您启用的指标提供了高层次的上下文（例如，模型可用性突出显示后端服务中断，已分配使用情况突出显示容量压力），但它们并未揭示每个请求的详细信息。请求响应日志记录了每个事务的确切 HTTP 状态代码、错误代码和后端延迟。",
   "explanationEn": "Box 1: Model Availability rate and Provisioned Utilization.\nMetrics to enable\nTo diagnose these issues, the Model Availability rate and Provisioned Utilization metrics are needed.\nProblem 1 (\"No relevant information found\"): This points to an inference failure (RAG hallucination or retrieval gap), which is often caused by the model hallucinating when it is missing contextual grounding.\nProblem 2 (HTTP 429 rate limit exceeded): This indicates resource limits. Monitoring provisioned utilization helps identify if your allocated capacity is simply maxing out during peak hours.\nBox 2: RequestResponse\nDiagnostic log to collect\nTo isolate whether your issues are caused by model unavailability, resource limits, or inference failures, you need to collect and analyze the RequestResponse diagnostic log category (also referred to as RequestResponseLogs).\nWhile your enabled metrics provide high-level context (e.g., Model Availability highlights backend service drops and Provisioned Utilization highlights capacity strain), they do not reveal per-request details. The RequestResponse log records the exact HTTP status codes, error codes, and backend latency for every transaction.",
@@ -4083,7 +4083,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "single",
-  "stem": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含以下内容：\n一个调用外部 API 的 OpenAPI 工具一个名为 Connection1 的项目连接，存储外部 API 的 API 密钥当代理调用 OpenAPI 工具时，API 返回 401 未授权错误，跟踪显示 API 密钥头 未 被发送。\n您需要确保 OpenAPI 工具在所有请求中自动包含来自 Connection1 的 API 密钥。\n您应该怎么做？",
+  "stem": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含以下内容：\n一个调用外部 API 的 OpenAPI 工具\n一个名为 Connection1 的项目连接，存储外部 API 的 API 密钥\n当代理调用 OpenAPI 工具时，API 返回 401 未授权错误，跟踪显示 API 密钥头未被发送。\n您需要确保 OpenAPI 工具在所有请求中自动包含来自 Connection1 的 API 密钥。\n您应该怎么做？",
   "options": [
    {
     "id": "A",
@@ -4120,7 +4120,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含以下内容：\n一个调用外部 API 的 OpenAPI 工具一个名为 Connection1 的项目连接，存储外部 API 的 API 密钥当代理调用 OpenAPI 工具时，API 返回 401 未授权错误，跟踪显示 API 密钥头 未 被发送。\n您需要确保 OpenAPI 工具在所有请求中自动包含来自 Connection1 的 API 密钥。\n您应该怎么做？",
+  "stemZh": "您有一个名为 Project1 的 Microsoft Foundry 项目，其中包含以下内容：\n一个调用外部 API 的 OpenAPI 工具\n一个名为 Connection1 的项目连接，存储外部 API 的 API 密钥\n当代理调用 OpenAPI 工具时，API 返回 401 未授权错误，跟踪显示 API 密钥头未被发送。\n您需要确保 OpenAPI 工具在所有请求中自动包含来自 Connection1 的 API 密钥。\n您应该怎么做？",
   "stemEn": "You have a Microsoft Foundry project named Project1 that contains the following:\nAn OpenAPI tool that calls an external API\nA project connection named Connection1 that stores the API key of the external API\nWhen an agent calls the OpenAPI tool, the API returns a 401 unauthorized error, and traces show that the API key header is NOT being sent.\nYou need to ensure that the OpenAPI tool automatically includes the API key from Connection1 on all requests.\nWhat should you do?",
   "explanationZh": "",
   "explanationEn": "",
@@ -4239,7 +4239,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "single",
-  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n解决方案：您配置图像审核以在处理图像之前阻止不安全内容。这达到了目标吗？",
+  "stem": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n解决方案：您配置图像审核以在处理图像之前阻止不安全内容。\n这达到了目标吗？",
   "options": [
    {
     "id": "A",
@@ -4264,7 +4264,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n解决方案：您配置图像审核以在处理图像之前阻止不安全内容。这达到了目标吗？",
+  "stemZh": "注意：本节包含一个或多个具有相同场景和问题的问题集。\n每个问题提供了一个独特的解决方案。您必须确定该解决方案是否满足所述目标。该组中可能有多个解决方案可以解决问题。也可能该组中的解决方案都无法解决问题。\n在本节回答问题后，您将无法返回。因此，这些问题不会出现在审核屏幕上。\n您有一个多模态 AI 生成模型，可以接受图像上传，并使用提取的图像文本来生成响应。\n您发现用户可以上传不安全的图像并将隐藏指令嵌入图像中，以操控模型。\n您需要实施控制措施以降低风险。\n解决方案：您配置图像审核以在处理图像之前阻止不安全内容。\n这达到了目标吗？",
   "stemEn": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question presents a unique solution to the problem. You must determine whether the solution meets the stated goals. More than one solution in the set might solve the problem. It is also possible that none of the solutions in the set solve the problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these questions do not appear on the Review Screen.\nYou have a multimodal AI generative model that accepts image uploads and uses extracted image text to generate responses.\nYou discover that users can upload unsafe images and embed hidden instructions into images to manipulate the model.\nYou need to implement controls to mitigate the risk.\nSolution: You configure image moderation to block unsafe content before processing the images. Does this meet the goal?",
   "explanationZh": "",
   "explanationEn": "",
@@ -4371,7 +4371,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个 Microsoft Foundry 项目，其中包含两个代理，分别名为 PolicyWriter 和 RiskReviewer。\nPolicyWriter 为客户政策生成草稿更新，而 RiskReviewer 则审核这些草稿。\n在可视化构建器中，您需要创建一个满足以下要求的工作流：\n在没有人工干预的情况下完成低风险更新确保代理之间的可预测执行对高风险更新需要用户批准您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个彗星选择值为一分。",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含两个代理，分别名为 PolicyWriter 和 RiskReviewer。\nPolicyWriter 为客户政策生成草稿更新，而 RiskReviewer 则审核这些草稿。\n在可视化构建器中，您需要创建一个满足以下要求的工作流：\n在没有人工干预的情况下完成低风险更新\n确保代理之间的可预测执行\n对高风险更新需要用户批准\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个彗星选择值为一分。",
   "options": [],
   "answer": [
    "The human-in-the-loop template that pauses execution of the workflow for input",
@@ -4439,7 +4439,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     ]
    }
   ],
-  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含两个代理，分别名为 PolicyWriter 和 RiskReviewer。\nPolicyWriter 为客户政策生成草稿更新，而 RiskReviewer 则审核这些草稿。\n在可视化构建器中，您需要创建一个满足以下要求的工作流：\n在没有人工干预的情况下完成低风险更新确保代理之间的可预测执行对高风险更新需要用户批准您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个彗星选择值为一分。",
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含两个代理，分别名为 PolicyWriter 和 RiskReviewer。\nPolicyWriter 为客户政策生成草稿更新，而 RiskReviewer 则审核这些草稿。\n在可视化构建器中，您需要创建一个满足以下要求的工作流：\n在没有人工干预的情况下完成低风险更新\n确保代理之间的可预测执行\n对高风险更新需要用户批准\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意： 每个彗星选择值为一分。",
   "stemEn": "You have a Microsoft Foundry project that contains two agents named PolicyWriter and RiskReviewer.\nPolicyWriter generates daft updates for customer polices, and RiskReviewer reviews the drafts.\nIn the visual builder, you need to create a workflow that meets the following requirements:\nFinalizes low-risk updates without manual intervention\nEnsures predictable execution across the agents\nRequires user approval for high-risk updates\nWhat should you configure? To answer, select the appropriate options in the answer area.\nNOTE: Each comet selection is worth one point.",
   "explanationZh": "框 1：人机交互模板，暂停工作流的执行以获取输入人机交互模板是正确的。该模式允许系统自动运行以实现可预测的，逐节点代理执行，同时在满足高风险条件时明确暂停工作流，以等待人工干预。\n框 2：添加条件语句\n条件语句是正确的。在决定是否完成策略之前，您必须评估风险级别（低与高）。条件节点检查来自 RiskReviewer 的风险评分输出。如果它是低风险，则路由到自动完成。如果它是高风险，则路由到批准步骤。\nwith-microsoft-agent-framework/4460342",
   "explanationEn": "Box 1: The human-in-the-loop template that pauses execution of the workflow for input Human-in-the-loop template is correct. This pattern allows the system to run automatically for predictable, node-by-node agent execution while explicitly pausing the workflow when a high-risk condition is met to wait for human intervention.\nBox 2: Add a Condition statement\nCondition statement is correct. You must evaluate the risk level (low vs. high) before deciding whether to finalize the policy. A condition node checks the risk score output from RiskReviewer. If it is low, it routes to auto-finalization. If it is high, it routes to an approval step.\nwith-microsoft-agent-framework/4460342",
@@ -4514,7 +4514,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "single",
-  "stem": "您正在 Microsoft Foundry 中构建一个名为 App1 的客户支持 Web 应用程序，该应用程序使用 GPT 实时模型。\nApp1 必须支持：\n实时、低延迟的语音对话，使用 Azure OpenAI 从用户处流式音频输入并播放音频响应您需要配置一种支持客户端应用程序中实时音频流的连接方法并目标大约 100 毫秒的延迟。\n您应该使用哪种连接方法？",
+  "stem": "您正在 Microsoft Foundry 中构建一个名为 App1 的客户支持 Web 应用程序，该应用程序使用 GPT 实时模型。\nApp1 必须支持：\n实时、低延迟的语音对话，使用 Azure OpenAI\n从用户处流式音频输入并播放音频响应\n您需要配置一种支持客户端应用程序中实时音频流的连接方法并目标大约 100 毫秒的延迟。\n您应该使用哪种连接方法？",
   "options": [
    {
     "id": "A",
@@ -4551,7 +4551,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您正在 Microsoft Foundry 中构建一个名为 App1 的客户支持 Web 应用程序，该应用程序使用 GPT 实时模型。\nApp1 必须支持：\n实时、低延迟的语音对话，使用 Azure OpenAI 从用户处流式音频输入并播放音频响应您需要配置一种支持客户端应用程序中实时音频流的连接方法并目标大约 100 毫秒的延迟。\n您应该使用哪种连接方法？",
+  "stemZh": "您正在 Microsoft Foundry 中构建一个名为 App1 的客户支持 Web 应用程序，该应用程序使用 GPT 实时模型。\nApp1 必须支持：\n实时、低延迟的语音对话，使用 Azure OpenAI\n从用户处流式音频输入并播放音频响应\n您需要配置一种支持客户端应用程序中实时音频流的连接方法并目标大约 100 毫秒的延迟。\n您应该使用哪种连接方法？",
   "stemEn": "You are building a customer support web app named App1 in Microsoft Foundry that uses a GPT realtime model.\nApp1 must support:\nLive, low-latency voice conversations that use Azure OpenAI\nStreaming audio input from users and playback audio responses\nYou need to configure a connection method that supports real-time audio streaming in client application and targets approximately 100 ms latency.\nWhich connection method should you use?",
   "explanationZh": "",
   "explanationEn": "",
@@ -4710,7 +4710,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个包含客户支持应用程序的 Microsoft Foundry 项目。\n您创建了两个名为 Run1 和 Run2 的评估，它们具有以下配置：\n两者都包括风险和安全指标两者都包括受保护材料评估 Run1 包括使用中等严重性阈值的有害内容指标 Run2 包括使用高严重性阈值的有害内容指标您对名为 DB1 的数据集运行这两个评估，并收到以下结果：\nRun1 的内容危害缺陷率：12%\nRun2 的内容危害缺陷率：4%\nRun1 的受保护材料评估： 6%\nRun2 的受保护材料评估： 6%\n您通过使用 DB1 开始一个微调任务。该任务在自动 RAI 检查多个内容危害类型时失败。\n您发现内容过滤配置设置为高严重性。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个包含客户支持应用程序的 Microsoft Foundry 项目。\n您创建了两个名为 Run1 和 Run2 的评估，它们具有以下配置：\n两者都包括风险和安全指标\n两者都包括受保护材料评估\nRun1 包括使用中等严重性阈值的有害内容指标\nRun2 包括使用高严重性阈值的有害内容指标\n您对名为 DB1 的数据集运行这两个评估，并收到以下结果：\nRun1 的内容危害缺陷率：12%\nRun2 的内容危害缺陷率：4%\nRun1 的受保护材料评估： 6%\nRun2 的受保护材料评估： 6%\n您通过使用 DB1 开始一个微调任务。该任务在自动 RAI 检查多个内容危害类型时失败。\n您发现内容过滤配置设置为高严重性。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "No",
@@ -4786,7 +4786,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "Yes"
    }
   ],
-  "stemZh": "您有一个包含客户支持应用程序的 Microsoft Foundry 项目。\n您创建了两个名为 Run1 和 Run2 的评估，它们具有以下配置：\n两者都包括风险和安全指标两者都包括受保护材料评估 Run1 包括使用中等严重性阈值的有害内容指标 Run2 包括使用高严重性阈值的有害内容指标您对名为 DB1 的数据集运行这两个评估，并收到以下结果：\nRun1 的内容危害缺陷率：12%\nRun2 的内容危害缺陷率：4%\nRun1 的受保护材料评估： 6%\nRun2 的受保护材料评估： 6%\n您通过使用 DB1 开始一个微调任务。该任务在自动 RAI 检查多个内容危害类型时失败。\n您发现内容过滤配置设置为高严重性。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您有一个包含客户支持应用程序的 Microsoft Foundry 项目。\n您创建了两个名为 Run1 和 Run2 的评估，它们具有以下配置：\n两者都包括风险和安全指标\n两者都包括受保护材料评估\nRun1 包括使用中等严重性阈值的有害内容指标\nRun2 包括使用高严重性阈值的有害内容指标\n您对名为 DB1 的数据集运行这两个评估，并收到以下结果：\nRun1 的内容危害缺陷率：12%\nRun2 的内容危害缺陷率：4%\nRun1 的受保护材料评估： 6%\nRun2 的受保护材料评估： 6%\n您通过使用 DB1 开始一个微调任务。该任务在自动 RAI 检查多个内容危害类型时失败。\n您发现内容过滤配置设置为高严重性。\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意： 每个正确的选择值为一分。",
   "stemEn": "You have a Microsoft Foundry project that contains a customer support application.\nYou create two evaluations named Run1 and Run2 that have the following configurations:\nBoth include risk and safety metrics\nBoth include the protected material evaluation\nRun1 includes harmful content metrics that use a medium severity threshold\nRun2 includes harmful content metric that use a high severity threshold\nYou run both evaluations against a dataset named DB1 and receive the following results:\nContent harm defect rate of Run1: 12%\nContent harm defect rate of Run2: 4%\nProtected material evaluation of Run1: 6%\nProtected material evaluation of Run2: 6%\nYou start a fine-tuning job by using DB1. The job fails during automatic RAI checks for multiple content harm types.\nYou discover that the content filtering configuration is set to high severity.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1: 否\n将内容过滤配置更改为低严重性不会解决微调作业问题。\n框 2: 是\nRun1 中 12% 的缺陷率与 Run2 中 4% 的缺陷率之间的差异完全符合为两个评估配置的不同严重性阈值。\n框 3：是\n受保护材料评估指标完全不受内容危害严重性阈值变化的影响。",
   "explanationEn": "Box 1: No\nChanging the content filtering configuration to low severity will not resolve the fine-tuning job issues.\nBox 2: Yes\nThe difference between a 12% defect rate in Run1 and a 4% defect rate in Run2 is entirely consistent with the different severity thresholds configured for the two evaluations.\nBox 3: Yes\nThe protected material evaluation metric is entirely unaffected by changes to the content harm severity threshold.",
@@ -5109,7 +5109,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个 Microsoft Foundry 项目。\n您需要创建一个满足以下要求的客户支持代理：\n仅根据存储在策划库中的公司政策文件提供响应在不同的聊天会话中保留客户偏好您应该如何配置代理？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个 Microsoft Foundry 项目。\n您需要创建一个满足以下要求的客户支持代理：\n仅根据存储在策划库中的公司政策文件提供响应\n在不同的聊天会话中保留客户偏好\n您应该如何配置代理？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "Configure revival from approved data sources.",
@@ -5174,8 +5174,8 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     ]
    }
   ],
-  "stemZh": "您有一个 Microsoft Foundry 项目。\n您需要创建一个满足以下要求的客户支持代理：\n仅根据存储在策划库中的公司政策文件提供响应在不同的聊天会话中保留客户偏好您应该如何配置代理？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
-  "stemEn": "You have a Microsoft Foundry project.\nYou need to create a customer support agent that meets the following requirements:\nGrounds responses only in company policy documents stored in curated repositories Retains customer preferences across separate chat sessions\nHow should you configure the agent? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "stemZh": "您有一个 Microsoft Foundry 项目。\n您需要创建一个满足以下要求的客户支持代理：\n仅根据存储在策划库中的公司政策文件提供响应\n在不同的聊天会话中保留客户偏好\n您应该如何配置代理？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemEn": "You have a Microsoft Foundry project.\nYou need to create a customer support agent that meets the following requirements:\nGrounds responses only in company policy documents stored in curated repositories\nRetains customer preferences across separate chat sessions\nHow should you configure the agent? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1：配置从批准的数据源检索\n您应该配置从批准的数据源检索以满足此要求。\n在 Microsoft Foundry（以及更广泛的 Azure AI Foundry / Azure OpenAI 架构）中，代理的基础仅限于公司政策文件需要实现检索增强生成（RAG）模式。这确保 AI 模型仅使用提供的上下文进行回答，而不会产生幻觉或依赖其公共训练数据。\n框 2：启用使用持久存储的代理记忆为了在完全独立的聊天会话或对话中保留用户偏好，您必须使用持久代理记忆。传统的聊天历史仅跟踪单个活动线程或会话中的消息。相比之下，记忆存储功能提供了一个管理的长期记忆系统，结构性地索引不同设备和独立会话中的用户偏好和事实。\nopenai-on-your-data/4144636",
   "explanationEn": "Box 1: Configure retrieval from approved data sources\nYou should configure retrieval from approved data sources to meet this requirement.\nIn Microsoft Foundry (and broader Azure AI Foundry / Azure OpenAI architectures), grounding an agent exclusively in company policy documents requires implementing a Retrieval-Augmented Generation (RAG) pattern. This ensures the AI model only answers using the provided context and does not hallucinate or rely on its public training data.\nBox 2: Enable agent memory that uses persistent storage\nTo retain user preferences across completely separate chat sessions or conversations, you must use persistent agent memory. Traditional chat history only tracks messages within a single active thread or session. By contrast, the Memory Store feature provides a managed, long-term memory system that structurally indexes user preferences and facts across different devices and separate sessions.\nopenai-on-your-data/4144636",
   "domainLabelZh": "规划和管理 Azure AI 解决方案",
@@ -5766,7 +5766,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "plan",
   "domainLabel": "规划和管理 Azure AI 解决方案",
   "type": "hotspot",
-  "stem": "您有一个 Microsoft Foundry 项目，用于读取数据库中支持票据的分类应用。\n您需要确保该应用满足以下要求：\n● 按质量、成本和吞吐量比较候选模型\n● 防止在 Azure 订阅中托管模型权重您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "stem": "您有一个 Microsoft Foundry 项目，用于读取数据库中支持票据的分类应用。\n您需要确保该应用满足以下要求：\n● 按质量、成本和吞吐量比较候选模型\n● 防止在 Azure 订阅中托管模型权重\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "Use model catalog leaderboards and model cards.",
@@ -5841,7 +5841,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     ]
    }
   ],
-  "stemZh": "您有一个 Microsoft Foundry 项目，用于读取数据库中支持票据的分类应用。\n您需要确保该应用满足以下要求：\n● 按质量、成本和吞吐量比较候选模型\n● 防止在 Azure 订阅中托管模型权重您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
+  "stemZh": "您有一个 Microsoft Foundry 项目，用于读取数据库中支持票据的分类应用。\n您需要确保该应用满足以下要求：\n● 按质量、成本和吞吐量比较候选模型\n● 防止在 Azure 订阅中托管模型权重\n您应该配置什么？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
   "stemEn": "You have a Microsoft Foundry project for a support ticket triage app that reads ticket text from a database.\nYou need to ensure that the app meets the following requirements:\n● Compares candidate models by quality, cost, and throughput\n● Prevents hosting model weights in the Azure subscription\nWhat should you configure? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1：使用模型目录排行榜和模型卡您应该使用模型目录排行榜和模型卡来比较您在此Microsoft Foundry 项目中的候选模型。\n在根据质量、成本和吞吐量等高层次业务和性能约束评估候选模型时，您正在进行初步静态评估。\n模型目录排行榜和模型卡专门设计用于提供预计算的、标准化的基准。它们允许您在标准质量数据集、每个令牌的平均定价（成本）和典型的每秒令牌数指标（吞吐量）上并排比较不同模型，而无需编写任何代码。\n工具目录连接和运行跟踪在开发生命周期的后期使用。它们是执行基准工具，旨在监控、调试和跟踪应用程序 LLM 编排管道（如 LangChain 或 Semantic Kernel 提示）在运行时的逐步性能和延迟。\n框 2：使用无服务器部署\n使用无服务器部署是满足此要求的正确模型评估和部署选择。\n为什么无服务器部署是正确的没有托管权重：无服务器部署（例如 Azure OpenAI 服务或 Azure AI Studio 中的无服务器 API 端点）允许您按消耗的令牌付费。模型提供者在您的显式 Azure 订阅基础设施之外托管和管理权重。合规性：它完全消除了在您的环境中配置、管理或托管基础虚拟机或模型权重文件的需要。\ndeployments",
   "explanationEn": "Box 1: Use model catalog lederboards and model cards\nYou should use model catalog leaderboards and model cards to compare your candidate models for this Microsoft Foundry project.\nWhen evaluating candidate models based on high-level business and performance constraints like quality, cost, and throughput, you are performing an initial static evaluation.\nModel Catalog Leaderboards and Model Cards are specifically designed to provide pre-computed, standardized benchmarks. They allow you to compare different models side-by-side on standard quality datasets, average pricing per token (cost), and typical tokens-per-second metrics (throughput) before writing any code.\nTool Catalog Connections and Run Traces are used later in the development lifecycle. They are execution-benchmarking tools meant for monitoring, debugging, and tracing the specific step-by-step performance and latency of an application's LLM orchestration pipeline (like LangChain or Semantic Kernel prompts) during runtime.\nBox 2: Use a serverless deployment\nTo use a serverless deployment is the correct model evaluation and deployment choice to meet this requirement.\nWhy Serverless Deployment is CorrectNo Hosted Weights: A serverless deployment (such as Azure OpenAI Service or serverless API endpoints in Azure AI Studio) allows you to pay per token consumed. The model provider hosts and manages the weights outside of your explicit Azure subscription infrastructure.Compliance: It completely eliminates the need to provision, manage, or host underlying virtual machines or model weight files in your environment.\ndeployments",
@@ -8169,19 +8169,19 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "genai",
   "domainLabel": "实现生成式 AI 与智能体解决方案",
   "type": "single",
-  "stem": "您有一个使用 Microsoft Foundry Agent Service 的客户支持代理。\n有时，客户在几天后返回会话以继续相同的支持案例，代理必须恢复完整的历史上下文。代理必须提供以下内容：\n会话中的多轮连续性同一案件的跨会话连续性访问完整的交互历史，包括用户消息、代理消息、工具调用和工具输出您需要确保代理在每个新回合自动重新加载完整的历史记录。\n您应该怎么做？",
+  "stem": "您有一个使用 Microsoft Foundry Agent Service 的客户支持代理。\n有时，客户在几天后返回会话以继续相同的支持案例，代理必须恢复完整的历史上下文。代理必须提供以下内容：\n会话中的多轮连续性\n同一案件的跨会话连续性\n访问完整的交互历史，包括用户消息、代理消息、工具调用和工具输出\n您需要确保代理在每个新回合自动重新加载完整的历史记录。\n您应该怎么做？",
   "options": [
    {
     "id": "A",
     "text": "Create and reuse a conversation by storing the conversation’s ID and supplying the ID on subsequent requests",
     "textEn": "Create and reuse a conversation by storing the conversation’s ID and supplying the ID on subsequent requests.",
-    "textZh": "通过存储对话的 ID 并在后续提供该 ID 来创建和重用对话 请求。"
+    "textZh": "通过存储对话的 ID 并在后续请求中提供该 ID 来创建和重用对话。"
    },
    {
     "id": "B",
     "text": "Persist only the final model response stored in the client application and prepend the response to future prompts",
     "textEn": "Persist only the final model response stored in the client application and prepend the response to future prompts.",
-    "textZh": "仅在客户端应用程序中保留最终模型响应，并将该响应添加到 未来的提示中。"
+    "textZh": "仅在客户端应用程序中保留最终模型响应，并将该响应添加到未来的提示中。"
    },
    {
     "id": "C",
@@ -8200,7 +8200,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个使用 Microsoft Foundry Agent Service 的客户支持代理。\n有时，客户在几天后返回会话以继续相同的支持案例，代理必须恢复完整的历史上下文。代理必须提供以下内容：\n会话中的多轮连续性同一案件的跨会话连续性访问完整的交互历史，包括用户消息、代理消息、工具调用和工具输出您需要确保代理在每个新回合自动重新加载完整的历史记录。\n您应该怎么做？",
+  "stemZh": "您有一个使用 Microsoft Foundry Agent Service 的客户支持代理。\n有时，客户在几天后返回会话以继续相同的支持案例，代理必须恢复完整的历史上下文。代理必须提供以下内容：\n会话中的多轮连续性\n同一案件的跨会话连续性\n访问完整的交互历史，包括用户消息、代理消息、工具调用和工具输出\n您需要确保代理在每个新回合自动重新加载完整的历史记录。\n您应该怎么做？",
   "stemEn": "You have a customer support agent that uses the Microsoft Foundry Agent Service.\nSometimes, customers return to a session days later to continue the same support case, and the agent must resume with the full historical context. The agent must provide the following:\nMulti-turn continuity within the session\nCross-session continuity for the same case\nAccess to the full interaction history, including user messages, agent messages, tool calls, and tool outputs\nYou need to ensure that the agent automatically reloads the complete history on each new turn.\nWhat should you do?",
   "explanationZh": "要实现完整的多轮和跨会话的连续性，并具备完整的历史上下文（包括用户消息、代理消息、工具调用和工具输出），您必须利用 Microsoft Foundry Agent Service 运行时提供的持久会话生命周期。\n由于底层的代理服务在推理层可以是无状态的，因此在跨天管理连续性需要将您的代理交互链接到一个持久的服务器端会话 ID。\n以下是满足您要求的具体步骤：\n*-> 1. 维护一个持久的对话 ID\n您的应用程序必须在用户返回时，不是每次都创建一个全新的对话会话，而是在您的外部数据库中持久化并映射唯一的支持案例到 Microsoft Foundry 对话 ID（通常以 resp_* 或 conv_* 为前缀）。\n新案例：创建一个新会话并捕获生成的 ConversationId。\n返回案例：从您的数据库中检索与该客户支持案例关联的先前保存的 ConversationId。\n2. 通过 SDK 恢复会话\n当客户在几天后返回时，通过将现有的对话 ID 传递到会话创建方法中来初始化代理的会话。这会强制 Microsoft Foundry 代理服务在处理下一轮之前，自动重新加载后端完整的、未总结的线程历史。",
   "explanationEn": "To achieve full, multi-turn, and cross-session continuity with complete historical context (including user messages, agent messages, tool calls, and tool outputs), you must leverage the durable Conversation lifecycle provided by the Microsoft Foundry Agent Service runtime.\nBecause the underlying Agent Service can be stateless at the inference tier, managing continuity across days requires linking your agent interactions to a persistent, server-side conversation ID.\nHere is exactly what must be done to meet your requirements:\n*-> 1. Maintain a Durable Conversation ID\nInstead of creating a brand-new conversation session every time a user returns, your application must persist and map the unique support case to a Microsoft Foundry Conversation ID (typically prefixed with resp_* or conv_*) in your external database.\nNew Case: Create a new session and capture the generated ConversationId.\nReturning Case: Retrieve the previously saved ConversationId associated with that customer's support case from your database.\n2. Resume Sessions via the SDK\nWhen the customer returns days later, initialize the agent's session by passing the existing Conversation ID into the session creation method. This forces the Microsoft Foundry Agent Service to automatically reload the complete, un-summarized thread history on the backend before processing the next turn.",
@@ -8634,7 +8634,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
    }
   ],
   "stemZh": "您有一个包含代理的 Microsoft Foundry 项目。\n您使用 GitHub Actions 工作流进行 CI/CD。\n您需要配置工作流，以便在创建拉取请求 (PR) 时自动评估代理，并在评估结果未达到定义的阈值时阻止分支合并。\n您应该如何配置工作流？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
-  "stemEn": "HOTSPOT\nYou have a Microsoft Foundry project that contains an agent.\nYou use a GitHub Actions workflow for CI/CD.\nYou need to configure the workflow to automatically evaluate the agent when a pull request (PR) is created and prevent branches from merging if the evaluation results do NOT meet the defined thresholds.\nHow should you configure the workflow? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "stemEn": "You have a Microsoft Foundry project that contains an agent.\nYou use a GitHub Actions workflow for CI/CD.\nYou need to configure the workflow to automatically evaluate the agent when a pull request (PR) is created and prevent branches from merging if the evaluation results do NOT meet the defined thresholds.\nHow should you configure the workflow? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1：一个使用 OpenID Connect(OIDC) 的 Azure 登录操作。\n此场景最合适的身份验证方法是使用 OpenID Connect (OIDC) 的 Microsoft Entra ID 身份验证。\n使用 OIDC 和 azure/login GitHub Action 消除了在 GitHub 秘密中存储长期凭据（如密码或客户端密钥）的需要，提供了高度安全且无密码的集成。\n为什么 OIDC 是推荐的选择\n短期令牌：GitHub Actions 为每个工作流运行动态请求来自 Microsoft Entra ID 的临时范围令牌。\n无秘密轮换：消除了与管理长期存在的 Azure 服务主体秘密相关的管理开销和安全风险。\n细粒度 RBAC：通过将 Azure AI 用户角色分配给特定的存储库/工作流身份，可以严格限制权限，达到 Microsoft Foundry 资源级别。\n框 2：失败\n配置 GitHub Actions 工作流以在未满足阈值时以非零状态代码（失败）退出是阻止拉取请求的标准机制。要强制执行此限制，您必须将工作流配置与 GitHub 存储库设置配对。\n示例代码：\n- 名称：强制阈值\n运行：|\n# 使用 node、python 或 bash 读取 JSON 并验证\npython -c \"\n导入 json, sys\nwith open('results.json') as f:\ndata = json.load(f)\n如果 data['groundedness'] < 0.85:\nprint('错误：基础分数低于 0.85 阈值。')\nsys.exit(1)",
   "explanationEn": "Box 1: An Azure Login action that uses OpenID Connect(OIDC).\nThe most appropriate authentication method for this scenario is Microsoft Entra ID authentication using OpenID Connect (OIDC).\nUsing OIDC with the azure/login GitHub Action eliminates the need to store long-lived credentials (like passwords or client secrets) inside GitHub secrets, offering a highly secure and passwordless integration.\nWhy OIDC Is the Recommended Choice\nShort-Lived Tokens: GitHub Actions requests a temporary, scoped token from Microsoft Entra ID dynamically for each workflow run.\nNo Secret Rotations: Eliminates administrative overhead and safety risks associated with managing long-lived Azure Service Principal secrets.\nGranular RBAC: Permissions can be tightly scoped by assigning the Azure AI User role to the specific repository/workflow identity at the Microsoft Foundry resource level.\nBox 2: Fail\nConfiguring the GitHub Actions workflow to exit with a non-zero status code (fail) when thresholds are not met is the standard mechanism to block pull requests.To enforce this restriction, you must pair the workflow configuration with GitHub repository settings.\nExample code:\n- name: Enforce Thresholds\n run: |\n # Use node, python, or bash to read JSON and validate\n python -c \"\n import json, sys\n with open('results.json') as f:\n data = json.load(f)\n if data['groundedness'] < 0.85:\n print('Error: Groundedness score below 0.85 threshold.')\n sys.exit(1)",
   "domainLabelZh": "实现生成式 AI 与智能体解决方案",
@@ -8832,7 +8832,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "genai",
   "domainLabel": "实现生成式 AI 与智能体解决方案",
   "type": "multi",
-  "stem": "您有一个包含检索增强生成（RAG）聊天解决方案的 Microsoft Foundry 项目，该解决方案由客户支持代理使用。\n您正在向名为 Pipeline1 的 CI/CD 管道添加一个自动化的预生产评估步骤。该评估将针对一个包含支持问题和预期背景的标记测试数据集进行。\n您需要确保如果不支持的内容或检索不匹配超过定义的阈值，Pipeline1 将失败：\n响应包括未被检索源内容支持的声明检索源内容与标记的预期背景不一致您应该在 Pipeline1 中使用哪两个内置评估器？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个包含检索增强生成（RAG）聊天解决方案的 Microsoft Foundry 项目，该解决方案由客户支持代理使用。\n您正在向名为 Pipeline1 的 CI/CD 管道添加一个自动化的预生产评估步骤。该评估将针对一个包含支持问题和预期背景的标记测试数据集进行。\n您需要确保如果不支持的内容或检索不匹配超过定义的阈值，Pipeline1 将失败：\n响应包括未被检索源内容支持的声明\n检索源内容与标记的预期背景不一致\n您应该在 Pipeline1 中使用哪两个内置评估器？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
   "options": [
    {
     "id": "A",
@@ -8877,7 +8877,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个包含检索增强生成（RAG）聊天解决方案的 Microsoft Foundry 项目，该解决方案由客户支持代理使用。\n您正在向名为 Pipeline1 的 CI/CD 管道添加一个自动化的预生产评估步骤。该评估将针对一个包含支持问题和预期背景的标记测试数据集进行。\n您需要确保如果不支持的内容或检索不匹配超过定义的阈值，Pipeline1 将失败：\n响应包括未被检索源内容支持的声明检索源内容与标记的预期背景不一致您应该在 Pipeline1 中使用哪两个内置评估器？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您有一个包含检索增强生成（RAG）聊天解决方案的 Microsoft Foundry 项目，该解决方案由客户支持代理使用。\n您正在向名为 Pipeline1 的 CI/CD 管道添加一个自动化的预生产评估步骤。该评估将针对一个包含支持问题和预期背景的标记测试数据集进行。\n您需要确保如果不支持的内容或检索不匹配超过定义的阈值，Pipeline1 将失败：\n响应包括未被检索源内容支持的声明\n检索源内容与标记的预期背景不一致\n您应该在 Pipeline1 中使用哪两个内置评估器？每个正确答案都是解决方案的一部分。\n注意： 每个正确的选择值为一分。",
   "stemEn": "You have a Microsoft Foundry project that contains a Retrieval Augmented Generation (RAG) chat solution used by customer support agents.\nYou are adding an automated pre-production evaluation step to a CI/CD pipeline named Pipeline1. The evaluation will run against a labeled test dataset that contains support questions and the expected grounding context.\nYou need to ensure that Pipeline1 fails if unsupported content or a retrieval mismatch exceeds a defined threshold:\nresponses include claims not supported by the retrieved source content\nretrieved source content does not align with the labeled expected context\nWhich two built-in evaluators should you use in Pipeline1? Each correct answer presents pat of the solution.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "可靠性评估器验证模型的响应仅包含由检索源内容支持的声明\n它标记不可靠的内容或幻觉。如果平均分数低于您定义的阈值，它会触发管道失败。\n适合该管道的正确额外内置评估器是检索（具体来说，检索评估器或文档检索评估器）。\n标准的RAG评估管道评估生成器（生成答案的LLM）和检索器（提取文档的搜索系统）。CI/CD要求指定两个不同的失败阈值：\n响应中包含未被检索源内容支持的声明：这检查模型幻觉，由可靠性评估器处理。\n检索的源内容与标记的预期上下文不一致：这明确衡量您的搜索步骤与您的真实数据的表现。内置的检索评估器映射到此要求。它计算诸如上下文召回率等指标，以确保您的系统成功检索到您标记的测试数据集中指定的确切参考文档",
   "explanationEn": "The Groundedness Evaluator evaluator validates that the model's responses include only claims supported by the retrieved source content\nIt flags ungrounded content or hallucinations. If the average score drops below your defined threshold, it triggers a pipeline failure.\nThe correct additional built-in evaluator appropriate for the pipeline is Retrieval (specifically, the RetrievalEvaluator or DocumentRetrievalEvaluator).\nA standard RAG evaluation pipeline assesses both the generator (the LLM producing the answer) and the retriever (the search system pulling documentation). The CI/CD requirements specify two distinct failure thresholds:\nResponses including claims not supported by the retrieved source content: This checks for model hallucinations and is handled by the Groundedness Evaluator.\nRetrieved source content not aligning with the labeled expected context: This explicitly measures the performance of your search step against your ground-truth data. The built-in Retrieval evaluator maps to this requirement. It computes metrics like context recall to ensure your system successfully retrieves the exact reference documents specified in your labeled test dataset",
@@ -8952,7 +8952,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "genai",
   "domainLabel": "实现生成式 AI 与智能体解决方案",
   "type": "hotspot",
-  "stem": "您有一个 Microsoft Founcy 项目，其中包含一个检索增强生成（RAG）解决方案。\n您需要使用包含查询、上下文、响应和真实值的标记 CSV 数据集进行预生产评估。评估必须测量以下内容：\n响应是否解决了用户查询响应是否得到提供的上下文支持响应是否包含敏感或专有信息您应该使用哪些AI质量评估指标？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stem": "您有一个 Microsoft Founcy 项目，其中包含一个检索增强生成（RAG）解决方案。\n您需要使用包含查询、上下文、响应和真实值的标记 CSV 数据集进行预生产评估。评估必须测量以下内容：\n响应是否解决了用户查询\n响应是否得到提供的上下文支持\n响应是否包含敏感或专有信息\n您应该使用哪些AI质量评估指标？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "Groundedness and Relevance",
@@ -9027,7 +9027,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "Protected material"
    }
   ],
-  "stemZh": "您有一个 Microsoft Founcy 项目，其中包含一个检索增强生成（RAG）解决方案。\n您需要使用包含查询、上下文、响应和真实值的标记 CSV 数据集进行预生产评估。评估必须测量以下内容：\n响应是否解决了用户查询响应是否得到提供的上下文支持响应是否包含敏感或专有信息您应该使用哪些AI质量评估指标？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
+  "stemZh": "您有一个 Microsoft Founcy 项目，其中包含一个检索增强生成（RAG）解决方案。\n您需要使用包含查询、上下文、响应和真实值的标记 CSV 数据集进行预生产评估。评估必须测量以下内容：\n响应是否解决了用户查询\n响应是否得到提供的上下文支持\n响应是否包含敏感或专有信息\n您应该使用哪些AI质量评估指标？要回答，请在答案区域选择适当的选项。\n注意： 每个正确的选择值为一分。",
   "stemEn": "You have a Microsoft Founcy project that contains a Retrieval Augmented Generation (RAG) solution.\nYou need to run a pre-production evaluation by using labeled CSV dataset that contains the query, context, response and ground truth. The evaluation must measure the following:\nWhether responses address the user query\nWhether responses are supported by the provided context\nWhether responses contain sensitive or proprietary information\nWhich AI quality evaluation metrics should you use? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "框 1：基础性和相关性\n在 Microsoft Foundry 中，您进行预生产评估的两个最佳 AI 质量评估指标是相关性和基础性。\nMicrosoft Foundry 提供内置的、AI 辅助的质量评估工具，专门设计用于衡量这 two 个关键维度的检索增强生成 (RAG) 系统：\n相关性：该指标直接针对您的第一个要求：响应是否解决了用户查询。它评估生成的响应与初始用户查询的对齐程度和回答质量。\n基础性：该指标直接针对您的第二个要求：响应是否得到提供的上下文支持。它评估生成的响应在多大程度上是基于检索到的上下文，且严格来源于该上下文，这有助于捕捉模型的幻觉。\n框 2：受保护材料\n此场景的最佳 AI 质量评估指标是受保护材料。\n直接对齐：受保护材料指标专门检查 AI 模型是否输出与其训练数据或内部上下文匹配的受版权保护的文本、专有数据或敏感信息。",
   "explanationEn": "Box 1: Groundedness and Relevance\nThe two best AI quality evaluation metrics for your pre-production evaluation in Microsoft Foundry are Relevance and Groundedness.\nMicrosoft Foundry provides built-in, AI-assisted quality evaluators specifically designed to measure these two critical dimensions of a Retrieval-Augmented Generation (RAG) system:\nRelevance: This metric directly addresses your first requirement: whether responses address the user query. It evaluates how well the gens.nerated response aligns with and answers the initial user query.\nGroundedness: This metric directly addresses your second requirement: whether responses are supported by the provided context. It evaluates the degree to which the generated response is factually supported by and derived strictly from the retrieved context, which helps capture model hallucinatio\nBox 2: Protected material\nThe best AI quality evaluation metric for this scenario is Protected material.\nDirect alignment: The Protected material metric specifically checks whether an AI model outputs copyrighted text, proprietary data, or sensitive information that matches its training data or internal context.",
@@ -9222,7 +9222,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "genai",
   "domainLabel": "实现生成式 AI 与智能体解决方案",
   "type": "single",
-  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个客户支持聊天应用的代理。\n该代理使用内存存储和内存搜索工具。\n您需要确保对话历史 不 在不同会话之间持续存在。\n您应该将内存工具的范围设置为什么？",
+  "stem": "您有一个 Microsoft Foundry 项目，其中包含一个客户支持聊天应用的代理。\n该代理使用内存存储和内存搜索工具。\n您需要确保对话历史不在不同会话之间持续存在。\n您应该将内存工具的范围设置为什么？",
   "options": [
    {
     "id": "A",
@@ -9259,7 +9259,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个客户支持聊天应用的代理。\n该代理使用内存存储和内存搜索工具。\n您需要确保对话历史 不 在不同会话之间持续存在。\n您应该将内存工具的范围设置为什么？",
+  "stemZh": "您有一个 Microsoft Foundry 项目，其中包含一个客户支持聊天应用的代理。\n该代理使用内存存储和内存搜索工具。\n您需要确保对话历史不在不同会话之间持续存在。\n您应该将内存工具的范围设置为什么？",
   "stemEn": "You have a Microsoft Foundry project that contains an agent for a customer support chat app. The agent uses a memory store and a memory search tool.\nYou need to ensure that the conversation history does NOT persist across separate sessions.\nTo what should you set the scope of the memory tool?",
   "explanationZh": "为了确保对话历史不会在不同会话之间持续存在，您必须将范围设置为会话。\n会话范围限制数据访问仅限于当前活动的聊天实例。当新会话开始时，它会自动清除或忽略之前的数据。\n不正确：\n[不 C]\n用户或 {{$userId}} 范围：在多个会话中为该特定用户保留数据。这将导致您想要避免的确切问题，因为它将历史上下文带入新的对话中。\nJ = 屁股 Khidf 15 中",
   "explanationEn": "To ensure that conversation history does not persist across separate sessions, you must set the scope to session.\nThe session scope restricts data access to the current active chat instance. It automatically wipes or ignores previous data when a new session starts.\nIncorrect:\n[Not C]\nuser or {{$userId}} scope: Persists data across multiple sessions for that specific user. This would cause the exact issue you want to avoid by carrying historical context into new conversations.\ngi=a9aa95df15c6",
@@ -9396,7 +9396,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "genai",
   "domainLabel": "实现生成式 AI 与智能体解决方案",
   "type": "single",
-  "stem": "您有一个名为 App1 的 Web 应用程序，通过与名为 Project1 的 Microsoft Foundry 项目集成来处理用户提示。App1 执行以下操作：\n通过使用 Azure OpenAI Responses API 直接将提示发送到模型通过在同一请求中使用 Foundry 连接调用 Azure AI 内容安全工具您需要配置对请求工作流每个步骤的端到端可见性。\n您应该怎么做？",
+  "stem": "您有一个名为 App1 的 Web 应用程序，通过与名为 Project1 的 Microsoft Foundry 项目集成来处理用户提示。App1 执行以下操作：\n通过使用 Azure OpenAI Responses API 直接将提示发送到模型\n通过在同一请求中使用 Foundry 连接调用 Azure AI 内容安全工具\n您需要配置对请求工作流每个步骤的端到端可见性。\n您应该怎么做？",
   "options": [
    {
     "id": "A",
@@ -9433,7 +9433,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个名为 App1 的 Web 应用程序，通过与名为 Project1 的 Microsoft Foundry 项目集成来处理用户提示。App1 执行以下操作：\n通过使用 Azure OpenAI Responses API 直接将提示发送到模型通过在同一请求中使用 Foundry 连接调用 Azure AI 内容安全工具您需要配置对请求工作流每个步骤的端到端可见性。\n您应该怎么做？",
+  "stemZh": "您有一个名为 App1 的 Web 应用程序，通过与名为 Project1 的 Microsoft Foundry 项目集成来处理用户提示。App1 执行以下操作：\n通过使用 Azure OpenAI Responses API 直接将提示发送到模型\n通过在同一请求中使用 Foundry 连接调用 Azure AI 内容安全工具\n您需要配置对请求工作流每个步骤的端到端可见性。\n您应该怎么做？",
   "stemEn": "You have a web app named App1 that processes user prompts by integrating with a Microsoft Foundry project named Project1. App1 performs the following actions:\nSends prompts directly to a model by using the Azure OpenAI Responses API\nInvokes the Azure AI Content Safety tool by using a Foundry connection within the same request\nYou need to configure end-to-end visibility into each step of the request workflow.\nWhat should you do?",
   "explanationZh": "要配置对请求工作流每个步骤的端到端可见性，您应该在项目中启用应用程序跟踪。\n项目级可观察性：启用应用程序跟踪允许 Microsoft Foundry 原生跟踪、追踪，并监控工作流的每个组件——包括对 Azure OpenAI 响应 API 的调用和相关工具如 Azure AI 内容安全——在同一请求中，无需复杂的、单独的 SDK 配置。\n集中跟踪：跟踪捕获项目端点之间的确切执行路径，使您能够顺序查看模型调用和内容安全检查的指标、延迟和输入/输出。",
   "explanationEn": "To configure end-to-end visibility into each step of the request workflow, you should Enable application tracing in the project.\nProject-Level Observability: Enabling application tracing allows Microsoft Foundry to natively track, trace, and monitor every component of the workflow—including calls to the Azure OpenAI Responses API and associated tools like Azure AI Content Safety—within the same request without requiring complex, separate SDK configurations.\nCentralized Tracking: Tracing captures the exact execution path across the project endpoints, allowing you to see metrics, latency, and inputs/outputs sequentially for both the model invocation and the content safety check.",
@@ -10167,7 +10167,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "genai",
   "domainLabel": "实现生成式 AI 与智能体解决方案",
   "type": "single",
-  "stem": "在 Microsoft Foundry 中，您使用带有 GPT-35 Turbo 模型的聊天游乐场。\n您有一个包含以下代码的提示。\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\n您需要模型创建代码的解释。解决方案必须尽量降低成本。您应该怎么做？",
+  "stem": "在 Microsoft Foundry 中，您使用带有 GPT-35 Turbo 模型的聊天游乐场。\n您有一个包含以下代码的提示。\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\n您需要模型创建代码的解释。解决方案必须尽量降低成本。\n您应该怎么做？",
   "options": [
    {
     "id": "A",
@@ -10204,7 +10204,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "在 Microsoft Foundry 中，您使用带有 GPT-35 Turbo 模型的聊天游乐场。\n您有一个包含以下代码的提示。\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\n您需要模型创建代码的解释。解决方案必须尽量降低成本。您应该怎么做？",
+  "stemZh": "在 Microsoft Foundry 中，您使用带有 GPT-35 Turbo 模型的聊天游乐场。\n您有一个包含以下代码的提示。\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\n您需要模型创建代码的解释。解决方案必须尽量降低成本。\n您应该怎么做？",
   "stemEn": "In Microsoft Foundry, you use the Chat playground with the GPT-35 Turbo model.\nYou have a prompt that contains the following code.\n```\nfunction F(n)\n{\nvar f = [0, 1];\nfor (var i = 2; i < n; i++) f[i] = f[i-1] + f[i-2];\nreturn f;\n}\n```\nYou need the model to create an explanation of the code. The solution must minimize costs.\nWhat should you do?",
   "explanationZh": "通过在提示中添加类似 // function F 是做什么的？的注释，您指示 GPT 模型提供对该函数行为的解释。这种方法直接要求模型解释代码，这将有助于生成解释，而无需对模型进行更改或额外的资源密集型配置。",
   "explanationEn": "By adding a comment like // what does function F do? to the prompt, you are instructing the GPT model to provide an explanation of the function's behavior. This approach directly asks the model to explain the code, which will help generate an explanation without requiring changes to the model or additional resource-intensive configurations.",
@@ -10725,7 +10725,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "widgetRecovered": true,
   "recoveryNote": "Recovered from PDF Hot Area (p117); answers from explanation (assistants endpoint + tools array).",
   "stemZh": "您正在构建一个代理，通过使用自定义 API 检索给定位置的当前时间。\n您需要测试自定义 API 的功能。\n您应该如何完成该命令？要回答，请在答案区域选择适当的选项。\n注意: 每个正确的选择值为一分。",
-  "stemEn": "HOTSPOT\nYou are building an agent that will retrieve the current time at a given location by using a custom API.\nYou need to test the functionality of the custom API.\nHow should you complete the command? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+  "stemEn": "You are building an agent that will retrieve the current time at a given location by using a custom API.\nYou need to test the functionality of the custom API.\nHow should you complete the command? To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "assistants 端点使用其模型和指令创建代理。工具数组将 get_current_time 注册为一个函数，包括其描述和所需的位置参数。在测试期间，应用程序执行请求的函数并将其结果提交给代理；仅注册该函数并不会执行自定义 API。\nagents&pivots=python",
   "explanationEn": "The assistants endpoint creates the agent with its model and instructions. The tools array registers get_current_time as a function, including its description and required location parameter. During testing, the application executes the requested function and submits its result to the agent; registering the function alone does not execute the custom API.\nagents&pivots=python",
   "domainLabelZh": "实现生成式 AI 与智能体解决方案",
@@ -13000,7 +13000,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "vision",
   "domainLabel": "实现计算机视觉解决方案",
   "type": "drag",
-  "stem": "拖放\n您有一个执行对象检测的 Azure 自定义视觉服务项目。该项目使用一般领域进行分类，并包含一个训练好的模型。\n您需要导出该模型以便在与互联网断开的网络上使用。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stem": "您有一个执行对象检测的 Azure 自定义视觉服务项目。该项目使用一般领域进行分类，并包含一个训练好的模型。\n您需要导出该模型以便在与互联网断开的网络上使用。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
   "options": [],
   "answer": [
    "Change Domains to General (compact).",
@@ -13121,8 +13121,8 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     ]
    }
   ],
-  "stemZh": "拖放\n您有一个执行对象检测的 Azure 自定义视觉服务项目。该项目使用一般领域进行分类，并包含一个训练好的模型。\n您需要导出该模型以便在与互联网断开的网络上使用。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
-  "stemEn": "DRAG DROP\nYou have an Azure Custom Vision service project that performs object detection. The project uses the General domain for classification and contains a trained model.\nYou need to export the model for use on a network that is disconnected from the internet.\nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.\nSelect and Place:",
+  "stemZh": "您有一个执行对象检测的 Azure 自定义视觉服务项目。该项目使用一般领域进行分类，并包含一个训练好的模型。\n您需要导出该模型以便在与互联网断开的网络上使用。\n您应该按顺序执行哪三个操作？要回答，请将适当的操作从操作列表移动到答案区域，并按正确顺序排列。\n选择和放置：",
+  "stemEn": "You have an Azure Custom Vision service project that performs object detection. The project uses the General domain for classification and contains a trained model.\nYou need to export the model for use on a network that is disconnected from the internet.\nWhich three actions should you perform in sequence? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.\nSelect and Place:",
   "explanationZh": "自定义视觉支持导出使用紧凑领域训练的模型。在更改为一般（紧凑）后，重新训练模型以创建支持导出的迭代。导出该迭代以便在没有互联网连接的情况下本地运行。",
   "explanationEn": "Custom Vision supports exporting models trained with compact domains. After changing to General (compact), retrain the model to create an iteration that supports export. Export that iteration to run it locally without an internet connection.",
   "domainLabelZh": "实现计算机视觉解决方案",
@@ -13301,7 +13301,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "vision",
   "domainLabel": "实现计算机视觉解决方案",
   "type": "single",
-  "stem": "您正在构建一个应用程序，该应用程序将使用 Azure AI 监控工作区以确保安全法规的合规性。\n您需要推荐一个满足以下要求的服务：\n● 当员工进入高风险区域时生成警报\n● 实时监控视频流\n● 最小化开发工作量您应该推荐什么？",
+  "stem": "您正在构建一个应用程序，该应用程序将使用 Azure AI 监控工作区以确保安全法规的合规性。\n您需要推荐一个满足以下要求的服务：\n● 当员工进入高风险区域时生成警报\n● 实时监控视频流\n● 最小化开发工作量\n您应该推荐什么？",
   "options": [
    {
     "id": "A",
@@ -13338,7 +13338,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您正在构建一个应用程序，该应用程序将使用 Azure AI 监控工作区以确保安全法规的合规性。\n您需要推荐一个满足以下要求的服务：\n● 当员工进入高风险区域时生成警报\n● 实时监控视频流\n● 最小化开发工作量您应该推荐什么？",
+  "stemZh": "您正在构建一个应用程序，该应用程序将使用 Azure AI 监控工作区以确保安全法规的合规性。\n您需要推荐一个满足以下要求的服务：\n● 当员工进入高风险区域时生成警报\n● 实时监控视频流\n● 最小化开发工作量\n您应该推荐什么？",
   "stemEn": "You are building an app that will use Azure AI to monitor workspaces for safety regulation compliance.\nYou need to recommend a service that meets the following requirements:\n● Generates alerts when employees enter high-risk areas\n● Monitors video feeds in real time\n● Minimizes development effort\nWhat should you recommend?",
   "explanationZh": "解释：\n空间分析处理实时视频流，并提供预构建的操作，以检测人员何时进入或退出指定区域。定义每个摄像头视野内的高风险区域，并使用区域进入事件触发警报，最小化开发工作量，而无需训练自定义检测模型。\nenables-safety-alerts-with-nvidia-gpus/3641130",
   "explanationEn": "Spatial Analysis processes live video streams and provides prebuilt operations for detecting when people enter or exit designated zones. Define high-risk areas within each camera’s view and use zone-entry events to trigger alerts, minimizing development effort without training a custom detection model.\nenables-safety-alerts-with-nvidia-gpus/3641130",
@@ -13734,9 +13734,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "labelZh": "框 1",
     "choices": [
      {
-      "key": "AnalyzeTextOptions(text=comment)",
-      "en": "AnalyzeTextOptions(text=comment)",
-      "zh": "AnalyzeTextOptions(text=comment)"
+      "key": "AnalyzeTextOptions(categories=comment)",
+      "en": "AnalyzeTextOptions(categories=comment)",
+      "zh": "AnalyzeTextOptions(categories=comment)"
      },
      {
       "key": "AnalyzeTextOptions(text=[comment])",
@@ -13744,9 +13744,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
       "zh": "AnalyzeTextOptions(text=[comment])"
      },
      {
-      "key": "AnalyzeTextOptions(categories=comment)",
-      "en": "AnalyzeTextOptions(categories=comment)",
-      "zh": "AnalyzeTextOptions(categories=comment)"
+      "key": "AnalyzeTextOptions(text=comment)",
+      "en": "AnalyzeTextOptions(text=comment)",
+      "zh": "AnalyzeTextOptions(text=comment)"
      },
      {
       "key": "TextCategory.SELF_HARM(comment)",
@@ -13766,14 +13766,14 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "labelZh": "框 2",
     "choices": [
      {
-      "key": "client.analyze_text(request)",
-      "en": "client.analyze_text(request)",
-      "zh": "client.analyze_text(request)"
-     },
-     {
       "key": "client.analyze_image(request)",
       "en": "client.analyze_image(request)",
       "zh": "client.analyze_image(request)"
+     },
+     {
+      "key": "client.analyze_text(request)",
+      "en": "client.analyze_text(request)",
+      "zh": "client.analyze_text(request)"
      },
      {
       "key": "client.moderate_text(request)",
@@ -14063,9 +14063,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "labelZh": "框 1",
     "choices": [
      {
-      "key": "PUT",
-      "en": "PUT",
-      "zh": "PUT"
+      "key": "PATCH",
+      "en": "PATCH",
+      "zh": "PATCH"
      },
      {
       "key": "POST",
@@ -14073,9 +14073,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
       "zh": "POST"
      },
      {
-      "key": "PATCH",
-      "en": "PATCH",
-      "zh": "PATCH"
+      "key": "PUT",
+      "en": "PUT",
+      "zh": "PUT"
      }
     ],
     "answer": "PUT",
@@ -14285,7 +14285,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "text",
   "domainLabel": "实现文本分析解决方案",
   "type": "hotspot",
-  "stem": "您运行以下命令。\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。",
+  "stem": "您运行以下命令。\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意：每个正确的选择值为一分。",
   "options": [],
   "answer": [
    "Yes",
@@ -14361,7 +14361,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "Yes"
    }
   ],
-  "stemZh": "您运行以下命令。\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。",
+  "stemZh": "您运行以下命令。\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\n对于以下每个陈述，如果该陈述为真，请选择“是”。否则，请选择“否”。\n注意：每个正确的选择值为一分。",
   "stemEn": "You run the following command.\n```\ndocker run --rm -it -p 5000:5000 --memory 10g --cpus 2 \\\nmcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment \\\nEula=accept \\\nBilling={ENDPOINT_URI} \\\nApiKey={API_KEY}\n```\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.",
   "explanationZh": "解释：\n框 1：是\nhttp://localhost:5000/status：也可以通过 GET 请求，这验证用于启动容器的 api-key 是否有效，而不会导致端点查询。\n\n框 2：是\n该命令将容器和 LUIS 日志保存到位于 C:\\output 的输出挂载上，该挂载位于容器主机上。\n\n框 3：是\nhttp://localhost:5000/swagger：容器提供了端点的完整文档集和一个试用功能。通过此功能，您可以将设置输入到基于网页的 HTML 表单中，并进行查询，而无需编写任何代码。查询返回后，提供了一个示例 CURL 命令，以演示所需的 HTTP 头和主体格式。\n\n参考：\nhttps://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-container-howto",
   "explanationEn": "Explanation:\nBox 1: Yes\nhttp://localhost:5000/status : Also requested with GET, this verifies if the api-key used to start the container is valid without causing an endpoint query.\n\nBox 2: Yes\nThe command saves container and LUIS logs to output mount at C:\\output, located on container host\n\nBox 3: Yes\nhttp://localhost:5000/swagger: The container provides a full set of documentation for the endpoints and a Try it out feature. With this feature, you can enter your settings into a web-based HTML form and make the query without having to write any code. After the query returns, an example CURL command is provided to demonstrate the HTTP headers and body format that's required.\n\nReference:\nhttps://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-container-howto",
@@ -14403,9 +14403,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "labelZh": "框 1",
     "choices": [
      {
-      "key": "AnalyzeTextOptions",
-      "en": "AnalyzeTextOptions",
-      "zh": "AnalyzeTextOptions"
+      "key": "AddOrUpdateTextBlocklistItemsOptions",
+      "en": "AddOrUpdateTextBlocklistItemsOptions",
+      "zh": "AddOrUpdateTextBlocklistItemsOptions"
      },
      {
       "key": "AnalyzeImageOptions",
@@ -14413,9 +14413,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
       "zh": "AnalyzeImageOptions"
      },
      {
-      "key": "AddOrUpdateTextBlocklistItemsOptions",
-      "en": "AddOrUpdateTextBlocklistItemsOptions",
-      "zh": "AddOrUpdateTextBlocklistItemsOptions"
+      "key": "AnalyzeTextOptions",
+      "en": "AnalyzeTextOptions",
+      "zh": "AnalyzeTextOptions"
      },
      {
       "key": "TextBlocklist",
@@ -14435,9 +14435,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "labelZh": "框 2",
     "choices": [
      {
-      "key": "client.analyze_text",
-      "en": "client.analyze_text",
-      "zh": "client.analyze_text"
+      "key": "client.add_or_update_blocklist_items",
+      "en": "client.add_or_update_blocklist_items",
+      "zh": "client.add_or_update_blocklist_items"
      },
      {
       "key": "client.analyze_image",
@@ -14445,9 +14445,9 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
       "zh": "client.analyze_image"
      },
      {
-      "key": "client.add_or_update_blocklist_items",
-      "en": "client.add_or_update_blocklist_items",
-      "zh": "client.add_or_update_blocklist_items"
+      "key": "client.analyze_text",
+      "en": "client.analyze_text",
+      "zh": "client.analyze_text"
      },
      {
       "key": "client.list_text_blocklists",
@@ -15039,31 +15039,31 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "extract",
   "domainLabel": "实现信息提取解决方案",
   "type": "single",
-  "stem": "您有一个 Microsoft Foundry 项目，该项目摄取存储在 Azure Blob Storage 中的扫描 PDF 发票。每个发票包含打印的细项，并具有基于表格的布局。\n提取的结果以结构化 JSON 存储，并用作检索增强生成 (RAG) 解决方案中代理的基础数据。\n您需要创建一个满足以下要求的单一分析器：\n提取发票号码、发票日期、供应商名称和总金额，适用于不同模板返回置信度分数，以便置信度低于 0.80 的结果可以转交给主管审核你应该使用什么？",
+  "stem": "您有一个 Microsoft Foundry 项目，该项目摄取存储在 Azure Blob Storage 中的扫描 PDF 发票。每个发票包含打印的细项，并具有基于表格的布局。\n提取的结果以结构化 JSON 存储，并用作检索增强生成 (RAG) 解决方案中代理的基础数据。\n您需要创建一个满足以下要求的单一分析器：\n提取发票号码、发票日期、供应商名称和总金额，适用于不同模板\n返回置信度分数，以便置信度低于 0.80 的结果可以转交给主管审核\n您应该使用什么？",
   "options": [
    {
     "id": "A",
     "text": "a Foundry agent that has groundedness guardrails enabled to extract invoice fields and confidence scores",
     "textEn": "a Foundry agent that has groundedness guardrails enabled to extract invoice fields and confidence scores",
-    "textZh": "一个启用了基础性保护措施的 Foundry 代理，用于提取发票字段和置信度 分数"
+    "textZh": "一个启用了基础性保护措施的 Foundry 代理，用于提取发票字段和置信度分数"
    },
    {
     "id": "B",
     "text": "a custom Azure Content Understanding in Foundry Tools analyzer that defines the required fields as the extracted fields and the returned confidence scores for routing",
     "textEn": "a custom Azure Content Understanding in Foundry Tools analyzer that defines the required fields as the extracted fields and the returned confidence scores for routing",
-    "textZh": "一个自定义的 Azure 内容理解在 Foundry 工具分析器中，定义所需字段为 提取字段和返回的置信度分数以进行路由"
+    "textZh": "一个自定义的 Azure 内容理解在 Foundry 工具分析器中，定义所需字段为提取字段和返回的置信度分数以进行路由"
    },
    {
     "id": "C",
     "text": "the Azure Content Understanding in Foundry Tools prebuilt-layout analyzer",
     "textEn": "the Azure Content Understanding in Foundry Tools prebuilt-layout analyzer",
-    "textZh": "Azure 内容理解在 Foundry 工具中的 预构建布局 分析器"
+    "textZh": "Azure 内容理解在 Foundry 工具中的预构建布局 (prebuilt-layout) 分析器"
    },
    {
     "id": "D",
     "text": "the Azure Content Understanding in Foundry Tools prebuilt-documentSearch analyzer and search.score from the Azure AI Search results for routing",
     "textEn": "the Azure Content Understanding in Foundry Tools prebuilt-documentSearch analyzer and search.score from the Azure AI Search results for routing",
-    "textZh": "Azure 内容理解在 Foundry 工具中的 预构建文档搜索 分析器和 search.score 来自 Azure AI 搜索结果的路由"
+    "textZh": "Azure 内容理解在 Foundry 工具中的预构建文档搜索 (prebuilt-documentSearch) 分析器和 search.score 来自 Azure AI 搜索结果的路由"
    }
   ],
   "answer": [
@@ -15080,8 +15080,8 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudyText": "概述\n\n公司信息\n\nContoso, Ltd 是一家跨国零售公司，通过使用 Microsoft Foundry 构建、部署和管理生成式 AI 和基于代理的解决方案。\n\n现有环境\n\n身份环境\n\nContoso 使用 Microsoft Entra ID 进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务。\n\nContoso 最近成立了一个新的 AI 工程团队，名为 Agent1Dev Team，以优化和维护现有的 AI 解决方案。\n\n该团队与解决方案架构师、DevOps 工程师和安全工程师合作，设计、实施、监控和保护 AI 应用程序。\n\nContoso 还有一个名为 Agent1Test Team 的团队，负责在解决方案部署之前验证 AI 解决方案。\n\n生成环境\n\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n\n项目1\n\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询和故障排除请求。\n\nAgent1 具有以下配置：\n\nAgent1 使用基础模型部署。\n\n安全评估管道 未 启用。\n\n工具调用审批工作流 未 启用。\n\n对话记忆约束 未 配置。\n\nAgent1 通过数字支持渠道与客户互动，并回答有关 Contoso 产品的一般问题。\n\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\n\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n\n项目2\n\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型开发视频创作解决方案。\n\n该解决方案的开发尚未完成。\n\n数据环境\n\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\n\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详细信息表。\n\n产品说明书包括规格、功能描述和产品支持信息，Agent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n\n问题陈述\n\nContoso 确定了以下问题：\n\nAgent1 仅对 Contoso 产品有一般了解。\n\n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。\n\nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n\nContoso 的财务部门报告称，供应商发票必须手动审核，以确保发票与供应商合同中定义的条款相符。发票包含表格、徽标，以及各种布局，使得文件难以一致地处理。\n\n需求\n\n计划变更\n\nContoso 计划实施以下变更：\n\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据供应商合同条款验证发票细节。\n\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保连续性和一致的响应。\n\n启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。\n\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户问题。\n\n完成视频创作解决方案的开发。\n\n技术要求\n\nContoso 确定了以下技术要求：\n\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI 工作负载，并动态扩展以处理可变的客户支持流量，而无需保留吞吐量容量。\n\n产品表必须通过使用索引管道进行处理，以支持语义和向量搜索，以便 Agent1 可以检索相关的产品信息。\n\n使用产品表信息生成的响应必须相关、完整且准确。\n\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\n\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n\n模型处理的数据必须保留在欧盟内。\n\n安全和合规要求\n\nContoso 确定了以下安全和合规要求：\n\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n\n访问 Azure 资源必须遵循最小权限原则。\n\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\n\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中。\n\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n\n业务需求\n\nContoso 确定了以下业务需求：\n\n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回忆之前互动中的相关信息。\n\nAgent1 只能回答有关 Contoso 销售的产品的问题。",
   "caseStudyTextZh": "概述\n\n公司信息\n\nContoso, Ltd 是一家跨国零售公司，通过使用 Microsoft Foundry 构建、部署和管理生成式 AI 和基于代理的解决方案。\n\n现有环境\n\n身份环境\n\nContoso 使用 Microsoft Entra ID 进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务。\n\nContoso 最近成立了一个新的 AI 工程团队，名为 Agent1Dev Team，以优化和维护现有的 AI 解决方案。\n\n该团队与解决方案架构师、DevOps 工程师和安全工程师合作，设计、实施、监控和保护 AI 应用程序。\n\nContoso 还有一个名为 Agent1Test Team 的团队，负责在解决方案部署之前验证 AI 解决方案。\n\n生成环境\n\nContoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。\n\n项目1\n\nProject1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询和故障排除请求。\n\nAgent1 具有以下配置：\n\nAgent1 使用基础模型部署。\n\n安全评估管道 未 启用。\n\n工具调用审批工作流 未 启用。\n\n对话记忆约束 未 配置。\n\nAgent1 通过数字支持渠道与客户互动，并回答有关 Contoso 产品的一般问题。\n\nProject1 部署在位于欧盟 (EU) 的 Azure 区域。\n\nAgent1Dev 团队将使用 Project1 来优化和维护 Agent1。\n\n项目2\n\nProject2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型开发视频创作解决方案。\n\n该解决方案的开发尚未完成。\n\n数据环境\n\nContoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。\n\nAzure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详细信息表。\n\n产品说明书包括规格、功能描述和产品支持信息，Agent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。\n\n问题陈述\n\nContoso 确定了以下问题：\n\nAgent1 仅对 Contoso 产品有一般了解。\n\n最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。\n\nAgent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。\n\nContoso 的财务部门报告称，供应商发票必须手动审核，以确保发票与供应商合同中定义的条款相符。发票包含表格、徽标，以及各种布局，使得文件难以一致地处理。\n\n需求\n\n计划变更\n\nContoso 计划实施以下变更：\n\n为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据供应商合同条款验证发票细节。\n\n更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保连续性和一致的响应。\n\n启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。\n\n为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户问题。\n\n完成视频创作解决方案的开发。\n\n技术要求\n\nContoso 确定了以下技术要求：\n\nAgent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI 工作负载，并动态扩展以处理可变的客户支持流量，而无需保留吞吐量容量。\n\n产品表必须通过使用索引管道进行处理，以支持语义和向量搜索，以便 Agent1 可以检索相关的产品信息。\n\n使用产品表信息生成的响应必须相关、完整且准确。\n\nAgent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。\n\nAgent1 使用的模型版本必须保持一致，以确保稳定的响应。\n\n模型处理的数据必须保留在欧盟内。\n\n安全和合规要求\n\nContoso 确定了以下安全和合规要求：\n\nAPI 密钥必须 不 用于访问部署在 Foundry 的模型。\n\n访问 Azure 资源必须遵循最小权限原则。\n\nContoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。\n\n对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。\n\n对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。\n\nAgent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中。\n\n产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。\n\n业务需求\n\nContoso 确定了以下业务需求：\n\n与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回忆之前互动中的相关信息。\n\nAgent1 只能回答有关 Contoso 销售的产品的问题。",
   "caseStudyTextEn": "Overview\n\nCompany Information\n\nContoso, Ltd is a multinational retail company that builds, deploys, and manages generative AI and agent-based solutions by using Microsoft Foundry.\n\nExisting Environment\n\nIdentity Environment\n\nContoso uses Microsoft Entra ID for identity management, authentication, and authorization capabilities that enable agents to access organizational resources and services.\n\nContoso recently formed a new AI engineering team named Agent1Dev Team to optimize and maintain existing AI solutions.\n\nThe team collaborates with solution architects, DevOps engineers, and security engineers to design, implement, monitor, and secure AI applications.\n\nContoso also has a team named Agent1Test Team that is responsible for validating AI solutions before the solution deployments.\n\nGenerative Environment\n\nContoso has a Microsoft Foundry deployment that contains two projects named Project1 and Project2.\n\nProject1\n\nProject1 contains a customer support agent named Agent1 that assists customers with product inquiries and troubleshooting requests.\n\nAgent1 has the following configurations:\n\nAgent1 uses a base model deployment.\n\nA safety evaluation pipeline is NOT enabled.\n\nTool invocation approval workflows are NOT enabled.\n\nConversation memory constraints are NOT configured.\n\nAgent1 interacts with customers by using digital support channels and answers general questions about Contoso products.\n\nProject1 is deployed to an Azure region located in the European Union (EU).\n\nAgent1Dev Team will use Project1 to optimize and maintain Agent1.\n\nProject2\n\nProject2 contains a deployed video generation model. The marketing department at Contoso has access to Project2 and plans to use the model to develop a video creation solution.\n\nDevelopment of the solution is incomplete.\n\nData Environment\n\nContoso stores product-related information in Azure resources that support AI applications.\n\nThe Azure environment contains an Azure Blob Storage account named storage1 that stores product detail sheets for all the Contoso products.\n\nThe product sheets include specifications, feature descriptions, and product support information that Agent1 can use to answer customer questions. The product sheets are stored in the PDF format.\n\nProblem Statements\n\nContoso identifies the following issues:\n\nAgent1 has only general knowledge of the Contoso products.\n\nA recent chat interaction with Agent1 was analyzed for sentiment. The results of the analysis have NOT been processed yet.\n\nAgent1 does NOT use the detailed product information in the product sheets stored in storage1 when responding to customer questions.\n\nThe finance department at Contoso reports that vendor invoices must be reviewed manually to ensure that the invoices match the terms defined in the vendor contracts. The invoices contain tables, logos, and varied layouts that make the documents difficult to process consistently.\n\nRequirements\n\nPlanned Changes\n\nContoso plans to implement the following changes:\n\nImplement a solution for Project1 that analyzes the vendor invoices by evaluating both the visual layout and the textual content of the invoices, so that the invoice details can be verified against the vendor contract terms.\n\nUpdate the base model deployment used by Agent1 and standardize the model version to ensure continuity and consistent responses.\n\nEnable Agent1 to retrieve and use the detailed product information from the product sheets stored in storage1.\n\nImplement an indexing solution for the product sheets that Agent1 can use to answer customer questions.\n\nComplete the development of the video creation solution.\n\nTechnical Requirements\n\nContoso identifies the following technical requirements:\n\nThe model deployment used by Agent1 must support scalable, high-throughput generative AI workloads and dynamically scale to handle variable customer support traffic, without requiring reserved throughput capacity.\n\nThe product sheets must be processed by using an indexing pipeline that enables semantic and vector search, so that Agent1 can retrieve the relevant product information.\n\nResponses generated by using the product sheet information must be relevant, complete, and accurate.\n\nAgent1 must be able to use the product sheets to answer natural language questions about product details.\n\nThe model version used by Agent1 must remain consistent to ensure stable responses.\n\nThe data processed by the model must remain within the EU.\n\nSecurity and Compliance Requirements\n\nContoso identifies the following security and compliance requirements:\n\nAPI keys must NOT be used to access Foundry-deployed models.\n\nAccess to the Azure resources must follow the principle of least privilege.\n\nThe developers at Contoso must authenticate to Microsoft Foundry resources by using Microsoft Entra authentication.\n\nAccess to Project1 must be assigned to the members of Agent1Dev Team by using a security group named SC_Agent1_Dev.\n\nAccess to Project1 must be assigned to the members of Agent1Test Team by using a security group named SC_Agent1_Test.\n\nAgent1 must never reveal customer information, even if a document that contains customer data is added erroneously to the product sheet repository in storage1.\n\nThe product sheets might contain images that include embedded text. Agent1 must be protected from malicious instructions potentially hidden within the images.\n\nBusiness Requirements\n\nContoso identifies the following business requirements:\n\nUsers that interact with Agent1 must have a personalized experience in future interactions, including the ability for Agent1 to retain conversation context and recall relevant information from previous interactions.\n\nAgent1 must answer questions only about the products sold by Contoso.",
-  "stemZh": "您有一个 Microsoft Foundry 项目，该项目摄取存储在 Azure Blob Storage 中的扫描 PDF 发票。每个发票包含打印的细项，并具有基于表格的布局。\n提取的结果以结构化 JSON 存储，并用作检索增强生成 (RAG) 解决方案中代理的基础数据。\n您需要创建一个满足以下要求的单一分析器：\n提取发票号码、发票日期、供应商名称和总金额，适用于不同模板返回置信度分数，以便置信度低于 0.80 的结果可以转交给主管审核你应该使用什么？",
-  "stemEn": "You have a Microsoft Foundry project that ingests scanned PDF invoices stored in Azure Blob Storage. Each invoice contains printed fine items and has a table-based layout.\nExtracted results are stored as structured JSON and used as grounding data for an agent in a Retrieval Augmented Generation (RAG) solution.\nYou need to create a single analyzer that meets the following requirements:\nExtracts the invoice number, invoice date, vendor name, and total amount across varying templates Returns confidence scores so that results with confidence below 0.80 can be routed for supervisor review\nWhat should you use?",
+  "stemZh": "您有一个 Microsoft Foundry 项目，该项目摄取存储在 Azure Blob Storage 中的扫描 PDF 发票。每个发票包含打印的细项，并具有基于表格的布局。\n提取的结果以结构化 JSON 存储，并用作检索增强生成 (RAG) 解决方案中代理的基础数据。\n您需要创建一个满足以下要求的单一分析器：\n提取发票号码、发票日期、供应商名称和总金额，适用于不同模板\n返回置信度分数，以便置信度低于 0.80 的结果可以转交给主管审核\n您应该使用什么？",
+  "stemEn": "You have a Microsoft Foundry project that ingests scanned PDF invoices stored in Azure Blob Storage. Each invoice contains printed fine items and has a table-based layout.\nExtracted results are stored as structured JSON and used as grounding data for an agent in a Retrieval Augmented Generation (RAG) solution.\nYou need to create a single analyzer that meets the following requirements:\nExtracts the invoice number, invoice date, vendor name, and total amount across varying templates\nReturns confidence scores so that results with confidence below 0.80 can be routed for supervisor review\nWhat should you use?",
   "explanationZh": "在这种情况下，最佳选项是一个自定义的 Azure 内容理解在 Foundry 工具分析器中，定义所需字段为提取字段和返回的置信度分数以进行路由。\n自定义字段定位与置信度分数：Azure 内容理解允许您构建一个具有用户定义架构的文档分析器。通过定义所需字段（发票号码、发票日期、供应商名称和总金额），该服务将处理不同布局的提取并返回专用的字段级置信度分数。您可以原生评估这些置信度指标以实施您的主管路由工作流程。\nRAG-就绪输出结构：该服务自然返回高度结构化的 JSON 负载。这使得它完美优化为可以直接作为检索增强生成（RAG）代理的基础数据。\n不正确：\n[不 C]\n预构建布局分析器提取原始结构元素，如文本块、层次结构、选择标记和完整表格。它不会自动分类或干净地将特定目标实体（如供应商名称或总金额）隔离到专用的模式属性中，导致您需要进行大量后处理工作来隔离文本。\n[不适用 D]\n预构建文档搜索分析器经过优化，能够广泛、布局感知地提取文本以进行索引。\n依赖 Azure AI Search 的 search.score 进行监督路由在概念上是错误的；search.score代表的是搜索查询排名的相关性分数，而不是数据提取置信度的准确性指标。\nimprovement",
   "explanationEn": "The best option in this scenario is a custom Azure Content Understanding in Foundry Tools analyzer that defines the required fields as the extracted fields and the returned confidence scores for routing.\nCustom Field Targeting with Confidence Scores: Azure Content Understanding allows you to build a document analyzer with a user-defined schema. By defining your required fields (InvoiceNumber, InvoiceDate, VendorName, and TotalAmount), the service will handle extraction across varying layouts and return a dedicated field-level confidence score. You can natively evaluate these confidence metrics to implement your supervisor routing workflow.\nRAG-Ready Output Structure: The service naturally returns highly structured JSON payloads. This makes it perfectly optimized to be ingested directly as grounding data for a Retrieval-Augmented Generation (RAG) agent.\nIncorrect:\n[Not C]\nThe prebuilt-layout analyzer extracts raw structural elements such as blocks of text, hierarchy, selection marks, and complete tables. It does not automatically classify or cleanly isolate specific target entities (like vendor name or total amount) into dedicated schema properties, leaving you with heavy post-processing work to isolate the text.\n[Not D]\nThe prebuilt-documentSearch analyzer is optimized for broad, layout-aware text extraction for indexing.\nRelying on Azure AI Search's search.score for supervisor routing is conceptually flawed; search.score represents a relevance score for a search query ranking rather than an accuracy metric for data extraction confidence.\nimprovement",
   "boxes": [],
@@ -15335,7 +15335,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "extract",
   "domainLabel": "实现信息提取解决方案",
   "type": "single",
-  "stem": "您有一个 Microsoft Foundry 代理，它从包含以下内容的 Azure Search 索引中获取响应：\n可搜索的产品名称和产品代码的文本字段一个存储产品描述嵌入的向量字段您需要确保用户可以通过以下方式查询索引：\n确切的产品名称或代码产品的自然语言描述您应该配置什么？",
+  "stem": "您有一个 Microsoft Foundry 代理，它从包含以下内容的 Azure Search 索引中获取响应：\n可搜索的产品名称和产品代码的文本字段\n一个存储产品描述嵌入的向量字段\n您需要确保用户可以通过以下方式查询索引：\n确切的产品名称或代码\n产品的自然语言描述\n您应该配置什么？",
   "options": [
    {
     "id": "A",
@@ -15372,7 +15372,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个 Microsoft Foundry 代理，它从包含以下内容的 Azure Search 索引中获取响应：\n可搜索的产品名称和产品代码的文本字段一个存储产品描述嵌入的向量字段您需要确保用户可以通过以下方式查询索引：\n确切的产品名称或代码产品的自然语言描述您应该配置什么？",
+  "stemZh": "您有一个 Microsoft Foundry 代理，它从包含以下内容的 Azure Search 索引中获取响应：\n可搜索的产品名称和产品代码的文本字段\n一个存储产品描述嵌入的向量字段\n您需要确保用户可以通过以下方式查询索引：\n确切的产品名称或代码\n产品的自然语言描述\n您应该配置什么？",
   "stemEn": "You have a Microsoft Foundry agent that grounds responses from an Azure Search index that contains the following:\nSearchable text fields for product names and product codes\nA vector field that stores embeddings for product descriptions\nYou need to ensure that users can query the index by using the following:\nExact product names or codes\nNatural language descriptions of the products\nWhat should you configure?",
   "explanationZh": "为了满足您的要求，您需要在 Azure AI Search 中配置一个带有语义排名的混合搜索。此设置结合了对确切标识符的关键字匹配和对自然语言查询的向量搜索，为您的 Microsoft Foundry 代理提供最准确的基础数据。",
   "explanationEn": "To meet your requirements, you need to configure a Hybrid Search with Semantic Ranking in Azure AI Search. This setup combines keyword matching for exact identifiers with vector search for natural language queries, delivering the most accurate grounding data to your Microsoft Foundry agent.",
@@ -15447,7 +15447,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "domain": "extract",
   "domainLabel": "实现信息提取解决方案",
   "type": "single",
-  "stem": "您有一个名为 App1 的发票处理应用程序，它在Foundry Tools 中使用 Azure Constant Understanding。\n您正在构建一个名为 Pipeline1 的新内容理解管道，该管道必须满足以下要求：\n将发票与其相关的采购订单进行比较验证语音与静态供应商联系文件返回一个包含差异发现的单一结构化输出您需要配置 Pipeline1 并将管道暴露为单一分析器端点。您应该配置什么？",
+  "stem": "您有一个名为 App1 的发票处理应用程序，它在 Foundry Tools 中使用 Azure Constant Understanding。\n您正在构建一个名为 Pipeline1 的新内容理解管道，该管道必须满足以下要求：\n将发票与其相关的采购订单进行比较\n验证语音与静态供应商联系文件\n返回一个包含差异发现的单一结构化输出\n您需要配置 Pipeline1 并将管道暴露为单一分析器端点。您应该配置什么？",
   "options": [
    {
     "id": "A",
@@ -15484,7 +15484,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
   "caseStudy": false,
   "answerConfidence": "medium",
   "answerFixed": false,
-  "stemZh": "您有一个名为 App1 的发票处理应用程序，它在Foundry Tools 中使用 Azure Constant Understanding。\n您正在构建一个名为 Pipeline1 的新内容理解管道，该管道必须满足以下要求：\n将发票与其相关的采购订单进行比较验证语音与静态供应商联系文件返回一个包含差异发现的单一结构化输出您需要配置 Pipeline1 并将管道暴露为单一分析器端点。您应该配置什么？",
+  "stemZh": "您有一个名为 App1 的发票处理应用程序，它在 Foundry Tools 中使用 Azure Constant Understanding。\n您正在构建一个名为 Pipeline1 的新内容理解管道，该管道必须满足以下要求：\n将发票与其相关的采购订单进行比较\n验证语音与静态供应商联系文件\n返回一个包含差异发现的单一结构化输出\n您需要配置 Pipeline1 并将管道暴露为单一分析器端点。您应该配置什么？",
   "stemEn": "You have an invoice-processing application named App1 that uses Azure Constant Understanding in Foundry Tools.\nYou are building a new Content Understanding pipeline named Pipeline1 that must meet the following requirements:\nCompare an invoice to its related purchase order\nValidate the voice against static vendor contact documents\nReturn a single structured output that includes discrepancy findings\nYou need to configure Pipeline1 and expose the pipeline as a single analyzer endpoint. What should you configure?",
   "explanationZh": "多文件任务：需要比单文件任务更高。您的管道需要在单个分析器请求中协调两个独立的活动事务性文档（发票和采购订单）中的数据。\n需要专业模式而不是标准模式。专业模式专为需要多步骤推理、跨文件分析和与知识库验证的高级场景而设计。请注意，专业模式目前支持分类和生成字段，但不支持特定提取字段的置信度分数。\n作为参考数据的供应商合同文件：必需。由于供应商合同是静态合规性\\文档，因此应上传并视为分析器的背景知识库（参考数据），以指导验证逻辑。\ns",
   "explanationEn": "Multiple-file task: Required over a single-file task. Your pipeline needs to reconcile data across two separate active transactional documents (the invoice and the purchase order) within a single analyzer request.\nPro mode is required instead of standard mode. Pro mode is specifically designed for advanced scenarios requiring multi-step reasoning, cross-file analysis, and validation against a knowledge base. Note that Pro mode currently supports classify and generate fields but does not support confidence scores for specific extracted fields.\nVendor contract files as reference data: Required. Because the vendor contracts are static compliance documents, they should be uploaded and treated as the analyzer's background knowledge base (reference data) to guide the validation logic.",
@@ -15527,7 +15527,7 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "id": "D",
     "text": "Place the image URL inside the System Message and set type to image_url so the model loads the image at initialization",
     "textEn": "Place the image URL inside the System Message and set type to image_url so the model loads the image at initialization.",
-    "textZh": "将图像 URL 放入系统消息中，并将类型设置为 image_url ，以便模型在初始化时加载 图像。"
+    "textZh": "将图像 URL 放入系统消息中，并将类型设置为 image_url，以便模型在初始化时加载图像。"
    }
   ],
   "answer": [
@@ -15711,14 +15711,14 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "Object projection",
     "choices": [
      {
-      "key": "Object projection",
-      "en": "Object projection",
-      "zh": "对象投影"
-     },
-     {
       "key": "File projection",
       "en": "File projection",
       "zh": "文件投影"
+     },
+     {
+      "key": "Object projection",
+      "en": "Object projection",
+      "zh": "对象投影"
      },
      {
       "key": "Table projection",
@@ -15738,14 +15738,14 @@ html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--gl
     "answer": "File projection",
     "choices": [
      {
-      "key": "Object projection",
-      "en": "Object projection",
-      "zh": "对象投影"
-     },
-     {
       "key": "File projection",
       "en": "File projection",
       "zh": "文件投影"
+     },
+     {
+      "key": "Object projection",
+      "en": "Object projection",
+      "zh": "对象投影"
      },
      {
       "key": "Table projection",
