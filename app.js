@@ -777,12 +777,213 @@
     return Object.keys(state.wrongIds).filter((id) => state.wrongIds[id]).length;
   }
 
+  // ===== Study extras (per-exam localStorage: itcert_extras_v1_<examId>) =====
+  let EX = null, EX_ID = null;
+  function extrasKey() { return "itcert_extras_v1_" + currentExamId; }
+  function ex() {
+    if (EX && EX_ID === currentExamId) return EX;
+    EX_ID = currentExamId;
+    try { EX = JSON.parse(localStorage.getItem(extrasKey()) || "{}") || {}; } catch (e) { EX = {}; }
+    ["ws", "notes", "favs", "days", "reports", "seen"].forEach((k) => { if (!EX[k] || typeof EX[k] !== "object") EX[k] = {}; });
+    if (!Array.isArray(EX.scores)) EX.scores = [];
+    if (!(EX.goal > 0)) EX.goal = 30;
+    return EX;
+  }
+  function saveEx() { try { localStorage.setItem(extrasKey(), JSON.stringify(ex())); } catch (e) {} }
+  function L(zh, en) { return state.lang === "en" ? en : state.lang === "both" ? zh + " / " + en : zh; }
+  function dayStr(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function todayCount() { return ex().days[dayStr(new Date())] || 0; }
+  function streakDays() {
+    const e = ex(); let n = 0; const d = new Date();
+    if (!(e.days[dayStr(d)] > 0)) d.setDate(d.getDate() - 1);
+    while (e.days[dayStr(d)] > 0) { n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  function avg7() { const e = ex(); let s = 0; const d = new Date(); for (let i = 0; i < 7; i++) { s += e.days[dayStr(d)] || 0; d.setDate(d.getDate() - 1); } return s / 7; }
+  const DD_IDS = ["dd1", "dd2", "dd3", "dd4", "dd5", "dd6"];
+  const DD_ZH = ["SDLC 自动化", "配置管理与 IaC", "弹性云解决方案", "监控与日志", "事件与事故响应", "安全与合规"];
+  const DD_EN = ["SDLC Automation", "Config Mgmt & IaC", "Resilient Cloud Solutions", "Monitoring & Logging", "Incident & Event Response", "Security & Compliance"];
+  const DD_RULES = [
+    /CodePipeline|CodeBuild|CodeDeploy|CodeCommit|CodeArtifact|CodeGuru|pipeline|blue\/green|canary|CI\/CD|unit test|integration test|buildspec|appspec|Elastic Beanstalk|ECR|deploy/gi,
+    /CloudFormation|StackSets?|\bCDK\b|Systems Manager|State Manager|OpsWorks|Image Builder|\bAMIs?\b|Service Catalog|Organizations|Control Tower|Terraform|template|Parameter Store|Patch Manager|AppConfig|Proton/gi,
+    /Auto Scaling|Multi-AZ|failover|disaster recovery|\bRTO\b|\bRPO\b|Route 53|global table|global database|AWS Backup|highly? availab|load balancer|cross-Region|resilien|fault[- ]toleran|read replica/gi,
+    /CloudWatch|metrics?\b|dashboard|X-Ray|Logs Insights|OpenSearch|Kinesis|log group|logging|\blogs?\b|Athena|QuickSight|trace/gi,
+    /EventBridge|\bSNS\b|incident|remediat|AWS Health|Incident Manager|troubleshoot|runbook|alarms?\b|notif|Step Functions/gi,
+    /\bIAM\b|\bKMS\b|Secrets Manager|GuardDuty|Security Hub|AWS Config|\bSCPs?\b|Inspector|Macie|encrypt|complian|\bWAF\b|permission|least privilege|CloudTrail|vulnerab|Access Analyzer|credential/gi,
+  ];
+  const ddCache = {};
+  function ddOf(q) {
+    if (ddCache[q.id]) return ddCache[q.id];
+    const stem = String(q.stemEn || q.stem || "");
+    const opts = (q.options || []).map((o) => o.text || o.textEn || "").join(" ");
+    let best = 0, bs = -1;
+    DD_RULES.forEach((re, i) => {
+      const s = (stem.match(re) || []).length * 2 + (opts.match(re) || []).length;
+      if (s > bs) { bs = s; best = i; }
+    });
+    return (ddCache[q.id] = DD_IDS[best]);
+  }
+  function usesDD() { const exm = currentExam(); return !(exm && exm.statMode === "domains" && DOMAIN_ORDER.length); }
+  function domList() {
+    if (!usesDD()) {
+      const exm = currentExam(); const zh = exm.domainLabelsZh || t().domain || {}; const en = exm.domainLabelsEn || {};
+      return DOMAIN_ORDER.map((d) => ({ id: d, label: L(zh[d] || d, en[d] || zh[d] || d) }));
+    }
+    return DD_IDS.map((d, i) => ({ id: d, label: L(DD_ZH[i] + "（估）", DD_EN[i] + " (est.)") }));
+  }
+  function domOf(q) { return usesDD() ? ddOf(q) : q.domain; }
+  function domStats() {
+    return domList().map((d) => {
+      let total = 0, done = 0, ok = 0;
+      QUESTIONS.forEach((q) => {
+        if (domOf(q) !== d.id) return;
+        total++;
+        if (state.practiceSubmitted[q.id]) { done++; if (isCorrect(q, state.practiceAnswers[q.id])) ok++; }
+      });
+      return { id: d.id, label: d.label, total, done, ok };
+    });
+  }
+  function coverage() {
+    const e = ex(); let seen = 0, done = 0, ok = 0;
+    QUESTIONS.forEach((q) => {
+      if (e.seen[q.id] || state.practiceSubmitted[q.id]) seen++;
+      if (state.practiceSubmitted[q.id]) { done++; if (isCorrect(q, state.practiceAnswers[q.id])) ok++; }
+    });
+    return { seen, total: QUESTIONS.length, acc: done ? Math.round((ok / done) * 100) : null };
+  }
+  function searchMatch(q, kw) {
+    const s = [q.stem, q.stemEn, q.stemZh, q.pdfQuestionNum, q.id].concat((q.options || []).map((o) => [o.text, o.textEn, o.textZh].join(" "))).join(" ").toLowerCase();
+    return kw.toLowerCase().split(/\s+/).filter(Boolean).every((w) => s.indexOf(w) >= 0);
+  }
+  // Report-issue sink: local now; replace body with a fetch() to a server later.
+  function reportSink(rec) { const e = ex(); e.reports[rec.qid] = rec; saveEx(); }
+  function copyText(txt) {
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return true; } } catch (e) {}
+    try { const ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); const r = document.execCommand("copy"); ta.remove(); return r; } catch (e) { return false; }
+  }
+  function reportText(recs) {
+    return recs.map((r) => "【题库报错】" + r.exam + " 第" + r.num + "题 (" + r.qid + ")：" + r.msg + " [" + r.ts + "]").join("\n");
+  }
+  function reportIssue(q) {
+    const msg = prompt(L("请描述问题（题干/选项/答案/翻译）：", "Describe the issue (stem/options/answer/translation):"));
+    if (!msg) return;
+    const rec = { qid: q.id, exam: currentExamId, num: q.pdfQuestionNum || q.id, msg: msg.slice(0, 500), ts: dayStr(new Date()) + " " + new Date().toTimeString().slice(0, 5) };
+    reportSink(rec);
+    const txt = reportText([rec]);
+    alert((copyText(txt) ? L("已保存并复制，请发给 FXS-张腾：\n\n", "Saved & copied. Please send to FXS-张腾:\n\n") : L("已保存，请复制以下内容发给 FXS-张腾：\n\n", "Saved. Copy this and send to FXS-张腾:\n\n")) + txt);
+  }
+  function renderQExtras(q) {
+    let box = $("#q-extras");
+    const body = $("#practice-body");
+    if (!body) return;
+    if (!box) { box = document.createElement("div"); box.id = "q-extras"; box.className = "q-extras"; body.insertAdjacentElement("afterend", box); }
+    if (!q) { box.innerHTML = ""; return; }
+    const e = ex(); const fav = !!e.favs[q.id];
+    let hint = "";
+    if (state.wrongIds[q.id]) hint = '<span class="wb-hint">' + escapeHtml(L("错题本：再连续答对 " + (2 - (e.ws[q.id] || 0)) + " 次移出", "Wrong book: " + (2 - (e.ws[q.id] || 0)) + " more correct in a row to clear")) + "</span>";
+    box.innerHTML =
+      '<div class="qx-row"><button type="button" class="btn btn-sm' + (fav ? " active" : "") + '" data-qx="fav">' + (fav ? "★ " : "☆ ") + escapeHtml(L("收藏", "Favourite")) + "</button>" +
+      (state.practiceSubmitted[q.id] ? '<button type="button" class="btn btn-sm" data-qx="retry">↺ ' + escapeHtml(L("重做", "Retry")) + "</button>" : "") +
+      '<button type="button" class="btn btn-sm" data-qx="report">⚑ ' + escapeHtml(L("报错", "Report")) + (e.reports[q.id] ? " ✓" : "") + "</button>" + hint + "</div>" +
+      '<details class="qx-note"' + (e.notes[q.id] ? " open" : "") + "><summary>📝 " + escapeHtml(L("我的笔记", "My notes")) + (e.notes[q.id] ? " •" : "") + '</summary><textarea id="qx-note-text" rows="3" placeholder="' + escapeHtml(L("仅保存在本机", "Saved on this device only")) + '">' + escapeHtml(e.notes[q.id] || "") + "</textarea></details>";
+    box.onclick = (ev) => {
+      const b = ev.target.closest("[data-qx]"); if (!b) return;
+      const k = b.getAttribute("data-qx");
+      if (k === "fav") { if (e.favs[q.id]) delete e.favs[q.id]; else e.favs[q.id] = 1; saveEx(); renderQExtras(q); }
+      else if (k === "retry") { delete state.practiceAnswers[q.id]; delete state.practiceSubmitted[q.id]; saveProgress(); renderPractice(); }
+      else if (k === "report") { reportIssue(q); renderQExtras(q); }
+    };
+    const ta = $("#qx-note-text");
+    if (ta) ta.addEventListener("input", () => { const v = ta.value.trim(); if (v) e.notes[q.id] = ta.value.slice(0, 2000); else delete e.notes[q.id]; saveEx(); });
+  }
+  function recordMockScore(r) {
+    const e = ex();
+    e.scores.push({ ts: dayStr(new Date()), s: r.score1000, c: r.correct, n: r.total });
+    if (e.scores.length > 50) e.scores = e.scores.slice(-50);
+    saveEx();
+  }
+  function scoreChart() {
+    const sc = ex().scores.slice(-12);
+    if (!sc.length) return '<p class="muted small">' + escapeHtml(L("暂无模考记录", "No mock exams yet")) + "</p>";
+    const W = 300, H = 110, lo = SCORE_MIN, hi = 1000;
+    const y = (v) => H - 10 - ((v - lo) / (hi - lo)) * (H - 20);
+    const x = (i) => sc.length === 1 ? W / 2 : 15 + (i * (W - 30)) / (sc.length - 1);
+    const pts = sc.map((s, i) => x(i).toFixed(1) + "," + y(s.s).toFixed(1)).join(" ");
+    let svg = '<svg class="score-chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="mock scores">';
+    svg += '<line x1="0" x2="' + W + '" y1="' + y(PASS_SCORE) + '" y2="' + y(PASS_SCORE) + '" class="pass-line"/><text x="2" y="' + (y(PASS_SCORE) - 3) + '" class="pass-txt">' + PASS_SCORE + "</text>";
+    svg += '<polyline points="' + pts + '" class="score-line"/>';
+    sc.forEach((s, i) => { svg += '<circle cx="' + x(i) + '" cy="' + y(s.s) + '" r="3.5" class="' + (s.s >= PASS_SCORE ? "pt-pass" : "pt-fail") + '"><title>' + s.ts + " " + s.s + "</title></circle>"; });
+    return svg + "</svg>";
+  }
+  function renderHomeExtras() {
+    let box = $("#home-extras");
+    if (!box) { const st = $("#home-stats"); if (!st) return; box = document.createElement("div"); box.id = "home-extras"; box.className = "home-extras"; st.insertAdjacentElement("afterend", box); }
+    const e = ex(); const tc = todayCount(); const cov = coverage();
+    let h = '<div class="hx-card"><div class="hx-row"><b>' + escapeHtml(L("今日目标", "Today")) + "</b> " + tc + "/" + e.goal +
+      ' <button type="button" class="btn btn-sm" data-hx="goal">' + escapeHtml(L("改目标", "Set goal")) + "</button>" +
+      ' <span class="hx-streak">🔥 ' + escapeHtml(L("连续 " + streakDays() + " 天", streakDays() + "-day streak")) + "</span></div>" +
+      '<span class="prog-bar"><i style="width:' + Math.min(100, Math.round((tc / e.goal) * 100)) + '%"></i></span>';
+    h += '<div class="hx-row"><label>' + escapeHtml(L("考试日期", "Exam date")) + ' <input type="date" id="hx-date" value="' + escapeHtml(e.examDate || "") + '"></label>';
+    const remainQ = Math.max(0, cov.total - cov.seen); const a7 = avg7();
+    if (e.examDate) {
+      const days = Math.ceil((new Date(e.examDate + "T23:59:59") - new Date()) / 86400000);
+      if (days >= 0) {
+        const need = days > 0 ? Math.ceil(remainQ / days) : remainQ;
+        const ok = a7 >= need;
+        h += ' <span>' + escapeHtml(L("剩 " + days + " 天", days + " days left")) + "</span></div>";
+        h += '<div class="hx-row small">' + escapeHtml(L("需每天 " + need + " 题 · 近7天均 " + a7.toFixed(1) + " 题", "Need " + need + "/day · 7-day avg " + a7.toFixed(1))) +
+          ' <span class="hx-badge ' + (ok ? "ok" : "behind") + '">' + escapeHtml(ok ? L("进度达标", "On track") : L("进度落后", "Behind")) + "</span></div>";
+      } else h += ' <span class="muted">' + escapeHtml(L("考试日期已过", "Exam date passed")) + "</span></div>";
+    } else h += "</div>";
+    h += '<div class="hx-row small">' + escapeHtml(L("覆盖 " + cov.seen + "/" + cov.total + (cov.acc != null ? " · 正确率 " + cov.acc + "%" : ""), "Covered " + cov.seen + "/" + cov.total + (cov.acc != null ? " · accuracy " + cov.acc + "%" : ""))) + "</div>";
+    const last = e.scores.slice(-3).map((s) => s.s);
+    h += '<div class="hx-row small">' + escapeHtml(L("最近模考", "Recent mocks")) + "：" + (last.length ? last.map((s) => '<span class="' + (s >= PASS_SCORE ? "ok" : "bad") + '">' + s + "</span>").join(" · ") : "—") + " " + escapeHtml(L("（及格 " + PASS_SCORE + "）", "(pass " + PASS_SCORE + ")")) + "</div>";
+    h += scoreChart() + "</div>";
+    h += '<div class="hx-card"><b>' + escapeHtml(L("分领域正确率（点击练习）", "Accuracy by domain (tap to practise)")) + '</b><div class="dom-table">';
+    domStats().forEach((d) => {
+      const acc = d.done ? Math.round((d.ok / d.done) * 100) : null;
+      h += '<button type="button" class="dom-row" data-hx="dom" data-d="' + d.id + '"><span class="dl">' + escapeHtml(d.label) + '</span><span class="dn">' + d.done + "/" + d.total + '</span><span class="da ' + (acc == null ? "" : acc >= 75 ? "ok" : "bad") + '">' + (acc == null ? "—" : acc + "%") + "</span></button>";
+    });
+    h += "</div></div>";
+    const nf = Object.keys(e.favs).filter((id) => QUESTIONS.some((q) => q.id === id)).length;
+    const nr = Object.keys(e.reports).length;
+    h += '<div class="hx-card hx-row"><button type="button" class="btn btn-sm" data-hx="favs"' + (nf ? "" : " disabled") + ">★ " + escapeHtml(L("收藏 ", "Favourites ")) + nf + "</button>" +
+      '<button type="button" class="btn btn-sm" data-hx="search">🔍 ' + escapeHtml(L("搜索题目", "Search")) + "</button>" +
+      (nr ? '<button type="button" class="btn btn-sm" data-hx="reports">⚑ ' + escapeHtml(L("复制报错 ", "Copy reports ")) + nr + "</button>" : "") + "</div>";
+    box.innerHTML = h;
+    box.onclick = (ev) => {
+      const b = ev.target.closest("[data-hx]"); if (!b) return;
+      const k = b.getAttribute("data-hx");
+      if (k === "goal") { const v = parseInt(prompt(L("每日目标题数", "Daily goal (questions)"), String(e.goal)), 10); if (v > 0 && v < 1000) { e.goal = v; saveEx(); renderHomeExtras(); } }
+      else if (k === "dom") startPractice(b.getAttribute("data-d"));
+      else if (k === "favs") startPractice("favs");
+      else if (k === "search") promptSearch();
+      else if (k === "reports") { const txt = reportText(Object.values(e.reports)); alert((copyText(txt) ? L("已复制：\n\n", "Copied:\n\n") : "") + txt); }
+    };
+    const di = $("#hx-date");
+    if (di) di.addEventListener("change", () => { if (di.value) e.examDate = di.value; else delete e.examDate; saveEx(); renderHomeExtras(); });
+  }
+  function promptSearch() {
+    const kw = prompt(L("输入关键词（空格分隔，或题号）", "Keywords (space separated, or question no.)"), state.searchQ || "");
+    if (kw == null) return;
+    state.searchQ = kw.trim();
+    if (!state.searchQ) return;
+    const n = QUESTIONS.filter((q) => searchMatch(q, state.searchQ)).length;
+    if (!n) { alert(L("没有匹配的题目", "No matching questions")); return; }
+    rebuildPracticeFilter();
+    startPractice("search");
+  }
+
   function questionsByFilter(filter) {
+    if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
+    if (filter === "search") return state.searchQ ? QUESTIONS.filter((q) => searchMatch(q, state.searchQ)) : [];
+    if (/^dd\d$/.test(filter || "")) return QUESTIONS.filter((q) => ddOf(q) === filter);
     if (filter === "flagged") {
       return QUESTIONS.filter((q) => !!state.practiceFlags[q.id]);
     }
     if (filter === "wrong") {
-      return QUESTIONS.filter((q) => !!state.wrongIds[q.id]);
+      const ws = ex().ws;
+      return QUESTIONS.filter((q) => !!state.wrongIds[q.id]).sort((a, b) => (ws[a.id] || 0) - (ws[b.id] || 0));
     }
     if (filter === "unanswered") {
       return QUESTIONS.filter((q) => !state.practiceSubmitted[q.id]);
@@ -1402,14 +1603,12 @@
     html += '<option value="flagged">' + escapeHtml(pack.filterFlagged) + "</option>";
     html += '<option value="wrong">' + escapeHtml(pack.filterWrong) + "</option>";
     html += '<option value="unanswered">' + escapeHtml(unansLabel()) + "</option>";
-    if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
-      const zh = exam.domainLabelsZh || pack.domain || {};
-      const en = exam.domainLabelsEn || {};
-      DOMAIN_ORDER.forEach((d) => {
-        let lab = state.lang === "en" ? en[d] || zh[d] || d : zh[d] || d;
-        html += '<option value="' + d + '">' + escapeHtml(lab) + "</option>";
-      });
-    }
+    html += '<option value="favs">' + escapeHtml(L("★ 收藏", "★ Favourites")) + "</option>";
+    if (state.searchQ) html += '<option value="search">' + escapeHtml(L("🔍 搜索：", "🔍 Search: ") + state.searchQ) + "</option>";
+    void exam;
+    domList().forEach((d) => {
+      html += '<option value="' + d.id + '">' + escapeHtml(d.label) + "</option>";
+    });
     sel.innerHTML = html;
     const ok = Array.from(sel.options).some((o) => o.value === cur);
     sel.value = ok ? cur : "all";
@@ -1599,6 +1798,7 @@
         '<span class="desc prog-line">' + escapeHtml(practiceStatsLine()) + '</span><span class="prog-bar"><i style="width:' +
         (QUESTIONS.length ? Math.round((Object.keys(state.practiceSubmitted).filter((k) => state.practiceSubmitted[k]).length / QUESTIONS.length) * 100) : 0) + '%"></i></span>';
     }
+    try { renderHomeExtras(); } catch (err) { console.error(err); }
     const be = $("#btn-go-exam");
     if (be) {
       be.innerHTML = pack.btnExam + '<span class="desc">' + pack.btnExamDesc.replace(/700/g, String(PASS_SCORE)) + "</span>";
@@ -1993,6 +2193,12 @@
   /* ---- Practice ---- */
   function startPractice(filter) {
     state.practiceFilter = filter || "all";
+    if (state.practiceFilter === "wrong") {
+      // spaced review: wrong questions resurface fresh each time the wrong book is opened
+      Object.keys(state.wrongIds).forEach((id) => { delete state.practiceAnswers[id]; delete state.practiceSubmitted[id]; });
+      saveProgress();
+    }
+    rebuildPracticeFilter();
     state.practiceList = questionsByFilter(state.practiceFilter);
     applyPracticeOrder();
     // restore index to first unanswered if possible
@@ -2300,6 +2506,7 @@
     $("#btn-practice-next").disabled = state.practiceIndex >= state.practiceList.length - 1;
 
     bindBoxControls(q, "practice", showing);
+    try { renderQExtras(q); } catch (err) { console.error(err); }
     if (!isBoxQ(q)) {
       $$("#practice-options .option").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -2425,8 +2632,16 @@
     if (isPracticeRevealed(q)) return; // revealed answers are never scored
     if (!allBoxesSelected(q, sel)) return;
     state.practiceSubmitted[q.id] = true;
-    if (isCorrect(q, sel)) delete state.wrongIds[q.id];
-    else state.wrongIds[q.id] = true;
+    const e = ex();
+    if (isCorrect(q, sel)) {
+      if (state.wrongIds[q.id]) {
+        e.ws[q.id] = (e.ws[q.id] || 0) + 1;
+        if (e.ws[q.id] >= 2) { delete state.wrongIds[q.id]; delete e.ws[q.id]; }
+      }
+    } else { state.wrongIds[q.id] = true; e.ws[q.id] = 0; }
+    e.seen[q.id] = 1;
+    const dk = dayStr(new Date()); e.days[dk] = (e.days[dk] || 0) + 1;
+    saveEx();
     saveProgress();
     renderPractice();
   }
@@ -2857,9 +3072,11 @@
       wrongList,
       auto: !!auto,
     };
+    try { recordMockScore(state.examResult); } catch (err) {}
     // Merge exam misses into persistent wrong bank (survives 回首页)
     wrongList.forEach((q) => {
       state.wrongIds[q.id] = true;
+      try { ex().ws[q.id] = 0; } catch (err) {}
     });
     saveProgress();
     saveExamLast();
