@@ -16242,7 +16242,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
       unanswered: "（未选）",
       notAnswered: "未作答",
       examConfigTitle: "模拟考试设置",
-      examConfigIntro: "真实考试结构：48 道普通题（选择/判断/拖拽）+ 3 道多判断 + 7 道同一案例小题（选 58 题时）。其它数量仍按领域权重抽题。考试过程中不显示对错。",
+      examConfigIntro: "真实考试结构（选 58 题时）：第 1 部分 48 道常规题 → 第 2 部分 3 道多判断 → 第 3 部分 7 道案例研究（案例/问题分页签）。结束一个部分后不能返回；可标记复习，交卷前有检查屏幕；考试中不显示对错。及格 700/1000，官方时长 120 分钟。",
       examCount: "题目数量",
       examMinutes: "考试时长（分钟）",
       examCount30: "30 题",
@@ -16370,7 +16370,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
       unanswered: "(none)",
       notAnswered: "No answer",
       examConfigTitle: "Mock exam setup",
-      examConfigIntro: "Real exam structure: 48 ordinary + 3 multi-judgment + 7 from one case study (when 58 is selected). Other counts still use domain-weighted sampling. No feedback until you finish.",
+      examConfigIntro: "Real exam structure (58 Q): Section 1 · 48 questions → Section 2 · 3 multi-judgment → Section 3 · 7-question case study (Case/Question tabs). You can't return to a section after ending it; mark for review; review screen before you finish; no feedback until the end. Pass 700/1000, official time 120 min.",
       examCount: "Question count",
       examMinutes: "Duration (minutes)",
       examCount30: "30 questions",
@@ -17452,22 +17452,25 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     }
     const intro = $("#view-exam-config > p.muted");
     if (intro && exam) {
-      if (exam.specialExam58) intro.textContent = pack.examConfigIntro;
-      else {
-        intro.textContent =
+      intro.textContent = examIntroText(exam, pack);
+    }
+  }
+  function examIntroText(exam, pack) {
+      if (!exam || exam.specialExam58) return pack.examConfigIntro;
+      {
+        return (
           state.lang === "en"
             ? "Random sample from the current bank (default " +
               (exam.mockDefaultCount || 75) +
               " Q / " +
               (exam.mockDefaultMinutes || 180) +
-              " min). No feedback until you finish."
+              " min), like the real exam: flag for review, review page before submitting, scaled score " + (exam.scoreMin || 100) + "–1000, pass " + (exam.passScore || 750) + ". No feedback until you finish."
             : "从当前题库随机抽题（默认 " +
               (exam.mockDefaultCount || 75) +
               " 题 / " +
               (exam.mockDefaultMinutes || 180) +
-              " 分钟）。考试过程中不显示对错。";
+              " 分钟），与真实考试一致：可标记复习，交卷前有检查页，标准分 " + (exam.scoreMin || 100) + "–1000，" + (exam.passScore || 750) + " 分及格。考试过程中不显示对错。");
       }
-    }
   }
 
   function updateExamSwitcherUI() {
@@ -17584,10 +17587,10 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     }
     const be = $("#btn-go-exam");
     if (be) {
-      be.innerHTML = pack.btnExam + '<span class="desc">' + pack.btnExamDesc + "</span>";
+      be.innerHTML = pack.btnExam + '<span class="desc">' + pack.btnExamDesc.replace(/700/g, String(PASS_SCORE)) + "</span>";
     }
     const note = $("#view-home .note");
-    if (note) note.textContent = pack.homeNote;
+    if (note) note.textContent = PASS_SCORE === 700 ? pack.homeNote : pack.homeNote.replace(/约 700 \/ 1000|≈ 700 \/ 1000/, (state.lang === "en" ? "" : "") + PASS_SCORE + " / 1000 (" + SCORE_MIN + "–1000)").replace(/Microsoft/g, "AWS");
     setTxt("#btn-practice-back", pack.backHome);
     setTxt("#btn-practice-reset", pack.resetProgress);
     setTxt("#btn-practice-prev", pack.prev);
@@ -17620,7 +17623,7 @@ if (typeof window !== 'undefined') window.QUESTIONS_DOP_C02 = QUESTIONS_DOP_C02;
     if (kbdP) kbdP.innerHTML = "<kbd>1</kbd>–<kbd>6</kbd> " + pack.kbdPractice;
     setTxt("#view-exam-config h2", pack.examConfigTitle);
     const exIntro = $("#view-exam-config > p.muted");
-    if (exIntro) exIntro.textContent = pack.examConfigIntro;
+    if (exIntro) exIntro.textContent = examIntroText(currentExam(), pack);
     const exLabs = $$("#view-exam-config .exam-config label > span");
     if (exLabs[0]) exLabs[0].textContent = pack.examCount;
     if (exLabs[1]) exLabs[1].textContent = pack.examMinutes;
