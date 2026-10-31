@@ -906,7 +906,7 @@
     const sc = ex().scores.slice(-12);
     if (!sc.length) return '<p class="muted small">' + escapeHtml(L("暂无模考记录", "No mock exams yet")) + "</p>";
     const W = 300, H = 110, lo = SCORE_MIN, hi = 1000;
-    const y = (v) => H - 10 - ((v - lo) / (hi - lo)) * (H - 20);
+    const y = (v) => H - 10 - ((Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo || 1)) * (H - 20);
     const x = (i) => sc.length === 1 ? W / 2 : 15 + (i * (W - 30)) / (sc.length - 1);
     const pts = sc.map((s, i) => x(i).toFixed(1) + "," + y(s.s).toFixed(1)).join(" ");
     let svg = '<svg class="score-chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="mock scores">';
@@ -3072,7 +3072,7 @@
       wrongList,
       auto: !!auto,
     };
-    try { recordMockScore(state.examResult); } catch (err) {}
+    try { recordMockScore(state.examResult); } catch (err) { console.error("score", err); }
     // Merge exam misses into persistent wrong bank (survives 回首页)
     wrongList.forEach((q) => {
       state.wrongIds[q.id] = true;
