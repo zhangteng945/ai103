@@ -244,7 +244,7 @@
       examNavHint: "题目导航（点击跳转；底边高亮 = 已标记）",
       flagShort: "标记",
       unflagShort: "取消标记",
-      handIn: "交卷",
+      handIn: "检查 / 交卷",
       viewScore: "查看成绩",
       progressExam: (a, t, i) => "已答 " + a + " / " + t + " · 第 " + i + " 题",
       resultTitle: "考试成绩",
@@ -372,7 +372,7 @@
       examNavHint: "Navigator (click to jump; bottom highlight = flagged)",
       flagShort: "Flag",
       unflagShort: "Unflag",
-      handIn: "Submit exam",
+      handIn: "Review / Submit",
       viewScore: "View score",
       progressExam: (a, t, i) => "Done " + a + " / " + t + " · Q " + i,
       resultTitle: "Exam results",
@@ -2421,7 +2421,66 @@
   }
 
   /* ---- Exam ---- */
+  /* ---- Unfinished mock exam persisted across reload (separate per-exam key) ---- */
+  function examProgKey() { return "itcert_exam_inprogress_v1_" + currentExamId; }
+  function saveExamProgress() {
+    try {
+      if (state.examSubmitted || !state.examQuestions || !state.examQuestions.length) return;
+      localStorage.setItem(examProgKey(), JSON.stringify({
+        ids: state.examQuestions.map((q) => q.id),
+        optOrder: state.examQuestions.map((q) => (q.options || []).map((o) => o.id)),
+        answers: state.examAnswers, flags: state.examFlags, index: state.examIndex,
+        sec: state.examSec, secCur: state.examSecCur || 0,
+        secondsLeft: state.examSecondsLeft, savedAt: Date.now(),
+      }));
+    } catch (e) { /* ignore */ }
+  }
+  function clearExamProgress() { try { localStorage.removeItem(examProgKey()); } catch (e) { /* ignore */ } }
+  function tryResumeExam() {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(examProgKey()) || "null"); } catch (e) { d = null; }
+    if (!d || !Array.isArray(d.ids) || !d.ids.length) return false;
+    const byId = {};
+    QUESTIONS.forEach((q) => (byId[q.id] = q));
+    const qs = d.ids.map((id, i) => {
+      const q = byId[id];
+      if (!q) return null;
+      const ord = (d.optOrder || [])[i];
+      if (!ord || !q.options || ord.length !== q.options.length) return q;
+      const m = {};
+      q.options.forEach((o) => (m[o.id] = o));
+      const opts = ord.map((k) => m[k]).filter(Boolean);
+      return opts.length === q.options.length ? Object.assign({}, q, { options: opts }) : q;
+    });
+    if (qs.some((q) => !q) || !(d.secondsLeft > 0)) { clearExamProgress(); return false; }
+    const answered = qs.filter((q) => allBoxesSelected(q, (d.answers || {})[q.id])).length;
+    const mm = Math.floor(d.secondsLeft / 60);
+    const msg = state.lang === "en"
+      ? "You have an unfinished mock exam (" + answered + "/" + qs.length + " answered, " + mm + " min left). Resume it?\n(Cancel = discard it)"
+      : "有一场未完成的模拟考试（已答 " + answered + "/" + qs.length + "，剩余 " + mm + " 分钟）。是否继续？\n（取消 = 放弃该场考试）";
+    if (!confirm(msg)) { clearExamProgress(); return false; }
+    state.examQuestions = qs;
+    state.examAnswers = d.answers || {};
+    state.examFlags = d.flags || {};
+    state.examIndex = Math.min(d.index || 0, qs.length - 1);
+    state.examSubmitted = false;
+    state.examResult = null;
+    state.revealed = false;
+    state.examSec = Array.isArray(d.sec) && d.sec.length === qs.length ? d.sec : qs.map(() => 0);
+    state.examSecCur = d.secCur || 0;
+    state.examReviewOpen = false;
+    state.caseTab = "q";
+    state.examSecondsLeft = d.secondsLeft;
+    if (state.examTimerId) clearInterval(state.examTimerId);
+    state.examTimerId = setInterval(tickExam, 1000);
+    showView("exam");
+    renderExam();
+    updateTimerDisplay();
+    return true;
+  }
+
   function openExamConfig() {
+    if (tryResumeExam()) return;
     applyChrome();
     showView("examConfig");
   }
@@ -2529,6 +2588,7 @@
 
   function tickExam() {
     state.examSecondsLeft--;
+    if (state.examSecondsLeft % 10 === 0) saveExamProgress();
     updateTimerDisplay();
     if (state.examSecondsLeft <= 0) {
       clearInterval(state.examTimerId);
@@ -2574,6 +2634,7 @@
     const flagged = !!state.examFlags[q.id];
     const reviewMode = state.examSubmitted && state.revealed;
 
+    saveExamProgress();
     if (state.examReviewOpen && !state.examSubmitted) {
       $("#exam-body").innerHTML = renderExamReviewHtml();
       bindExamReview();
@@ -2736,6 +2797,7 @@
     }
     state.examSubmitted = true;
     state.revealed = true;
+    clearExamProgress();
 
     let correct = 0;
     const byDom = {};
@@ -3065,6 +3127,7 @@
     $("#btn-exam-back").addEventListener("click", () => {
       if (!state.examSubmitted) {
         if (!confirm(t().confirmLeave)) return;
+        clearExamProgress();
         if (state.examTimerId) clearInterval(state.examTimerId);
         state.examTimerId = null;
         // Unfinished exam discarded; previous saved last-exam result kept
