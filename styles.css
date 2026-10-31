@@ -1923,3 +1923,21 @@ html.auth-required body:not(.auth-ok) .topbar {
   border-bottom: 0;
 }
 html.auth-required body:not(.auth-ok) #auth-panel { border: 0.5px solid var(--glass-line); }
+
+/* ---- Mock-exam fidelity: section label, review screen, case-study tabs ---- */
+.exam-sec-label{font-size:.78rem;font-weight:600;letter-spacing:.02em;color:var(--accent,#0a84ff);margin-bottom:.5rem}
+.exam-review .er-title{font-size:1.15rem;margin:0 0 .35rem}
+.exam-review .er-warn{background:rgba(255,159,10,.14);color:inherit;border-radius:10px;padding:.55rem .75rem;font-size:.88rem;margin:.5rem 0}
+.er-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.45rem;margin:.75rem 0 1rem}
+.er-row{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;justify-content:space-between;text-align:left;padding:.55rem .7rem;border-radius:10px;border:1px solid rgba(127,127,127,.25);background:transparent;color:inherit;font:inherit;font-size:.86rem;cursor:pointer}
+.er-row:hover{border-color:var(--accent,#0a84ff)}
+.er-row .er-st{opacity:.7;font-size:.8rem}
+.er-row.incomplete .er-st{color:#ff453a;opacity:1;font-weight:600}
+.er-row .er-fl{color:#ff9f0a;font-size:.8rem;width:100%}
+.er-actions{flex-wrap:wrap;gap:.5rem}
+.case-tabs{display:inline-flex;padding:2px;border-radius:9px;background:rgba(127,127,127,.16);margin-bottom:.75rem}
+.case-tab{border:0;background:transparent;color:inherit;font:inherit;font-size:.85rem;padding:.35rem .9rem;border-radius:7px;cursor:pointer}
+.case-tab.active{background:var(--card,#fff);box-shadow:0 1px 3px rgba(0,0,0,.15);font-weight:600}
+@media (prefers-color-scheme: dark){.case-tab.active{background:#3a3a3c}}
+.case-tabpanel{max-height:60vh;overflow:auto;line-height:1.55}
+.exam-grid button.locked{opacity:.3;cursor:not-allowed}

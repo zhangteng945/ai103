@@ -4,7 +4,8 @@
 
   const LANG_KEY = "ai103-lang"; // site-wide language preference (legacy key kept)
   const SHOWANS_KEY = "ai103-showans"; // site-wide show-answer preference
-  const PASS_SCORE = 700;
+  let PASS_SCORE = 700;
+  let SCORE_MIN = 0;
   const IMAGE_ONLY_NOTE = "本题选项为 PDF 截图，暂无文字，请对照原题";
 
   /* Active bank — reassigned when switching exams (shadows any global QUESTIONS). */
@@ -70,6 +71,8 @@
   function applyExamConfig(exam) {
     if (!exam) return;
     currentExamId = exam.id;
+    PASS_SCORE = exam.passScore || 700;
+    SCORE_MIN = exam.scoreMin || 0;
     DOMAIN_ORDER = (exam.domainOrder && exam.domainOrder.length) ? exam.domainOrder.slice() : [];
     DOMAIN_WEIGHTS = Object.assign({}, exam.domainWeights || {});
     const qs = typeof exam.getQuestions === "function" ? exam.getQuestions() : [];
@@ -252,7 +255,7 @@
       allCorrect: "全部答对，太棒了！",
       yourAnswer: "你的答案：",
       scoreSub: (c, t, pct, pass, auto) =>
-        "正确 " + c + " / " + t + "（" + pct + "%）· 及格线 " + PASS_SCORE + " / 1000 · " +
+        "正确 " + c + " / " + t + "（" + pct + "%）· 及格线 " + PASS_SCORE + " / 1000（标准分 " + SCORE_MIN + "–1000）· " +
         (pass ? "及格" : "未及格") + (auto ? " · 时间到自动交卷" : ""),
       confirmReset: "确定重置当前筛选范围内的练习进度（作答与标记）？",
       confirmLeave: "离开将放弃本场模拟考试（进度不保存）。确定？",
@@ -380,7 +383,7 @@
       allCorrect: "All correct — well done!",
       yourAnswer: "Your answer: ",
       scoreSub: (c, t, pct, pass, auto) =>
-        "Correct " + c + " / " + t + " (" + pct + "%) · Pass " + PASS_SCORE + " / 1000 · " +
+        "Correct " + c + " / " + t + " (" + pct + "%) · Pass " + PASS_SCORE + " / 1000 (scaled " + SCORE_MIN + "–1000) · " +
         (pass ? "PASS" : "FAIL") + (auto ? " · Auto-submitted (time up)" : ""),
       confirmReset: "Reset practice progress for the current filter (answers & flags)?",
       confirmLeave: "Leave and discard this mock exam (not saved)?",
@@ -2420,6 +2423,80 @@
     showView("examConfig");
   }
 
+  /* ---- Real-exam fidelity: sections, review screen, case-study tabs ---- */
+  function setupExamSections() {
+    const qs = state.examQuestions;
+    const sec = qs.map(() => 0);
+    const exam = currentExam();
+    if (exam && exam.specialExam58 && qs.length === 58) {
+      // AI-103: 48 ordinary | 3 multi-judgment | 7-question case study — each its own section
+      qs.forEach((q, i) => { sec[i] = q.caseStudy ? 2 : (i >= 48 ? 1 : 0); });
+    }
+    state.examSec = sec;
+    state.examSecCur = 0;
+    state.examReviewOpen = false;
+    state.caseTab = "q";
+  }
+  function examSecOf(i) { return (state.examSec && state.examSec[i]) || 0; }
+  function examSecCount() { return state.examSec && state.examSec.length ? Math.max.apply(null, state.examSec) + 1 : 1; }
+  function examLocked(i) { return !state.examSubmitted && examSecOf(i) !== (state.examSecCur || 0); }
+  function secIdx(s) { const o = []; state.examQuestions.forEach((q, i) => { if (examSecOf(i) === s) o.push(i); }); return o; }
+  function secName(s) {
+    const zh = state.lang !== "en";
+    if (examSecCount() === 1) return zh ? "全部题目" : "All questions";
+    const names = zh ? ["第 1 部分 · 常规题", "第 2 部分 · 多判断题", "第 3 部分 · 案例研究"] : ["Section 1 · Questions", "Section 2 · Multi-judgment", "Section 3 · Case study"];
+    return names[s] || ("Section " + (s + 1));
+  }
+  function openExamReview() { state.examReviewOpen = true; renderExam(); window.scrollTo(0, 0); }
+  function renderExamReviewHtml() {
+    const zh = state.lang !== "en";
+    const s = state.examSecCur || 0;
+    const idx = secIdx(s);
+    const last = s >= examSecCount() - 1;
+    const isDone = (i) => allBoxesSelected(state.examQuestions[i], state.examAnswers[state.examQuestions[i].id]);
+    const nUn = idx.filter((i) => !isDone(i)).length;
+    const nFl = idx.filter((i) => state.examFlags[state.examQuestions[i].id]).length;
+    let h = '<div class="exam-review"><h2 class="er-title">' + (zh ? "检查屏幕" : "Review screen") + "</h2>";
+    h += '<p class="muted">' + escapeHtml(secName(s)) + " · " + (zh ? ("未完成 " + nUn + " · 已标记 " + nFl) : (nUn + " incomplete · " + nFl + " marked for review")) + "</p>";
+    if (!last) h += '<p class="er-warn">' + (zh ? "结束本部分后将无法返回本部分的题目。" : "After you end this section, you will NOT be able to return to it.") + "</p>";
+    h += '<div class="er-list">';
+    idx.forEach((i) => {
+      const q = state.examQuestions[i];
+      const done = isDone(i);
+      const fl = !!state.examFlags[q.id];
+      h += '<button type="button" class="er-row' + (done ? "" : " incomplete") + (fl ? " flagged" : "") + '" data-i="' + i + '"><span class="er-n">' + (zh ? "第 " + (i + 1) + " 题" : "Question " + (i + 1)) + '</span><span class="er-st">' + (done ? (zh ? "已作答" : "Answered") : (zh ? "未完成" : "Incomplete")) + "</span>" + (fl ? '<span class="er-fl">⚑ ' + (zh ? "已标记" : "Marked") + "</span>" : "") + "</button>";
+    });
+    h += '</div><div class="nav-row er-actions">';
+    h += '<button type="button" class="btn" data-er="all">' + (zh ? "检查全部" : "Review all") + "</button>";
+    h += '<button type="button" class="btn" data-er="flag"' + (nFl ? "" : " disabled") + ">" + (zh ? "检查已标记" : "Review marked") + "</button>";
+    h += '<button type="button" class="btn" data-er="inc"' + (nUn ? "" : " disabled") + ">" + (zh ? "检查未完成" : "Review incomplete") + "</button>";
+    h += '<span class="spacer"></span><button type="button" class="btn btn-primary" data-er="end">' + (last ? (zh ? "结束考试并交卷" : "End exam") : (zh ? "结束本部分" : "End section")) + "</button></div></div>";
+    return h;
+  }
+  function bindExamReview() {
+    $$("#exam-body .er-row").forEach((b) => b.addEventListener("click", () => { state.examReviewOpen = false; state.examIndex = parseInt(b.getAttribute("data-i"), 10); renderExam(); }));
+    $$("#exam-body [data-er]").forEach((b) => b.addEventListener("click", () => {
+      const k = b.getAttribute("data-er");
+      const idx = secIdx(state.examSecCur || 0);
+      const pick = (fn) => { const i = idx.find(fn); if (i != null) { state.examReviewOpen = false; state.examIndex = i; renderExam(); } };
+      if (k === "all") pick(() => true);
+      else if (k === "flag") pick((i) => state.examFlags[state.examQuestions[i].id]);
+      else if (k === "inc") pick((i) => !allBoxesSelected(state.examQuestions[i], state.examAnswers[state.examQuestions[i].id]));
+      else if (k === "end") {
+        const last = (state.examSecCur || 0) >= examSecCount() - 1;
+        if (last) { finishExam(false); return; }
+        const zh = state.lang !== "en";
+        if (!confirm(zh ? "确定结束本部分？结束后无法返回。" : "End this section? You won't be able to return.")) return;
+        state.examSecCur++;
+        state.examReviewOpen = false;
+        state.caseTab = "q";
+        state.examIndex = secIdx(state.examSecCur)[0] || 0;
+        renderExam();
+        window.scrollTo(0, 0);
+      }
+    }));
+  }
+
   function startExam() {
     const exam = currentExam();
     const count =
@@ -2432,6 +2509,7 @@
       90;
     const n = Math.min(count, QUESTIONS.length);
     state.examQuestions = sampleExamQuestions(n);
+    setupExamSections();
     state.examIndex = 0;
     state.examAnswers = {};
     state.examFlags = {};
@@ -2493,7 +2571,18 @@
     const flagged = !!state.examFlags[q.id];
     const reviewMode = state.examSubmitted && state.revealed;
 
+    if (state.examReviewOpen && !state.examSubmitted) {
+      $("#exam-body").innerHTML = renderExamReviewHtml();
+      bindExamReview();
+      renderExamGrid(false);
+      $("#btn-exam-prev").disabled = true;
+      $("#btn-exam-next").disabled = true;
+      $("#btn-exam-flag").disabled = true;
+      return;
+    }
+    $("#btn-exam-flag").disabled = false;
     let html = "";
+    if (!state.examSubmitted && examSecCount() > 1) html += '<div class="exam-sec-label">' + escapeHtml(secName(state.examSecCur || 0)) + "</div>";
     html += '<div class="q-meta">';
     html += '<span class="badge">#' + q.id + "</span>";
     html += pdfRefBadgeHtml(q);
@@ -2506,10 +2595,14 @@
     }
     if (flagged) html += '<span class="badge flagged">' + pack.flagged + "</span>";
     html += "</div>";
-    if (q.caseStudy && q.caseStudyText) {
-      html += '<details class="case-box"><summary>' + escapeHtml(pack.caseSummary) + '</summary><div class="case-body">' +
-        formatMultiline(caseStudyTextOf(q)) + "</div></details>";
+    const caseTabs = !!(q.caseStudy && q.caseStudyText);
+    const showCase = caseTabs && state.caseTab === "case";
+    if (caseTabs) {
+      const zh = state.lang !== "en";
+      html += '<div class="case-tabs" role="tablist"><button type="button" role="tab" class="case-tab' + (showCase ? " active" : "") + '" data-tab="case">' + (zh ? "案例研究" : "Case study") + '</button><button type="button" role="tab" class="case-tab' + (showCase ? "" : " active") + '" data-tab="q">' + (zh ? "问题" : "Question") + "</button></div>";
     }
+    if (showCase) html += '<div class="case-body case-tabpanel">' + formatMultiline(caseStudyTextOf(q)) + "</div>";
+    html += '<div class="exam-qpanel' + (showCase ? " hidden" : "") + '">';
     html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
     if (isBoxQ(q)) {
       html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pickHintFor(q, pack)) + "</p>";
@@ -2561,38 +2654,15 @@
         "</div></div>";
     }
 
+    html += "</div>";
     $("#exam-body").innerHTML = html;
-
-    let grid = "";
-    state.examQuestions.forEach((eq, i) => {
-      let cls = "";
-      if (i === state.examIndex) cls += " current";
-      if (allBoxesSelected(eq, state.examAnswers[eq.id])) cls += " answered";
-      if (state.examFlags[eq.id]) cls += " flagged";
-      if (reviewMode) {
-        const ok = isCorrect(eq, state.examAnswers[eq.id]);
-        cls += ok ? " right-mark" : " wrong-mark";
-      }
-      grid +=
-        '<button type="button" class="' +
-        cls.trim() +
-        '" data-i="' +
-        i +
-        '">' +
-        (i + 1) +
-        "</button>";
-    });
-    $("#exam-grid").innerHTML = grid;
-    $$("#exam-grid button").forEach((b) => {
-      b.addEventListener("click", () => {
-        state.examIndex = parseInt(b.getAttribute("data-i"), 10);
-        renderExam();
-      });
-    });
+    $$("#exam-body .case-tab").forEach((b) => b.addEventListener("click", () => { state.caseTab = b.getAttribute("data-tab"); renderExam(); }));
+    renderExamGrid(reviewMode);
 
     $("#btn-exam-flag").textContent = flagged ? pack.unflagShort : pack.flagShort;
-    $("#btn-exam-prev").disabled = state.examIndex <= 0;
-    $("#btn-exam-next").disabled = state.examIndex >= state.examQuestions.length - 1;
+    const pi = state.examIndex - 1, ni = state.examIndex + 1;
+    $("#btn-exam-prev").disabled = pi < 0 || examLocked(pi);
+    $("#btn-exam-next").disabled = state.examSubmitted ? ni >= state.examQuestions.length : false;
     $("#btn-exam-submit").classList.toggle("hidden", state.examSubmitted);
     $("#btn-exam-to-result").classList.toggle("hidden", !state.examSubmitted);
 
@@ -2606,6 +2676,38 @@
         });
       }
     }
+  }
+
+  function renderExamGrid(reviewMode) {
+    let grid = "";
+    state.examQuestions.forEach((eq, i) => {
+      let cls = "";
+      if (i === state.examIndex) cls += " current";
+      if (allBoxesSelected(eq, state.examAnswers[eq.id])) cls += " answered";
+      if (state.examFlags[eq.id]) cls += " flagged";
+      const locked = examLocked(i);
+      if (locked) cls += " locked";
+      if (reviewMode) {
+        const ok = isCorrect(eq, state.examAnswers[eq.id]);
+        cls += ok ? " right-mark" : " wrong-mark";
+      }
+      grid +=
+        '<button type="button" class="' +
+        cls.trim() +
+        '" data-i="' +
+        i +
+        '"' + (locked ? " disabled" : "") + ">" +
+        (i + 1) +
+        "</button>";
+    });
+    $("#exam-grid").innerHTML = grid;
+    $$("#exam-grid button").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.examReviewOpen = false;
+        state.examIndex = parseInt(b.getAttribute("data-i"), 10);
+        renderExam();
+      });
+    });
   }
 
   function finishExam(auto) {
@@ -2639,6 +2741,7 @@
     });
     const wrongList = [];
     state.examQuestions.forEach((q) => {
+      if (!byDom[q.domain]) byDom[q.domain] = { total: 0, correct: 0, label: "" };
       byDom[q.domain].total++;
       byDom[q.domain].label = q.domainLabel;
       const ok = isCorrect(q, state.examAnswers[q.id]);
@@ -2652,7 +2755,7 @@
     const pct = state.examQuestions.length
       ? correct / state.examQuestions.length
       : 0;
-    const score1000 = Math.round(pct * 1000);
+    const score1000 = Math.round(SCORE_MIN + pct * (1000 - SCORE_MIN));
     state.examResult = {
       correct,
       total: state.examQuestions.length,
@@ -2689,9 +2792,9 @@
       "</div>";
 
     let bd = "";
-    DOMAIN_ORDER.forEach((d) => {
+    (DOMAIN_ORDER.length ? DOMAIN_ORDER : Object.keys(r.byDom || {})).forEach((d) => {
       const x = r.byDom[d];
-      if (!x.total) return;
+      if (!x || !x.total) return;
       const p = Math.round((x.correct / x.total) * 100);
       const label = pack.domain[d] || x.label;
       bd +=
@@ -2807,10 +2910,8 @@
       }
       if (e.key === "Enter") {
         e.preventDefault();
-        if (state.examIndex < state.examQuestions.length - 1) {
-          state.examIndex++;
-          renderExam();
-        }
+        if (state.examReviewOpen) return;
+        $("#btn-exam-next").click();
       }
     }
   }
@@ -2975,12 +3076,16 @@
       renderHome();
     });
     $("#btn-exam-prev").addEventListener("click", () => {
-      if (state.examIndex > 0) {
+      if (state.examIndex > 0 && !examLocked(state.examIndex - 1)) {
         state.examIndex--;
         renderExam();
       }
     });
     $("#btn-exam-next").addEventListener("click", () => {
+      if (!state.examSubmitted && (state.examIndex >= state.examQuestions.length - 1 || examLocked(state.examIndex + 1))) {
+        openExamReview();
+        return;
+      }
       if (state.examIndex < state.examQuestions.length - 1) {
         state.examIndex++;
         renderExam();
@@ -2992,7 +3097,7 @@
       state.examFlags[q.id] = !state.examFlags[q.id];
       renderExam();
     });
-    $("#btn-exam-submit").addEventListener("click", () => finishExam(false));
+    $("#btn-exam-submit").addEventListener("click", () => openExamReview());
     $("#btn-exam-to-result").addEventListener("click", () => {
       showView("result");
       renderResult();
