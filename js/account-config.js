@@ -15,7 +15,8 @@ window.__ITCERT_ACCOUNT__ = {
   emailDomain: "ai103.local", // short name "zhangsan" → zhangsan@ai103.local
   timeoutMs: 8000,
   retries: 3,
-  syncDebounceMs: 4000,
+  syncDebounceMs: 45000,      // upload at most ~45s after last local change
+  syncPullMinIntervalMs: 300000, // re-pull when tab visible again only if ≥5 min since last pull
   allowOfflineCachedLogin: true, // already-logged-in device keeps working offline until account expiry
   deviceLimit: true,
   maxDevices: 2,          // display/default only; server enforces app_metadata.max_devices (default 2) in claim_device

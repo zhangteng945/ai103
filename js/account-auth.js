@@ -10,7 +10,7 @@
 (function (global) {
   "use strict";
   var PC = global.ITCERT_PROGRESS;
-  var CFG = Object.assign({ enabled: false, timeoutMs: 8000, retries: 3, syncDebounceMs: 4000, emailDomain: "ai103.local", allowOfflineCachedLogin: true, protectedBanks: false, banks: {}, deviceLimit: true, expiryWarnDays: 7 }, global.__ITCERT_ACCOUNT__ || {});
+  var CFG = Object.assign({ enabled: false, timeoutMs: 8000, retries: 3, syncDebounceMs: 45000, syncPullMinIntervalMs: 300000, emailDomain: "ai103.local", allowOfflineCachedLogin: true, protectedBanks: false, banks: {}, deviceLimit: true, expiryWarnDays: 7 }, global.__ITCERT_ACCOUNT__ || {});
   var SB = global.__AI103_SUPABASE__ || {};
   var BASE = String(CFG.apiBase || SB.url || "").replace(/\/+$/, "");
   var KEY = CFG.anonKey || SB.anonKey || "";
@@ -74,7 +74,7 @@
   }
   function normalizeEmail(raw) { var e = String(raw || "").trim().toLowerCase(); if (e && e.indexOf("@") < 0) e += "@" + CFG.emailDomain; return e; }
 
-  var state = { session: null, ready: false, expired: false, status: "", syncStatus: "", syncing: false, dirty: false, timer: null, initialMerge: false };
+  var state = { session: null, ready: false, expired: false, status: "", syncStatus: "", syncing: false, dirty: false, timer: null, initialMerge: false, lastPullAt: 0, claimedDevice: false };
 
   function mapLoginError(e) {
     if (isExpiryError(e)) return "账号已过期，请联系管理员续期";
@@ -230,40 +230,62 @@
   async function pushRemote(token, uid, snap) {
     await http("POST", "/rest/v1/user_progress?on_conflict=user_id", { user_id: uid, data: snap }, token, { Prefer: "resolution=merge-duplicates,return=minimal" });
   }
+  function shouldPull(reason) {
+    if (reason === "login" || reason === "load" || reason === "import" || reason === "manual" || reason === "pull" || reason === "migrate") return true;
+    if (reason === "visible") {
+      var gap = Number(CFG.syncPullMinIntervalMs) || 300000;
+      return !state.lastPullAt || (Date.now() - state.lastPullAt) >= gap;
+    }
+    return false; // auto / hide / flush / online / push → upload only
+  }
   async function syncNow(reason) {
     if (!ENABLED || !state.session || state.syncing) return;
     state.syncing = true; state.dirty = false;
-    setSync("同步中…");
+    var doPull = shouldPull(reason);
+    setSync(doPull ? "同步中…" : "上传进度…");
     try {
       await withRetry(async function () {
         var token = await ensureFreshToken();
         var uid = state.session.user.id;
-        if (CFG.deviceLimit) { try { await claimDevice(token); } catch (e) { if (/device_limit/.test(e.message)) { forceLogout("该账号登录的设备数已达上限，本机已退出"); throw e; } if (e.network) throw e; } }
-        var remote = await pullRemote(token, uid);
+        // Claim device once per browser session (not on every debounce upload).
+        if (CFG.deviceLimit && (reason === "login" || reason === "load" || !state.claimedDevice)) {
+          try { await claimDevice(token); state.claimedDevice = true; }
+          catch (e) { if (/device_limit/.test(e.message)) { forceLogout("该账号登录的设备数已达上限，本机已退出"); throw e; } if (e.network) throw e; }
+        }
         var local = PC.snapshot(ls, knownExamIds());
-        var merged = remote ? PC.mergeSnapshots(local, remote) : local;
-        var localChanged = !PC.sameData(local, merged);
-        if (localChanged) PC.apply(ls, merged, setRaw);
-        if (!remote || !PC.sameData(remote, merged)) await pushRemote(token, uid, merged);
+        var merged = local;
+        var localChanged = false;
+        if (doPull) {
+          var remote = await pullRemote(token, uid);
+          state.lastPullAt = Date.now();
+          merged = remote ? PC.mergeSnapshots(local, remote) : local;
+          localChanged = !PC.sameData(local, merged);
+          if (localChanged) PC.apply(ls, merged, setRaw);
+          if (!remote || !PC.sameData(remote, merged)) await pushRemote(token, uid, merged);
+        } else {
+          await pushRemote(token, uid, local);
+        }
         var meta = PC.readMeta(ls); meta.lastSyncAt = Date.now(); PC.writeMeta(ls, meta);
-        if (localChanged) onLocalReplaced(reason);
+        // Always clear the boot flag; NEVER auto-reload / navigate (that was jumping users to home).
+        if (localChanged) onLocalMergedQuiet(reason);
+        else state.initialMerge = false;
       });
       setSync("已同步 " + fmtTime(Date.now()));
     } catch (e) {
       if (!state.session) { setSync(""); }
       else if (isExpiryError(e) || e.status === 401 || e.status === 403) setSync("同步被拒绝（账号可能已过期），进度仅保存在本机");
       else setSync("暂时无法连接同步服务，进度已保存在本机，稍后自动重试");
-      if (state.session) scheduleSync(60000);
+      if (state.session) scheduleSync(Math.max(CFG.syncDebounceMs, 60000));
     } finally { state.syncing = false; if (state.dirty) scheduleSync(CFG.syncDebounceMs); }
   }
   var pushNow = function () { return syncNow("flush"); };
   function scheduleSync(ms) { clearTimeout(state.timer); state.timer = setTimeout(function () { syncNow("auto"); }, ms); }
-  function onLocalReplaced(reason) {
-    // app.js keeps progress in memory; reload so it re-reads localStorage. Only auto-reload right after login/page-load.
-    var busy = $("view-exam") && !$("view-exam").classList.contains("hidden");
-    if (state.initialMerge && !busy) { state.initialMerge = false; setTimeout(function () { location.reload(); }, 300); return; }
+  function onLocalMergedQuiet(reason) {
+    // Remote progress was merged into localStorage. App keeps answers in memory for the
+    // current session — do NOT reload, remount, change bank, or reset question index.
     state.initialMerge = false;
-    showBanner("已合并其他设备的进度，<a href='#' id='sync-reload'>点此刷新</a> 后显示");
+    if (reason === "login" || reason === "load") return; // boot merge: in-memory still empty / about to init
+    showBanner("已合并其他设备的进度（当前题目不受影响）。如需查看全部更新可<a href='#' id='sync-reload'>点此刷新</a>", false);
   }
   function showBanner(html, dismissOnly) {
     var b = $("sync-banner");
@@ -398,8 +420,13 @@
       applyEntitlements(); expiryReminder();
       loadBanks().then(function () { state.initialMerge = true; syncNow("load"); }, function (e) { setStatus(e.message || "题库加载失败"); });
     } else if (!CFG.protectedBanks) bootResolve();
-    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden" && state.dirty) syncNow("hide"); });
-    global.addEventListener("online", function () { if (state.session) syncNow("online"); });
+    document.addEventListener("visibilitychange", function () {
+      if (!state.session) return;
+      if (document.visibilityState === "hidden") { if (state.dirty) syncNow("hide"); }
+      else if (shouldPull("visible")) syncNow("visible");
+    });
+    global.addEventListener("pagehide", function () { if (state.session && state.dirty) syncNow("hide"); });
+    global.addEventListener("online", function () { if (state.session && state.dirty) syncNow("online"); });
   }
 
   if (ENABLED) {

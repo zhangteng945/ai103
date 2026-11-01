@@ -3273,6 +3273,11 @@
     }
   }
 
+  function scrollQuestionTop() {
+    try { window.scrollTo({ top: 0, behavior: "smooth" }); }
+    catch (e) { try { window.scrollTo(0, 0); } catch (e2) {} }
+  }
+
   function ensureBank(id, cb) {
     const LAZY = { "dop-c02": ["QUESTIONS_DOP_C02", "DOP-C02"], "dp-700": ["QUESTIONS_DP_700", "DP-700"], "dp-420": ["QUESTIONS_DP_420", "DP-420"] };
     const lz = LAZY[id];
@@ -3386,18 +3391,21 @@
       if (state.practiceIndex < state.practiceList.length - 1) {
         state.practiceIndex++;
         renderPractice();
+        scrollQuestionTop();
       }
     });
     $("#btn-practice-prev").addEventListener("click", () => {
       if (state.practiceIndex > 0) {
         state.practiceIndex--;
         renderPractice();
+        scrollQuestionTop();
       }
     });
     $("#btn-practice-skip").addEventListener("click", () => {
       if (state.practiceIndex < state.practiceList.length - 1) {
         state.practiceIndex++;
         renderPractice();
+        scrollQuestionTop();
       }
     });
     $("#btn-practice-flag").addEventListener("click", () => {
@@ -3454,6 +3462,7 @@
       if (state.examIndex > 0 && !examLocked(state.examIndex - 1)) {
         state.examIndex--;
         renderExam();
+        scrollQuestionTop();
       }
     });
     $("#btn-exam-next").addEventListener("click", () => {
@@ -3464,6 +3473,7 @@
       if (state.examIndex < state.examQuestions.length - 1) {
         state.examIndex++;
         renderExam();
+        scrollQuestionTop();
       }
     });
     $("#btn-exam-flag").addEventListener("click", () => {
