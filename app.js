@@ -1018,8 +1018,8 @@
     const isAns = (q.answer || []).indexOf(opt.id) >= 0;
     const tg = (c, zh, en) => '<span class="otag ' + c + '">' + escapeHtml(L(zh, en)) + "</span>";
     if (!graded) return isAns ? { cls: " correct st-ans", tag: tg("t-ok", "✓ 正确答案", "✓ Answer") } : { cls: " st-dim", tag: "" };
-    if (isAns && isSel) return { cls: " correct st-ok", tag: tg("t-ok", "✓ 你的选择", "✓ Your pick") };
-    if (isSel) return { cls: " wrong st-bad", tag: tg("t-bad", "✗ 你的选择", "✗ Your pick") };
+    if (isAns && isSel) return { cls: " correct st-ok", tag: "" };
+    if (isSel) return { cls: " wrong st-bad", tag: "" };
     if (isAns) return { cls: " st-miss", tag: tg("t-miss", "漏选", "Missed") };
     return { cls: " st-dim", tag: "" };
   }
