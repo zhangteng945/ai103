@@ -848,21 +848,21 @@ footer.app-foot {
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
-.yn-btn:hover:not(:disabled) {
+@media (hover: hover) { .yn-btn:hover:not(:disabled):not(.selected) {
   border-color: var(--primary);
   background: rgba(59, 130, 246, 0.12);
-}
+} }
 .yn-btn.selected {
   background: var(--primary);
   border-color: var(--primary);
   color: #fff;
 }
-.yn-btn.is-answer:disabled {
+.yn-btn.is-answer {
   background: var(--success);
   border-color: var(--success);
   color: #fff;
 }
-.yn-btn.is-wrong:disabled {
+.yn-btn.is-wrong {
   background: var(--danger);
   border-color: var(--danger);
   color: #fff;
@@ -1753,11 +1753,11 @@ input, select, textarea { font-family: inherit; }
   min-height: 38px;
   transition: background 0.18s var(--ease), color 0.18s var(--ease), transform 0.12s var(--ease);
 }
-.yn-btn:hover:not(:disabled) { background: var(--primary-tint-2); border: 0; }
+@media (hover: hover) { .yn-btn:hover:not(:disabled):not(.selected) { background: var(--primary-tint-2); border: 0; } }
 .yn-btn:active:not(:disabled) { transform: scale(0.96); }
 .yn-btn.selected { background: var(--primary); color: #fff; }
-.yn-btn.is-answer:disabled { background: var(--success); color: #fff; }
-.yn-btn.is-wrong:disabled { background: var(--danger); color: #fff; }
+.yn-btn.is-answer { background: var(--success); color: #fff; }
+.yn-btn.is-wrong { background: var(--danger); color: #fff; }
 
 .drag-chip {
   border: 1px solid var(--border);
@@ -2025,3 +2025,8 @@ body.auth-ok .topbar .brand h1 { white-space: nowrap; overflow: hidden; text-ove
 body.auth-ok .topbar .lang-toggle, body.auth-ok .topbar .acct-toggle { flex: 0 0 auto; margin-left: 0; white-space: nowrap; }
 body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 @media (max-width: 520px) { body.auth-ok .topbar .brand h1 { font-size: 0.98rem; } body.auth-ok .topbar .lang-toggle button { padding-left: .55rem; padding-right: .55rem; } }
+
+/* Yes/No after submit: green = correct choice, red = wrong pick, others muted */
+.yn-btn.is-dim { background: var(--fill, transparent); color: var(--text); opacity: 0.55; }
+.yn-btn.picked { box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--text); }
+.yn-btn.is-answer:not(.picked) { opacity: 1; }

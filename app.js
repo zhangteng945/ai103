@@ -469,9 +469,21 @@
     if (!z) return e;
     return z + " / " + e;
   }
+  /** Display letter = screen position (A, B, C…) — options may be shuffled; grading keeps opt.id */
+  function dispLetter(q, oid) {
+    const i = (q.options || []).findIndex((o) => o.id === oid);
+    return i >= 0 ? String.fromCharCode(65 + i) : String(oid);
+  }
+  function dispIdOf(q, letter) {
+    const o = (q.options || [])[String(letter).charCodeAt(0) - 65];
+    return o ? o.id : null;
+  }
+  function dispLetters(q, ids) {
+    return (ids || []).map((id) => dispLetter(q, id)).sort();
+  }
   function optLine(q, oid) {
     const opt = (q.options || []).find((o) => o.id === oid);
-    return opt ? oid + ". " + inl(optionText(opt)) : oid;
+    return opt ? dispLetter(q, oid) + ". " + inl(optionText(opt)) : oid;
   }
   // Safety net for imported text: trim trailing spaces, drop whitespace-only
   // lines, keep at most one blank line (= one paragraph gap).
@@ -987,8 +999,8 @@
     return { cls: " st-dim", tag: "" };
   }
   function answerSummary(q, sel, graded) {
-    const a = (q.answer || []).join(" ");
-    const y = (sel || []).slice().sort().join(" ") || "—";
+    const a = dispLetters(q, q.answer).join(" ");
+    const y = dispLetters(q, sel).join(" ") || "—";
     const ok = graded && isCorrect(q, sel);
     return '<p role="status" class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(a) + "</b>" +
       (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
@@ -1255,7 +1267,7 @@
         })
         .join(sep);
     }
-    return (q.answer || []).map((id) => optLine(q, id)).join(sep);
+    return dispLetters(q, q.answer).map((l) => optLine(q, dispIdOf(q, l))).join(sep);
   }
 
   function formatUserAnswer(q, selected) {
@@ -1277,7 +1289,7 @@
         .join(sep);
     }
     const sel = selected || [];
-    return sel.length ? sel.map((id) => optLine(q, id)).join(sep) : pack.notAnswered;
+    return sel.length ? dispLetters(q, sel).map((l) => optLine(q, dispIdOf(q, l))).join(sep) : pack.notAnswered;
   }
 
 
@@ -2095,10 +2107,16 @@
       orderedChoices(b, null).forEach((c) => {
         const key = choiceKey(c);
         let cls = "yn-btn";
-        if (val === key) cls += " selected";
-        if (submittedOrReview) {
-          if (sameKey(key, b.answer)) cls += " is-answer";
-          if (val === key && !sameKey(key, b.answer)) cls += " is-wrong";
+        const picked = sameKey(val, key);
+        if (!submittedOrReview) {
+          // before submit: neutral selection only, never reveal
+          if (picked) cls += " selected";
+        } else if (sameKey(key, b.answer)) {
+          cls += " is-answer" + (picked ? " picked" : "");
+        } else if (picked) {
+          cls += " is-wrong picked";
+        } else {
+          cls += " is-dim";
         }
         html +=
           '<button type="button" class="' +
@@ -2465,7 +2483,7 @@
           (showing ? " disabled" : "") +
           ">" +
           '<span class="oid">' +
-          opt.id +
+          dispLetter(q, opt.id) +
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
@@ -2962,7 +2980,7 @@
           (state.examSubmitted ? " disabled" : "") +
           ">" +
           '<span class="oid">' +
-          opt.id +
+          dispLetter(q, opt.id) +
           "</span>" +
           '<span class="otext">' +
           formatMultiline(optionText(opt)) +
@@ -3242,8 +3260,8 @@
       const q = currentPracticeQ();
       if (!q) return;
       if (map[e.code] && !state.practiceSubmitted[q.id] && !isPracticeRevealed(q) && !isDropdownQ(q)) {
-        const oid = map[e.code];
-        if ((q.options || []).some((o) => o.id === oid)) {
+        const oid = dispIdOf(q, map[e.code]);
+        if (oid) {
           e.preventDefault();
           toggleSelect(q, oid, "practice");
         }
@@ -3260,8 +3278,8 @@
       const q = currentExamQ();
       if (!q) return;
       if (map[e.code] && !isDropdownQ(q)) {
-        const oid = map[e.code];
-        if ((q.options || []).some((o) => o.id === oid)) {
+        const oid = dispIdOf(q, map[e.code]);
+        if (oid) {
           e.preventDefault();
           toggleSelect(q, oid, "exam");
         }
