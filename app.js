@@ -443,7 +443,7 @@
   /* true while rendering a practice question whose answer is revealed (not submitted) */
   let revealOnly = false;
   function okMark(ansTxt) {
-    return revealOnly ? "✓ " + escapeHtml(caLabel()) + escapeHtml(inl(ansTxt)) : "✓";
+    return revealOnly ? "✓ " + escapeHtml(caLabel()) + escapeHtml(inl(ansTxt)) : "";
   }
   /** one-line form of a possibly two-line (对照) text: "中文 / English" */
   function inl(s) {
