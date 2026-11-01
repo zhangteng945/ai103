@@ -1027,8 +1027,9 @@
     const a = dispLetters(q, q.answer).join(" ");
     const y = dispLetters(q, sel).join(" ") || "—";
     const ok = graded && isCorrect(q, sel);
+    if (ok) return "";
     return '<p role="status" class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(a) + "</b>" +
-      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
+      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b>" : "") + "</p>";
   }
   function questionsByFilter(filter) {
     if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
