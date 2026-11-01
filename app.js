@@ -1020,7 +1020,7 @@
     if (!graded) return isAns ? { cls: " correct st-ans", tag: tg("t-ok", "✓ 正确答案", "✓ Answer") } : { cls: " st-dim", tag: "" };
     if (isAns && isSel) return { cls: " correct st-ok", tag: "" };
     if (isSel) return { cls: " wrong st-bad", tag: "" };
-    if (isAns) return { cls: " st-miss", tag: tg("t-miss", "漏选", "Missed") };
+    if (isAns) return { cls: " st-miss", tag: "" };
     return { cls: " st-dim", tag: "" };
   }
   function answerSummary(q, sel, graded) {
