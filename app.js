@@ -3277,6 +3277,8 @@
     const LAZY = { "dop-c02": ["QUESTIONS_DOP_C02", "DOP-C02"], "dp-700": ["QUESTIONS_DP_700", "DP-700"], "dp-420": ["QUESTIONS_DP_420", "DP-420"] };
     const lz = LAZY[id];
     if (!lz || typeof window[lz[0]] !== "undefined") { cb(); return; }
+    const AC = typeof window !== "undefined" && window.__ITCERT_ACCOUNT__;
+    if (AC && AC.enabled && AC.protectedBanks) { alert(L("当前账号无权访问该题库", "This account has no access to this bank.")); return; }
     let bl = document.getElementById("boot-loader");
     if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L(lz[1] + " 题库加载中…", "Loading " + lz[1] + " bank…")); document.body.appendChild(bl); }
     const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
@@ -3498,9 +3500,15 @@
     document.body.classList.toggle("touch", "ontouchstart" in window || navigator.maxTouchPoints > 0);
   }
 
+  // Account mode with protected banks: wait until login + bank download (js/account-auth.js).
+  function start() {
+    const boot = typeof window !== "undefined" && window.ITCERT_BOOT;
+    if (boot && typeof boot.then === "function") boot.then(init, init);
+    else init();
+  }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", start);
   } else {
-    init();
+    start();
   }
 })();

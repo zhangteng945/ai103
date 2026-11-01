@@ -6,6 +6,8 @@
  */
 (function (global) {
   "use strict";
+  // Account login mode (js/account-auth.js) replaces this shared-password gate.
+  if (global.AI103Auth && global.AI103Auth.mode === "account") return;
 
   var GATE_KEY = "ai103_gate_v1";
   var GATE_PASSWORD = "20261028";
