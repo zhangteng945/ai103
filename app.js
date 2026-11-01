@@ -573,7 +573,7 @@
   }
 
   /** Remap option letters inside explanation text to on-screen letters (options may be shuffled). */
-  const EXPL_L = "(?<![A-Za-z0-9_.\\-/])[A-H](?![A-Za-z0-9_\\-/'])(?![ \\t]+(?!and\\b|or\\b)[a-z])";
+  const EXPL_L = "(?<![A-Za-z0-9_.\\-/])(?:[B-H]|A(?![ \\t]+(?!(?:and|or|is|are|was|were|uses?|does|do|would|will|can|could|only|also|because|fails?|requires?|provides?|meets?|satisf(?:y|ies)|correct|incorrect|wrong)\\b)[a-z]))(?![A-Za-z0-9_\\-/'])";
   const EXPL_LIST = EXPL_L + "(?:(?:\\s*(?:、|,|，|/|和|与|及|或|&|and|or)\\s*|[ \\t]+)" + EXPL_L + ")*";
   const EXPL_PRE = new RegExp("((?:选项|答案|正确答案|(?<![A-Za-z])(?:[Oo]ptions?|[Aa]nswers?|[Cc]hoices?))\\s*[:：]?\\s*)(" + EXPL_LIST + ")", "g");
   const EXPL_POST = new RegExp("(" + EXPL_LIST + ")(\\s*(?:选项|项))", "g");
