@@ -470,12 +470,15 @@
     return z + " / " + e;
   }
   /** Display letter = screen position (A, B, C…) — options may be shuffled; grading keeps opt.id */
+  function dispSlots(q) {
+    return (q.options || []).map((o) => String(o.id)).sort();
+  }
   function dispLetter(q, oid) {
     const i = (q.options || []).findIndex((o) => o.id === oid);
-    return i >= 0 ? String.fromCharCode(65 + i) : String(oid);
+    return i >= 0 ? dispSlots(q)[i] : String(oid);
   }
   function dispIdOf(q, letter) {
-    const o = (q.options || [])[String(letter).charCodeAt(0) - 65];
+    const o = (q.options || [])[dispSlots(q).indexOf(String(letter))];
     return o ? o.id : null;
   }
   function dispLetters(q, ids) {
@@ -569,7 +572,29 @@
     );
   }
 
+  /** Remap option letters inside explanation text to on-screen letters (options may be shuffled). */
+  const EXPL_L = "(?<![A-Za-z0-9_.\\-/])[A-H](?![A-Za-z0-9_\\-/'])(?![ \\t]+(?!and\\b|or\\b)[a-z])";
+  const EXPL_LIST = EXPL_L + "(?:(?:\\s*(?:、|,|，|/|和|与|及|或|&|and|or)\\s*|[ \\t]+)" + EXPL_L + ")*";
+  const EXPL_PRE = new RegExp("((?:选项|答案|正确答案|(?<![A-Za-z])(?:[Oo]ptions?|[Aa]nswers?|[Cc]hoices?))\\s*[:：]?\\s*)(" + EXPL_LIST + ")", "g");
+  const EXPL_POST = new RegExp("(" + EXPL_LIST + ")(\\s*(?:选项|项))", "g");
+  const EXPL_LINE = /^([ \t]*(?:[-*•][ \t]*)?)([A-H])(?=[ \t]*[:：.、)）])/gm;
+  function remapOptLetters(q, text) {
+    if (!text || isBoxQ(q) || !(q.options || []).length) return text;
+    const ids = (q.options || []).map((o) => String(o.id));
+    const slots = dispSlots(q);
+    if (ids.every((id, i) => id === slots[i])) return text;
+    const m = {};
+    ids.forEach((id, i) => { if (/^[A-H]$/.test(id)) m[id] = slots[i]; });
+    const sub = (list) => list.replace(new RegExp(EXPL_L, "g"), (c) => m[c] || c);
+    return text
+      .replace(EXPL_PRE, (all, pre, list) => pre + sub(list))
+      .replace(EXPL_POST, (all, list, post) => sub(list) + post)
+      .replace(EXPL_LINE, (all, pre, c) => pre + (m[c] || c));
+  }
   function explanationOf(q) {
+    return remapOptLetters(q, explanationOfRaw(q));
+  }
+  function explanationOfRaw(q) {
     if (state.lang === "en") return tidyText(q.explanationEn || q.explanation || "");
     if (state.lang === "zh") return tidyText(q.explanationZh || q.explanation || "");
     const zh = tidyText(q.explanationZh || q.explanation || "");
