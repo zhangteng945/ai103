@@ -2017,3 +2017,11 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .ans-summary.ok{border-left:4px solid var(--success)}.ans-summary.bad{border-left:4px solid var(--danger)}
 .otext .otag{display:table;margin:.4rem 0 0;margin-left:0}
 .bank-block{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.08)}
+/* logged-in topbar: always one row, fixed height; long titles truncate */
+body.auth-ok .topbar { display: flex; flex-wrap: nowrap !important; align-items: center; gap: 0.5rem; }
+body.auth-ok .topbar .brand { flex: 1 1 0; min-width: 0; overflow: hidden; }
+body.auth-ok .topbar .brand > div:last-child { min-width: 0; overflow: hidden; }
+body.auth-ok .topbar .brand h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.auth-ok .topbar .lang-toggle, body.auth-ok .topbar .acct-toggle { flex: 0 0 auto; margin-left: 0; white-space: nowrap; }
+body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
+@media (max-width: 520px) { body.auth-ok .topbar .brand h1 { font-size: 0.98rem; } body.auth-ok .topbar .lang-toggle button { padding-left: .55rem; padding-right: .55rem; } }
