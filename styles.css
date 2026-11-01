@@ -2030,3 +2030,9 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 .yn-btn.is-dim { background: var(--fill, transparent); color: var(--text); opacity: 0.55; }
 .yn-btn.picked { box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--text); }
 .yn-btn.is-answer:not(.picked) { opacity: 1; }
+/* answer summary: readable, consistent with option colors */
+.ans-summary{color:var(--text)!important;opacity:1!important;filter:none!important}
+.ans-summary.bad{background:rgba(255,69,58,.12);border-left:4px solid var(--danger)}
+.ans-summary b{font-weight:700}
+.ans-summary.bad b:first-of-type{color:var(--success)}
+.ans-summary.bad b:last-of-type{color:var(--danger)}
