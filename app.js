@@ -1,6 +1,7 @@
 /* IT认证练习 — multi-exam practice app (AI-103 / DOP-C02 / DP-700 / DP-420) — Teng */
 (function () {
   "use strict";
+  const UI_LANG = "zh";
 
   const LANG_KEY = "ai103-lang"; // site-wide language preference (legacy key kept)
   const SHOWANS_KEY = "ai103-showans"; // site-wide show-answer preference
@@ -396,7 +397,7 @@
   };
   // 对照 uses ZH chrome (friendliest) but dual stems/options
   function t() {
-    return state.lang === "en" ? I18N.en : I18N.zh;
+    return UI_LANG === "en" ? I18N.en : I18N.zh;
   }
   function loadLang() {
     try {
@@ -449,10 +450,10 @@
     return String(s == null ? "" : s).replace(/\s*\n\s*/g, " / ");
   }
   function caLabel() {
-    return state.lang === "both" ? "正确答案 / Correct answer：" : t().correctAnswer;
+    return UI_LANG === "both" ? "正确答案 / Correct answer：" : t().correctAnswer;
   }
   function yaLabel() {
-    return state.lang === "both" ? "你的答案 / Your answer：" : t().yourAnswer;
+    return UI_LANG === "both" ? "你的答案 / Your answer：" : t().yourAnswer;
   }
   /** UI string; in 对照 mode joins 中文 / English (skips duplicates/empties) */
   function bi(key) {
@@ -461,7 +462,7 @@
       const v = pack[key];
       return typeof v === "function" ? v.apply(null, args) : v;
     };
-    if (state.lang !== "both") return val(t());
+    if (UI_LANG !== "both") return val(t());
     const z = val(I18N.zh);
     const e = val(I18N.en);
     if (!e || z === e) return z;
@@ -525,28 +526,28 @@
   }
   function domainLabelOf(q) {
     const pack = t();
-    return pack.domain[q.domain] || (state.lang === "en" ? q.domainLabelEn || q.domainLabel : q.domainLabelZh || q.domainLabel);
+    return pack.domain[q.domain] || (UI_LANG === "en" ? q.domainLabelEn || q.domainLabel : q.domainLabelZh || q.domainLabel);
   }
 
   function pdfRefOf(q) {
     if (!q) return "";
-    if (state.lang === "en") return q.pdfRefEn || q.pdfRef || "";
-    if (state.lang === "zh") return q.pdfRef || q.pdfRefEn || "";
+    if (UI_LANG === "en") return q.pdfRefEn || q.pdfRef || "";
+    if (UI_LANG === "zh") return q.pdfRef || q.pdfRefEn || "";
     // both: Chinese primary; English goes in title via pdfRefTitle
     return q.pdfRef || q.pdfRefEn || "";
   }
   function pdfRefTitle(q) {
     if (!q) return "";
-    if (state.lang === "both") return q.pdfRefEn || "";
-    if (state.lang === "zh" && q.pdfRefEn && q.pdfRefEn !== q.pdfRef) return q.pdfRefEn;
-    if (state.lang === "en" && q.pdfRef && q.pdfRef !== q.pdfRefEn) return q.pdfRef;
+    if (UI_LANG === "both") return q.pdfRefEn || "";
+    if (UI_LANG === "zh" && q.pdfRefEn && q.pdfRefEn !== q.pdfRef) return q.pdfRefEn;
+    if (UI_LANG === "en" && q.pdfRef && q.pdfRef !== q.pdfRefEn) return q.pdfRef;
     return "";
   }
   function pdfRefBadgeHtml(q) {
     const ref = pdfRefOf(q);
     if (!ref) return "";
     const title = pdfRefTitle(q);
-    const page = q.pdfPage ? (state.lang === "en" ? " · p." + q.pdfPage : " · 第" + q.pdfPage + "页") : "";
+    const page = q.pdfPage ? (UI_LANG === "en" ? " · p." + q.pdfPage : " · 第" + q.pdfPage + "页") : "";
     return (
       '<span class="badge pdf-ref"' +
       (title ? ' title="' + escapeHtml(title) + '"' : "") +
@@ -790,7 +791,7 @@
     return EX;
   }
   function saveEx() { try { localStorage.setItem(extrasKey(), JSON.stringify(ex())); } catch (e) {} }
-  function L(zh, en) { return state.lang === "en" ? en : state.lang === "both" ? zh + " / " + en : zh; }
+  function L(zh, en) { return UI_LANG === "en" ? en : UI_LANG === "both" ? zh + " / " + en : zh; }
   function dayStr(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function todayCount() { return ex().days[dayStr(new Date())] || 0; }
   function streakDays() {
@@ -989,8 +990,8 @@
     const a = (q.answer || []).join(" ");
     const y = (sel || []).slice().sort().join(" ") || "—";
     const ok = graded && isCorrect(q, sel);
-    return '<p role="status" class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + (state.lang === "en" ? ": " : "：")) + "<b>" + escapeHtml(a) + "</b>" +
-      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (state.lang === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
+    return '<p role="status" class="ans-summary' + (graded ? (ok ? " ok" : " bad") : "") + '">' + escapeHtml(L("正确答案", "Answer") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(a) + "</b>" +
+      (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b> " + (ok ? "✓" : "✗") : "") + "</p>";
   }
   function questionsByFilter(filter) {
     if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
@@ -1260,7 +1261,7 @@
   function formatUserAnswer(q, selected) {
     const sep = "\n";
     const pack = Object.assign({}, t());
-    if (state.lang === "both") {
+    if (UI_LANG === "both") {
       pack.unanswered = "（未选 / none）";
       pack.notAnswered = "未作答 / No answer";
     }
@@ -1543,14 +1544,14 @@
     );
     if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
       const counts = domainCounts();
-      const labels = state.lang === "en" ? (exam.domainLabelsEn || {}) : (exam.domainLabelsZh || pack.domain || {});
+      const labels = UI_LANG === "en" ? (exam.domainLabelsEn || {}) : (exam.domainLabelsZh || pack.domain || {});
       // pack.domain for zh chrome; for both use zh labels
       const zhLabels = (exam.domainLabelsZh || pack.domain || {});
       const enLabels = (exam.domainLabelsEn || {});
       DOMAIN_ORDER.forEach((d) => {
         let lab = zhLabels[d] || d;
-        if (state.lang === "en") lab = enLabels[d] || lab;
-        else if (state.lang === "both" && enLabels[d] && enLabels[d] !== lab) lab = lab; // keep zh short on cards
+        if (UI_LANG === "en") lab = enLabels[d] || lab;
+        else if (UI_LANG === "both" && enLabels[d] && enLabels[d] !== lab) lab = lab; // keep zh short on cards
         // Prefer short I18N labels when available
         if (pack.statPlan && d === "plan") lab = pack.statPlan;
         if (pack.statGenai && d === "genai") lab = pack.statGenai;
@@ -1577,14 +1578,14 @@
         '<div class="stat"><div class="n">' +
           choice +
           '</div><div class="l">' +
-          escapeHtml(state.lang === "en" ? "Single / choice" : "单选") +
+          escapeHtml(UI_LANG === "en" ? "Single / choice" : "单选") +
           "</div></div>"
       );
       parts.push(
         '<div class="stat"><div class="n">' +
           multi +
           '</div><div class="l">' +
-          escapeHtml(state.lang === "en" ? "Multi-select" : "多选") +
+          escapeHtml(UI_LANG === "en" ? "Multi-select" : "多选") +
           "</div></div>"
       );
     }
@@ -1592,7 +1593,7 @@
   }
 
   function unansLabel() {
-    return state.lang === "en" ? "Unanswered" : state.lang === "both" ? "未作答 / Unanswered" : "未作答";
+    return UI_LANG === "en" ? "Unanswered" : UI_LANG === "both" ? "未作答 / Unanswered" : "未作答";
   }
   /* Per-exam practice progress line for the home card */
   function practiceStatsLine() {
@@ -1606,7 +1607,7 @@
     });
     const pct = total ? Math.round((done / total) * 100) : 0;
     const acc = done ? Math.round(((done - wrong) / done) * 100) : 0;
-    if (state.lang === "en") return "Progress " + done + "/" + total + " (" + pct + "%)" + (done ? " · accuracy " + acc + "%" : "");
+    if (UI_LANG === "en") return "Progress " + done + "/" + total + " (" + pct + "%)" + (done ? " · accuracy " + acc + "%" : "");
     return "进度 " + done + "/" + total + "（" + pct + "%）" + (done ? " · 正确率 " + acc + "%" : "");
   }
 
@@ -1642,11 +1643,11 @@
       const def = exam.mockDefaultCount || counts[0];
       countSel.innerHTML = counts
         .map((n) => {
-          let label = n + (state.lang === "en" ? " questions" : " 题");
+          let label = n + (UI_LANG === "en" ? " questions" : " 题");
           if (exam.specialExam58 && n === 58) {
-            label = state.lang === "en" ? "58 questions (default, real exam)" : "58 题（默认，真实考试）";
+            label = UI_LANG === "en" ? "58 questions (default, real exam)" : "58 题（默认，真实考试）";
           } else if (n === def) {
-            label += state.lang === "en" ? " (default)" : "（默认）";
+            label += UI_LANG === "en" ? " (default)" : "（默认）";
           }
           return (
             '<option value="' +
@@ -1666,7 +1667,7 @@
       minSel.innerHTML = mins
         .map((m) => {
           let label = String(m);
-          if (m === defM) label += state.lang === "en" ? " (default)" : "（默认）";
+          if (m === defM) label += UI_LANG === "en" ? " (default)" : "（默认）";
           return (
             '<option value="' +
             m +
@@ -1688,7 +1689,7 @@
       if (!exam || exam.specialExam58) return pack.examConfigIntro;
       {
         return (
-          state.lang === "en"
+          UI_LANG === "en"
             ? "Random sample from the current bank (default " +
               (exam.mockDefaultCount || 75) +
               " Q / " +
@@ -1781,7 +1782,7 @@
     const exam = currentExam();
     const examTitle = exam ? exam.title : "";
     const subCore =
-      exam && state.lang === "en"
+      exam && UI_LANG === "en"
         ? exam.subtitleEn || exam.subtitleZh || ""
         : exam
           ? exam.subtitleZh || exam.subtitleEn || ""
@@ -1793,7 +1794,7 @@
       ".brand .sub",
       subCore +
         (QUESTIONS.length
-          ? (state.lang === "en" ? " · " : " · ") + QUESTIONS.length + (state.lang === "en" ? " Q" : " 题")
+          ? (UI_LANG === "en" ? " · " : " · ") + QUESTIONS.length + (UI_LANG === "en" ? " Q" : " 题")
           : "")
     );
     document.title = h1;
@@ -1802,12 +1803,12 @@
     if (intro) {
       if (exam && exam.id === "dop-c02") {
         intro.textContent =
-          state.lang === "en"
+          UI_LANG === "en"
             ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
             : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
       } else if (exam && (exam.id === "dp-700" || exam.id === "dp-420")) {
         intro.textContent =
-          state.lang === "en"
+          UI_LANG === "en"
             ? "Bank from your " + exam.title + " PDF; answers strictly from the PDF (answer image when present; text/image conflicts are flagged in the explanation). Domains marked (est.) are keyword guesses. Unofficial practice only."
             : "题源来自你提供的 " + exam.title + " PDF；答案严格取自 PDF（有答案图以图为准，文字版与答案图不一致处在解析中标注）。标「(估)」的考点为关键词估算。非官方真题，仅供备考练习。";
       } else {
@@ -1827,7 +1828,7 @@
       be.innerHTML = pack.btnExam + '<span class="desc">' + pack.btnExamDesc.replace(/700/g, String(PASS_SCORE)) + "</span>";
     }
     const note = $("#view-home .note");
-    if (note) note.textContent = PASS_SCORE === 700 ? pack.homeNote : pack.homeNote.replace(/约 700 \/ 1000|≈ 700 \/ 1000/, (state.lang === "en" ? "" : "") + PASS_SCORE + " / 1000 (" + SCORE_MIN + "–1000)").replace(/Microsoft/g, "AWS");
+    if (note) note.textContent = PASS_SCORE === 700 ? pack.homeNote : pack.homeNote.replace(/约 700 \/ 1000|≈ 700 \/ 1000/, (UI_LANG === "en" ? "" : "") + PASS_SCORE + " / 1000 (" + SCORE_MIN + "–1000)").replace(/Microsoft/g, "AWS");
     setTxt("#btn-practice-back", pack.backHome);
     setTxt("#btn-practice-reset", pack.resetProgress);
     setTxt("#btn-practice-prev", pack.prev);
@@ -1835,8 +1836,8 @@
     setTxt("#btn-practice-skip", pack.skip);
     setTxt("#btn-practice-submit", pack.submit);
     setTxt("#lbl-practice-showall span", pack.alwaysShow);
-    setTxt("#practice-jump-pre", state.lang === "both" ? "跳到第 / Go to Q" : pack.jumpPre);
-    setTxt("#practice-jump-suf", state.lang === "en" ? "" : I18N.zh.jumpSuf);
+    setTxt("#practice-jump-pre", UI_LANG === "both" ? "跳到第 / Go to Q" : pack.jumpPre);
+    setTxt("#practice-jump-suf", UI_LANG === "en" ? "" : I18N.zh.jumpSuf);
     setTxt("#btn-practice-jump", bi("jumpGo"));
     const jsel = $("#practice-jump-select");
     if (jsel) jsel.setAttribute("aria-label", bi("jumpPick"));
@@ -1882,12 +1883,12 @@
     if (domH) domH.textContent = pack.domainScores;
     setTxt("#btn-result-review", pack.reviewQs);
     setTxt("#btn-result-retry", pack.retry);
-    setTxt("#btn-result-home", state.lang === "en" ? "Home" : "回首页");
+    setTxt("#btn-result-home", UI_LANG === "en" ? "Home" : "回首页");
     const wrongH = $$("#view-result h2");
     if (wrongH[1]) wrongH[1].textContent = pack.wrongTitle;
     setTxt(".app-foot .foot-text", pack.foot);
     const authorTxt =
-      state.lang === "en" ? "Author: 星火" : state.lang === "both" ? "作者 / Author：星火" : "作者：星火";
+      UI_LANG === "en" ? "Author: 星火" : UI_LANG === "both" ? "作者 / Author：星火" : "作者：星火";
     setTxt(".brand .author", authorTxt);
     setTxt(".app-foot .foot-author", authorTxt);
 
@@ -1917,8 +1918,8 @@
   function templateOf(q) {
     const zh = q.templateZh || q.template || "";
     const en = q.templateEn || q.template || "";
-    if (state.lang === "zh") return zh || en;
-    if (state.lang === "en") return en || zh;
+    if (UI_LANG === "zh") return zh || en;
+    if (UI_LANG === "en") return en || zh;
     // both: one interactive template (prefer zh when they differ)
     if (zh && en && zh !== en) return zh;
     return zh || en;
@@ -2020,7 +2021,7 @@
     q.boxes.forEach((b, idx) => {
       const note = positionNoteOf(b);
       const tag =
-        state.lang === "en"
+        UI_LANG === "en"
           ? "[Box " + String(b.id).replace(/^box/i, "") + "]"
           : "【框" + String(b.id).replace(/^box/i, "") + "】";
       html +=
@@ -2057,13 +2058,13 @@
       if (note) {
         html +=
           '<div class="position-note">' +
-          escapeHtml(state.lang === "en" ? "Blank at: " : "空位在：") +
+          escapeHtml(UI_LANG === "en" ? "Blank at: " : "空位在：") +
           escapeHtml(note) +
           "</div>";
       } else {
         html +=
           '<div class="position-note">' +
-          escapeHtml(state.lang === "en" ? "Blank " + (idx + 1) : "空位 " + (idx + 1)) +
+          escapeHtml(UI_LANG === "en" ? "Blank " + (idx + 1) : "空位 " + (idx + 1)) +
           " · 【框" +
           escapeHtml(String(b.id)) +
           "】</div>";
@@ -2719,7 +2720,7 @@
     if (qs.some((q) => !q) || !(d.secondsLeft > 0)) { clearExamProgress(); return false; }
     const answered = qs.filter((q) => allBoxesSelected(q, (d.answers || {})[q.id])).length;
     const mm = Math.floor(d.secondsLeft / 60);
-    const msg = state.lang === "en"
+    const msg = UI_LANG === "en"
       ? "You have an unfinished mock exam (" + answered + "/" + qs.length + " answered, " + mm + " min left). Resume it?\n(Cancel = discard it)"
       : "有一场未完成的模拟考试（已答 " + answered + "/" + qs.length + "，剩余 " + mm + " 分钟）。是否继续？\n（取消 = 放弃该场考试）";
     if (!confirm(msg)) { clearExamProgress(); return false; }
@@ -2769,14 +2770,14 @@
   function examLocked(i) { return !state.examSubmitted && examSecOf(i) !== (state.examSecCur || 0); }
   function secIdx(s) { const o = []; state.examQuestions.forEach((q, i) => { if (examSecOf(i) === s) o.push(i); }); return o; }
   function secName(s) {
-    const zh = state.lang !== "en";
+    const zh = UI_LANG !== "en";
     if (examSecCount() === 1) return zh ? "全部题目" : "All questions";
     const names = zh ? ["第 1 部分 · 常规题", "第 2 部分 · 多判断题", "第 3 部分 · 案例研究"] : ["Section 1 · Questions", "Section 2 · Multi-judgment", "Section 3 · Case study"];
     return names[s] || ("Section " + (s + 1));
   }
   function openExamReview() { state.examReviewOpen = true; renderExam(); window.scrollTo(0, 0); }
   function renderExamReviewHtml() {
-    const zh = state.lang !== "en";
+    const zh = UI_LANG !== "en";
     const s = state.examSecCur || 0;
     const idx = secIdx(s);
     const last = s >= examSecCount() - 1;
@@ -2812,7 +2813,7 @@
       else if (k === "end") {
         const last = (state.examSecCur || 0) >= examSecCount() - 1;
         if (last) { finishExam(false); return; }
-        const zh = state.lang !== "en";
+        const zh = UI_LANG !== "en";
         if (!confirm(zh ? "确定结束本部分？结束后无法返回。" : "End this section? You won't be able to return.")) return;
         state.examSecCur++;
         state.examReviewOpen = false;
@@ -2931,7 +2932,7 @@
     const caseTabs = !!(q.caseStudy && q.caseStudyText);
     const showCase = caseTabs && state.caseTab === "case";
     if (caseTabs) {
-      const zh = state.lang !== "en";
+      const zh = UI_LANG !== "en";
       html += '<div class="case-tabs" role="tablist"><button type="button" role="tab" class="case-tab' + (showCase ? " active" : "") + '" data-tab="case">' + (zh ? "案例研究" : "Case study") + '</button><button type="button" role="tab" class="case-tab' + (showCase ? "" : " active") + '" data-tab="q">' + (zh ? "问题" : "Question") + "</button></div>";
     }
     if (showCase) html += '<div class="case-body case-tabpanel">' + formatMultiline(caseStudyTextOf(q)) + "</div>";
