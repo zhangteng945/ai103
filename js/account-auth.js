@@ -279,7 +279,8 @@
     } finally { state.syncing = false; if (state.dirty) scheduleSync(CFG.syncDebounceMs); }
   }
   var pushNow = function () { return syncNow("flush"); };
-  function scheduleSync(ms) { clearTimeout(state.timer); state.timer = setTimeout(function () { syncNow("auto"); }, ms); }
+  function autoSync() { try { return ls.getItem("itcert_autosync") !== "0"; } catch (e) { return true; } }
+  function scheduleSync(ms) { if (!autoSync()) { if (state.dirty) setSync("手动同步模式：有未同步的更改，点「立即同步」保存到账号"); return; } clearTimeout(state.timer); state.timer = setTimeout(function () { syncNow("auto"); }, ms); }
   function onLocalMergedQuiet(reason) {
     // Remote progress was merged into localStorage. App keeps answers in memory for the
     // current session — do NOT reload, remount, change bank, or reset question index.
@@ -327,6 +328,9 @@
     if (li && !state.status) setStatus(loginStatusText());
     if (!li && !state.status) setStatus("请登录后使用");
     var sb = $("sync-row"); if (sb) sb.classList.toggle("hidden", !li);
+    var tg = $("btn-acct-toggle");
+    if (!tg && panel) { tg = document.createElement("button"); tg.type = "button"; tg.id = "btn-acct-toggle"; tg.className = "btn btn-sm btn-ghost acct-toggle"; tg.textContent = "账号"; panel.parentNode.insertBefore(tg, panel); tg.onclick = function () { document.body.classList.toggle("acct-open"); }; }
+    if (tg) tg.classList.toggle("hidden", !li);
     applyAppGate(); emit();
   }
   function ensureLoginDom() {
@@ -341,8 +345,11 @@
     var panel = $("auth-panel");
     if (panel && !$("sync-row")) {
       var row = document.createElement("div"); row.id = "sync-row"; row.className = "sync-row muted hidden";
-      row.innerHTML = "<span id='sync-status'></span> <button type='button' class='btn btn-sm btn-ghost' id='btn-sync-now'>立即同步</button>";
+      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><label class='sync-auto'><input type='checkbox' id='chk-autosync'> 自动同步</label><button type='button' class='btn btn-sm' id='btn-sync-now'>立即同步</button></div>";
       panel.appendChild(row);
+      var ck = $("chk-autosync"); ck.checked = autoSync();
+      ck.onchange = function () { rawSet.call(ls, "itcert_autosync", ck.checked ? "1" : "0"); if (ck.checked) { if (state.dirty) syncNow("manual"); else setSync("已开启自动同步"); } else setSync("已切换为手动同步，需要时点「立即同步」"); };
+      var lo2 = $("btn-auth-logout"); if (lo2) row.querySelector(".sync-ctl").appendChild(lo2);
       $("btn-sync-now").onclick = function () { syncNow("manual"); };
     }
   }
@@ -351,7 +358,7 @@
   function injectCss() {
     if ($("itcert-sync-css")) return;
     var s = document.createElement("style"); s.id = "itcert-sync-css";
-    s.textContent = ".sync-row{margin-top:.4rem;font-size:.85rem}.sync-banner{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#1f2937;color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:9999;font-size:.9rem}.sync-banner a{color:#93c5fd}" +
+    s.textContent = ".sync-row{margin-top:.4rem;font-size:.85rem}.sync-ctl{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.35rem}.sync-auto{display:inline-flex;align-items:center;gap:.3rem}.acct-toggle{margin-left:auto}body.auth-ok #auth-panel{display:none!important}body.auth-ok.acct-open #auth-panel{display:flex!important;flex-direction:column;align-items:flex-start;width:100%;flex:1 1 100%;padding:.75rem 1rem;margin-top:.5rem;background:var(--bg-card,rgba(255,255,255,.06));border-radius:12px;gap:.3rem}body.auth-ok.acct-open .auth-status{white-space:normal;font-size:.85rem}.sync-banner{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#1f2937;color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:9999;font-size:.9rem}.sync-banner a{color:#93c5fd}" +
       ".bk-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998;display:flex;align-items:center;justify-content:center}.bk-box{background:var(--card,#fff);color:inherit;max-width:560px;width:92%;max-height:90vh;overflow:auto;border-radius:10px;padding:1rem}.bk-box textarea{width:100%;min-height:7rem;font-family:monospace;font-size:.75rem;word-break:break-all}.bk-box .row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}.bk-msg{font-size:.85rem;min-height:1.2em}" +
       "html.auth-required body:not(.auth-ok) #btn-backup{display:none}";
     document.head.appendChild(s);
@@ -421,12 +428,12 @@
       loadBanks().then(function () { state.initialMerge = true; syncNow("load"); }, function (e) { setStatus(e.message || "题库加载失败"); });
     } else if (!CFG.protectedBanks) bootResolve();
     document.addEventListener("visibilitychange", function () {
-      if (!state.session) return;
+      if (!state.session || !autoSync()) return;
       if (document.visibilityState === "hidden") { if (state.dirty) syncNow("hide"); }
       else if (shouldPull("visible")) syncNow("visible");
     });
-    global.addEventListener("pagehide", function () { if (state.session && state.dirty) syncNow("hide"); });
-    global.addEventListener("online", function () { if (state.session && state.dirty) syncNow("online"); });
+    global.addEventListener("pagehide", function () { if (state.session && state.dirty && autoSync()) syncNow("hide"); });
+    global.addEventListener("online", function () { if (state.session && state.dirty && autoSync()) syncNow("online"); });
   }
 
   if (ENABLED) {
