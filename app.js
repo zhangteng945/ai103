@@ -870,7 +870,7 @@
     const rec = { qid: q.id, exam: currentExamId, num: q.pdfQuestionNum || q.id, msg: msg.slice(0, 500), ts: dayStr(new Date()) + " " + new Date().toTimeString().slice(0, 5) };
     reportSink(rec);
     const txt = reportText([rec]);
-    alert((copyText(txt) ? L("已保存并复制，请发给 FXS-张腾：\n\n", "Saved & copied. Please send to FXS-张腾:\n\n") : L("已保存，请复制以下内容发给 FXS-张腾：\n\n", "Saved. Copy this and send to FXS-张腾:\n\n")) + txt);
+    alert((copyText(txt) ? L("已保存并复制，请发给 星火：\n\n", "Saved & copied. Please send to 星火:\n\n") : L("已保存，请复制以下内容发给 星火：\n\n", "Saved. Copy this and send to 星火:\n\n")) + txt);
   }
   function renderQExtras(q) {
     let box = $("#q-extras");
@@ -1887,7 +1887,7 @@
     if (wrongH[1]) wrongH[1].textContent = pack.wrongTitle;
     setTxt(".app-foot .foot-text", pack.foot);
     const authorTxt =
-      state.lang === "en" ? "Author: FXS-张腾" : state.lang === "both" ? "作者 / Author：FXS-张腾" : "作者：FXS-张腾";
+      state.lang === "en" ? "Author: 星火" : state.lang === "both" ? "作者 / Author：星火" : "作者：星火";
     setTxt(".brand .author", authorTxt);
     setTxt(".app-foot .foot-author", authorTxt);
 
