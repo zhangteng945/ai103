@@ -3,10 +3,14 @@
  * Works in browsers (window.ITCERT_PROGRESS) and Node (module.exports) for tests.
  * Local-first: localStorage per-exam keys remain the source of truth; this only
  * reads/writes those same keys:
- *   itcert_practice_v1_<exam>  {answers, submitted, flags, wrongIds}
+ *   itcert_practice_v1_<exam>  {answers, submitted, flags, wrongIds, clearedIds}
  *   itcert_exam_last_v1_<exam> last mock exam result
  *   itcert_exam_hist_v1_<exam> [ {t, ...exam_last} ]  (history, added by sync layer)
  *   itcert_sync_meta_v1         {deviceId, ts:{key:ms}, lastSyncAt, uid}
+ *
+ * clearedIds is an explicit tombstone: those question ids were removed on purpose
+ * (reset / repair). Import-merge must not union them back. Manual upload/download
+ * in account-auth overwrites the whole snapshot and does not call mergeSnapshots.
  */
 (function (root, factory) {
   var api = factory();
@@ -55,7 +59,7 @@
       if (!Array.isArray(hist)) hist = [];
       if (!p && !last && !hist.length) return;
       exams[id] = {
-        p: p ? { answers: isObj(p.answers) ? p.answers : {}, submitted: trueSet(p.submitted), flags: trueSet(p.flags), wrongIds: trueSet(p.wrongIds) } : null,
+        p: p ? { answers: isObj(p.answers) ? p.answers : {}, submitted: trueSet(p.submitted), flags: trueSet(p.flags), wrongIds: trueSet(p.wrongIds), clearedIds: trueSet(p.clearedIds) } : null,
         pt: meta.ts[P + id] || 0,
         last: last, lt: meta.ts[L + id] || 0,
         hist: hist,
@@ -80,25 +84,72 @@
   }
 
   /**
-   * Merge one exam's practice. answered/submitted/wrongIds/flags = union;
-   * a question answered on both sides with different answers → newer side (pt) wins.
+   * Merge one exam's practice for backup import only (not cloud upload/download).
+   * Answers: newer side wins per id. submitted/flags start as a union, then
+   * tombstones and validated wrongs are applied.
+   * wrongIds are NOT a blind union:
+   *   - clearedIds on the newer side (unless that side touched the id again) stay cleared
+   *   - when both sides have an answer, only the newer side's wrong bit is kept
+   *   - a newer answer that is not marked wrong does not resurrect an older wrong
    */
   function mergePractice(a, at, b, bt) {
     if (!a) return b ? JSON.parse(JSON.stringify(b)) : null;
     if (!b) return JSON.parse(JSON.stringify(a));
     var newer = (bt || 0) > (at || 0) ? b : a, older = newer === a ? b : a;
-    var out = { answers: {}, submitted: {}, flags: {}, wrongIds: {} };
+    var out = { answers: {}, submitted: {}, flags: {}, wrongIds: {}, clearedIds: {} };
     Object.keys(older.answers || {}).forEach(function (k) { out.answers[k] = older.answers[k]; });
     Object.keys(newer.answers || {}).forEach(function (k) { out.answers[k] = newer.answers[k]; });
-    ["submitted", "flags", "wrongIds"].forEach(function (f) {
+    ["submitted", "flags"].forEach(function (f) {
       Object.assign(out[f], trueSet(older[f]), trueSet(newer[f]));
     });
-    // A question submitted on the newer side owns its answer; if only older submitted it, keep older's answer.
     Object.keys(out.submitted).forEach(function (k) {
       var src = newer.submitted && newer.submitted[k] ? newer : older;
       if (src.answers && src.answers[k] !== undefined) out.answers[k] = src.answers[k];
     });
+
+    var cleared = Object.assign({}, trueSet(older.clearedIds), trueSet(newer.clearedIds));
+    function newerTouched(id) {
+      if (newer.wrongIds && newer.wrongIds[id]) return true;
+      if (newer.submitted && newer.submitted[id]) return true;
+      if (newer.flags && newer.flags[id]) return true;
+      if (newer.answers && newer.answers[id] !== undefined) return true;
+      return false;
+    }
+    Object.keys(cleared).forEach(function (id) { if (newerTouched(id)) delete cleared[id]; });
+
+    var ids = {};
+    [older, newer].forEach(function (side) {
+      Object.keys(trueSet(side.wrongIds)).forEach(function (k) { ids[k] = 1; });
+      Object.keys(side.answers || {}).forEach(function (k) { ids[k] = 1; });
+    });
+    Object.keys(ids).forEach(function (id) {
+      if (cleared[id]) return;
+      var nAns = newer.answers && newer.answers[id] !== undefined;
+      var oAns = older.answers && older.answers[id] !== undefined;
+      var nWrong = !!(newer.wrongIds && newer.wrongIds[id]);
+      var oWrong = !!(older.wrongIds && older.wrongIds[id]);
+      if (nAns && oAns) {
+        if (nWrong) out.wrongIds[id] = true;
+        return;
+      }
+      if (nAns && !nWrong) return;
+      if (nWrong || oWrong) out.wrongIds[id] = true;
+    });
+
+    Object.keys(cleared).forEach(function (id) {
+      delete out.answers[id];
+      delete out.submitted[id];
+      delete out.flags[id];
+      delete out.wrongIds[id];
+      out.clearedIds[id] = true;
+    });
     return out;
+  }
+
+  /** Replace every exam progress key with snap. Used by manual「下载进度」(cloud wins). */
+  function replaceAll(ls, snap, setRaw) {
+    clearAll(ls);
+    if (snap && isObj(snap) && isObj(snap.exams)) apply(ls, snap, setRaw);
   }
 
   function mergeSnapshots(local, remote) {
@@ -212,6 +263,6 @@
   }
 
   return { VERSION: VERSION, META_KEY: META_KEY, snapshot: snapshot, mergeSnapshots: mergeSnapshots, mergePractice: mergePractice,
-    mergeHist: mergeHist, sameData: sameData, apply: apply, noteWrite: noteWrite, clearAll: clearAll, readMeta: readMeta,
+    mergeHist: mergeHist, sameData: sameData, apply: apply, noteWrite: noteWrite, clearAll: clearAll, replaceAll: replaceAll, readMeta: readMeta,
     writeMeta: writeMeta, encode: encode, decode: decode, keys: { P: P, L: L, H: H } };
 });

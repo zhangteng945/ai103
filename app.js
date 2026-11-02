@@ -11,6 +11,10 @@
 
   /* Active bank — reassigned when switching exams (shadows any global QUESTIONS). */
   let QUESTIONS = [];
+  let bankMeta = { examId: "", total: 0, domains: null, index: null, version: "", ready: false };
+  let qById = {};
+  let qOrder = [];
+  let practiceLoadToken = 0;
   let DOMAIN_ORDER = ["plan", "genai", "vision", "text", "extract"];
   let DOMAIN_WEIGHTS = { plan: 0.275, genai: 0.325, vision: 0.125, text: 0.125, extract: 0.125 };
   let currentExamId = "ai103";
@@ -99,6 +103,7 @@
     state.practiceSubmitted = {};
     state.practiceFlags = {};
     state.wrongIds = {};
+    state.clearedIds = {};
     state.practiceReveal = {};
     state.boxChoiceOrder = {};
     state.practiceOrder = {};
@@ -119,25 +124,26 @@
     const api = examApi();
     if (!api) return false;
     const exam = api.get(examId);
-    if (!exam || (exam.id === currentExamId && QUESTIONS.length)) {
-      if (exam && exam.id === currentExamId) {
-        // still refresh UI
-        if (!opts || !opts.silent) {
-          rebuildExamConfigControls();
-          rebuildPracticeFilter();
-          rebuildHomeStats();
-          applyChrome();
-          updateExamSwitcherUI();
-        }
-        return true;
+    if (!exam) return false;
+    const same = exam.id === currentExamId;
+    const ready = protectedBanksOn() ? (bankMeta.ready && bankMeta.examId === exam.id) : QUESTIONS.length > 0;
+    if (same && (ready || QUESTIONS.length)) {
+      if (!opts || !opts.silent) {
+        rebuildExamConfigControls();
+        rebuildPracticeFilter();
+        rebuildHomeStats();
+        applyChrome();
+        updateExamSwitcherUI();
       }
-      return false;
+      return true;
     }
+    if (same && protectedBanksOn() && !ready) return false;
     if (api.saveExamId) api.saveExamId(exam.id);
     applyExamConfig(exam);
     clearSessionProgressState();
     state.practiceOrder = loadOrderMap();
     loadProgress();
+    repairWrongBook();
     // Do not auto-load last exam into live state on switch; peek only via home button
     rebuildExamConfigControls();
     rebuildPracticeFilter();
@@ -270,7 +276,7 @@
       scoreSub: (c, t, pct, pass, auto) =>
         "正确 " + c + " / " + t + "（" + pct + "%）· 及格线 " + PASS_SCORE + " / 1000（标准分 " + SCORE_MIN + "–1000）· " +
         (pass ? "及格" : "未及格") + (auto ? " · 时间到自动交卷" : ""),
-      confirmReset: "确定重置当前筛选范围内的练习进度（作答与标记）？",
+      confirmReset: "确定重置当前筛选范围内的练习进度（作答、标记和错题）？云端不会自动更新，需要覆盖云端请之后点「上传进度」。",
       confirmLeave: "离开将放弃本场模拟考试（进度不保存）。确定？",
       confirmHandInUnanswered: (n) => "还有 " + n + " 题未作答，确定交卷？",
       confirmHandIn: "确定交卷并查看成绩？",
@@ -636,6 +642,7 @@
     practiceSubmitted: {}, // id -> true
     practiceFlags: {},
     wrongIds: {}, // id -> true (persisted wrong-answer bank for 错题回顾)
+    clearedIds: {}, // id -> true tombstone so import-merge cannot restore a reset wrong
     examQuestions: [],
     examIndex: 0,
     examAnswers: {},
@@ -693,6 +700,9 @@
       }
       if (protectedBanksOn()) {
         QUESTIONS = [];
+        qById = {};
+        qOrder = [];
+        bankMeta = { examId: "", total: 0, domains: null, index: null, version: "", ready: false };
         state.practiceList = [];
         state.examQuestions = [];
       }
@@ -705,25 +715,20 @@
       bankUserId = uid;
       if (protectedBanksOn()) {
         QUESTIONS = [];
+        qById = {};
+        qOrder = [];
+        bankMeta = { examId: "", total: 0, domains: null, index: null, version: "", ready: false };
         state.practiceList = [];
         state.examQuestions = [];
       }
     }
     // Only auto-open home when leaving the login gate (not on token refresh mid-practice).
-    // Protected mode loads the saved exam here — login itself does not download banks.
+    // Protected mode loads the saved exam catalog here — not the full bank.
     const enterApp = state.mode === "auth" || !state.mode || switched;
-    if (enterApp && protectedBanksOn() && !QUESTIONS.length) {
+    if (enterApp && protectedBanksOn() && (!bankMeta.ready || switched)) {
       const api = examApi();
       const id = api && api.loadSavedExamId ? api.loadSavedExamId() : currentExamId;
-      renderHome();
-      loadOneExam(id).then(function () {
-        hideBankBusy();
-        if (!authAllowsApp()) return;
-        switchExam(id);
-      }, function (err) {
-        alert((err && err.message) || "题库加载失败，请检查网络后重试");
-        if (authAllowsApp()) renderHome();
-      });
+      openExam(id);
       return;
     }
     if (state.mode === "auth" || !state.mode) {
@@ -761,17 +766,27 @@
         });
         state.practiceFlags = cleaned;
       }
+      state.clearedIds = {};
+      if (data.clearedIds) {
+        Object.keys(data.clearedIds).forEach((id) => {
+          if (data.clearedIds[id]) state.clearedIds[id] = true;
+        });
+      }
       if (data.wrongIds) {
         const cleaned = {};
         Object.keys(data.wrongIds).forEach((id) => {
-          if (data.wrongIds[id]) cleaned[id] = true;
+          if (data.wrongIds[id] && !state.clearedIds[id]) cleaned[id] = true;
         });
         state.wrongIds = cleaned;
       }
+      Object.keys(state.clearedIds).forEach((id) => {
+        delete state.wrongIds[id];
+      });
       sanitizeProgress();
       if (!data.wrongIds) {
         let derived = false;
-        QUESTIONS.forEach((q) => {
+        questionList().forEach((q) => {
+          if (state.clearedIds[q.id]) return;
           if (state.practiceSubmitted[q.id] && !isCorrect(q, state.practiceAnswers[q.id])) {
             state.wrongIds[q.id] = true;
             derived = true;
@@ -787,14 +802,13 @@
   /** Drop saved answers that no longer fit the current bank (e.g. saved by an older version),
    *  so a question is never shown pre-marked wrong with values the user can't see. */
   function sanitizeProgress() {
-    const byId = {};
-    QUESTIONS.forEach((q) => (byId[q.id] = q));
     let changed = false;
     Object.keys(state.practiceAnswers).forEach((id) => {
-      const q = byId[id];
+      const q = loadedQuestion(id);
+      if (!q) return;
       const a = state.practiceAnswers[id];
-      let ok = !!q;
-      if (ok && isBoxQ(q)) {
+      let ok = true;
+      if (isBoxQ(q)) {
         ok = !!a && typeof a === "object" && !Array.isArray(a) &&
           q.boxes.every((b) => {
             const v = a[b.id];
@@ -807,25 +821,30 @@
       if (!ok) {
         delete state.practiceAnswers[id];
         delete state.practiceSubmitted[id];
-        delete state.wrongIds[id];
+        if (state.wrongIds[id]) {
+          delete state.wrongIds[id];
+          state.clearedIds[id] = true;
+        }
         changed = true;
       }
     });
     Object.keys(state.practiceSubmitted).forEach((id) => {
-      const q = byId[id];
-      if (!q || !allBoxesSelected(q, state.practiceAnswers[id])) {
+      const q = loadedQuestion(id);
+      if (!q) return;
+      if (!allBoxesSelected(q, state.practiceAnswers[id])) {
         delete state.practiceSubmitted[id];
         changed = true;
       }
     });
+    const cat = catalogIds();
     Object.keys(state.practiceFlags).forEach((id) => {
-      if (!byId[id] || !state.practiceFlags[id]) {
+      if (!state.practiceFlags[id] || (cat.complete && !cat.set.has(String(id)))) {
         delete state.practiceFlags[id];
         changed = true;
       }
     });
     Object.keys(state.wrongIds).forEach((id) => {
-      if (!byId[id] || !state.wrongIds[id]) {
+      if (!state.wrongIds[id]) {
         delete state.wrongIds[id];
         changed = true;
       }
@@ -841,13 +860,18 @@
       });
       const wrongIds = {};
       Object.keys(state.wrongIds).forEach((id) => {
-        if (state.wrongIds[id]) wrongIds[id] = true;
+        if (state.wrongIds[id] && !(state.clearedIds && state.clearedIds[id])) wrongIds[id] = true;
+      });
+      const clearedIds = {};
+      Object.keys(state.clearedIds || {}).forEach((id) => {
+        if (state.clearedIds[id]) clearedIds[id] = true;
       });
       const payload = JSON.stringify({
         answers: state.practiceAnswers,
         submitted: state.practiceSubmitted,
         flags: flags,
         wrongIds: wrongIds,
+        clearedIds: clearedIds,
       });
       localStorage.setItem(storagePracticeKey(), payload);
       // Migrate: once written to namespaced key, drop legacy ai103 key to avoid split brain
@@ -865,7 +889,7 @@
   }
 
   function wrongCount() {
-    return Object.keys(state.wrongIds).filter((id) => state.wrongIds[id]).length;
+    return visibleWrongIds().length;
   }
 
   // ===== Study extras (per-exam localStorage: itcert_extras_v1_<examId>) =====
@@ -925,22 +949,56 @@
   function domOf(q) { return usesDD() ? ddOf(q) : q.domain; }
   function domStats() {
     return domList().map((d) => {
-      let total = 0, done = 0, ok = 0;
-      QUESTIONS.forEach((q) => {
-        if (domOf(q) !== d.id) return;
-        total++;
-        if (state.practiceSubmitted[q.id]) { done++; if (isCorrect(q, state.practiceAnswers[q.id])) ok++; }
+      let total = 0, done = 0, ok = 0, graded = 0;
+      if (protectedBanksOn() && bankMeta.domains && bankMeta.domains[d.id] != null && !usesDD()) {
+        total = bankMeta.domains[d.id];
+      }
+      const entries = (bankMeta.index && bankMeta.index.length) ? bankMeta.index : questionList();
+      if (!(protectedBanksOn() && bankMeta.domains && bankMeta.domains[d.id] != null && !usesDD())) {
+        entries.forEach((q) => {
+          const dom = q.domain && !usesDD() ? q.domain : (q.dd && usesDD() ? q.dd : (q.stem || q.options ? domOf(q) : null));
+          if (dom === d.id) total++;
+        });
+      } else if (bankMeta.index && bankMeta.index.length) {
+        total = bankMeta.index.filter((e) => e.domain === d.id).length || total;
+      }
+      const cat = catalogIds();
+      Object.keys(state.practiceSubmitted).forEach((id) => {
+        if (!state.practiceSubmitted[id]) return;
+        if (cat.complete && !cat.set.has(String(id))) return;
+        const ent = (bankMeta.index || []).find((e) => String(e.id) === String(id));
+        const q = loadedQuestion(id);
+        const dom = ent ? (usesDD() ? ent.dd : ent.domain) : (q ? domOf(q) : null);
+        if (dom !== d.id) return;
+        done++;
+        if (q) { graded++; if (isCorrect(q, state.practiceAnswers[id])) ok++; }
       });
-      return { id: d.id, label: d.label, total, done, ok };
+      return { id: d.id, label: d.label, total, done, ok: graded === done ? ok : null };
     });
   }
   function coverage() {
-    const e = ex(); let seen = 0, done = 0, ok = 0;
-    QUESTIONS.forEach((q) => {
-      if (e.seen[q.id] || state.practiceSubmitted[q.id]) seen++;
-      if (state.practiceSubmitted[q.id]) { done++; if (isCorrect(q, state.practiceAnswers[q.id])) ok++; }
+    const e = ex(); let seen = 0, done = 0, ok = 0, graded = 0;
+    const total = statTotal();
+    const cat = catalogIds();
+    const ids = cat.complete ? Array.from(cat.set) : questionList().map((q) => String(q.id));
+    const seenSet = {};
+    ids.forEach((id) => { seenSet[id] = 1; });
+    Object.keys(e.seen || {}).forEach((id) => { if (!cat.complete || cat.set.has(String(id))) seenSet[id] = 1; });
+    Object.keys(seenSet).forEach((id) => {
+      if (e.seen[id] || state.practiceSubmitted[id]) seen++;
+      if (state.practiceSubmitted[id]) {
+        done++;
+        const q = loadedQuestion(id);
+        if (q) { graded++; if (isCorrect(q, state.practiceAnswers[id])) ok++; }
+      }
     });
-    return { seen, total: QUESTIONS.length, acc: done ? Math.round((ok / done) * 100) : null };
+    if (!ids.length && !protectedBanksOn()) {
+      QUESTIONS.forEach((q) => {
+        if (e.seen[q.id] || state.practiceSubmitted[q.id]) seen++;
+        if (state.practiceSubmitted[q.id]) { done++; if (isCorrect(q, state.practiceAnswers[q.id])) ok++; graded++; }
+      });
+    }
+    return { seen, total: total, acc: graded && graded === done ? Math.round((ok / graded) * 100) : null };
   }
   function searchMatch(q, kw) {
     const s = [q.stem, q.stemEn, q.stemZh, q.pdfQuestionNum, q.id].concat((q.options || []).map((o) => [o.text, o.textEn, o.textZh].join(" "))).join(" ").toLowerCase();
@@ -1060,11 +1118,11 @@
     h += scoreChart() + "</div>";
     h += '<div class="hx-card"><b>' + escapeHtml(L("分领域正确率（点击练习）", "Accuracy by domain (tap to practise)")) + '</b><div class="dom-table">';
     domStats().forEach((d) => {
-      const acc = d.done ? Math.round((d.ok / d.done) * 100) : null;
+      const acc = d.done && d.ok != null ? Math.round((d.ok / d.done) * 100) : null;
       h += '<button type="button" class="dom-row" data-hx="dom" data-d="' + d.id + '"><span class="dl">' + escapeHtml(d.label) + '</span><span class="dn">' + d.done + "/" + d.total + '</span><span class="da ' + (acc == null ? "" : acc >= 75 ? "ok" : "bad") + '">' + (acc == null ? "—" : acc + "%") + "</span></button>";
     });
     h += "</div></div>";
-    const nf = Object.keys(e.favs).filter((id) => QUESTIONS.some((q) => q.id === id)).length;
+    const nf = Object.keys(e.favs).filter((id) => e.favs[id] && questionKnown(id)).length;
     const nr = Object.keys(e.reports).length;
     h += '<div class="hx-card hx-row"><button type="button" class="btn btn-sm" data-hx="favs"' + (nf ? "" : " disabled") + ">★ " + escapeHtml(L("收藏 ", "Favourites ")) + nf + "</button>" +
       '<button type="button" class="btn btn-sm" data-hx="search">🔍 ' + escapeHtml(L("搜索题目", "Search")) + "</button>" +
@@ -1087,6 +1145,24 @@
     if (kw == null) return;
     state.searchQ = kw.trim();
     if (!state.searchQ) return;
+    if (protectedBanksOn()) {
+      const A = window.AI103Auth;
+      if (!A || typeof A.loadExamSearch !== "function") { alert("题库服务暂不支持搜索，已停止，不会下载整库。"); return; }
+      showBankBusy("正在搜索…");
+      A.loadExamSearch(currentExamId, state.searchQ, 0, 50).then(function (pack) {
+        hideBankBusy();
+        state.searchMatchTotal = pack.matchTotal || 0;
+        state.searchResults = pack.questions || [];
+        absorbQuestions(state.searchResults, null);
+        if (!state.searchMatchTotal) { alert(L("没有匹配的题目", "No matching questions")); return; }
+        rebuildPracticeFilter();
+        startPractice("search");
+      }, function (err) {
+        hideBankBusy();
+        alert((err && err.message) || "搜索失败");
+      });
+      return;
+    }
     const n = QUESTIONS.filter((q) => searchMatch(q, state.searchQ)).length;
     if (!n) { alert(L("没有匹配的题目", "No matching questions")); return; }
     rebuildPracticeFilter();
@@ -1112,6 +1188,7 @@
       (graded ? " ｜ " + escapeHtml(L("你的选择", "Your pick") + (UI_LANG === "en" ? ": " : "：")) + "<b>" + escapeHtml(y) + "</b>" : "") + "</p>";
   }
   function questionsByFilter(filter) {
+    if (protectedBanksOn() && bankMeta.ready) return buildProtectedList(filter);
     if (filter === "favs") return QUESTIONS.filter((q) => !!ex().favs[q.id]);
     if (filter === "search") return state.searchQ ? QUESTIONS.filter((q) => searchMatch(q, state.searchQ)) : [];
     if (/^dd\d$/.test(filter || "")) return QUESTIONS.filter((q) => ddOf(q) === filter);
@@ -1165,8 +1242,7 @@
       const raw = readExamLastRaw();
       if (!raw) return false;
       const data = JSON.parse(raw);
-      const byId = {};
-      QUESTIONS.forEach((q) => (byId[q.id] = q));
+      const byId = questionMap();
       const qs = (data.questionIds || []).map((id) => byId[id]).filter(Boolean);
       if (!qs.length || !data.result) return false;
       state.examQuestions = qs;
@@ -1183,7 +1259,7 @@
         score1000: data.result.score1000,
         pass: data.result.pass,
         byDom: data.result.byDom || {},
-        wrongList: (data.result.wrongIds || []).map((id) => byId[id]).filter(Boolean),
+        wrongList: (data.result.wrongIds || []).map((id) => questionMap()[id]).filter(Boolean),
         auto: !!data.result.auto,
       };
       return true;
@@ -1217,17 +1293,29 @@
   }
 
   function openLastExamResult() {
-    if (protectedBanksOn() && !QUESTIONS.length) {
-      ensureBank(currentExamId, function () {
-        switchExam(currentExamId);
-        if (QUESTIONS.length) openLastExamResult();
+    let ids = [];
+    try {
+      const data = JSON.parse(readExamLastRaw() || "null");
+      ids = (data && data.questionIds) || [];
+    } catch (e) {}
+    const show = function () {
+      if (!loadExamLast()) return;
+      showView("result");
+      renderResult();
+    };
+    if (protectedBanksOn() && ids.length && window.AI103Auth && typeof window.AI103Auth.loadExamByIds === "function") {
+      showBankBusy("正在加载考试题目…");
+      window.AI103Auth.loadExamByIds(currentExamId, ids).then(function (qs) {
+        hideBankBusy();
+        absorbQuestions(qs, null);
+        show();
+      }, function (err) {
+        hideBankBusy();
+        alert((err && err.message) || "无法加载上次考试的题目");
       });
       return;
     }
-    // Always reload from storage so we don't clobber with a partial in-memory state
-    if (!loadExamLast()) return;
-    showView("result");
-    renderResult();
+    show();
   }
 
   function shuffle(arr) {
@@ -1240,9 +1328,17 @@
   }
 
   function shuffleOptions(q) {
+    const YN = typeof window !== "undefined" ? window.ITCERT_YN : null;
+    if (YN && typeof YN.keepOptionOrder === "function" && YN.keepOptionOrder(q)) return q;
     if (q && (q.type === "hotspot" || q.type === "drag") && q.boxes && q.boxes.length) return q;
+    if (isBinaryYNQuestion(q)) return q;
     const opts = shuffle(q.options || []);
     return Object.assign({}, q, { options: opts });
+  }
+  function isBinaryYNQuestion(q) {
+    const YN = typeof window !== "undefined" ? window.ITCERT_YN : null;
+    if (YN && typeof YN.isBinaryYNQuestion === "function") return YN.isBinaryYNQuestion(q);
+    return false;
   }
 
 
@@ -1255,7 +1351,7 @@
   }
 
   function isYNChoice(c) {
-    const yn = { yes: 1, no: 1, "是": 1, "否": 1, y: 1, n: 1 };
+    const yn = { yes: 1, no: 1, "是": 1, "否": 1, y: 1, n: 1, true: 1, false: 1 };
     if (typeof c === "string") return !!yn[c.toLowerCase()] || !!yn[c];
     const en = String(c.en || c.key || "").toLowerCase().trim();
     const zh = String(c.zh || "").trim();
@@ -1627,7 +1723,11 @@
   }
   function sameKey(a, b) {
     const x = normKey(a);
-    return x !== "" && x === normKey(b);
+    const y = normKey(b);
+    if (x !== "" && x === y) return true;
+    const YN = typeof window !== "undefined" ? window.ITCERT_YN : null;
+    if (YN && YN.isYNToken && YN.isYNToken(x) && YN.isYNToken(y) && x.toLowerCase() === y.toLowerCase()) return true;
+    return false;
   }
 
   function arraysEqualAsSet(a, b) {
@@ -1662,13 +1762,18 @@
     const parts = [];
     parts.push(
       '<div class="stat"><div class="n" id="stat-total">' +
-        QUESTIONS.length +
+        statTotal() +
         '</div><div class="l">' +
         escapeHtml(pack.statAll) +
         "</div></div>"
     );
     if (exam && exam.statMode === "domains" && DOMAIN_ORDER.length) {
-      const counts = domainCounts();
+      const counts = {};
+      DOMAIN_ORDER.forEach((d) => {
+        if (protectedBanksOn() && bankMeta.domains && bankMeta.domains[d] != null) counts[d] = bankMeta.domains[d];
+        else if (bankMeta.index && bankMeta.index.length) counts[d] = bankMeta.index.filter((e) => e.domain === d).length;
+        else counts[d] = (domainCounts()[d] || 0);
+      });
       const labels = UI_LANG === "en" ? (exam.domainLabelsEn || {}) : (exam.domainLabelsZh || pack.domain || {});
       // pack.domain for zh chrome; for both use zh labels
       const zhLabels = (exam.domainLabelsZh || pack.domain || {});
@@ -1694,11 +1799,19 @@
         );
       });
     } else {
-      let choice = 0, multi = 0;
-      QUESTIONS.forEach((q) => {
-        if (getControl(q) === "multi") multi++;
+      let choice = 0, multi = 0, typed = false;
+      const typeSource = (bankMeta.index && bankMeta.index.length) ? bankMeta.index : (!protectedBanksOn() ? QUESTIONS : []);
+      typeSource.forEach((q) => {
+        typed = true;
+        const multiQ = q.type === "multi" || q.control === "multi" || (!q._stub && getControl(q) === "multi");
+        if (multiQ) multi++;
         else choice++;
       });
+      if (protectedBanksOn() && !typed) {
+        parts.push('<div class="stat"><div class="n">—</div><div class="l">' + escapeHtml("题型统计") + "</div></div>");
+        wrap.innerHTML = parts.join("");
+        return;
+      }
       parts.push(
         '<div class="stat"><div class="n">' +
           choice +
@@ -1721,19 +1834,24 @@
     return UI_LANG === "en" ? "Unanswered" : UI_LANG === "both" ? "未作答 / Unanswered" : "未作答";
   }
   /* Per-exam practice progress line for the home card */
+  function submittedIdsInBank() {
+    const cat = catalogIds();
+    return Object.keys(state.practiceSubmitted).filter((id) => state.practiceSubmitted[id] && (!cat.complete || cat.set.has(String(id))));
+  }
   function practiceStatsLine() {
-    const total = QUESTIONS.length;
-    let done = 0, wrong = 0;
-    QUESTIONS.forEach((q) => {
-      if (state.practiceSubmitted[q.id]) {
-        done++;
-        if (!isCorrect(q, state.practiceAnswers[q.id])) wrong++;
-      }
+    const total = statTotal();
+    const ids = submittedIdsInBank();
+    let done = ids.length, wrong = 0, graded = 0;
+    ids.forEach((id) => {
+      const q = loadedQuestion(id);
+      if (!q) return;
+      graded++;
+      if (!isCorrect(q, state.practiceAnswers[id])) wrong++;
     });
     const pct = total ? Math.round((done / total) * 100) : 0;
-    const acc = done ? Math.round(((done - wrong) / done) * 100) : 0;
-    if (UI_LANG === "en") return "Progress " + done + "/" + total + " (" + pct + "%)" + (done ? " · accuracy " + acc + "%" : "");
-    return "进度 " + done + "/" + total + "（" + pct + "%）" + (done ? " · 正确率 " + acc + "%" : "");
+    const acc = graded && graded === done ? Math.round(((graded - wrong) / graded) * 100) : null;
+    if (UI_LANG === "en") return "Progress " + done + "/" + total + " (" + pct + "%)" + (acc != null ? " · accuracy " + acc + "%" : "");
+    return "进度 " + done + "/" + total + "（" + pct + "%）" + (acc != null ? " · 正确率 " + acc + "%" : "");
   }
 
   function rebuildPracticeFilter() {
@@ -1838,6 +1956,15 @@
 
   function examQuestionCount(exam) {
     try {
+      if (protectedBanksOn()) {
+        const A = typeof window !== "undefined" ? window.AI103Auth : null;
+        if (A && typeof A.getBank === "function") {
+          const b = A.getBank(exam.id);
+          if (b && (b.ready || b.total)) return b.total || 0;
+        }
+        if (exam.id === bankMeta.examId && bankMeta.ready) return bankMeta.total || 0;
+        return 0;
+      }
       const qs = publishedExamQuestions(exam);
       return qs.length;
     } catch (e) {
@@ -1967,8 +2094,8 @@
     setTxt(
       ".brand .sub",
       subCore +
-        (QUESTIONS.length
-          ? (UI_LANG === "en" ? " · " : " · ") + QUESTIONS.length + (UI_LANG === "en" ? " Q" : " 题")
+        (statTotal()
+          ? (UI_LANG === "en" ? " · " : " · ") + statTotal() + (UI_LANG === "en" ? " Q" : " 题")
           : "")
     );
     document.title = h1;
@@ -1994,7 +2121,7 @@
     if (bp) {
       bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>" +
         '<span class="desc prog-line">' + escapeHtml(practiceStatsLine()) + '</span><span class="prog-bar"><i style="width:' +
-        (QUESTIONS.length ? Math.round((Object.keys(state.practiceSubmitted).filter((k) => state.practiceSubmitted[k]).length / QUESTIONS.length) * 100) : 0) + '%"></i></span>';
+        (statTotal() ? Math.round((submittedIdsInBank().length / statTotal()) * 100) : 0) + '%"></i></span>';
     }
     try { renderHomeExtras(); } catch (err) { console.error(err); }
     const be = $("#btn-go-exam");
@@ -2396,21 +2523,23 @@
 
   /* ---- Practice ---- */
   function startPractice(filter) {
-    if (protectedBanksOn() && !QUESTIONS.length) {
-      ensureBank(currentExamId, function () {
+    if (protectedBanksOn() && !bankMeta.ready) {
+      ensureExamMeta(currentExamId).then(function () {
         switchExam(currentExamId);
-        if (QUESTIONS.length) startPractice(filter);
-      });
+        startPractice(filter);
+      }, function (err) { alert((err && err.message) || "题库加载失败，请检查网络后重试"); });
       return;
     }
     state.practiceFilter = filter || "all";
     if (state.practiceFilter === "wrong") {
       // spaced review: wrong questions resurface fresh each time the wrong book is opened
-      Object.keys(state.wrongIds).forEach((id) => { delete state.practiceAnswers[id]; delete state.practiceSubmitted[id]; });
+      visibleWrongIds().forEach((id) => { delete state.practiceAnswers[id]; delete state.practiceSubmitted[id]; });
       saveProgress();
     }
     rebuildPracticeFilter();
-    state.practiceList = questionsByFilter(state.practiceFilter);
+    const built = questionsByFilter(state.practiceFilter);
+    if (built && built.error) { alert(built.error); return; }
+    state.practiceList = built;
     applyPracticeOrder();
     // restore index to first unanswered if possible
     let idx = state.practiceList.findIndex((q) => !state.practiceSubmitted[q.id]);
@@ -2490,7 +2619,10 @@
     return m ? parseInt(m[1], 10) : 0;
   }
   function maxQNum() {
-    return QUESTIONS.reduce((mx, q) => Math.max(mx, qNumOf(q)), 0);
+    if (bankMeta.index && bankMeta.index.length) {
+      return bankMeta.index.reduce((mx, e) => Math.max(mx, Number(e.n) || qNumOf({ id: e.id })), 0);
+    }
+    return QUESTIONS.reduce((mx, q) => Math.max(mx, qNumOf(q)), 0) || statTotal();
   }
   /** accepts "15", "015", "q15", "Q015", "#15", "第15题", full-width digits; returns number or NaN */
   function parseJumpInput(raw) {
@@ -2518,6 +2650,35 @@
   }
   /** Jump to an original question number; respects filter + shuffle order. Returns true on success. */
   function jumpToQuestionNumber(n) {
+    if (protectedBanksOn() && bankMeta.ready) {
+      let bankPos = -1;
+      if (bankMeta.index && bankMeta.index.length) {
+        bankPos = bankMeta.index.findIndex((e) => (Number(e.n) || qNumOf({ id: e.id })) === n);
+      }
+      if (bankPos < 0 && n >= 1 && n <= statTotal()) bankPos = n - 1;
+      if (!Number.isFinite(n) || bankPos < 0) {
+        setJumpHint(bi("jumpInvalid", maxQNum()), "warn");
+        return false;
+      }
+      const id = bankMeta.index && bankMeta.index[bankPos] ? String(bankMeta.index[bankPos].id) : null;
+      if (state.practiceFilter !== "all") {
+        state.practiceFilter = "all";
+        const built = questionsByFilter("all");
+        if (built && built.error) { alert(built.error); return false; }
+        state.practiceList = built;
+        applyPracticeOrder();
+        const f = $("#practice-filter");
+        if (f) f.value = "all";
+      }
+      let pos = id ? state.practiceList.findIndex((q) => String(q.id) === id) : bankPos;
+      if (pos < 0) pos = Math.min(bankPos, state.practiceList.length - 1);
+      state.practiceIndex = pos;
+      renderPractice();
+      setJumpHint("");
+      const inp = $("#practice-jump-input");
+      if (inp) inp.value = "";
+      return true;
+    }
     const target = QUESTIONS.find((q) => qNumOf(q) === n);
     if (!Number.isFinite(n) || !target) {
       setJumpHint(bi("jumpInvalid", maxQNum()), "warn");
@@ -2581,7 +2742,30 @@
 
   function renderPractice() {
     applyChrome();
-    const q = currentPracticeQ();
+    const q0 = currentPracticeQ();
+    if (q0 && q0._stub) {
+      const token = ++practiceLoadToken;
+      const idx = state.practiceIndex;
+      const body = $("#practice-body");
+      if (body) body.innerHTML = "<p class='muted'>正在加载题目…</p>";
+      ensurePracticeWindow(idx).then(function () {
+        if (token !== practiceLoadToken || state.mode !== "practice" || state.practiceIndex !== idx) return;
+        hydratePracticeList();
+        const now = state.practiceList[idx];
+        if (now && now._stub) {
+          const el = $("#practice-body");
+          if (el) el.innerHTML = "<p class='muted'>这道题暂时无法加载。</p>";
+          return;
+        }
+        renderPractice();
+      }, function (err) {
+        if (token !== practiceLoadToken) return;
+        const el = $("#practice-body");
+        if (el) el.innerHTML = "<p class='muted'>" + escapeHtml((err && err.message) || "题目加载失败") + "</p>";
+      });
+      return;
+    }
+    const q = q0;
     const pack = t();
     if (!q) {
       $("#practice-body").innerHTML = "<p class='muted'>" + pack.noQuestions + "</p>";
@@ -2715,6 +2899,7 @@
     $("#btn-practice-prev").disabled = state.practiceIndex <= 0;
     $("#btn-practice-next").disabled = state.practiceIndex >= state.practiceList.length - 1;
 
+    ensurePracticeWindow(state.practiceIndex + 1).then(function () { hydratePracticeList(); }).catch(function () {});
     bindBoxControls(q, "practice", showing);
     try { renderQExtras(q); } catch (err) { console.error(err); }
     if (!isBoxQ(q)) {
@@ -2815,6 +3000,7 @@
     }
     state[key][q.id] = sel;
     if (mode === "practice") {
+      untombstone(q.id);
       saveProgress();
       renderPractice();
     } else {
@@ -2828,6 +3014,7 @@
     sel[boxId] = value;
     state[key][q.id] = sel;
     if (mode === "practice") {
+      untombstone(q.id);
       saveProgress();
       renderPractice();
     } else {
@@ -2847,9 +3034,17 @@
     if (isCorrect(q, sel)) {
       if (state.wrongIds[q.id]) {
         e.ws[q.id] = (e.ws[q.id] || 0) + 1;
-        if (e.ws[q.id] >= 2) { delete state.wrongIds[q.id]; delete e.ws[q.id]; }
+        if (e.ws[q.id] >= 2) {
+          delete state.wrongIds[q.id];
+          delete e.ws[q.id];
+          state.clearedIds[q.id] = true;
+        }
       }
-    } else { state.wrongIds[q.id] = true; e.ws[q.id] = 0; }
+    } else {
+      untombstone(q.id);
+      state.wrongIds[q.id] = true;
+      e.ws[q.id] = 0;
+    }
     e.seen[q.id] = 1;
     const dk = dayStr(new Date()); e.days[dk] = (e.days[dk] || 0) + 1;
     saveEx();
@@ -2857,16 +3052,33 @@
     renderPractice();
   }
 
+  function idsForReset() {
+    if (state.practiceFilter === "all") {
+      if (bankMeta.index && bankMeta.index.length) return bankMeta.index.map((e) => String(e.id)).filter(Boolean);
+      if (!protectedBanksOn()) return (state.practiceList || []).map((q) => q.id);
+      const ids = {};
+      Object.keys(state.practiceAnswers).forEach((id) => { ids[id] = 1; });
+      Object.keys(state.practiceSubmitted).forEach((id) => { ids[id] = 1; });
+      Object.keys(state.practiceFlags).forEach((id) => { ids[id] = 1; });
+      Object.keys(state.wrongIds).forEach((id) => { ids[id] = 1; });
+      Object.keys(qById).forEach((id) => { ids[id] = 1; });
+      return Object.keys(ids);
+    }
+    return (state.practiceList || []).map((q) => q && q.id).filter((id) => id && String(id).indexOf("__") !== 0);
+  }
   function resetPracticeFilter() {
     if (!confirm(t().confirmReset)) return;
-    state.practiceList.forEach((q) => {
-      delete state.practiceAnswers[q.id];
-      delete state.practiceSubmitted[q.id];
-      delete state.practiceFlags[q.id];
-      delete state.wrongIds[q.id];
+    idsForReset().forEach((id) => {
+      delete state.practiceAnswers[id];
+      delete state.practiceSubmitted[id];
+      delete state.practiceFlags[id];
+      delete state.wrongIds[id];
+      state.clearedIds[id] = true;
     });
     saveProgress();
-    state.practiceList = questionsByFilter(state.practiceFilter);
+    noteCloudMayBeStale();
+    const nextList = questionsByFilter(state.practiceFilter);
+    state.practiceList = (nextList && nextList.error) ? [] : nextList;
     applyPracticeOrder();
     state.practiceIndex = 0;
     renderPractice();
@@ -2891,9 +3103,9 @@
   function tryResumeExam() {
     let d = null;
     try { d = JSON.parse(localStorage.getItem(examProgKey()) || "null"); } catch (e) { d = null; }
-    if (!d || !Array.isArray(d.ids) || !d.ids.length) return false;
-    const byId = {};
-    QUESTIONS.forEach((q) => (byId[q.id] = q));
+    if (!d || !Array.isArray(d.ids) || !d.ids.length) return Promise.resolve(false);
+    const finish = function () {
+    const byId = questionMap();
     const qs = d.ids.map((id, i) => {
       const q = byId[id];
       if (!q) return null;
@@ -2930,19 +3142,33 @@
     renderExam();
     updateTimerDisplay();
     return true;
+    };
+    if (protectedBanksOn() && window.AI103Auth && typeof window.AI103Auth.loadExamByIds === "function") {
+      return window.AI103Auth.loadExamByIds(currentExamId, d.ids).then(function (qs) {
+        absorbQuestions(qs, null);
+        return finish();
+      });
+    }
+    return Promise.resolve(finish());
   }
 
   function openExamConfig() {
-    if (protectedBanksOn() && !QUESTIONS.length) {
-      ensureBank(currentExamId, function () {
-        switchExam(currentExamId);
-        if (QUESTIONS.length) openExamConfig();
+    const go = function () {
+      tryResumeExam().then(function (ok) {
+        if (ok) return;
+        applyChrome();
+        showView("examConfig");
+      }, function (err) {
+        alert((err && err.message) || "无法恢复未完成的考试");
+        applyChrome();
+        showView("examConfig");
       });
+    };
+    if (protectedBanksOn() && !bankMeta.ready) {
+      ensureExamMeta(currentExamId).then(go, function (err) { alert((err && err.message) || "题库加载失败"); });
       return;
     }
-    if (tryResumeExam()) return;
-    applyChrome();
-    showView("examConfig");
+    go();
   }
 
   /* ---- Real-exam fidelity: sections, review screen, case-study tabs ---- */
@@ -3019,18 +3245,9 @@
     }));
   }
 
-  function startExam() {
-    const exam = currentExam();
-    const count =
-      parseInt($("#exam-count").value, 10) ||
-      (exam && exam.mockDefaultCount) ||
-      58;
-    const minutes =
-      parseInt($("#exam-minutes").value, 10) ||
-      (exam && exam.mockDefaultMinutes) ||
-      90;
-    const n = Math.min(count, QUESTIONS.length);
-    state.examQuestions = sampleExamQuestions(n);
+  function launchExam(qs, minutes) {
+    if (!qs || !qs.length) { alert("没有抽到题目"); return; }
+    state.examQuestions = qs;
     setupExamSections();
     state.examIndex = 0;
     state.examAnswers = {};
@@ -3045,6 +3262,30 @@
     showView("exam");
     renderExam();
     updateTimerDisplay();
+  }
+  function startExam() {
+    const exam = currentExam();
+    const count =
+      parseInt($("#exam-count").value, 10) ||
+      (exam && exam.mockDefaultCount) ||
+      58;
+    const minutes =
+      parseInt($("#exam-minutes").value, 10) ||
+      (exam && exam.mockDefaultMinutes) ||
+      90;
+    if (protectedBanksOn()) {
+      const n = Math.min(count, statTotal() || count);
+      showBankBusy("正在抽取题目…");
+      fetchMockQuestions(n).then(function (qs) {
+        hideBankBusy();
+        launchExam((qs || []).map(shuffleOptions), minutes);
+      }, function (err) {
+        hideBankBusy();
+        alert((err && err.message) || "抽题失败，没有下载整库。");
+      });
+      return;
+    }
+    launchExam(sampleExamQuestions(Math.min(count, QUESTIONS.length)), minutes);
   }
 
   function tickExam() {
@@ -3278,6 +3519,11 @@
         byDom[q.domain].correct++;
       } else {
         wrongList.push(q);
+        if (allBoxesSelected(q, state.examAnswers[q.id])) {
+          untombstone(q.id);
+          state.wrongIds[q.id] = true;
+          try { ex().ws[q.id] = 0; } catch (err) {}
+        }
       }
     });
     const pct = state.examQuestions.length
@@ -3295,11 +3541,6 @@
       auto: !!auto,
     };
     try { recordMockScore(state.examResult); } catch (err) { console.error("score", err); }
-    // Merge exam misses into persistent wrong bank (survives 回首页)
-    wrongList.forEach((q) => {
-      state.wrongIds[q.id] = true;
-      try { ex().ws[q.id] = 0; } catch (err) {}
-    });
     try { saveEx(); } catch (err) {}
     saveProgress();
     saveExamLast();
@@ -3473,6 +3714,325 @@
     catch (e) { try { window.scrollTo(0, 0); } catch (e2) {} }
   }
 
+  function questionList() {
+    const map = {};
+    QUESTIONS.forEach((q) => { if (q && q.id != null) map[q.id] = q; });
+    Object.keys(qById).forEach((id) => { if (qById[id]) map[id] = qById[id]; });
+    return Object.keys(map).map((id) => map[id]);
+  }
+  function loadedQuestion(id) {
+    if (qById[id]) return qById[id];
+    for (let i = 0; i < QUESTIONS.length; i++) if (String(QUESTIONS[i].id) === String(id)) return QUESTIONS[i];
+    return null;
+  }
+  function questionMap() {
+    const byId = {};
+    questionList().forEach((q) => { byId[q.id] = q; });
+    return byId;
+  }
+  function catalogIds() {
+    if (bankMeta.index && bankMeta.index.length && bankMeta.total && bankMeta.index.length === bankMeta.total) {
+      const set = new Set();
+      bankMeta.index.forEach((e) => { if (e && e.id != null) set.add(String(e.id)); });
+      return { complete: true, set: set };
+    }
+    if (!protectedBanksOn() && QUESTIONS.length) {
+      return { complete: true, set: new Set(QUESTIONS.map((q) => String(q.id))) };
+    }
+    return { complete: false, set: new Set(Object.keys(qById)) };
+  }
+  function questionKnown(id) {
+    const cat = catalogIds();
+    if (cat.complete) return cat.set.has(String(id));
+    if (bankMeta.index && bankMeta.index.length) return bankMeta.index.some((e) => String(e.id) === String(id));
+    if (!protectedBanksOn()) return QUESTIONS.some((q) => String(q.id) === String(id));
+    return !!loadedQuestion(id);
+  }
+  function visibleWrongIds() {
+    const cat = catalogIds();
+    return Object.keys(state.wrongIds).filter((id) => {
+      if (!state.wrongIds[id] || (state.clearedIds && state.clearedIds[id])) return false;
+      if (cat.complete) return cat.set.has(String(id));
+      if (protectedBanksOn() && bankMeta.ready && bankMeta.index && bankMeta.index.length) {
+        return bankMeta.index.some((e) => String(e.id) === String(id));
+      }
+      if (protectedBanksOn() && !bankMeta.ready) return false;
+      return true;
+    });
+  }
+  function statTotal() {
+    if (protectedBanksOn() && bankMeta.ready) return bankMeta.total || 0;
+    return QUESTIONS.length;
+  }
+  function noteCloudMayBeStale() {
+    const S = typeof window !== "undefined" ? window.ITCERT_SYNC : null;
+    if (S && typeof S.noteLocalAhead === "function") S.noteLocalAhead();
+  }
+  function untombstone(id) {
+    if (id != null && state.clearedIds && state.clearedIds[id]) delete state.clearedIds[id];
+  }
+  function answerLooksPresent(a) {
+    if (Array.isArray(a)) return a.length > 0;
+    if (a && typeof a === "object") return Object.keys(a).some((k) => a[k]);
+    return false;
+  }
+  function examAnsweredWrongEvidence() {
+    const good = {};
+    const bad = {};
+    function take(raw) {
+      if (!raw) return;
+      let data = raw;
+      if (typeof raw === "string") {
+        try { data = JSON.parse(raw); } catch (e) { return; }
+      }
+      const list = Array.isArray(data) ? data : [data];
+      list.forEach((h) => {
+        if (!h || typeof h !== "object") return;
+        const wrong = (h.result && h.result.wrongIds) || [];
+        const answers = h.answers || {};
+        wrong.forEach((id) => {
+          if (answerLooksPresent(answers[id])) good[id] = true;
+          else bad[id] = true;
+        });
+      });
+    }
+    try { take(localStorage.getItem("itcert_exam_hist_v1_" + currentExamId)); } catch (e) {}
+    try { take(readExamLastRaw()); } catch (e2) {}
+    return { good: good, bad: bad };
+  }
+  function repairWrongBook() {
+    if (!state.clearedIds) state.clearedIds = {};
+    const cat = catalogIds();
+    let changed = false;
+    Object.keys(state.wrongIds).forEach((id) => {
+      if (state.clearedIds[id]) {
+        delete state.wrongIds[id];
+        changed = true;
+        return;
+      }
+      if (cat.complete && !cat.set.has(String(id))) {
+        delete state.wrongIds[id];
+        state.clearedIds[id] = true;
+        changed = true;
+        return;
+      }
+      const q = loadedQuestion(id);
+      if (q && state.practiceSubmitted[id] && answerLooksPresent(state.practiceAnswers[id]) && isCorrect(q, state.practiceAnswers[id])) {
+        delete state.wrongIds[id];
+        state.clearedIds[id] = true;
+        changed = true;
+      }
+    });
+    const flag = "itcert_wrong_repair_v1_" + currentExamId;
+    let already = false;
+    try { already = localStorage.getItem(flag) === "1"; } catch (e) {}
+    if (!already && (cat.complete || !protectedBanksOn())) {
+      const ev = examAnsweredWrongEvidence();
+      Object.keys(state.wrongIds).forEach((id) => {
+        if (ev.good[id] || answerLooksPresent(state.practiceAnswers[id])) return;
+        if (ev.bad[id]) {
+          delete state.wrongIds[id];
+          state.clearedIds[id] = true;
+          changed = true;
+        }
+      });
+      try { localStorage.setItem(flag, "1"); } catch (e2) {}
+    }
+    if (changed) {
+      saveProgress();
+      noteCloudMayBeStale();
+    }
+  }
+  function adoptMeta(id, meta) {
+    if (!meta) return;
+    if (bankMeta.examId !== id) {
+      qById = {};
+      qOrder = [];
+    }
+    bankMeta.examId = id;
+    bankMeta.total = meta.total || 0;
+    bankMeta.domains = meta.domains || null;
+    bankMeta.index = meta.index || null;
+    bankMeta.version = meta.version || "";
+    bankMeta.ready = true;
+  }
+  function ensureExamMeta(id) {
+    if (!protectedBanksOn()) return Promise.resolve(null);
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (!A || typeof A.loadExamMeta !== "function") return Promise.reject(new Error("题库加载失败，请刷新页面后重试"));
+    if (bankMeta.ready && bankMeta.examId === id) return Promise.resolve(bankMeta);
+    showBankBusy("正在读取题库信息…");
+    return A.loadExamMeta(id).then(function (meta) {
+      hideBankBusy();
+      if (!authAllowsApp()) return meta;
+      adoptMeta(id, meta || {});
+      return meta;
+    }, function (err) {
+      hideBankBusy();
+      throw err;
+    });
+  }
+  function prefetchExamMetas() {
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    const api = examApi();
+    if (!protectedBanksOn() || !A || typeof A.loadExamMeta !== "function" || !api) return;
+    const ids = (api.listAll || api.list).call(api).map((e) => e.id).filter((id) => canAccessExam(id));
+    let chain = Promise.resolve();
+    ids.forEach((id) => {
+      chain = chain.then(function () {
+        return A.loadExamMeta(id).then(function () {
+          if (state.mode === "home") updateExamSwitcherUI();
+        }, function () {});
+      });
+    });
+  }
+  function openExam(id) {
+    if (!canAccessExam(id)) { alert("暂无该题库权限，请联系管理员"); return; }
+    ensureExamMeta(id).then(function () {
+      if (!authAllowsApp()) return;
+      switchExam(id);
+      sanitizeProgress();
+      repairWrongBook();
+      renderHome();
+      prefetchExamMetas();
+    }, function (err) {
+      alert((err && err.message) || "题库加载失败，请检查网络后重试");
+      if (authAllowsApp()) renderHome();
+    });
+  }
+  function absorbQuestions(list, offset) {
+    (list || []).forEach((q, i) => {
+      if (!q || q.id == null) return;
+      qById[q.id] = q;
+      if (offset != null) qOrder[offset + i] = q;
+    });
+  }
+  function stubAt(i) {
+    if (qOrder[i] && !qOrder[i]._stub) return qOrder[i];
+    const e = bankMeta.index && bankMeta.index[i];
+    return { _stub: true, _index: i, id: e && e.id != null ? String(e.id) : ("__off_" + i), domain: e && (e.domain || e.dd) };
+  }
+  function indexEntryId(e) { return e && e.id != null ? String(e.id) : ""; }
+  function buildSearchList() {
+    const n = state.searchMatchTotal || (state.searchResults || []).length;
+    const list = [];
+    for (let i = 0; i < n; i++) list.push((state.searchResults && state.searchResults[i]) || { _stub: true, _searchIndex: i, id: "__search_" + i });
+    return list;
+  }
+  function buildProtectedList(filter) {
+    if (filter === "all") {
+      const n = bankMeta.total || 0;
+      const list = [];
+      for (let i = 0; i < n; i++) list.push(stubAt(i));
+      return list;
+    }
+    if (filter === "search") return buildSearchList();
+    if (filter === "wrong") {
+      const ws = ex().ws;
+      return visibleWrongIds()
+        .map((id) => loadedQuestion(id) || { _stub: true, id: id })
+        .sort((a, b) => (ws[a.id] || 0) - (ws[b.id] || 0));
+    }
+    if (filter === "favs") {
+      return Object.keys(ex().favs).filter((id) => ex().favs[id] && questionKnown(id)).map((id) => loadedQuestion(id) || { _stub: true, id: id });
+    }
+    if (filter === "flagged") {
+      return Object.keys(state.practiceFlags).filter((id) => state.practiceFlags[id] && questionKnown(id)).map((id) => loadedQuestion(id) || { _stub: true, id: id });
+    }
+    if (filter === "unanswered") {
+      if (!bankMeta.index || !bankMeta.index.length) return { error: "题库服务未提供题目索引，暂时无法筛选未作答。请使用「全部」。" };
+      return bankMeta.index.filter((e) => indexEntryId(e) && !state.practiceSubmitted[indexEntryId(e)]).map((e) => loadedQuestion(e.id) || { _stub: true, id: indexEntryId(e), domain: e.domain });
+    }
+    if (!bankMeta.index || !bankMeta.index.length) return { error: "题库服务未提供题目索引，暂时无法按领域筛选。请使用「全部」。不会下载整库。" };
+    return bankMeta.index.filter((e) => e.domain === filter || e.dd === filter).map((e) => loadedQuestion(e.id) || { _stub: true, id: indexEntryId(e), domain: e.domain || e.dd });
+  }
+  function hydratePracticeList() {
+    if (!state.practiceList) return;
+    if (state.practiceFilter === "all") {
+      state.practiceList = state.practiceList.map((item, i) => (qOrder[i] && !qOrder[i]._stub ? qOrder[i] : item));
+      return;
+    }
+    if (state.practiceFilter === "search" && state.searchResults) {
+      state.practiceList = state.practiceList.map((item, i) => state.searchResults[i] || item);
+      return;
+    }
+    state.practiceList = state.practiceList.map((item) => (item && item.id && loadedQuestion(item.id)) || item);
+  }
+  function ensurePracticeWindow(index) {
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (!protectedBanksOn() || !A) return Promise.resolve();
+    if (state.practiceFilter === "all") {
+      const start = Math.floor(Math.max(0, index) / 50) * 50;
+      const loadAt = (off) => {
+        if (off >= statTotal()) return Promise.resolve();
+        return A.loadExamPage(currentExamId, off, 50).then((pack) => absorbQuestions(pack.questions, off));
+      };
+      return loadAt(start).then(() => loadAt(start + 50));
+    }
+    if (state.practiceFilter === "search") {
+      const off = Math.floor(Math.max(0, index) / 50) * 50;
+      if (!A.loadExamSearch || !state.searchQ) return Promise.resolve();
+      return A.loadExamSearch(currentExamId, state.searchQ, off, 50).then((pack) => {
+        state.searchMatchTotal = pack.matchTotal;
+        state.searchResults = state.searchResults || [];
+        (pack.questions || []).forEach((q, i) => {
+          state.searchResults[off + i] = q;
+          qById[q.id] = q;
+        });
+      });
+    }
+    const ids = [];
+    state.practiceList.slice(Math.max(0, index - 2), index + 20).forEach((q) => {
+      if (q && q._stub && q.id && String(q.id).indexOf("__") !== 0 && !loadedQuestion(q.id)) ids.push(q.id);
+    });
+    if (!ids.length || typeof A.loadExamByIds !== "function") return Promise.resolve();
+    return A.loadExamByIds(currentExamId, ids).then((qs) => absorbQuestions(qs, null));
+  }
+  function entryToPseudo(e) {
+    const boxes = [];
+    const n = e.boxes || 0;
+    for (let i = 0; i < n; i++) boxes.push({ id: "b" + i, choices: e.yn ? ["是", "否"] : ["x"], answer: "是" });
+    return {
+      id: indexEntryId(e),
+      domain: e.domain || e.dd,
+      caseStudy: !!e.caseStudy,
+      caseStudyId: e.caseStudyId || null,
+      type: e.type || (e.yn && n >= 2 ? "hotspot" : "single"),
+      control: e.yn && n >= 2 ? "yn" : (e.control || null),
+      boxes: n ? boxes : undefined,
+      options: [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
+    };
+  }
+  function sampleIdsFromIndex(n) {
+    const pool = (bankMeta.index || []).map(entryToPseudo).filter((q) => q.id);
+    const prev = QUESTIONS;
+    QUESTIONS = pool;
+    try {
+      return sampleExamQuestions(Math.min(n, pool.length)).map((q) => q.id);
+    } finally {
+      QUESTIONS = prev;
+    }
+  }
+  function fetchMockQuestions(n) {
+    const A = window.AI103Auth;
+    const total = statTotal() || n;
+    const take = Math.min(n, total);
+    if (bankMeta.index && bankMeta.index.length) {
+      const ids = sampleIdsFromIndex(take);
+      return A.loadExamByIds(currentExamId, ids).then((qs) => {
+        const map = {};
+        (qs || []).forEach((q) => { map[q.id] = q; });
+        const ordered = ids.map((id) => map[id]).filter(Boolean);
+        if (!ordered.length) throw new Error("抽到的题目无法加载，已停止，不会下载整库。");
+        return ordered;
+      });
+    }
+    if (typeof A.loadExamSample !== "function") return Promise.reject(new Error("题库服务暂不支持抽题，已停止，不会下载整库。"));
+    return A.loadExamSample(currentExamId, take).then((qs) => {
+      absorbQuestions(qs, null);
+      return qs || [];
+    });
+  }
   function protectedBanksOn() {
     const AC = typeof window !== "undefined" && window.__ITCERT_ACCOUNT__;
     return !!(AC && AC.enabled && AC.protectedBanks);
@@ -3505,34 +4065,14 @@
   }
 
   function loadOneExam(id) {
-    const A = typeof window !== "undefined" ? window.AI103Auth : null;
-    if (!A || typeof A.loadExam !== "function") {
-      return Promise.reject(new Error("题库加载失败，请刷新页面后重试"));
-    }
-    const exam = examApi() && examApi().get(id);
-    const label = (exam && (exam.shortLabel || exam.title)) || "题库";
-    const paint = (p) => {
-      let text = "正在加载 " + label + " 题库…";
-      if (p && p.total) text += "（" + p.loaded + "/" + p.total + "）";
-      showBankBusy(text);
-    };
-    paint(null);
-    return A.loadExam(id, paint).then(function (qs) { return qs; }, function (err) {
-      hideBankBusy();
-      throw err;
-    });
+    return ensureExamMeta(id);
   }
 
   function ensureBank(id, cb) {
     // Protected banks come only from itc-bank. Never fall back to public questions.js / banks/*.js.
     if (protectedBanksOn()) {
       if (!canAccessExam(id)) { alert("暂无该题库权限，请联系管理员"); return; }
-      const A = typeof window !== "undefined" ? window.AI103Auth : null;
-      if (A && typeof A.examReady === "function" && A.examReady(id)) { cb(); return; }
-      loadOneExam(id).then(function () {
-        hideBankBusy();
-        cb();
-      }, function (err) {
+      ensureExamMeta(id).then(function () { cb(); }, function (err) {
         alert((err && err.message) || "题库加载失败，请检查网络后重试");
       });
       return;
@@ -3577,7 +4117,7 @@
     rebuildPracticeFilter();
     document.addEventListener("ai103-auth-change", onAuthGateChange);
     if (authAllowsApp()) {
-      renderHome();
+      if (!protectedBanksOn()) renderHome();
     } else {
       hideAllAppViews();
     }
@@ -3672,7 +4212,7 @@
       const q = currentPracticeQ();
       if (!q) return;
       if (state.practiceFlags[q.id]) delete state.practiceFlags[q.id];
-      else state.practiceFlags[q.id] = true;
+      else { untombstone(q.id); state.practiceFlags[q.id] = true; }
       saveProgress();
       if (state.practiceFilter === "flagged") {
         const curId = q.id;
@@ -3777,16 +4317,7 @@
       if (!protectedBanksOn() || !authAllowsApp()) return;
       const api = examApi();
       const id = api && api.loadSavedExamId ? api.loadSavedExamId() : "ai103";
-      const A = window.AI103Auth;
-      if (A && typeof A.examReady === "function" && A.examReady(id) && QUESTIONS.length) return;
-      loadOneExam(id).then(function () {
-        hideBankBusy();
-        if (!authAllowsApp()) return;
-        switchExam(id);
-      }, function (err) {
-        alert((err && err.message) || "题库加载失败，请检查网络后重试");
-        if (authAllowsApp()) renderHome();
-      });
+      openExam(id);
     };
     const boot = typeof window !== "undefined" && window.ITCERT_BOOT;
     if (boot && typeof boot.then === "function") boot.then(afterBoot, afterBoot);
