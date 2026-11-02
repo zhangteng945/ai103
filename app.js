@@ -14,6 +14,7 @@
   let DOMAIN_ORDER = ["plan", "genai", "vision", "text", "extract"];
   let DOMAIN_WEIGHTS = { plan: 0.275, genai: 0.325, vision: 0.125, text: 0.125, extract: 0.125 };
   let currentExamId = "ai103";
+  let bankUserId = "";
 
   function examApi() {
     return (typeof window !== "undefined" && window.ITCERT_EXAMS) || null;
@@ -76,8 +77,19 @@
     SCORE_MIN = exam.scoreMin || 0;
     DOMAIN_ORDER = (exam.domainOrder && exam.domainOrder.length) ? exam.domainOrder.slice() : [];
     DOMAIN_WEIGHTS = Object.assign({}, exam.domainWeights || {});
+    const qs = publishedExamQuestions(exam);
+    QUESTIONS = qs.slice();
+  }
+  // In protected mode, ignore any QUESTIONS_* left by a public script. Only banks
+  // published by AI103Auth.loadExam (in-memory, this session) are usable.
+  function publishedExamQuestions(exam) {
+    if (!exam) return [];
+    if (protectedBanksOn()) {
+      const A = typeof window !== "undefined" ? window.AI103Auth : null;
+      if (!A || typeof A.examReady !== "function" || !A.examReady(exam.id)) return [];
+    }
     const qs = typeof exam.getQuestions === "function" ? exam.getQuestions() : [];
-    QUESTIONS = Array.isArray(qs) ? qs.slice() : [];
+    return Array.isArray(qs) ? qs : [];
   }
   function clearSessionProgressState() {
     state.practiceFilter = "all";
@@ -665,16 +677,55 @@
     state.mode = name;
   }
 
+  function currentAuthUserId() {
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (!A || typeof A.getState !== "function") return "";
+    const st = A.getState();
+    return (st && st.user && st.user.id) || "";
+  }
+
   function onAuthGateChange() {
     if (!authAllowsApp()) {
+      bankUserId = "";
       if (state.examTimerId) {
         clearInterval(state.examTimerId);
         state.examTimerId = null;
       }
+      if (protectedBanksOn()) {
+        QUESTIONS = [];
+        state.practiceList = [];
+        state.examQuestions = [];
+      }
       hideAllAppViews();
       return;
     }
-    // Only auto-open home when leaving the login gate (not on token refresh mid-practice)
+    const uid = currentAuthUserId();
+    const switched = !!(uid && uid !== bankUserId);
+    if (switched) {
+      bankUserId = uid;
+      if (protectedBanksOn()) {
+        QUESTIONS = [];
+        state.practiceList = [];
+        state.examQuestions = [];
+      }
+    }
+    // Only auto-open home when leaving the login gate (not on token refresh mid-practice).
+    // Protected mode loads the saved exam here — login itself does not download banks.
+    const enterApp = state.mode === "auth" || !state.mode || switched;
+    if (enterApp && protectedBanksOn() && !QUESTIONS.length) {
+      const api = examApi();
+      const id = api && api.loadSavedExamId ? api.loadSavedExamId() : currentExamId;
+      renderHome();
+      loadOneExam(id).then(function () {
+        hideBankBusy();
+        if (!authAllowsApp()) return;
+        switchExam(id);
+      }, function (err) {
+        alert((err && err.message) || "题库加载失败，请检查网络后重试");
+        if (authAllowsApp()) renderHome();
+      });
+      return;
+    }
     if (state.mode === "auth" || !state.mode) {
       renderHome();
     } else {
@@ -1166,6 +1217,13 @@
   }
 
   function openLastExamResult() {
+    if (protectedBanksOn() && !QUESTIONS.length) {
+      ensureBank(currentExamId, function () {
+        switchExam(currentExamId);
+        if (QUESTIONS.length) openLastExamResult();
+      });
+      return;
+    }
     // Always reload from storage so we don't clobber with a partial in-memory state
     if (!loadExamLast()) return;
     showView("result");
@@ -1780,8 +1838,8 @@
 
   function examQuestionCount(exam) {
     try {
-      const qs = exam && typeof exam.getQuestions === "function" ? exam.getQuestions() : null;
-      return qs && qs.length ? qs.length : 0;
+      const qs = publishedExamQuestions(exam);
+      return qs.length;
     } catch (e) {
       return 0;
     }
@@ -2338,6 +2396,13 @@
 
   /* ---- Practice ---- */
   function startPractice(filter) {
+    if (protectedBanksOn() && !QUESTIONS.length) {
+      ensureBank(currentExamId, function () {
+        switchExam(currentExamId);
+        if (QUESTIONS.length) startPractice(filter);
+      });
+      return;
+    }
     state.practiceFilter = filter || "all";
     if (state.practiceFilter === "wrong") {
       // spaced review: wrong questions resurface fresh each time the wrong book is opened
@@ -2868,6 +2933,13 @@
   }
 
   function openExamConfig() {
+    if (protectedBanksOn() && !QUESTIONS.length) {
+      ensureBank(currentExamId, function () {
+        switchExam(currentExamId);
+        if (QUESTIONS.length) openExamConfig();
+      });
+      return;
+    }
     if (tryResumeExam()) return;
     applyChrome();
     showView("examConfig");
@@ -3401,12 +3473,73 @@
     catch (e) { try { window.scrollTo(0, 0); } catch (e2) {} }
   }
 
+  function protectedBanksOn() {
+    const AC = typeof window !== "undefined" && window.__ITCERT_ACCOUNT__;
+    return !!(AC && AC.enabled && AC.protectedBanks);
+  }
+
+  function showBankBusy(text) {
+    let bl = document.getElementById("boot-loader");
+    if (!bl) {
+      bl = document.createElement("div");
+      bl.id = "boot-loader";
+      bl.setAttribute("role", "status");
+      bl.setAttribute("aria-live", "polite");
+      document.body.appendChild(bl);
+    }
+    bl.innerHTML = '<span class="spin"></span>' + escapeHtml(text || "正在加载题库…");
+    let ov = document.getElementById("bank-load-mask");
+    if (!ov) {
+      ov = document.createElement("div");
+      ov.id = "bank-load-mask";
+      ov.className = "bank-block";
+      document.body.appendChild(ov);
+    }
+  }
+
+  function hideBankBusy() {
+    const bl = document.getElementById("boot-loader");
+    if (bl) bl.remove();
+    const ov = document.getElementById("bank-load-mask");
+    if (ov) ov.remove();
+  }
+
+  function loadOneExam(id) {
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (!A || typeof A.loadExam !== "function") {
+      return Promise.reject(new Error("题库加载失败，请刷新页面后重试"));
+    }
+    const exam = examApi() && examApi().get(id);
+    const label = (exam && (exam.shortLabel || exam.title)) || "题库";
+    const paint = (p) => {
+      let text = "正在加载 " + label + " 题库…";
+      if (p && p.total) text += "（" + p.loaded + "/" + p.total + "）";
+      showBankBusy(text);
+    };
+    paint(null);
+    return A.loadExam(id, paint).then(function (qs) { return qs; }, function (err) {
+      hideBankBusy();
+      throw err;
+    });
+  }
+
   function ensureBank(id, cb) {
+    // Protected banks come only from itc-bank. Never fall back to public questions.js / banks/*.js.
+    if (protectedBanksOn()) {
+      if (!canAccessExam(id)) { alert("暂无该题库权限，请联系管理员"); return; }
+      const A = typeof window !== "undefined" ? window.AI103Auth : null;
+      if (A && typeof A.examReady === "function" && A.examReady(id)) { cb(); return; }
+      loadOneExam(id).then(function () {
+        hideBankBusy();
+        cb();
+      }, function (err) {
+        alert((err && err.message) || "题库加载失败，请检查网络后重试");
+      });
+      return;
+    }
     const LAZY = { "dop-c02": ["QUESTIONS_DOP_C02", "DOP-C02"], "dp-700": ["QUESTIONS_DP_700", "DP-700"], "dp-420": ["QUESTIONS_DP_420", "DP-420"] };
     const lz = LAZY[id];
     if (!lz || typeof window[lz[0]] !== "undefined") { cb(); return; }
-    const AC = typeof window !== "undefined" && window.__ITCERT_ACCOUNT__;
-    if (AC && AC.enabled && AC.protectedBanks) { alert("暂无该题库权限，请联系管理员"); return; }
     let bl = document.getElementById("boot-loader");
     if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L(lz[1] + " 题库加载中…", "Loading " + lz[1] + " bank…")); document.body.appendChild(bl); }
     const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
@@ -3428,7 +3561,8 @@
     }
     const startId = api.loadSavedExamId ? api.loadSavedExamId() : api.defaultId;
     applyExamConfig(api.get(startId));
-    if (!QUESTIONS.length) {
+    bankUserId = authAllowsApp() ? currentAuthUserId() : "";
+    if (!QUESTIONS.length && !protectedBanksOn()) {
       document.body.innerHTML =
         "<p style='padding:2rem;color:#fff'>题库加载失败：当前考试无题目（" +
         currentExamId +
@@ -3437,12 +3571,10 @@
     }
     state.practiceOrder = loadOrderMap();
     loadProgress();
-    // Last exam is opened on demand from home — do not clobber via loadExamLast at boot
-    applyChrome();
+    // Last exam is opened on demand from home — do not clobber via loadExamLast at boot.
+    // Leave the static login header alone until the account is actually in.
     rebuildExamConfigControls();
     rebuildPracticeFilter();
-    rebuildHomeStats();
-    updateExamSwitcherUI();
     document.addEventListener("ai103-auth-change", onAuthGateChange);
     if (authAllowsApp()) {
       renderHome();
@@ -3465,7 +3597,7 @@
           alert("暂无该题库权限，请联系管理员");
           return;
         }
-        if (id === currentExamId) return;
+        if (id === currentExamId && QUESTIONS.length) return;
         if (state.mode === "exam" && !state.examSubmitted) {
           if (!confirm(t().confirmLeave)) return;
         }
@@ -3633,16 +3765,32 @@
     document.addEventListener("visibilitychange", () => { if (!examLive()) return; if (document.hidden) saveExamProgress(); else tickExam(); });
     window.addEventListener("pagehide", () => { if (examLive()) saveExamProgress(); });
     try { if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (err) {}
-    const bl = document.getElementById("boot-loader");
-    if (bl) bl.remove();
+    hideBankBusy();
     document.body.classList.toggle("touch", "ontouchstart" in window || navigator.maxTouchPoints > 0);
   }
 
-  // Account mode with protected banks: wait until login + bank download (js/account-auth.js).
+  // Auth boot does not wait on banks. A saved session then loads only that exam.
   function start() {
+    const run = function () { init(); };
+    const afterBoot = function () {
+      run();
+      if (!protectedBanksOn() || !authAllowsApp()) return;
+      const api = examApi();
+      const id = api && api.loadSavedExamId ? api.loadSavedExamId() : "ai103";
+      const A = window.AI103Auth;
+      if (A && typeof A.examReady === "function" && A.examReady(id) && QUESTIONS.length) return;
+      loadOneExam(id).then(function () {
+        hideBankBusy();
+        if (!authAllowsApp()) return;
+        switchExam(id);
+      }, function (err) {
+        alert((err && err.message) || "题库加载失败，请检查网络后重试");
+        if (authAllowsApp()) renderHome();
+      });
+    };
     const boot = typeof window !== "undefined" && window.ITCERT_BOOT;
-    if (boot && typeof boot.then === "function") boot.then(init, init);
-    else init();
+    if (boot && typeof boot.then === "function") boot.then(afterBoot, afterBoot);
+    else afterBoot();
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
