@@ -677,6 +677,8 @@
     // Only auto-open home when leaving the login gate (not on token refresh mid-practice)
     if (state.mode === "auth" || !state.mode) {
       renderHome();
+    } else {
+      try { updateExamSwitcherUI(); } catch (err) { console.error(err); }
     }
   }
 
@@ -1768,16 +1770,65 @@
       }
   }
 
+  function canAccessExam(id) {
+    const api = examApi();
+    if (api && typeof api.canAccess === "function") return !!api.canAccess(id);
+    const A = typeof window !== "undefined" ? window.AI103Auth : null;
+    if (A && typeof A.canAccessExam === "function") return !!A.canAccessExam(id);
+    return true;
+  }
+
+  function examQuestionCount(exam) {
+    try {
+      const qs = exam && typeof exam.getQuestions === "function" ? exam.getQuestions() : null;
+      return qs && qs.length ? qs.length : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
   function updateExamSwitcherUI() {
     const wrap = $("#exam-switcher");
     if (!wrap) return;
     const api = examApi();
     if (!api) return;
-    $$("#exam-switcher [data-exam-id]").forEach((btn) => {
-      const id = btn.getAttribute("data-exam-id");
-      btn.classList.toggle("active", id === currentExamId);
-      btn.setAttribute("aria-pressed", id === currentExamId ? "true" : "false");
+    const exams = (api.listAll || api.list).call(api);
+    const parts = [];
+    exams.forEach((exam) => {
+      const id = exam.id;
+      const allowed = canAccessExam(id);
+      const active = id === currentExamId;
+      const n = examQuestionCount(exam);
+      const title = exam.shortLabel || exam.title || id;
+      const sub = UI_LANG === "en"
+        ? (exam.subtitleEn || exam.subtitleZh || "")
+        : (exam.subtitleZh || exam.subtitleEn || "");
+      let meta = "";
+      if (n > 0) meta = n + (UI_LANG === "en" ? " questions" : " 题");
+      else if (!allowed) meta = UI_LANG === "en" ? "No access" : "暂无权限";
+      else meta = UI_LANG === "en" ? "Not loaded" : "未加载";
+      const cls = ["exam-bank-card"];
+      if (active) cls.push("active");
+      if (!allowed) cls.push("locked");
+      parts.push(
+        '<button type="button" class="' + cls.join(" ") + '" role="listitem" data-exam-id="' +
+          escapeHtml(id) +
+          '" aria-pressed="' + (active ? "true" : "false") + '"' +
+          (allowed ? "" : ' aria-disabled="true" title="暂无该题库权限，请联系管理员"') +
+          ">" +
+          '<span class="exam-bank-card-top">' +
+            '<span class="exam-bank-title">' + escapeHtml(title) + "</span>" +
+            (allowed ? "" : '<span class="exam-bank-lock" aria-hidden="true">🔒</span>') +
+          "</span>" +
+          (sub ? '<span class="exam-bank-sub">' + escapeHtml(sub) + "</span>" : "") +
+          '<span class="exam-bank-meta">' + escapeHtml(meta) + "</span>" +
+        "</button>"
+      );
     });
+    wrap.innerHTML = parts.join("");
+    wrap.classList.add("exam-bank-list");
+    wrap.setAttribute("role", "list");
+    wrap.setAttribute("aria-label", UI_LANG === "en" ? "Question banks" : "题库列表");
     const icon = $(".brand-icon");
     if (icon) {
       const exam = currentExam();
@@ -3355,7 +3406,7 @@
     const lz = LAZY[id];
     if (!lz || typeof window[lz[0]] !== "undefined") { cb(); return; }
     const AC = typeof window !== "undefined" && window.__ITCERT_ACCOUNT__;
-    if (AC && AC.enabled && AC.protectedBanks) { alert(L("当前账号无权访问该题库", "This account has no access to this bank.")); return; }
+    if (AC && AC.enabled && AC.protectedBanks) { alert("暂无该题库权限，请联系管理员"); return; }
     let bl = document.getElementById("boot-loader");
     if (!bl) { bl = document.createElement("div"); bl.id = "boot-loader"; bl.className = "boot-block"; bl.setAttribute("role", "status"); bl.innerHTML = '<span class="spin"></span>' + escapeHtml(L(lz[1] + " 题库加载中…", "Loading " + lz[1] + " bank…")); document.body.appendChild(bl); }
     const ov = document.createElement("div"); ov.className = "bank-block"; document.body.appendChild(ov);
@@ -3409,7 +3460,12 @@
         const btn = e.target.closest("[data-exam-id]");
         if (!btn) return;
         const id = btn.getAttribute("data-exam-id");
-        if (!id || id === currentExamId) return;
+        if (!id) return;
+        if (!canAccessExam(id)) {
+          alert("暂无该题库权限，请联系管理员");
+          return;
+        }
+        if (id === currentExamId) return;
         if (state.mode === "exam" && !state.examSubmitted) {
           if (!confirm(t().confirmLeave)) return;
         }

@@ -140,6 +140,14 @@
     return EXAMS.slice();
   }
 
+  function listAll() {
+    return EXAMS.slice();
+  }
+
+  function canAccess(/* id */) {
+    return true;
+  }
+
   function get(id) {
     for (var i = 0; i < EXAMS.length; i++) {
       if (EXAMS[i].id === id) return EXAMS[i];
@@ -176,6 +184,8 @@
   global.ITCERT_EXAMS = {
     EXAM_ID_KEY: EXAM_ID_KEY,
     list: list,
+    listAll: listAll,
+    canAccess: canAccess,
     get: get,
     loadSavedExamId: loadSavedExamId,
     saveExamId: saveExamId,

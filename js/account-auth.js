@@ -23,7 +23,7 @@
   /* ---------------- util ---------------- */
   function $(id) { return document.getElementById(id); }
   function parse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
-  function knownExamIds() { var a = global.ITCERT_EXAMS; return a && a.list ? a.list().map(function (e) { return e.id; }) : ["ai103", "dop-c02"]; }
+  function knownExamIds() { var a = global.ITCERT_EXAMS; var fn = a && (a.listAll || a.list); return fn ? fn.call(a).map(function (e) { return e.id; }) : ["ai103", "dop-c02"]; }
   function fmtTime(ms) { var d = new Date(ms); function p(n) { return (n < 10 ? "0" : "") + n; } return p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()); }
   function fmtDate(iso) { var d = new Date(iso); return isNaN(d) ? String(iso) : d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -131,17 +131,30 @@
     return ex;
   }
   var origList = null, origGet = null;
+  function canAccessExam(id) {
+    var allow = allowedExams();
+    if (!allow) return true;
+    return allow.indexOf(id) >= 0;
+  }
   function applyEntitlements() {
     var api = global.ITCERT_EXAMS; if (!api) return;
     if (!origList) { origList = api.list; origGet = api.get; }
     var allow = allowedExams();
-    api.list = function () { var l = origList.apply(api, arguments); return allow ? l.filter(function (e) { return allow.indexOf(e.id) >= 0; }) : l; };
-    var first = allow ? allow[0] : api.defaultId;
+    // Homepage must list every bank; access is enforced on enter, not by hiding.
+    api.list = function () { return origList.apply(api, arguments); };
+    api.listAll = api.list;
+    api.canAccess = canAccessExam;
+    var first = api.defaultId;
+    if (allow && allow.length) {
+      for (var i = 0; i < allow.length; i++) {
+        var cand = origGet.call(api, allow[i]);
+        if (cand && cand.id === allow[i]) { first = allow[i]; break; }
+      }
+    }
     api.get = function (id) { if (allow && allow.indexOf(id) < 0) id = first; return origGet.call(api, id); };
     var oldLoad = api._origLoad || api.loadSavedExamId; api._origLoad = oldLoad;
     api.loadSavedExamId = function () { var id = oldLoad.call(api); return allow && allow.indexOf(id) < 0 ? first : id; };
-    var css = $("itcert-ent-css"); if (!css) { css = document.createElement("style"); css.id = "itcert-ent-css"; document.head.appendChild(css); }
-    css.textContent = allow ? origList.call(api).map(function (e) { return e.id; }).filter(function (id) { return allow.indexOf(id) < 0; }).map(function (id) { return "[data-exam-id='" + id + "']{display:none!important}"; }).join("") : "";
+    var css = $("itcert-ent-css"); if (css) css.textContent = "";
   }
   /* -------- protected banks (private storage, cached in Cache API) -------- */
   var bootResolve; global.ITCERT_BOOT = new Promise(function (r) { bootResolve = r; });
@@ -466,6 +479,7 @@
       getState: function () { return { user: state.session ? state.session.user : null, ready: state.ready, mode: "account", enabled: true, featureUi: true, loggedIn: isLoggedIn(), expired: state.expired }; },
       statusMessage: function () { return state.status; }, signIn: signIn, signUp: function () { setStatus("账号由管理员发放，请联系管理员开通"); return Promise.resolve({ ok: false }); },
       signOut: signOut, getSession: function () { return Promise.resolve(state.session); },
+      canAccessExam: canAccessExam, allowedExams: allowedExams,
       migrateLocalToCloudIfNeeded: function () { return syncNow("migrate"); }, pullProgress: function () { return syncNow("pull"); }, pushProgress: function () { return syncNow("push"); },
       refreshUi: refreshUi, applyAppGate: applyAppGate, init: boot, syncNow: syncNow,
     };
