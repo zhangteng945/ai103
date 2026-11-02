@@ -1,5 +1,7 @@
 /**
- * account-auth.js — account login (gates the bank) + background per-account progress sync.
+ * account-auth.js — account login (gates the bank) + manual progress upload/download.
+ * Progress is NOT synced automatically. 「上传进度」overwrites cloud with local.
+ * 「下载进度」overwrites local with cloud. Neither path merges wrongIds.
  * Active only when window.__ITCERT_ACCOUNT__.enabled === true; otherwise it only adds the
  * zero-backend「导出进度 / 导入进度」backup UI and leaves password-gate.js in charge.
  *
@@ -101,19 +103,18 @@
       if (CFG.deviceLimit) {
         try { await claimDevice(s.access); }
         catch (e) {
-          if (e.network) { /* backend flaky: allow, re-check on next sync */ }
+          if (e.network) { /* backend flaky: allow, claim again on next login */ }
           else { http("POST", "/auth/v1/logout", null, s.access).catch(function () {}); setStatus(mapLoginError(e)); return { ok: false, reason: "device" }; }
         }
+        state.claimedDevice = true;
       }
       onAccountSwitch(s.user.id);
       state.session = s; state.expired = false; writeSession(s);
       applyEntitlements();
-      // Do not download banks here. The quiz loads only the exam the user opens.
+      // Do not download banks or progress here. Quiz loads one exam's catalog; sync is manual.
       resolveBoot();
       setStatus(loginStatusText());
       refreshUi();
-      state.initialMerge = true;
-      syncNow("login");
       return { ok: true };
     } catch (e) {
       state.expired = isExpiryError(e);
@@ -163,13 +164,21 @@
   function resolveBoot() { if (!bootResolved) { bootResolved = true; bootResolve(); } }
 
   /* -------- on-demand banks via Edge Function itc-bank (memory only, never Cache API) --------
-   * GET {apiBase}/functions/v1/itc-bank?exam=&offset=&limit=
-   * Headers: apikey (anon) + Authorization: Bearer <user JWT>.
-   * 404 / "not allowed" → retry https://paswovhtsoljydywdmvb.supabase.co (SCF allowlist miss).
-   * Response: {ok:true, examId, version, total, offset, limit, questions:[...same shape as QUESTIONS_*]}.
-   * Pages are concatenated in order onto window.QUESTIONS_* . Nothing is written to Cache API or localStorage.
+   * GET {apiBase}/functions/v1/itc-bank
+   *   ?exam=&meta=1                         catalog: {total, domains?, index?} and questions:[]
+   *   ?exam=&offset=&limit=                 one page of full questions (client does not loop the bank)
+   *   ?exam=&ids=id1,id2                    those questions only (max 80 per request; client chunks)
+   *   ?exam=&sample=N                       N sampled questions (max 80). Optional seed.
+   *   ?exam=&q=&offset=&limit=              search hits; response echoes q and matchTotal
+   * Headers: apikey + Authorization: Bearer <user JWT>.
+   * 404 / "not allowed" → retry the Supabase host directly.
+   * If ids/sample/search/meta are not honored, the client throws a Chinese error and does not page the whole bank.
+   * Nothing is written to Cache API or localStorage. Cleared on logout.
+   * Optional index items (no stems): {id, domain, type, control, caseStudy, caseStudyId, boxes, yn, dd, n}.
+   * Rate limit on the function is 120 requests / 5 min per user+exam.
    */
-  var BANK_BATCH = 50;
+  var BANK_PAGE = 50;
+  var BANK_IDS_MAX = 80;
   var BANK_DIRECT = "https://paswovhtsoljydywdmvb.supabase.co";
   var BANK_CACHE = "itcert-banks-v1";
   var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420" };
@@ -196,24 +205,35 @@
     var uid = state.session && state.session.user && state.session.user.id;
     return String(uid || "") + "::" + examId;
   }
-  function bankReady(examId) {
-    var name = BANK_GLOBAL[examId];
-    var qs = name && global[name];
-    var meta = bankMem[bankMemKey(examId)];
-    return !!(meta && Array.isArray(qs) && qs.length === meta.n && qs.length > 0);
+  function emptyBank(examId) {
+    return { examId: examId, version: "", total: 0, domains: null, index: null, metaReady: false, byId: {}, order: [], pages: {} };
   }
-  function publishBank(examId, questions, version) {
-    var name = BANK_GLOBAL[examId];
-    if (!name) throw new Error("未知题库");
-    global[name] = questions;
-    if (examId === "ai103") global.QUESTIONS = questions;
-    bankMem[bankMemKey(examId)] = { version: version || "", n: questions.length };
+  function bankSlot(examId) {
+    var key = bankMemKey(examId);
+    if (!bankMem[key]) bankMem[key] = emptyBank(examId);
+    return bankMem[key];
+  }
+  function bankReady(examId) {
+    var meta = bankMem[bankMemKey(examId)];
+    return !!(meta && meta.metaReady);
+  }
+  function publicMeta(slot) {
+    return { examId: slot.examId, version: slot.version || "", total: slot.total || 0, domains: slot.domains || null, index: slot.index || null, ready: !!slot.metaReady };
+  }
+  function rememberQuestions(slot, questions, offset) {
+    (questions || []).forEach(function (q, i) {
+      if (!q || q.id == null || q.id === "") return;
+      var id = String(q.id);
+      slot.byId[id] = q;
+      if (offset != null) slot.order[offset + i] = q;
+    });
   }
   function bankErrorMessage(e) {
     var msg = String((e && e.message) || "");
     if (isExpiryError(e)) return "账号已过期，请联系管理员续期";
-    if (/请先登录|未知题库|无权访问|题库为空|题库数据异常|题库加载不完整|题库加载超时|题库加载失败|账号已过期/.test(msg)) return msg;
+    if (/请先登录|未知题库|无权访问|题库为空|题库数据异常|题库加载不完整|题库加载超时|题库加载失败|账号已过期|不会下载整库|请求过于频繁|暂不支持/.test(msg)) return msg;
     if (/not-logged-in/i.test(msg)) return "请先登录后再加载题库";
+    if (e && e.status === 429) return "请求过于频繁，请稍后再试";
     if (e && e.network) return /超时/.test(msg) ? msg : "题库加载失败，请检查网络后重试";
     if (e && e.status === 401) return "登录已失效，请重新登录";
     if (e && (e.status === 403 || /无权|forbidden/i.test(msg))) return "当前账号无权访问该题库";
@@ -224,9 +244,57 @@
   function shouldFallbackBank(e) {
     return !!(e && (e.status === 404 || /not allowed|upstream/i.test(String(e.message || ""))));
   }
-  async function fetchBankPage(examId, offset, limit, token, base) {
+  function bankQuery(examId, opt) {
+    var p = ["exam=" + encodeURIComponent(examId)];
+    if (opt.meta) p.push("meta=1");
+    if (opt.ids && opt.ids.length) p.push("ids=" + encodeURIComponent(opt.ids.join(",")));
+    if (opt.sample) p.push("sample=" + encodeURIComponent(opt.sample));
+    if (opt.seed) p.push("seed=" + encodeURIComponent(opt.seed));
+    if (opt.q) p.push("q=" + encodeURIComponent(opt.q));
+    if (opt.offset != null) p.push("offset=" + encodeURIComponent(opt.offset));
+    if (opt.limit != null) p.push("limit=" + encodeURIComponent(opt.limit));
+    return "/functions/v1/itc-bank?" + p.join("&");
+  }
+  function unsupportedBank(kind) {
+    if (kind === "ids") return "题库服务暂不支持按题号加载，已停止，不会下载整库。";
+    if (kind === "sample") return "题库服务暂不支持抽题，已停止，不会下载整库。";
+    if (kind === "search") return "题库服务暂不支持搜索，已停止，不会下载整库。";
+    if (kind === "meta") return "题库服务未返回目录信息，已停止，不会下载整库。";
+    return "题库加载失败，请稍后重试";
+  }
+  function assertBankMode(data, kind, opt) {
+    var qs = (data && data.questions) || [];
+    if (data && data.mode) {
+      if (data.mode !== kind) throw new Error(unsupportedBank(kind));
+      return;
+    }
+    if (kind === "meta") {
+      if (qs.length) throw new Error(unsupportedBank("meta"));
+      return;
+    }
+    if (kind === "ids") {
+      var want = {};
+      (opt.ids || []).forEach(function (id) { want[String(id)] = 1; });
+      for (var i = 0; i < qs.length; i++) {
+        var id = qs[i] && qs[i].id != null ? String(qs[i].id) : "";
+        if (!want[id]) throw new Error(unsupportedBank("ids"));
+      }
+      return;
+    }
+    if (kind === "sample") {
+      var n = Number(opt.sample) || 0;
+      var total = Number(data && data.total);
+      var expectN = Math.min(n, isFinite(total) && total >= 0 ? total : n);
+      if (qs.length !== expectN) throw new Error(unsupportedBank("sample"));
+      return;
+    }
+    if (kind === "search") {
+      if (!data || String(data.q || "") !== String(opt.q || "")) throw new Error(unsupportedBank("search"));
+    }
+  }
+  async function fetchBankRaw(examId, opt, token, base) {
     var root = String(base || "").replace(/\/+$/, "");
-    var path = "/functions/v1/itc-bank?exam=" + encodeURIComponent(examId) + "&offset=" + encodeURIComponent(offset) + "&limit=" + encodeURIComponent(limit);
+    var path = bankQuery(examId, opt);
     var ctl = typeof AbortController === "function" ? new AbortController() : null;
     var tm = setTimeout(function () { if (ctl) ctl.abort(); }, Math.max(CFG.timeoutMs || 8000, 20000));
     try {
@@ -254,18 +322,18 @@
       throw e;
     } finally { clearTimeout(tm); }
   }
-  async function fetchPageRetry(examId, offset, limit, base) {
+  async function fetchBankRetry(examId, opt, base) {
     var token = await ensureFreshToken();
     try {
-      return await withRetry(function () { return fetchBankPage(examId, offset, limit, token, base); });
+      return await withRetry(function () { return fetchBankRaw(examId, opt, token, base); });
     } catch (e) {
       if (!e || e.status !== 401 || !state.session) throw e;
       state.session.exp = 0;
       token = await ensureFreshToken();
-      return await fetchBankPage(examId, offset, limit, token, base);
+      return await fetchBankRaw(examId, opt, token, base);
     }
   }
-  async function fetchBankPageWithFallback(examId, offset, limit) {
+  async function fetchBankWithFallback(examId, opt) {
     var direct = BANK_DIRECT.replace(/\/+$/, "");
     var primary = String(bankOrigin || BASE || direct).replace(/\/+$/, "");
     var bases = [primary];
@@ -273,7 +341,7 @@
     var last;
     for (var i = 0; i < bases.length; i++) {
       try {
-        var data = await fetchPageRetry(examId, offset, limit, bases[i]);
+        var data = await fetchBankRetry(examId, opt, bases[i]);
         bankOrigin = String(bases[i]).replace(/\/+$/, "");
         return data;
       } catch (e) {
@@ -283,61 +351,131 @@
     }
     throw last;
   }
-  async function fetchExamQuestions(examId, onProgress) {
-    var offset = 0, limit = BANK_BATCH, all = [], total = null, version = "", guard = 0, seen = Object.create(null);
-    while (guard++ < 400) {
-      var page = await fetchBankPageWithFallback(examId, offset, limit);
-      var n = Number(page.total);
-      if (isFinite(n) && n >= 0) total = Math.floor(n);
-      if (page.version != null && page.version !== "") version = String(page.version);
-      var qs = page.questions;
-      if (!qs.length) {
-        if (total != null && all.length < total) throw new Error("题库加载不完整，请检查网络后重试");
-        break;
-      }
-      for (var qi = 0; qi < qs.length; qi++) {
-        var qid = qs[qi] && qs[qi].id;
-        if (qid == null || seen[qid]) throw new Error("题库数据异常，请稍后重试");
-        seen[qid] = 1;
-      }
-      all = all.concat(qs);
-      if (total != null && all.length > total) all = all.slice(0, total);
-      if (typeof onProgress === "function") {
-        try { onProgress({ examId: examId, loaded: all.length, total: total == null ? all.length : total, version: version }); } catch (e) {}
-      }
-      offset += qs.length;
-      if (total != null && all.length >= total) break;
-      if (qs.length < limit) break;
-    }
-    if (!all.length) throw new Error("题库为空，请联系管理员");
-    if (guard >= 400 || (total != null && all.length < total)) throw new Error("题库加载不完整，请检查网络后重试");
-    return { questions: all, version: version, total: total == null ? all.length : total };
-  }
-  function loadExam(examId, onProgress) {
+  function guardExam(examId) {
     examId = String(examId || "");
-    if (!ENABLED || !CFG.protectedBanks) return Promise.resolve([]);
+    if (!ENABLED || !CFG.protectedBanks) return Promise.reject(new Error("题库未开启保护模式"));
     if (!state.session || !state.session.user) return Promise.reject(new Error("请先登录后再加载题库"));
     if (!BANK_GLOBAL[examId]) return Promise.reject(new Error("未知题库"));
     if (!canAccessExam(examId)) return Promise.reject(new Error("当前账号无权访问该题库"));
-    if (bankReady(examId)) return Promise.resolve(global[BANK_GLOBAL[examId]]);
-    if (bankInflight[examId]) return bankInflight[examId];
-    var uid = state.session.user.id;
-    setStatus("正在加载题库…");
-    var p = fetchExamQuestions(examId, onProgress).then(function (pack) {
-      if (!state.session || !state.session.user || state.session.user.id !== uid) throw new Error("请先登录后再加载题库");
-      publishBank(examId, pack.questions, pack.version);
-      setStatus(loginStatusText());
-      return pack.questions;
-    }).catch(function (e) {
-      var err = new Error(bankErrorMessage(e));
-      err.status = e && e.status;
-      if (state.session) setStatus(err.message);
-      throw err;
+    return Promise.resolve(examId);
+  }
+  function applyPack(slot, data, offset) {
+    if (data.version != null && data.version !== "") slot.version = String(data.version);
+    if (data.total != null && isFinite(Number(data.total))) slot.total = Math.floor(Number(data.total));
+    if (data.domains && typeof data.domains === "object") slot.domains = data.domains;
+    if (Array.isArray(data.index)) slot.index = data.index;
+    rememberQuestions(slot, data.questions, offset);
+  }
+  function loadExamMeta(examId) {
+    return guardExam(examId).then(function (id) {
+      var slot = bankSlot(id);
+      if (slot.metaReady) return publicMeta(slot);
+      var inflightKey = "meta:" + id;
+      if (bankInflight[inflightKey]) return bankInflight[inflightKey];
+      var uid = state.session.user.id;
+      var p = fetchBankWithFallback(id, { meta: true, limit: 1 }).then(function (data) {
+        assertBankMode(data, "meta", { meta: true });
+        if (!state.session || !state.session.user || state.session.user.id !== uid) throw new Error("请先登录后再加载题库");
+        applyPack(slot, data, null);
+        slot.metaReady = true;
+        if (!slot.total && data.total == null) throw new Error("题库数据异常，请稍后重试");
+        return publicMeta(slot);
+      }).catch(function (e) {
+        var err = new Error(bankErrorMessage(e));
+        err.status = e && e.status;
+        throw err;
+      });
+      bankInflight[inflightKey] = p;
+      var clear = function () { if (bankInflight[inflightKey] === p) delete bankInflight[inflightKey]; };
+      p.then(clear, clear);
+      return p;
     });
-    bankInflight[examId] = p;
-    var clear = function () { if (bankInflight[examId] === p) delete bankInflight[examId]; };
-    p.then(clear, clear);
-    return p;
+  }
+  function loadExamPage(examId, offset, limit) {
+    offset = Math.max(0, Math.floor(Number(offset) || 0));
+    limit = Math.min(BANK_PAGE, Math.max(1, Math.floor(Number(limit) || BANK_PAGE)));
+    return guardExam(examId).then(function (id) {
+      var slot = bankSlot(id);
+      var pageKey = offset + ":" + limit;
+      if (slot.pages[pageKey]) {
+        var cached = [];
+        for (var i = 0; i < limit; i++) if (slot.order[offset + i]) cached.push(slot.order[offset + i]);
+        return { questions: cached, total: slot.total, version: slot.version, offset: offset, limit: limit };
+      }
+      return fetchBankWithFallback(id, { offset: offset, limit: limit }).then(function (data) {
+        assertBankMode(data, "page", { offset: offset, limit: limit });
+        applyPack(slot, data, offset);
+        slot.pages[pageKey] = true;
+        return { questions: data.questions || [], total: slot.total, version: slot.version, offset: offset, limit: limit };
+      }).catch(function (e) {
+        throw new Error(bankErrorMessage(e));
+      });
+    });
+  }
+  function loadExamByIds(examId, ids) {
+    var list = [];
+    var seen = {};
+    (ids || []).forEach(function (id) {
+      if (id == null || id === "") return;
+      var s = String(id);
+      if (seen[s] || s.indexOf("__") === 0) return;
+      seen[s] = 1;
+      list.push(s);
+    });
+    return guardExam(examId).then(async function (id) {
+      var slot = bankSlot(id);
+      var need = list.filter(function (qid) { return !slot.byId[qid]; });
+      try {
+        for (var i = 0; i < need.length; i += BANK_IDS_MAX) {
+          var part = need.slice(i, i + BANK_IDS_MAX);
+          var data = await fetchBankWithFallback(id, { ids: part, offset: 0, limit: part.length });
+          assertBankMode(data, "ids", { ids: part });
+          applyPack(slot, data, null);
+        }
+      } catch (e) {
+        throw new Error(bankErrorMessage(e));
+      }
+      return list.map(function (qid) { return slot.byId[qid] || null; }).filter(Boolean);
+    });
+  }
+  function loadExamSample(examId, n, seed) {
+    n = Math.floor(Number(n) || 0);
+    if (n <= 0) return Promise.reject(new Error("抽题数量无效"));
+    if (n > BANK_IDS_MAX) return Promise.reject(new Error("一次最多抽取 " + BANK_IDS_MAX + " 题。请减少题量，或使用带索引的题库按题号抽题。不会下载整库。"));
+    return guardExam(examId).then(function (id) {
+      var slot = bankSlot(id);
+      return fetchBankWithFallback(id, { sample: n, seed: seed || "", offset: 999999, limit: 1 }).then(function (data) {
+        assertBankMode(data, "sample", { sample: n });
+        applyPack(slot, data, null);
+        return data.questions || [];
+      }).catch(function (e) {
+        throw new Error(bankErrorMessage(e));
+      });
+    });
+  }
+  function loadExamSearch(examId, q, offset, limit) {
+    q = String(q || "").trim();
+    if (!q) return Promise.reject(new Error("请输入搜索关键词"));
+    offset = Math.max(0, Math.floor(Number(offset) || 0));
+    limit = Math.min(BANK_PAGE, Math.max(1, Math.floor(Number(limit) || BANK_PAGE)));
+    return guardExam(examId).then(function (id) {
+      var slot = bankSlot(id);
+      return fetchBankWithFallback(id, { q: q, offset: offset, limit: limit }).then(function (data) {
+        assertBankMode(data, "search", { q: q });
+        applyPack(slot, data, null);
+        var matchTotal = data.matchTotal != null ? Number(data.matchTotal) : (data.questions || []).length;
+        return { questions: data.questions || [], total: slot.total, matchTotal: matchTotal, q: q, offset: offset, limit: limit };
+      }).catch(function (e) {
+        throw new Error(bankErrorMessage(e));
+      });
+    });
+  }
+  function getBank(examId) {
+    var slot = bankMem[bankMemKey(examId)];
+    return slot ? publicMeta(slot) : null;
+  }
+  function loadExam(examId) {
+    return loadExamMeta(examId).then(function () { return []; });
   }
   function expiryReminder() {
     var u = state.session && state.session.user; if (!u || !u.expires_at) return;
@@ -351,7 +489,6 @@
   async function signOut() {
     var s = state.session;
     if (s) {
-      try { await pushNow(); } catch (e) {}
       http("POST", "/auth/v1/logout", null, s.access).catch(function () {});
     }
     state.session = null; writeSession(null);
@@ -390,72 +527,90 @@
   }
   function forceLogout(msg) { state.session = null; writeSession(null); clearBankMemory(); purgeBankCache(); state.expired = /过期/.test(msg); setStatus(msg); refreshUi(); }
 
-  /* ---------------- sync ---------------- */
+  /* ---------------- manual progress upload / download (no merge, no auto sync) ---------------- */
+  var STALE_KEY = "itcert_cloud_stale";
   function setSync(t) { state.syncStatus = t; var el = $("sync-status"); if (el) el.textContent = t; }
   async function pullRemote(token, uid) {
     var rows = await http("GET", "/rest/v1/user_progress?select=data,updated_at&user_id=eq." + encodeURIComponent(uid), null, token);
     return rows && rows[0] ? rows[0].data : null;
   }
   async function pushRemote(token, uid, snap) {
+    // PostgREST upsert replaces the data column. Local snapshot overwrites cloud entirely.
     await http("POST", "/rest/v1/user_progress?on_conflict=user_id", { user_id: uid, data: snap }, token, { Prefer: "resolution=merge-duplicates,return=minimal" });
   }
-  function shouldPull(reason) {
-    if (reason === "login" || reason === "load" || reason === "import" || reason === "manual" || reason === "pull" || reason === "migrate") return true;
-    if (reason === "visible") {
-      var gap = Number(CFG.syncPullMinIntervalMs) || 300000;
-      return !state.lastPullAt || (Date.now() - state.lastPullAt) >= gap;
-    }
-    return false; // auto / hide / flush / online / push → upload only
+  function syncFailText(e, verb) {
+    if (!state.session) return "";
+    if (e && e.status === 429) return "请求过于频繁，请稍后再试";
+    if (isExpiryError(e) || (e && (e.status === 401 || e.status === 403))) return verb + "被拒绝（账号可能已过期），进度仍只在本机";
+    return verb + "失败，请稍后重试。进度仍只在本机。";
   }
-  async function syncNow(reason) {
-    if (!ENABLED || !state.session || state.syncing) return;
-    state.syncing = true; state.dirty = false;
-    var doPull = shouldPull(reason);
-    setSync(doPull ? "同步中…" : "上传进度…");
+  function noteLocalAhead(msg) {
+    try { sessionStorage.setItem(STALE_KEY, "1"); } catch (e) {}
+    var text = msg || "本机进度已更新。云端仍是旧数据，需要覆盖云端请点「上传进度」。刷新不会自动拉回云端。";
+    setSync(text);
+    showBanner(text + " <a href='#' id='sync-reload'>知道了</a>", true);
+  }
+  function clearLocalAhead() {
+    try { sessionStorage.removeItem(STALE_KEY); } catch (e) {}
+  }
+  function showStaleIfNeeded() {
+    var flag = "";
+    try { flag = sessionStorage.getItem(STALE_KEY) || ""; } catch (e) {}
+    if (flag === "1" && state.session) noteLocalAhead();
+    else if (state.session && !state.syncStatus) setSync("进度只保存在本机。换设备请点「上传进度」或「下载进度」。");
+  }
+  async function claimOnce() {
+    if (!CFG.deviceLimit || !state.session || state.claimedDevice) return;
+    try {
+      var token = await ensureFreshToken();
+      await claimDevice(token);
+      state.claimedDevice = true;
+    } catch (e) {
+      if (e && /device_limit/.test(String(e.message || ""))) forceLogout("该账号登录的设备数已达上限，本机已退出");
+    }
+  }
+  async function uploadProgress() {
+    if (!ENABLED || !state.session) { setSync("请先登录"); return; }
+    if (state.syncing) return;
+    if (!global.confirm("上传将用本机进度完整覆盖云端进度，云端现有记录会被替换。确定上传？")) return;
+    state.syncing = true;
+    setSync("正在上传…");
     try {
       await withRetry(async function () {
         var token = await ensureFreshToken();
-        var uid = state.session.user.id;
-        // Claim device once per browser session (not on every debounce upload).
-        if (CFG.deviceLimit && (reason === "login" || reason === "load" || !state.claimedDevice)) {
-          try { await claimDevice(token); state.claimedDevice = true; }
-          catch (e) { if (/device_limit/.test(e.message)) { forceLogout("该账号登录的设备数已达上限，本机已退出"); throw e; } if (e.network) throw e; }
-        }
-        var local = PC.snapshot(ls, knownExamIds());
-        var merged = local;
-        var localChanged = false;
-        if (doPull) {
-          var remote = await pullRemote(token, uid);
-          state.lastPullAt = Date.now();
-          merged = remote ? PC.mergeSnapshots(local, remote) : local;
-          localChanged = !PC.sameData(local, merged);
-          if (localChanged) PC.apply(ls, merged, setRaw);
-          if (!remote || !PC.sameData(remote, merged)) await pushRemote(token, uid, merged);
-        } else {
-          await pushRemote(token, uid, local);
-        }
-        var meta = PC.readMeta(ls); meta.lastSyncAt = Date.now(); PC.writeMeta(ls, meta);
-        // Always clear the boot flag; NEVER auto-reload / navigate (that was jumping users to home).
-        if (localChanged) onLocalMergedQuiet(reason);
-        else state.initialMerge = false;
+        await pushRemote(token, state.session.user.id, PC.snapshot(ls, knownExamIds()));
       });
-      setSync("已同步 " + fmtTime(Date.now()));
+      clearLocalAhead();
+      var meta = PC.readMeta(ls); meta.lastSyncAt = Date.now(); PC.writeMeta(ls, meta);
+      setSync("已上传到云端 " + fmtTime(Date.now()) + "（云端已被本机覆盖）");
     } catch (e) {
-      if (!state.session) { setSync(""); }
-      else if (isExpiryError(e) || e.status === 401 || e.status === 403) setSync("同步被拒绝（账号可能已过期），进度仅保存在本机");
-      else setSync("暂时无法连接同步服务，进度已保存在本机，稍后自动重试");
-      if (state.session) scheduleSync(Math.max(CFG.syncDebounceMs, 60000));
-    } finally { state.syncing = false; if (state.dirty) scheduleSync(CFG.syncDebounceMs); }
+      setSync(syncFailText(e, "上传"));
+    } finally { state.syncing = false; }
   }
-  var pushNow = function () { return syncNow("flush"); };
-  function autoSync() { try { return ls.getItem("itcert_autosync") !== "0"; } catch (e) { return true; } }
-  function scheduleSync(ms) { if (!autoSync()) { if (state.dirty) setSync("手动同步模式：有未同步的更改，点「立即同步」保存到账号"); return; } clearTimeout(state.timer); state.timer = setTimeout(function () { syncNow("auto"); }, ms); }
-  function onLocalMergedQuiet(reason) {
-    // Remote progress was merged into localStorage. App keeps answers in memory for the
-    // current session — do NOT reload, remount, change bank, or reset question index.
-    state.initialMerge = false;
-    if (reason === "login" || reason === "load") return; // boot merge: in-memory still empty / about to init
-    showBanner("已合并其他设备的进度（当前题目不受影响）。如需查看全部更新可<a href='#' id='sync-reload'>点此刷新</a>", false);
+  async function downloadProgress() {
+    if (!ENABLED || !state.session) { setSync("请先登录"); return; }
+    if (state.syncing) return;
+    if (!global.confirm("下载将用云端进度完整覆盖本机进度，本机尚未上传的练习、错题和考试记录会丢失，并刷新页面。确定下载？")) return;
+    state.syncing = true;
+    setSync("正在下载…");
+    try {
+      await withRetry(async function () {
+        var token = await ensureFreshToken();
+        var remote = await pullRemote(token, state.session.user.id);
+        if (remote && (typeof remote !== "object" || Array.isArray(remote) || !remote.exams)) throw new Error("云端进度无效");
+        if (typeof PC.replaceAll === "function") PC.replaceAll(ls, remote || { v: 1, exams: {} }, setRaw);
+        else {
+          PC.clearAll(ls);
+          if (remote && remote.exams) PC.apply(ls, remote, setRaw);
+        }
+      });
+      clearLocalAhead();
+      setSync("已用云端进度覆盖本机，正在刷新…");
+      setTimeout(function () { location.reload(); }, 300);
+    } catch (e) {
+      state.syncing = false;
+      setSync(syncFailText(e, "下载") || ((e && e.message) ? ("下载失败：" + e.message) : "下载失败"));
+    }
   }
   function showBanner(html, dismissOnly) {
     var b = $("sync-banner");
@@ -464,11 +619,11 @@
     var a = $("sync-reload"); if (a) a.onclick = function (ev) { ev.preventDefault(); if (b.dataset.dismiss) b.remove(); else location.reload(); };
   }
 
-  /* Hook localStorage writes from app.js: stamp timestamps, keep history, schedule push. */
+  /* Stamp local timestamps for backup/export. Do not upload. */
   Storage.prototype.setItem = function (k, v) {
     rawSet.call(this, k, v);
     if (this === ls && PC) {
-      try { if (PC.noteWrite(ls, String(k), String(v), setRaw) && ENABLED && state.session) { state.dirty = true; scheduleSync(CFG.syncDebounceMs); } } catch (e) {}
+      try { PC.noteWrite(ls, String(k), String(v), setRaw); } catch (e) {}
     }
   };
 
@@ -493,7 +648,7 @@
     var lb = $("btn-auth-login"); if (lb) { lb.classList.toggle("hidden", li); lb.textContent = "登录"; }
     var lo = $("btn-auth-logout"); if (lo) { lo.classList.toggle("hidden", !li); lo.textContent = "退出登录"; }
     var hint = document.querySelector("#auth-panel .auth-hint");
-    if (hint) hint.textContent = li ? "进度自动同步到账号，换设备登录同一账号即可继续" : "请使用管理员发放的账号登录（账号可只填姓名缩写）";
+    if (hint) hint.textContent = li ? "进度只保存在本机。换设备请点「上传进度」或「下载进度」（互相覆盖，不自动合并）" : "请使用管理员发放的账号登录（账号可只填姓名缩写）";
     if (li && !state.status) setStatus(loginStatusText());
     if (!li && !state.status) setStatus("请登录后使用");
     var sb = $("sync-row"); if (sb) sb.classList.toggle("hidden", !li);
@@ -526,12 +681,12 @@
     var panel = $("auth-panel");
     if (panel && !$("sync-row")) {
       var row = document.createElement("div"); row.id = "sync-row"; row.className = "sync-row muted hidden";
-      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><label class='sync-auto'><input type='checkbox' id='chk-autosync'> 自动同步</label><button type='button' class='btn btn-sm' id='btn-sync-now'>立即同步</button></div>";
+      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><button type='button' class='btn btn-sm' id='btn-sync-upload'>上传进度</button><button type='button' class='btn btn-sm' id='btn-sync-download'>下载进度</button></div>";
       panel.appendChild(row);
-      var ck = $("chk-autosync"); ck.checked = autoSync();
-      ck.onchange = function () { rawSet.call(ls, "itcert_autosync", ck.checked ? "1" : "0"); if (ck.checked) { if (state.dirty) syncNow("manual"); else setSync("已开启自动同步"); } else setSync("已切换为手动同步，需要时点「立即同步」"); };
       var lo2 = $("btn-auth-logout"); if (lo2) row.querySelector(".sync-ctl").appendChild(lo2);
-      $("btn-sync-now").onclick = function () { syncNow("manual"); };
+      $("btn-sync-upload").onclick = function () { uploadProgress(); };
+      $("btn-sync-download").onclick = function () { downloadProgress(); };
+      if (!state.syncStatus) setSync("进度只保存在本机。换设备请点「上传进度」或「下载进度」。");
     }
   }
 
@@ -578,8 +733,8 @@
         var incoming = await PC.decode(text);
         PC.apply(ls, PC.mergeSnapshots(PC.snapshot(ls, knownExamIds()), incoming), setRaw);
         var meta = PC.readMeta(ls); Object.keys(meta.ts).forEach(function (k) { meta.ts[k] = Math.max(meta.ts[k], Date.now() - 1); }); PC.writeMeta(ls, meta);
-        msg("导入成功，正在刷新…");
-        if (ENABLED && state.session) { try { await syncNow("import"); } catch (e) {} }
+        try { sessionStorage.setItem(STALE_KEY, "1"); } catch (e2) {}
+        msg("导入成功，正在刷新…云端不会自动更新，需要覆盖请之后点「上传进度」。");
         setTimeout(function () { location.reload(); }, 600);
       } catch (e) { msg("导入失败：" + (e.message || e)); }
     }
@@ -615,17 +770,10 @@
         var exp = expiresAtOf(u); if (exp) state.session.user.expires_at = exp;
         writeSession(state.session); applyEntitlements(); refreshUi();
       }).catch(function () {});
-      state.initialMerge = true;
-      syncNow("load");
+      claimOnce();
+      showStaleIfNeeded();
     }
     resolveBoot();
-    document.addEventListener("visibilitychange", function () {
-      if (!state.session || !autoSync()) return;
-      if (document.visibilityState === "hidden") { if (state.dirty) syncNow("hide"); }
-      else if (shouldPull("visible")) syncNow("visible");
-    });
-    global.addEventListener("pagehide", function () { if (state.session && state.dirty && autoSync()) syncNow("hide"); });
-    global.addEventListener("online", function () { if (state.session && state.dirty && autoSync()) syncNow("online"); });
   }
 
   if (ENABLED) {
@@ -639,11 +787,15 @@
       statusMessage: function () { return state.status; }, signIn: signIn, signUp: function () { setStatus("账号由管理员发放，请联系管理员开通"); return Promise.resolve({ ok: false }); },
       signOut: signOut, getSession: function () { return Promise.resolve(state.session); },
       canAccessExam: canAccessExam, allowedExams: allowedExams, loadExam: loadExam, examReady: bankReady,
-      migrateLocalToCloudIfNeeded: function () { return syncNow("migrate"); }, pullProgress: function () { return syncNow("pull"); }, pushProgress: function () { return syncNow("push"); },
-      refreshUi: refreshUi, applyAppGate: applyAppGate, init: boot, syncNow: syncNow,
+      loadExamMeta: loadExamMeta, loadExamPage: loadExamPage, loadExamByIds: loadExamByIds,
+      loadExamSample: loadExamSample, loadExamSearch: loadExamSearch, getBank: getBank,
+      migrateLocalToCloudIfNeeded: function () { return Promise.resolve(); },
+      pullProgress: downloadProgress, pushProgress: uploadProgress,
+      refreshUi: refreshUi, applyAppGate: applyAppGate, init: boot,
+      syncNow: function () { return Promise.resolve(); },
     };
   }
-  global.ITCERT_SYNC = { enabled: ENABLED, openBackup: openBackup, syncNow: syncNow, _state: state, _cfg: CFG };
+  global.ITCERT_SYNC = { enabled: ENABLED, openBackup: openBackup, uploadProgress: uploadProgress, downloadProgress: downloadProgress, noteLocalAhead: noteLocalAhead, _state: state, _cfg: CFG };
   purgeBankCache();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })(window);
