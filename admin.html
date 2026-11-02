@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="星火" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>管理后台 · IT认证练习</title>
+  <link rel="stylesheet" href="styles.css?v=202611020925" />
+  <script src="js/account-config.js?v=202611020925"></script>
+  <script src="js/supabase-config.js?v=202611020925"></script>
+  <style>
+    .admin-wrap { max-width: 1100px; margin: 0 auto; padding: 1rem 1rem 3rem; }
+    .admin-top { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+    .admin-top h1 { font-size: 1.25rem; margin: 0; flex: 1 1 auto; }
+    .admin-msg { min-height: 1.4em; font-size: .9rem; margin: .5rem 0 1rem; }
+    .admin-msg.err { color: var(--danger-strong, #b91c1c); }
+    .admin-msg.ok { color: #15803d; }
+    .admin-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+    .admin-form { display: grid; gap: .65rem; max-width: 520px; }
+    .admin-form label { display: grid; gap: .25rem; font-size: .88rem; }
+    .admin-form input[type=text], .admin-form input[type=number], .admin-form input[type=date] {
+      padding: .45rem .6rem; border-radius: 8px; border: 1px solid rgba(127,127,127,.35); background: var(--bg-card, #fff); color: inherit;
+    }
+    .exam-checks { display: flex; flex-wrap: wrap; gap: .5rem .9rem; }
+    .exam-checks label { display: inline-flex; align-items: center; gap: .3rem; font-size: .88rem; }
+    .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid rgba(127,127,127,.2); }
+    table.admin-table { width: 100%; border-collapse: collapse; font-size: .82rem; min-width: 720px; }
+    table.admin-table th, table.admin-table td { padding: .45rem .5rem; text-align: left; border-bottom: 1px solid rgba(127,127,127,.15); vertical-align: top; }
+    table.admin-table th { background: rgba(127,127,127,.08); position: sticky; top: 0; white-space: nowrap; }
+    table.admin-table tr:hover td { background: rgba(37,99,235,.04); }
+    .st-有效 { color: #15803d; font-weight: 600; }
+    .st-已过期, .st-停用 { color: #b91c1c; font-weight: 600; }
+    .ops { display: flex; flex-wrap: wrap; gap: .25rem; max-width: 220px; }
+    .ops .btn { font-size: .75rem; padding: .25rem .45rem; min-height: 28px; }
+    .pw-box { margin-top: .75rem; padding: .75rem 1rem; border-radius: 10px; background: #fef3c7; color: #92400e; word-break: break-all; }
+    .pw-box code { font-size: 1.05rem; font-weight: 700; }
+    .gate { padding: 2rem 1rem; text-align: center; }
+    @media (max-width: 640px) {
+      .admin-wrap { padding: .75rem .6rem 2.5rem; }
+      table.admin-table { font-size: .78rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <div class="admin-top">
+      <h1>IT认证练习 · 管理后台</h1>
+      <a class="btn btn-sm btn-ghost" href="index.html">← 返回练习站</a>
+      <button type="button" class="btn btn-sm" id="btn-refresh">刷新列表</button>
+    </div>
+    <div id="admin-who" class="muted small"></div>
+    <div id="admin-msg" class="admin-msg" role="status"></div>
+    <div id="admin-gate" class="gate card hidden">
+      <p id="gate-text">正在校验管理员身份…</p>
+      <p><a class="btn btn-sm" href="index.html">返回首页登录</a></p>
+    </div>
+    <div id="admin-app" class="hidden">
+      <div class="admin-tabs" role="tablist">
+        <button type="button" class="btn btn-sm active" data-tab="users">学员列表</button>
+        <button type="button" class="btn btn-sm" data-tab="create">开号</button>
+        <button type="button" class="btn btn-sm" data-tab="reports">报错列表</button>
+      </div>
+      <section id="tab-users" class="admin-panel active card">
+        <h2>学员列表</h2>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="users-table">
+            <thead>
+              <tr>
+                <th>账号</th><th>状态</th><th>到期</th><th>题库</th><th>设备上限</th><th>最近登录</th><th>创建</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </section>
+      <section id="tab-create" class="admin-panel card">
+        <h2>开号</h2>
+        <form id="create-form" class="admin-form">
+          <label>用户名（可空，空则自动 userN）
+            <input type="text" id="c-user" placeholder="如 zhangsan" autocomplete="off" />
+          </label>
+          <label>天数（默认 30）
+            <input type="number" id="c-days" min="1" value="30" />
+          </label>
+          <label>设备上限（默认 2，0=不限）
+            <input type="number" id="c-max" min="0" value="2" />
+          </label>
+          <div>
+            <div style="font-size:.88rem;margin-bottom:.35rem">可见题库</div>
+            <div class="exam-checks" id="c-exams">
+              <label><input type="checkbox" value="ai103" checked /> ai103</label>
+              <label><input type="checkbox" value="dop-c02" /> dop-c02</label>
+              <label><input type="checkbox" value="dp-700" /> dp-700</label>
+              <label><input type="checkbox" value="dp-420" /> dp-420</label>
+              <label><input type="checkbox" value="*" id="c-all" /> 全部 (*)</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">创建账号</button>
+        </form>
+        <div id="create-pw" class="pw-box hidden"></div>
+      </section>
+      <section id="tab-reports" class="admin-panel card">
+        <h2>报错列表</h2>
+        <p class="muted small">来自学员练习页「报错」；登录后会写入云端。</p>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>时间</th><th>账号</th><th>题库</th><th>题号</th><th>说明</th></tr>
+            </thead>
+            <tbody id="reports-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <p class="muted small" style="margin-top:1.5rem">作者：星火 · service_role 不进前端</p>
+  </div>
+  <script src="js/admin.js?v=202611020925"></script>
+</body>
+</html>

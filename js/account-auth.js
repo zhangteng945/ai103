@@ -70,7 +70,7 @@
   function sessionFrom(tok) {
     var u = tok.user || {};
     return { access: tok.access_token, refresh: tok.refresh_token, exp: Date.now() + (tok.expires_in || 3600) * 1000,
-      user: { id: u.id, email: u.email, expires_at: expiresAtOf(u), exams: (u.app_metadata && u.app_metadata.exams) || null } };
+      user: { id: u.id, email: u.email, expires_at: expiresAtOf(u), exams: (u.app_metadata && u.app_metadata.exams) || null, role: (u.app_metadata && u.app_metadata.role) || null } };
   }
   function normalizeEmail(raw) { var e = String(raw || "").trim().toLowerCase(); if (e && e.indexOf("@") < 0) e += "@" + CFG.emailDomain; return e; }
 
@@ -328,6 +328,18 @@
     if (li && !state.status) setStatus(loginStatusText());
     if (!li && !state.status) setStatus("请登录后使用");
     var sb = $("sync-row"); if (sb) sb.classList.toggle("hidden", !li);
+    var adminBtn = $("btn-admin");
+    var isAdmin = !!(li && state.session && state.session.user && state.session.user.role === "admin");
+    if (!adminBtn && isAdmin) {
+      var panel0 = $("auth-panel");
+      if (panel0) {
+        adminBtn = document.createElement("a");
+        adminBtn.id = "btn-admin"; adminBtn.className = "btn btn-sm btn-primary"; adminBtn.href = "admin.html";
+        adminBtn.textContent = "管理后台"; adminBtn.style.marginTop = ".35rem";
+        panel0.appendChild(adminBtn);
+      }
+    }
+    if (adminBtn) adminBtn.classList.toggle("hidden", !isAdmin);
     var tg = $("btn-acct-toggle");
     if (!tg && panel) { tg = document.createElement("button"); tg.type = "button"; tg.id = "btn-acct-toggle"; tg.className = "btn btn-sm btn-ghost acct-toggle"; tg.textContent = "账号"; panel.parentNode.insertBefore(tg, panel); tg.onclick = function () { document.body.classList.toggle("acct-open"); }; }
     if (tg) tg.classList.toggle("hidden", !li);
@@ -425,6 +437,14 @@
     state.ready = true; refreshUi();
     if (state.session) {
       applyEntitlements(); expiryReminder();
+      // 刷新最新 app_metadata（含 role），旧本地 session 可能没有 role 字段
+      http("GET", "/auth/v1/user", null, state.session.access).then(function (u) {
+        if (!state.session || !state.session.user) return;
+        state.session.user.role = (u.app_metadata && u.app_metadata.role) || null;
+        if (u.app_metadata && u.app_metadata.exams) state.session.user.exams = u.app_metadata.exams;
+        var exp = expiresAtOf(u); if (exp) state.session.user.expires_at = exp;
+        writeSession(state.session); applyEntitlements(); refreshUi();
+      }).catch(function () {});
       loadBanks().then(function () { state.initialMerge = true; syncNow("load"); }, function (e) { setStatus(e.message || "题库加载失败"); });
     } else if (!CFG.protectedBanks) bootResolve();
     document.addEventListener("visibilitychange", function () {

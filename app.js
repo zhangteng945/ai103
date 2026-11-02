@@ -909,6 +909,33 @@
     reportSink(rec);
     const txt = reportText([rec]);
     alert((copyText(txt) ? L("已保存并复制，请发给 星火：\n\n", "Saved & copied. Please send to 星火:\n\n") : L("已保存，请复制以下内容发给 星火：\n\n", "Saved. Copy this and send to 星火:\n\n")) + txt);
+    // 登录态额外写入云端 issue_reports（经 apiBase 代理；失败不影响本地）
+    try {
+      const sess = JSON.parse(localStorage.getItem("itcert_account_session_v1") || "null");
+      const cfg = window.__ITCERT_ACCOUNT__ || {};
+      const sb = window.__AI103_SUPABASE__ || {};
+      const base = String(cfg.apiBase || sb.url || "").replace(/\/+$/, "");
+      const key = cfg.anonKey || sb.anonKey || "";
+      if (sess && sess.access && sess.user && sess.user.id && base && key) {
+        fetch(base + "/rest/v1/issue_reports", {
+          method: "POST",
+          headers: {
+            apikey: key,
+            Authorization: "Bearer " + sess.access,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal"
+          },
+          body: JSON.stringify({
+            user_id: sess.user.id,
+            exam_id: String(currentExamId || ""),
+            qid: String(q.id || ""),
+            note: String(msg).slice(0, 500),
+            payload: { num: rec.num, ts: rec.ts, local: true }
+          }),
+          cache: "no-store"
+        }).catch(function () {});
+      }
+    } catch (e) {}
   }
   function renderQExtras(q) {
     let box = $("#q-extras");
