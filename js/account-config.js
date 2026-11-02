@@ -20,8 +20,10 @@ window.__ITCERT_ACCOUNT__ = {
   allowOfflineCachedLogin: true, // already-logged-in device keeps working offline until account expiry
   deviceLimit: true,
   maxDevices: 2,          // display/default only; server enforces app_metadata.max_devices (default 2) in claim_device
-  // protectedBanks:true → every bank listed below is fetched from private Storage only after a valid login.
-  // Set false to keep shipping banks as public static files (login still gates the UI when enabled:true).
+  // protectedBanks:true → the browser never downloads public bank files or Storage objects.
+  // After login it fetches one exam at a time, in batches, from Edge Function itc-bank
+  // (js/account-auth.js). Set false to keep shipping banks as public static files.
+  // `banks` is the private Storage catalog the function should serve; the browser does not fetch these paths.
   // Fill versions after: node scripts/admin-accounts.mjs upload-bank <examId> <file.js> <version>
   protectedBanks: true,
   banks: {
