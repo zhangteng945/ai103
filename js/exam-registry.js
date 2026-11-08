@@ -134,6 +134,43 @@
         return global.QUESTIONS_DP_420 || [];
       },
     },
+    {
+      id: "az-305",
+      title: "AZ-305",
+      shortLabel: "AZ-305",
+      subtitleZh: "社区来源练习样本（非官方、非完整、非最新题库）",
+      subtitleEn: "Community sample, not an official or complete bank",
+      mockDefaultCount: 30,
+      mockCounts: [20, 30, 40],
+      mockDefaultMinutes: 100,
+      mockMinutes: [60, 100, 120],
+      passScore: 700,
+      scoreMin: 0,
+      specialExam58: false,
+      domainOrder: ["identity", "infra", "data", "bcdr", "other"],
+      domainWeights: { identity: 0.25, infra: 0.25, data: 0.25, bcdr: 0.25, other: 0 },
+      domainLabelsZh: {
+        identity: "身份、治理与监视（来源分类）",
+        infra: "基础设施（来源分类）",
+        data: "数据存储（来源分类）",
+        bcdr: "业务连续性（来源分类）",
+        other: "其他来源分类",
+      },
+      domainLabelsEn: {
+        identity: "Identity, governance, and monitoring (source category)",
+        infra: "Infrastructure (source category)",
+        data: "Data storage (source category)",
+        bcdr: "Business continuity (source category)",
+        other: "Other source category",
+      },
+      statMode: "domains",
+      legacyPracticeKey: null,
+      legacyExamLastKey: null,
+      legacyQOrderKey: null,
+      getQuestions: function () {
+        return global.QUESTIONS_AZ_305 || [];
+      },
+    },
   ];
 
   function list() {

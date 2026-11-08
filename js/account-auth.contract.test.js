@@ -57,8 +57,11 @@ function jsonRes(body, status) {
   return { ok: status >= 200 && status < 300, status: status, text: async function () { return JSON.stringify(body); } };
 }
 global.fetch = async function (url, opt) {
-  calls.push({ url: String(url), method: (opt && opt.method) || "GET" });
+  calls.push({ url: String(url), method: (opt && opt.method) || "GET", body: opt && opt.body });
   var u = String(url);
+  if (u.indexOf("version=v-old") >= 0) {
+    return jsonRes({ ok: true, mode: "ids", examId: "ai103", version: "v-old", total: 3, questions: [{ id: "q-old", stem: "old" }] }, 200);
+  }
   if (u.indexOf("meta=1") >= 0) {
     return jsonRes({ ok: true, mode: "meta", examId: "ai103", version: "v1", total: 3, domains: { plan: 2, genai: 1 }, index: [{ id: "q1", domain: "plan" }, { id: "q2", domain: "plan" }, { id: "q3", domain: "genai" }], questions: [] }, 200);
   }
@@ -67,6 +70,9 @@ global.fetch = async function (url, opt) {
   }
   if (u.indexOf("sample=") >= 0) {
     return jsonRes({ ok: true, mode: "page", examId: "ai103", total: 3, offset: 0, limit: 1, questions: [{ id: "q1" }] }, 200);
+  }
+  if (u.indexOf("offset=") >= 0 && u.indexOf("ids=") < 0) {
+    return jsonRes({ ok: true, mode: "page", examId: "ai103", version: "v2", total: 3, offset: 0, limit: 50, questions: [{ id: "from-v2" }] }, 200);
   }
   if (u.indexOf("user_progress") >= 0 && (opt && opt.method) === "POST") {
     return jsonRes({}, 200);
@@ -106,11 +112,29 @@ require("./account-auth.js");
   }
   assert.strictEqual(threw, true);
 
+  var beforePage = calls.length;
+  threw = false;
+  try { await global.AI103Auth.loadExamPage("ai103", 0, 50); } catch (e) {
+    threw = true;
+    assert.ok(/题库版本不一致/.test(e.message));
+  }
+  assert.strictEqual(threw, true);
+  var pageCalls = calls.slice(beforePage).filter(function (c) { return c.url.indexOf("itc-bank") >= 0; });
+  assert.strictEqual(pageCalls.length, 1);
+  assert.ok(pageCalls[0].url.indexOf("version=v1") >= 0, "page stays on the pinned version");
+  var oldQs = await global.AI103Auth.loadExamByIds("ai103", ["q-old"], { version: "v-old" });
+  assert.strictEqual(oldQs[0].id, "q-old");
+  assert.strictEqual(global.AI103Auth.getBank("ai103").version, "v1");
+
   ls.setItem("itcert_practice_v1_ai103", JSON.stringify({ answers: {}, submitted: {}, flags: {}, wrongIds: { localOnly: true }, clearedIds: {} }));
   var nBefore = calls.length;
   await global.ITCERT_SYNC.uploadProgress();
   var up = calls.slice(nBefore);
-  assert.ok(up.some(function (c) { return c.method === "POST" && c.url.indexOf("user_progress") >= 0; }));
+  var post = up.filter(function (c) { return c.method === "POST" && c.url.indexOf("user_progress") >= 0; })[0];
+  assert.ok(post);
+  var posted = JSON.parse(post.body);
+  assert.strictEqual(posted.data.schema, "itcert-progress");
+  assert.strictEqual(posted.data.compat, 2);
   assert.ok(!up.some(function (c) { return c.method === "GET" && c.url.indexOf("user_progress") >= 0; }), "upload must not pull");
 
   await global.ITCERT_SYNC.downloadProgress();

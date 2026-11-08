@@ -1,0 +1,19 @@
+{
+  "id": "fixture-hotspot-tier",
+  "type": "hotspot-dropdown",
+  "question": "On the sample diagram, choose a tier label.",
+  "image": "assets/images/sample.svg",
+  "dropdowns": [
+    {
+      "label": "Sample tier",
+      "x1": 10,
+      "y1": 10,
+      "x2": 40,
+      "y2": 30,
+      "options": ["Hot", "Cool", "Archive"],
+      "correctIndex": 1
+    }
+  ],
+  "explanation": "Fixture hotspot explanation.",
+  "category": "Design Data Storage Solutions"
+}

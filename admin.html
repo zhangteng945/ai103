@@ -6,9 +6,9 @@
   <meta name="author" content="星火" />
   <meta name="robots" content="noindex,nofollow" />
   <title>管理后台 · IT认证练习</title>
-  <link rel="stylesheet" href="styles.css?v=202611021455" />
-  <script src="js/account-config.js?v=202611021455"></script>
-  <script src="js/supabase-config.js?v=202611021455"></script>
+  <link rel="stylesheet" href="styles.css?v=202611081450" />
+  <script src="js/account-config.js?v=202611081450"></script>
+  <script src="js/supabase-config.js?v=202611081450"></script>
   <style>
     .admin-wrap { max-width: 1100px; margin: 0 auto; padding: 1rem 1rem 3rem; }
     .admin-top { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-bottom: 1rem; }
@@ -38,6 +38,10 @@
     .pw-box { margin-top: .75rem; padding: .75rem 1rem; border-radius: 10px; background: #fef3c7; color: #92400e; word-break: break-all; }
     .pw-box code { font-size: 1.05rem; font-weight: 700; }
     .gate { padding: 2rem 1rem; text-align: center; }
+    .bank-grid { display: grid; gap: .75rem; }
+    .bank-note { white-space: pre-wrap; }
+    .diff-list { max-height: 280px; overflow: auto; font-size: .8rem; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
     @media (max-width: 640px) {
       .admin-wrap { padding: .75rem .6rem 2.5rem; }
       table.admin-table { font-size: .78rem; }
@@ -62,6 +66,7 @@
         <button type="button" class="btn btn-sm active" data-tab="users">学员列表</button>
         <button type="button" class="btn btn-sm" data-tab="create">开号</button>
         <button type="button" class="btn btn-sm" data-tab="reports">报错列表</button>
+        <button type="button" class="btn btn-sm" data-tab="banks">题库版本</button>
       </div>
       <section id="tab-users" class="admin-panel active card">
         <h2>学员列表</h2>
@@ -95,6 +100,7 @@
               <label><input type="checkbox" value="dop-c02" /> dop-c02</label>
               <label><input type="checkbox" value="dp-700" /> dp-700</label>
               <label><input type="checkbox" value="dp-420" /> dp-420</label>
+              <label><input type="checkbox" value="az-305" /> az-305</label>
               <label><input type="checkbox" value="*" id="c-all" /> 全部 (*)</label>
             </div>
           </div>
@@ -114,9 +120,44 @@
           </table>
         </div>
       </section>
+      <section id="tab-banks" class="admin-panel card">
+        <h2>题库版本</h2>
+        <p class="muted small">采集只生成候选版本。发布和回滚都要输入确认短语，并且一次只切换该题库的生效版本。不会改学员进度、权限或账号。</p>
+        <p id="bank-service" class="muted small">正在检查采集服务…</p>
+        <form id="bank-resolve-form" class="admin-form">
+          <label>题库代码或名称（如 AZ305、AI-103、DOP-C02）
+            <input type="text" id="bank-code" value="AZ305" autocomplete="off" />
+          </label>
+          <label>发现的题集（多个时必须选择一个，不会合并）
+            <select id="bank-source-repo"><option value="">尚未发现</option></select>
+          </label>
+          <div class="ops">
+            <button type="submit" class="btn btn-sm" id="btn-bank-resolve">解析来源</button>
+            <button type="button" class="btn btn-sm" id="btn-bank-collect" disabled>采集候选版本</button>
+            <button type="button" class="btn btn-sm" id="btn-bank-all" disabled>检查站点题库（各自成功或失败）</button>
+          </div>
+        </form>
+        <div id="bank-source" class="muted small bank-note"></div>
+        <div id="bank-summary" class="muted small bank-note"></div>
+        <h3>差异预览</h3>
+        <div id="bank-diff" class="diff-list muted">尚未采集或尚未选择版本。</div>
+        <div class="ops" style="margin:.6rem 0">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-bank-publish" disabled>发布此版本</button>
+          <button type="button" class="btn btn-sm" id="btn-bank-rollback" disabled>回滚到所选版本</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th></th><th>版本</th><th>状态</th><th>题目</th><th>媒体</th><th>来源更新</th><th>采集时间</th><th>校验</th></tr>
+            </thead>
+            <tbody id="bank-versions"></tbody>
+          </table>
+        </div>
+        <div id="bank-batch" class="muted small bank-note"></div>
+      </section>
     </div>
     <p class="muted small" style="margin-top:1.5rem">作者：星火 · service_role 不进前端</p>
   </div>
-  <script src="js/admin.js?v=202611021455"></script>
+  <script src="js/admin.js?v=202611081450"></script>
 </body>
 </html>

@@ -104,6 +104,8 @@
     state.practiceFlags = {};
     state.wrongIds = {};
     state.clearedIds = {};
+    state.answerRevisions = {};
+    state.legacyIsolated = {};
     state.practiceReveal = {};
     state.boxChoiceOrder = {};
     state.practiceOrder = {};
@@ -643,6 +645,8 @@
     practiceFlags: {},
     wrongIds: {}, // id -> true (persisted wrong-answer bank for 错题回顾)
     clearedIds: {}, // id -> true tombstone so import-merge cannot restore a reset wrong
+    answerRevisions: {}, // id -> question revision graded; a newer bank revision is not regraded
+    legacyIsolated: {}, // id -> historical answer kept when it cannot be mapped
     examQuestions: [],
     examIndex: 0,
     examAnswers: {},
@@ -779,6 +783,8 @@
         });
         state.wrongIds = cleaned;
       }
+      state.answerRevisions = data.answerRevisions && typeof data.answerRevisions === "object" ? data.answerRevisions : {};
+      state.legacyIsolated = data.legacyIsolated && typeof data.legacyIsolated === "object" ? data.legacyIsolated : {};
       Object.keys(state.clearedIds).forEach((id) => {
         delete state.wrongIds[id];
       });
@@ -788,6 +794,8 @@
         questionList().forEach((q) => {
           if (state.clearedIds[q.id]) return;
           if (state.practiceSubmitted[q.id] && !isCorrect(q, state.practiceAnswers[q.id])) {
+            const PC = window.ITCERT_PROGRESS;
+            if (PC && PC.gradingDecision && PC.gradingDecision(state.answerRevisions[q.id], q.revision).grade === false) return;
             state.wrongIds[q.id] = true;
             derived = true;
           }
@@ -818,12 +826,22 @@
         const ids = (q.options || []).map((o) => o.id);
         ok = Array.isArray(a) && a.every((x) => ids.indexOf(x) >= 0);
       }
+      const PC = window.ITCERT_PROGRESS;
+      if (PC && PC.gradingDecision && PC.gradingDecision(state.answerRevisions[id], q.revision).grade === false) return;
       if (!ok) {
-        delete state.practiceAnswers[id];
-        delete state.practiceSubmitted[id];
-        if (state.wrongIds[id]) {
-          delete state.wrongIds[id];
-          state.clearedIds[id] = true;
+        if (PC && PC.isolateRecord) {
+          PC.isolateRecord({
+            answers: state.practiceAnswers,
+            submitted: state.practiceSubmitted,
+            flags: state.practiceFlags,
+            wrongIds: state.wrongIds,
+            answerRevisions: state.answerRevisions,
+            legacyIsolated: state.legacyIsolated,
+          }, id, "option-shape-unmapped");
+        } else {
+          delete state.practiceAnswers[id];
+          delete state.practiceSubmitted[id];
+          if (state.wrongIds[id]) delete state.wrongIds[id];
         }
         changed = true;
       }
@@ -831,6 +849,8 @@
     Object.keys(state.practiceSubmitted).forEach((id) => {
       const q = loadedQuestion(id);
       if (!q) return;
+      const PC2 = window.ITCERT_PROGRESS;
+      if (PC2 && PC2.gradingDecision && PC2.gradingDecision(state.answerRevisions[id], q.revision).grade === false) return;
       if (!allBoxesSelected(q, state.practiceAnswers[id])) {
         delete state.practiceSubmitted[id];
         changed = true;
@@ -838,7 +858,7 @@
     });
     const cat = catalogIds();
     Object.keys(state.practiceFlags).forEach((id) => {
-      if (!state.practiceFlags[id] || (cat.complete && !cat.set.has(String(id)))) {
+      if (!state.practiceFlags[id]) {
         delete state.practiceFlags[id];
         changed = true;
       }
@@ -872,6 +892,8 @@
         flags: flags,
         wrongIds: wrongIds,
         clearedIds: clearedIds,
+        answerRevisions: state.answerRevisions || {},
+        legacyIsolated: state.legacyIsolated || {},
       });
       localStorage.setItem(storagePracticeKey(), payload);
       // Migrate: once written to namespaced key, drop legacy ai103 key to avoid split brain
@@ -885,7 +907,7 @@
   }
 
   function flaggedCount() {
-    return Object.keys(state.practiceFlags).filter((id) => state.practiceFlags[id]).length;
+    return Object.keys(state.practiceFlags).filter((id) => state.practiceFlags[id] && questionKnown(id)).length;
   }
 
   function wrongCount() {
@@ -1223,6 +1245,7 @@
             wrongIds: (r.wrongList || []).map((q) => q.id),
             auto: !!r.auto,
           },
+          bankVersion: state.examBankVersion || bankMeta.version || "",
           questionIds: state.examQuestions.map((q) => q.id),
           answers: state.examAnswers,
           flags: state.examFlags,
@@ -1293,10 +1316,12 @@
   }
 
   function openLastExamResult() {
-    let ids = [];
+      let ids = [];
+    let bankVersion = "";
     try {
       const data = JSON.parse(readExamLastRaw() || "null");
       ids = (data && data.questionIds) || [];
+      bankVersion = (data && data.bankVersion) || "";
     } catch (e) {}
     const show = function () {
       if (!loadExamLast()) return;
@@ -1305,7 +1330,7 @@
     };
     if (protectedBanksOn() && ids.length && window.AI103Auth && typeof window.AI103Auth.loadExamByIds === "function") {
       showBankBusy("正在加载考试题目…");
-      window.AI103Auth.loadExamByIds(currentExamId, ids).then(function (qs) {
+      window.AI103Auth.loadExamByIds(currentExamId, ids, bankVersion ? { version: bankVersion } : undefined).then(function (qs) {
         hideBankBusy();
         absorbQuestions(qs, null);
         show();
@@ -1737,6 +1762,11 @@
     return sa === sb;
   }
 
+  function revisionStale(q) {
+    const PC = window.ITCERT_PROGRESS;
+    if (!q || !PC || !PC.gradingDecision) return false;
+    return PC.gradingDecision(state.answerRevisions[q.id], q.revision).grade === false;
+  }
   function isCorrect(q, selected) {
     if (isDropdownQ(q)) {
       const sel = normalizeSelection(q, selected);
@@ -1751,6 +1781,18 @@
     applyChrome();
     updateHomeReviewButtons();
     updateExamSwitcherUI();
+    let isolated = document.getElementById("legacy-isolated-note");
+    const nIsolated = Object.keys(state.legacyIsolated || {}).length;
+    if (nIsolated) {
+      if (!isolated) {
+        isolated = document.createElement("p");
+        isolated.id = "legacy-isolated-note";
+        isolated.className = "muted";
+        const home = document.getElementById("view-home");
+        if (home) home.appendChild(isolated);
+      }
+      isolated.textContent = "有 " + nIsolated + " 道历史作答因题目变更无法安全对应，已单独保留。未改判，也未删除。";
+    } else if (isolated) isolated.remove();
     showView("home");
   }
 
@@ -2783,7 +2825,7 @@
       state.practiceIndex + 1
     ) + (isPracticeShuffled() ? pack.shuffledTag : "");
 
-    const submitted = !!state.practiceSubmitted[q.id];
+    const submitted = !!state.practiceSubmitted[q.id] && !revisionStale(q);
     const revealed = isPracticeRevealed(q);
     const showing = submitted || revealed;
     const flagged = !!state.practiceFlags[q.id];
@@ -2807,7 +2849,14 @@
         formatMultiline(caseStudyTextOf(q)) + "</div></details>";
     }
     html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
-    if (isBoxQ(q)) {
+    if (q.provenance && q.provenance.aiGenerated) {
+      html += '<p class="muted">来源提示：AI 生成的社区练习题，不是官方题库，答案未经本站核验。许可：' + escapeHtml(q.provenance.license || "未知") + "</p>";
+    }
+    html += exhibitHtml(q);
+    html += mediaHtml(q);
+    if (q.playable === false) {
+      html += '<p class="muted">' + escapeHtml(q.unsupportedReason || "此题已采集保存，当前练习页不能作答，不会记入错题。") + "</p>";
+    } else if (isBoxQ(q)) {
       html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pickHintFor(q, pack)) + "</p>";
       revealOnly = revealed;
       try {
@@ -2878,7 +2927,7 @@
     $("#practice-body").innerHTML = html;
     renderJumpSelect();
 
-    $("#btn-practice-submit").disabled = submitted || revealed || !allBoxesSelected(q, selected);
+    $("#btn-practice-submit").disabled = q.playable === false || submitted || revealed || !allBoxesSelected(q, selected);
     const rb = $("#btn-practice-reveal");
     if (rb) {
       rb.textContent = revealed ? pack.hideAnswer : pack.showAnswer;
@@ -3026,7 +3075,8 @@
     const q = currentPracticeQ();
     if (!q) return;
     const sel = state.practiceAnswers[q.id];
-    if (state.practiceSubmitted[q.id]) return; // no double-submit
+    if (q.playable === false) return;
+    if (state.practiceSubmitted[q.id] && !revisionStale(q)) return; // no double-submit
     if (isPracticeRevealed(q)) return; // revealed answers are never scored
     if (!allBoxesSelected(q, sel)) return;
     state.practiceSubmitted[q.id] = true;
@@ -3045,6 +3095,8 @@
       state.wrongIds[q.id] = true;
       e.ws[q.id] = 0;
     }
+    if (q.revision) state.answerRevisions[q.id] = q.revision;
+    if (state.legacyIsolated) delete state.legacyIsolated[q.id];
     e.seen[q.id] = 1;
     const dk = dayStr(new Date()); e.days[dk] = (e.days[dk] || 0) + 1;
     saveEx();
@@ -3091,6 +3143,7 @@
     try {
       if (state.examSubmitted || !state.examQuestions || !state.examQuestions.length) return;
       localStorage.setItem(examProgKey(), JSON.stringify({
+        bankVersion: state.examBankVersion || bankMeta.version || "",
         ids: state.examQuestions.map((q) => q.id),
         optOrder: state.examQuestions.map((q) => (q.options || []).map((o) => o.id)),
         answers: state.examAnswers, flags: state.examFlags, index: state.examIndex,
@@ -3123,6 +3176,7 @@
       ? "You have an unfinished mock exam (" + answered + "/" + qs.length + " answered, " + mm + " min left). Resume it?\n(Cancel = discard it)"
       : "有一场未完成的模拟考试（已答 " + answered + "/" + qs.length + "，剩余 " + mm + " 分钟）。是否继续？\n（取消 = 放弃该场考试）";
     if (!confirm(msg)) { clearExamProgress(); return false; }
+    state.examBankVersion = d.bankVersion || bankMeta.version || "";
     state.examQuestions = qs;
     state.examAnswers = d.answers || {};
     state.examFlags = d.flags || {};
@@ -3144,7 +3198,7 @@
     return true;
     };
     if (protectedBanksOn() && window.AI103Auth && typeof window.AI103Auth.loadExamByIds === "function") {
-      return window.AI103Auth.loadExamByIds(currentExamId, d.ids).then(function (qs) {
+      return window.AI103Auth.loadExamByIds(currentExamId, d.ids, d.bankVersion ? { version: d.bankVersion } : undefined).then(function (qs) {
         absorbQuestions(qs, null);
         return finish();
       });
@@ -3248,6 +3302,7 @@
   function launchExam(qs, minutes) {
     if (!qs || !qs.length) { alert("没有抽到题目"); return; }
     state.examQuestions = qs;
+    state.examBankVersion = bankMeta.version || "";
     setupExamSections();
     state.examIndex = 0;
     state.examAnswers = {};
@@ -3522,6 +3577,7 @@
         if (allBoxesSelected(q, state.examAnswers[q.id])) {
           untombstone(q.id);
           state.wrongIds[q.id] = true;
+          if (q.revision) state.answerRevisions[q.id] = q.revision;
           try { ex().ws[q.id] = 0; } catch (err) {}
         }
       }
@@ -3621,6 +3677,16 @@
   }
 
   /** stem text with ``` fenced code blocks rendered as monospace <pre> */
+  function mediaHtml(q) {
+    return (q.media || []).map((m) => {
+      if (!m || !/^data:image\/svg\+xml;base64,[a-z0-9+/=]+$/i.test(String(m.dataUrl || ""))) return "";
+      return '<img class="q-media" alt="题目附图" src="' + m.dataUrl + '" />';
+    }).join("");
+  }
+  function exhibitHtml(q) {
+    if (!q.exhibits || !q.exhibits.length) return "";
+    return q.exhibits.map((ex) => '<details class="case-box"><summary>' + escapeHtml(ex.title || "附图说明") + '</summary><div class="case-body">' + formatMultiline(ex.content || "") + "</div></details>").join("");
+  }
   function formatStem(s) {
     const parts = String(s == null ? "" : s).split(/^```[ \t]*$/m);
     return parts
@@ -3810,13 +3876,10 @@
         changed = true;
         return;
       }
-      if (cat.complete && !cat.set.has(String(id))) {
-        delete state.wrongIds[id];
-        state.clearedIds[id] = true;
-        changed = true;
-        return;
-      }
+      if (cat.complete && !cat.set.has(String(id))) return;
       const q = loadedQuestion(id);
+      const PC = window.ITCERT_PROGRESS;
+      if (q && PC && PC.gradingDecision && PC.gradingDecision(state.answerRevisions[id], q.revision).grade === false) return;
       if (q && state.practiceSubmitted[id] && answerLooksPresent(state.practiceAnswers[id]) && isCorrect(q, state.practiceAnswers[id])) {
         delete state.wrongIds[id];
         state.clearedIds[id] = true;
@@ -3992,7 +4055,7 @@
     const boxes = [];
     const n = e.boxes || 0;
     for (let i = 0; i < n; i++) boxes.push({ id: "b" + i, choices: e.yn ? ["是", "否"] : ["x"], answer: "是" });
-    return {
+    const pseudo = {
       id: indexEntryId(e),
       domain: e.domain || e.dd,
       caseStudy: !!e.caseStudy,
@@ -4000,11 +4063,14 @@
       type: e.type || (e.yn && n >= 2 ? "hotspot" : "single"),
       control: e.yn && n >= 2 ? "yn" : (e.control || null),
       boxes: n ? boxes : undefined,
-      options: [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
+      options: e.playable === false ? [] : [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
     };
+    if (e.playable === false) pseudo.playable = false;
+    if (e.revision) pseudo.revision = e.revision;
+    return pseudo;
   }
   function sampleIdsFromIndex(n) {
-    const pool = (bankMeta.index || []).map(entryToPseudo).filter((q) => q.id);
+    const pool = (bankMeta.index || []).map(entryToPseudo).filter((q) => q.id && q.playable !== false);
     const prev = QUESTIONS;
     QUESTIONS = pool;
     try {

@@ -181,7 +181,7 @@
   var BANK_IDS_MAX = 80;
   var BANK_DIRECT = "https://paswovhtsoljydywdmvb.supabase.co";
   var BANK_CACHE = "itcert-banks-v1";
-  var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420" };
+  var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420", "az-305": "QUESTIONS_AZ_305" };
   var bankMem = {};
   var bankInflight = {};
   var bankOrigin = "";
@@ -206,7 +206,7 @@
     return String(uid || "") + "::" + examId;
   }
   function emptyBank(examId) {
-    return { examId: examId, version: "", total: 0, domains: null, index: null, metaReady: false, byId: {}, order: [], pages: {} };
+    return { examId: examId, version: "", pinnedVersion: "", total: 0, domains: null, index: null, metaReady: false, byId: {}, order: [], pages: {} };
   }
   function bankSlot(examId) {
     var key = bankMemKey(examId);
@@ -231,7 +231,7 @@
   function bankErrorMessage(e) {
     var msg = String((e && e.message) || "");
     if (isExpiryError(e)) return "账号已过期，请联系管理员续期";
-    if (/请先登录|未知题库|无权访问|题库为空|题库数据异常|题库加载不完整|题库加载超时|题库加载失败|账号已过期|不会下载整库|请求过于频繁|暂不支持/.test(msg)) return msg;
+    if (/请先登录|未知题库|无权访问|题库为空|题库数据异常|题库加载不完整|题库加载超时|题库加载失败|账号已过期|不会下载整库|请求过于频繁|暂不支持|题库版本|尚未发布/.test(msg)) return msg;
     if (/not-logged-in/i.test(msg)) return "请先登录后再加载题库";
     if (e && e.status === 429) return "请求过于频繁，请稍后再试";
     if (e && e.network) return /超时/.test(msg) ? msg : "题库加载失败，请检查网络后重试";
@@ -246,14 +246,24 @@
   }
   function bankQuery(examId, opt) {
     var p = ["exam=" + encodeURIComponent(examId)];
+    var version = opt.version || "";
+    if (version) p.push("version=" + encodeURIComponent(version));
     if (opt.meta) p.push("meta=1");
     if (opt.ids && opt.ids.length) p.push("ids=" + encodeURIComponent(opt.ids.join(",")));
     if (opt.sample) p.push("sample=" + encodeURIComponent(opt.sample));
     if (opt.seed) p.push("seed=" + encodeURIComponent(opt.seed));
     if (opt.q) p.push("q=" + encodeURIComponent(opt.q));
+    if (opt.media) p.push("media=" + encodeURIComponent(opt.media));
     if (opt.offset != null) p.push("offset=" + encodeURIComponent(opt.offset));
     if (opt.limit != null) p.push("limit=" + encodeURIComponent(opt.limit));
     return "/functions/v1/itc-bank?" + p.join("&");
+  }
+  function notePinnedVersion(slot, data) {
+    var v = data && data.version != null ? String(data.version) : "";
+    if (!v) throw new Error("题库版本缺失，已停止加载");
+    if (slot.pinnedVersion && slot.pinnedVersion !== v) throw new Error("题库版本不一致，已停止加载，不会混用不同版本的题目");
+    slot.pinnedVersion = v;
+    slot.version = v;
   }
   function unsupportedBank(kind) {
     if (kind === "ids") return "题库服务暂不支持按题号加载，已停止，不会下载整库。";
@@ -360,7 +370,7 @@
     return Promise.resolve(examId);
   }
   function applyPack(slot, data, offset) {
-    if (data.version != null && data.version !== "") slot.version = String(data.version);
+    notePinnedVersion(slot, data);
     if (data.total != null && isFinite(Number(data.total))) slot.total = Math.floor(Number(data.total));
     if (data.domains && typeof data.domains === "object") slot.domains = data.domains;
     if (Array.isArray(data.index)) slot.index = data.index;
@@ -373,7 +383,7 @@
       var inflightKey = "meta:" + id;
       if (bankInflight[inflightKey]) return bankInflight[inflightKey];
       var uid = state.session.user.id;
-      var p = fetchBankWithFallback(id, { meta: true, limit: 1 }).then(function (data) {
+      var p = fetchBankWithFallback(id, { meta: true, limit: 1, version: slot.pinnedVersion || "" }).then(function (data) {
         assertBankMode(data, "meta", { meta: true });
         if (!state.session || !state.session.user || state.session.user.id !== uid) throw new Error("请先登录后再加载题库");
         applyPack(slot, data, null);
@@ -402,7 +412,7 @@
         for (var i = 0; i < limit; i++) if (slot.order[offset + i]) cached.push(slot.order[offset + i]);
         return { questions: cached, total: slot.total, version: slot.version, offset: offset, limit: limit };
       }
-      return fetchBankWithFallback(id, { offset: offset, limit: limit }).then(function (data) {
+      return fetchBankWithFallback(id, { offset: offset, limit: limit, version: slot.pinnedVersion || "" }).then(function (data) {
         assertBankMode(data, "page", { offset: offset, limit: limit });
         applyPack(slot, data, offset);
         slot.pages[pageKey] = true;
@@ -412,7 +422,7 @@
       });
     });
   }
-  function loadExamByIds(examId, ids) {
+  function loadExamByIds(examId, ids, opts) {
     var list = [];
     var seen = {};
     (ids || []).forEach(function (id) {
@@ -424,17 +434,24 @@
     });
     return guardExam(examId).then(async function (id) {
       var slot = bankSlot(id);
-      var need = list.filter(function (qid) { return !slot.byId[qid]; });
+      var isolated = opts && opts.version && slot.pinnedVersion && opts.version !== slot.pinnedVersion;
+      var version = isolated ? opts.version : (slot.pinnedVersion || (opts && opts.version) || "");
+      var need = isolated ? list : list.filter(function (qid) { return !slot.byId[qid]; });
+      var fetched = {};
       try {
         for (var i = 0; i < need.length; i += BANK_IDS_MAX) {
           var part = need.slice(i, i + BANK_IDS_MAX);
-          var data = await fetchBankWithFallback(id, { ids: part, offset: 0, limit: part.length });
+          var data = await fetchBankWithFallback(id, { ids: part, offset: 0, limit: part.length, version: version });
           assertBankMode(data, "ids", { ids: part });
-          applyPack(slot, data, null);
+          if (isolated) {
+            if (String(data.version || "") !== String(opts.version)) throw new Error("题库版本不一致，已停止加载，不会混用不同版本的题目");
+            (data.questions || []).forEach(function (q) { if (q && q.id != null) fetched[String(q.id)] = q; });
+          } else applyPack(slot, data, null);
         }
       } catch (e) {
         throw new Error(bankErrorMessage(e));
       }
+      if (isolated) return list.map(function (qid) { return fetched[qid] || null; }).filter(Boolean);
       return list.map(function (qid) { return slot.byId[qid] || null; }).filter(Boolean);
     });
   }
@@ -444,7 +461,7 @@
     if (n > BANK_IDS_MAX) return Promise.reject(new Error("一次最多抽取 " + BANK_IDS_MAX + " 题。请减少题量，或使用带索引的题库按题号抽题。不会下载整库。"));
     return guardExam(examId).then(function (id) {
       var slot = bankSlot(id);
-      return fetchBankWithFallback(id, { sample: n, seed: seed || "", offset: 999999, limit: 1 }).then(function (data) {
+      return fetchBankWithFallback(id, { sample: n, seed: seed || "", offset: 999999, limit: 1, version: slot.pinnedVersion || "" }).then(function (data) {
         assertBankMode(data, "sample", { sample: n });
         applyPack(slot, data, null);
         return data.questions || [];
@@ -460,7 +477,7 @@
     limit = Math.min(BANK_PAGE, Math.max(1, Math.floor(Number(limit) || BANK_PAGE)));
     return guardExam(examId).then(function (id) {
       var slot = bankSlot(id);
-      return fetchBankWithFallback(id, { q: q, offset: offset, limit: limit }).then(function (data) {
+      return fetchBankWithFallback(id, { q: q, offset: offset, limit: limit, version: slot.pinnedVersion || "" }).then(function (data) {
         assertBankMode(data, "search", { q: q });
         applyPack(slot, data, null);
         var matchTotal = data.matchTotal != null ? Number(data.matchTotal) : (data.questions || []).length;
