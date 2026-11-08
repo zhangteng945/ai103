@@ -441,14 +441,20 @@
   function renderSourceChoices(candidates) {
     var sel = $("bank-source-repo");
     if (!sel) return;
-    var usable = (candidates || []).filter(function (c) { return c && (c.status === "ready" || c.status === "needs-review"); });
+    function canSelect(c) {
+      if (!c || c.collected) return false;
+      if (c.selectable === true) return !!(c.url || c.repo);
+      if (c.selectable === false) return false;
+      return (c.status === "ready" || c.status === "needs-review") && !!c.repo && c.origin !== "web-search";
+    }
+    var usable = (candidates || []).filter(canSelect);
     bankState.candidates = usable;
     if (!usable.length) {
       sel.innerHTML = "<option value=\"\">没有可采集题集</option>";
       return;
     }
     sel.innerHTML = usable.map(function (c) {
-      return "<option value=\"" + esc(c.repo) + "\">题集 " + esc(c.set) + " · " + esc(c.questionCount) + " 题 · " + esc(c.status) + "</option>";
+      return "<option value=\"" + esc(c.url || c.repo) + "\">" + esc(c.origin || "来源") + " · " + esc(c.extraction || c.status || "") + " · " + esc(c.questionCount == null ? "?" : c.questionCount) + " 题</option>";
     }).join("");
     bankState.sourceRepo = usable[0].repo;
   }
@@ -458,6 +464,10 @@
     var data = await ingestApi("resolve", { code: code });
     bankState.code = data.code || "";
     var lines = ["规范代码：" + (data.code || "无法识别") + "。这只是查找结果，不会开通学员权限，也不会切换已有生效版本。", data.message || ""];
+    if (data.web) lines.push("全网检索：" + (data.web.message || data.web.status || ""));
+    if (data.web && data.web.quotaNote) lines.push(data.web.quotaNote);
+    if (data.web && data.web.rightsNote) lines.push(data.web.rightsNote);
+    if (data.org && data.org.label) lines.push(data.org.label + "：" + (data.org.message || ""));
     (data.candidates || []).forEach(function (c) {
       lines.push("发现（尚未采集） " + (c.repo || "") + " · 状态 " + (c.status || "") + " · 题目 " + (c.questionCount == null ? "未知" : c.questionCount) + " · 许可 " + (c.license || "未知") + " · 来源更新 " + (c.sourceUpdatedAtZh || "未知") + " · " + (c.aiWarning || "") + (c.retirementNote ? " · 退役说明：" + c.retirementNote : ""));
     });

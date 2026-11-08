@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const migration = path.join(root, "supabase/migrations/20261108183000_bank_versions.sql");
+const quotaMigration = path.join(root, "supabase/migrations/20261108193000_search_quota.sql");
 const db = "itc_bank_preflight";
 
 function psql(database, args, sql) {
@@ -49,6 +50,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authen
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO anon, authenticated, service_role;
 `);
 psql(db, ["-f", migration], "");
+psql(db, ["-f", quotaMigration], "");
 
 const funcs = q(db, `
 SELECT proname || '|' || prosecdef::text || '|' || coalesce(array_to_string(proconfig, ','), '')
@@ -158,6 +160,17 @@ COMMIT;
 `);
 if (q(db, "SELECT state FROM public.bank_jobs WHERE id = 'old-job'") !== "abandoned") throw new Error("stale job was not abandoned");
 if (q(db, "SELECT lock_job_id IS NULL FROM public.bank_catalog WHERE code = 'az-305'") !== "t") throw new Error("lock was not released");
+expectDenied("BEGIN; SET LOCAL ROLE anon; SELECT public.itc_search_reserve('tavily','2026-11',20,1); COMMIT;");
+psql(db, [], `
+BEGIN;
+SET LOCAL ROLE service_role;
+SELECT public.itc_search_reserve('tavily','2026-11',1,1);
+SELECT public.itc_search_block('tavily','provider_billing_limit');
+COMMIT;
+`);
+if (q(db, "SELECT reserved::text FROM public.bank_search_usage WHERE provider = 'tavily' AND period_key = '2026-11'") !== "1") throw new Error("quota reserve failed");
+const blockedNext = q(db, "BEGIN; SET LOCAL ROLE service_role; SELECT public.itc_search_reserve('tavily','2026-12',20,1)->>'reason'; COMMIT;");
+if (!blockedNext.includes("billing_blocked")) throw new Error("new period cleared billing block: " + blockedNext);
 expectDenied("BEGIN; SET LOCAL ROLE service_role; DELETE FROM public.bank_versions WHERE id = 'c-two'; COMMIT;");
 if (q(db, "SELECT count(*) FROM public.bank_versions WHERE id = 'c-two'") !== "1") throw new Error("version row was deleted");
 

@@ -18,6 +18,7 @@ import {
   selectDiscoveryCandidate,
   SITE_EXAM_CODES,
 } from "../_shared/bank-version-core.mjs";
+import { collectVerifiedQuizUrl, discoverWithOptionalWeb, ourQuotaPeriod } from "../_shared/bank-web-discovery.mjs";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -110,6 +111,37 @@ async function collectOne(
   actor: string,
   sourceRepo?: string,
 ) {
+  if (sourceRepo && /^https?:\/\//i.test(sourceRepo)) {
+    const verified = await collectVerifiedQuizUrl(sourceRepo, code, { resolveHost, fetchImpl: fetch });
+    if (!verified.ok || !verified.snapshot) {
+      return { ok: false, collected: false, published: false, code: normalizeExamCode(code), error: verified.error || "该来源不能采集", candidate: verified.candidate || null };
+    }
+    const source = { repo: verified.snapshot.provenance && verified.snapshot.provenance.repo, bankCode: verified.snapshot.bankCode };
+    const bank = { code: verified.snapshot.bankCode, title: code };
+    const snap = verified.snapshot;
+    const jobId = "job-" + crypto.randomUUID();
+    const now = new Date().toISOString();
+    await admin.from("bank_catalog").upsert({ code: bank.code, title: bank.title }, { onConflict: "code" });
+    await admin.rpc("itc_bank_abandon_stale", { p_code: bank.code });
+    const { error: jobErr } = await admin.from("bank_jobs").insert({ id: jobId, bank_code: bank.code, state: "running", actor, started_at: now });
+    if (jobErr) return { ok: false, code: bank.code, error: "无法记录采集任务" };
+    const { data: locked, error: lockErr } = await admin.rpc("itc_bank_try_lock", { p_code: bank.code, p_job: jobId, p_ttl_seconds: 120 });
+    if (lockErr || locked !== true) return { ok: false, code: bank.code, jobId, error: "该题库已有进行中的采集", status: 409 };
+    snap.bankCode = bank.code;
+    const snapshotPath = "versions/" + bank.code + "/" + snap.versionId + ".json";
+    const up = await admin.storage.from("banks").upload(snapshotPath, new TextEncoder().encode(JSON.stringify(snap)), { contentType: "application/json", upsert: false });
+    if (up.error && !/already exists|duplicate/i.test(up.error.message || "")) throw new Error("版本快照写入失败");
+    const { error: insErr } = await admin.from("bank_versions").insert({
+      id: snap.versionId, bank_code: bank.code, status: "candidate", corpus_hash: snap.corpusHash,
+      question_count: snap.questionCount, media_count: snap.mediaCount, validation: snap.validation,
+      provenance: snap.provenance, snapshot_path: snapshotPath, source_updated_at: snap.sourceUpdatedAt,
+      collected_at: snap.collectedAt, created_by: actor,
+    });
+    if (insErr) throw new Error("候选版本写入失败");
+    await admin.rpc("itc_bank_release_lock", { p_code: bank.code, p_job: jobId });
+    await admin.from("bank_jobs").update({ state: "preview_ready", result: { versionId: snap.versionId, questionCount: snap.questionCount }, finished_at: new Date().toISOString() }).eq("id", jobId);
+    return { ok: true, collected: true, published: false, code: bank.code, versionId: snap.versionId, questionCount: snap.questionCount, validation: snap.validation, provenance: snap.provenance, source: source.repo || null };
+  }
   const found = await discoverExamSources(code, { resolveHost, fetchImpl: fetch, limits: COLLECT_LIMITS });
   if (!found.ok) {
     return { ok: false, collected: false, discovered: true, code: found.code || normalizeExamCode(code), status: found.status, error: found.message, candidates: found.candidates || [] };
@@ -272,22 +304,48 @@ Deno.serve(async (req: Request) => {
   }
 
   if (action === "resolve") {
-    const found = await discoverExamSources(String(body.code || body.name || ""), { resolveHost, fetchImpl: fetch, limits: COLLECT_LIMITS });
+    const apiKey = Deno.env.get("TAVILY_API_KEY") || "";
+    const period = ourQuotaPeriod(new Date());
+    const found = await discoverWithOptionalWeb(String(body.code || body.name || ""), {
+      apiKey,
+      resolveHost,
+      fetchImpl: fetch,
+      limits: COLLECT_LIMITS,
+      orgDeps: { resolveHost, fetchImpl: fetch, limits: COLLECT_LIMITS },
+      reserve: async () => {
+        if (!apiKey) return { ok: false, reason: "disabled" };
+        const { data, error } = await admin.rpc("itc_search_reserve", { p_provider: "tavily", p_period: period, p_limit: 20, p_n: 1 });
+        if (error || !data) return { ok: false, reason: "quota_unavailable" };
+        return data;
+      },
+      onBillingBlock: async () => {
+        await admin.rpc("itc_search_block", { p_provider: "tavily", p_reason: "provider_billing_limit" });
+      },
+    });
+    const org = found.org || {};
     return json({
       ok: true,
-      configured: found.configured === true,
+      configured: org.configured === true,
       discovered: true,
       collected: false,
-      refused: !!found.refused,
-      status: found.status,
+      published: false,
+      refused: !!org.refused,
+      status: org.status,
       code: found.code,
       message: found.message,
-      truncated: !!found.truncated,
-      license: found.license || null,
-      candidates: (found.candidates || []).map((c: any) => Object.assign({}, c, {
-        sourceUpdatedAtZh: formatShanghai(c.sourceUpdatedAt),
+      web: found.web || null,
+      org: {
+        origin: "quizplay-org",
+        label: org.label || "quizplay-io 组织回退，不是全网搜索",
+        status: org.status,
+        message: org.message,
         collected: false,
-      })),
+        candidates: org.candidates || [],
+      },
+      candidates: [
+        ...((found.web && found.web.candidates) || []),
+        ...(org.candidates || []),
+      ] as any[],
     });
   }
 
