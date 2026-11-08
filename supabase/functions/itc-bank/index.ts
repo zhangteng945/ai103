@@ -9,11 +9,12 @@
 // index items have no stems: {id, domain, type, control, caseStudy, caseStudyId, boxes, yn, dd, n?}
 // Rate limit: 120 requests / 5 min per user+exam.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { decideServeVersion, findVersionMedia, isMissingRelation, unwrapBankDocument } from "../_shared/bank-version-core.mjs";
 
-const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420"] as const;
+const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420", "az-305"] as const;
 type ExamId = (typeof ALLOWED_EXAMS)[number];
 
-const DEFAULT_VERSIONS: Record<ExamId, string> = {
+const DEFAULT_VERSIONS: Partial<Record<ExamId, string>> = {
   ai103: "202611011910",
   "dop-c02": "202611011900",
   "dp-700": "202611011900",
@@ -41,6 +42,7 @@ type Params = {
   seed: string | null;
   meta: boolean;
   q: string | null;
+  media: string | null;
 };
 
 function json(body: unknown, status = 200) {
@@ -101,7 +103,7 @@ function extractQuestionsFromJs(js: string): unknown[] {
   throw new Error("题库 JS 数组未闭合");
 }
 async function loadBank(
-  admin: ReturnType<typeof createClient>,
+  admin: any,
   examId: ExamId,
   version: string,
 ): Promise<{ questions: unknown[]; version: string }> {
@@ -255,6 +257,8 @@ function indexEntry(q: unknown): Record<string, unknown> | null {
     dd: ddOf(q),
   };
   if (n != null) entry.n = n;
+  if (o.playable === false) entry.playable = false;
+  if (typeof o.revision === "string" && o.revision) entry.revision = o.revision;
   return entry;
 }
 function questionSearchText(q: unknown): string {
@@ -287,6 +291,7 @@ async function parseParams(req: Request): Promise<Params> {
   let seed: string | null = url.searchParams.get("seed");
   let metaRaw: unknown = url.searchParams.get("meta");
   let qRaw: string | null = url.searchParams.get("q");
+  let mediaRaw: string | null = url.searchParams.get("media");
   if (req.method === "POST") {
     const ct = req.headers.get("content-type") || "";
     if (ct.includes("application/json")) {
@@ -302,6 +307,7 @@ async function parseParams(req: Request): Promise<Params> {
           if (body.seed != null) seed = String(body.seed);
           if (body.meta != null) metaRaw = body.meta;
           if (body.q != null) qRaw = String(body.q);
+          if (body.media != null) mediaRaw = String(body.media);
         }
       } catch { /* query still used */ }
     }
@@ -317,10 +323,11 @@ async function parseParams(req: Request): Promise<Params> {
     seed: seed ? String(seed).trim() || null : null,
     meta: parseMeta(metaRaw),
     q: q || null,
+    media: mediaRaw ? String(mediaRaw).trim().toLowerCase() : null,
   };
 }
 async function logAccess(
-  admin: ReturnType<typeof createClient>,
+  admin: any,
   userId: string,
   examId: string,
   offset: number,
@@ -336,6 +343,42 @@ async function logAccess(
       total,
     });
   } catch { /* ignore */ }
+}
+
+async function resolveServe(
+  admin: any,
+  exam: ExamId,
+  requested: string | null,
+) {
+  let catalog: { activeVersionId: string | null } | null = null;
+  let versions: { id: string; status: string; bankCode: string }[] = [];
+  let missing = false;
+  const catRes = await admin.from("bank_catalog").select("code,active_version_id").eq("code", exam).maybeSingle();
+  if (catRes.error) {
+    if (isMissingRelation(catRes.error.message)) missing = true;
+    else throw new Error(catRes.error.message);
+  } else if (catRes.data) catalog = { activeVersionId: catRes.data.active_version_id || null };
+  if (!missing && requested && (!catalog || requested !== catalog.activeVersionId)) {
+    const ver = await admin.from("bank_versions").select("id,status,bank_code").eq("bank_code", exam).eq("id", requested).maybeSingle();
+    if (ver.error) {
+      if (isMissingRelation(ver.error.message)) missing = true;
+      else throw new Error(ver.error.message);
+    } else if (ver.data) versions = [{ id: ver.data.id, status: ver.data.status, bankCode: ver.data.bank_code }];
+  }
+  return decideServeVersion({
+    examId: exam,
+    requested,
+    catalog: missing ? null : catalog,
+    versions,
+    legacyDefaults: DEFAULT_VERSIONS,
+  });
+}
+async function loadCatalogBank(admin: any, path: string, version: string) {
+  const { data, error } = await admin.storage.from("banks").download(path);
+  if (error || !data) throw new Error("题库版本文件不存在");
+  const doc = unwrapBankDocument(JSON.parse(await data.text()));
+  if (doc.versionId && doc.versionId !== version) throw new Error("题库版本文件与请求不一致");
+  return { questions: doc.questions, version, doc };
 }
 
 Deno.serve(async (req: Request) => {
@@ -370,10 +413,10 @@ Deno.serve(async (req: Request) => {
   if (params.ids && params.ids.length > MAX_LIMIT) return err(`ids 最多 ${MAX_LIMIT} 个`, 400);
   if (params.sample != null && params.sample > MAX_LIMIT) return err(`sample 最多 ${MAX_LIMIT}`, 400);
 
-  const version = params.version || DEFAULT_VERSIONS[params.exam];
-  if (!/^[A-Za-z0-9._-]{1,64}$/.test(version)) return err("version 无效");
+  if (params.version && !/^[A-Za-z0-9._-]{1,64}$/.test(params.version)) return err("version 无效");
+  if (params.media && !/^[a-f0-9]{64}$/.test(params.media)) return err("media 无效");
 
-  const admin = createClient(supabaseUrl, serviceKey, {
+  const admin: any = createClient(supabaseUrl, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
   try {
@@ -387,15 +430,43 @@ Deno.serve(async (req: Request) => {
     if (!cErr && typeof count === "number" && count >= RATE_MAX) return err("请求过于频繁，请稍后再试", 429);
   } catch { /* best-effort */ }
 
-  let questions: unknown[];
-  let usedVersion = version;
+  let decision: { ok: boolean; kind?: string; version?: string; path?: string; error?: string; status?: number };
   try {
-    const loaded = await loadBank(admin, params.exam, version);
-    questions = loaded.questions;
-    usedVersion = loaded.version;
+    decision = await resolveServe(admin, params.exam, params.version);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return err(msg || "题库加载失败", 500);
+  }
+  if (!decision.ok || !decision.version) return err(decision.error || "该题库尚未发布", decision.status || 404);
+
+  let questions: unknown[];
+  let usedVersion = decision.version;
+  let bankDoc: { media?: unknown[]; meta?: { media?: unknown[] } | null } | null = null;
+  try {
+    if (decision.kind === "catalog") {
+      const loaded = await loadCatalogBank(admin, decision.path || "", decision.version);
+      questions = loaded.questions;
+      usedVersion = loaded.version;
+      bankDoc = loaded.doc;
+    } else {
+      const loaded = await loadBank(admin, params.exam, decision.version);
+      questions = loaded.questions;
+      usedVersion = loaded.version;
+    }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return err(msg || "题库加载失败", 500);
+  }
+  if (params.media) {
+    await logAccess(admin, user.id, params.exam, 0, 0, questions.length);
+    const hit = findVersionMedia(bankDoc, params.media);
+    if (!hit || hit.sha256 !== params.media) return err("媒体不存在", 404);
+    const m = /^data:image\/svg\+xml;base64,([a-z0-9+/=]+)$/i.exec(String(hit.dataUrl || ""));
+    if (!m) return err("媒体不存在", 404);
+    const bin = atob(m[1]);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Response(bytes, { status: 200, headers: { ...cors, "Content-Type": "image/svg+xml", "X-Bank-Version": usedVersion } });
   }
   const total = questions.length;
 

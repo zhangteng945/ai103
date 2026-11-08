@@ -10,7 +10,7 @@
   var DIRECT = String(SB.url || "").replace(/\/+$/, "");
   var KEY = CFG.anonKey || SB.anonKey || "";
   var SESSION_KEY = "itcert_account_session_v1";
-  var EXAM_OPTS = ["ai103", "dop-c02", "dp-700", "dp-420", "*"];
+  var EXAM_OPTS = ["ai103", "dop-c02", "dp-700", "dp-420", "az-305", "*"];
 
   function $(id) { return document.getElementById(id); }
   function parse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
@@ -240,12 +240,14 @@
         var panel = $(id); if (panel) panel.classList.add("active");
         if (btn.getAttribute("data-tab") === "reports") loadReports().catch(function (e) { setMsg(e.message, false); });
         if (btn.getAttribute("data-tab") === "users") loadList().catch(function (e) { setMsg(e.message, false); });
+        if (btn.getAttribute("data-tab") === "banks") openBanks().catch(function (e) { setMsg(e.message, false); });
       });
     });
     $("btn-refresh").onclick = function () {
       var active = document.querySelector(".admin-tabs [data-tab].active");
       var t = active && active.getAttribute("data-tab");
       if (t === "reports") loadReports().catch(function (e) { setMsg(e.message, false); });
+      else if (t === "banks") openBanks().catch(function (e) { setMsg(e.message, false); });
       else loadList().catch(function (e) { setMsg(e.message, false); });
     };
     $("users-body").addEventListener("click", function (ev) {
@@ -278,6 +280,178 @@
         await loadList();
       } catch (e) { setMsg(e.message || "开号失败", false); }
     });
+    var bankForm = $("bank-resolve-form");
+    if (bankForm) bankForm.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      resolveBank().catch(function (e) { setMsg(e.message || "解析失败", false); });
+    });
+    $("btn-bank-collect").onclick = async function () {
+      if (!bankState.code) { setMsg("请先解析一个已配置的题库", false); return; }
+      try {
+        setMsg("正在采集，完成后才会出现候选版本…", true);
+        var r = await ingestApi("collect", { code: bankState.code });
+        bankState.selected = r.versionId || bankState.selected;
+        $("bank-summary").textContent = (r.unchanged ? "内容哈希未变，沿用已有版本 " : "已保存候选版本 ") + (r.versionId || "") + "\n题目 " + (r.questionCount == null ? "见版本表" : r.questionCount) + " · 媒体 " + (r.mediaCount == null ? "见版本表" : r.mediaCount) + "\n来源更新 " + (r.sourceUpdatedAtZh || "未知") + " · 采集 " + (r.collectedAtZh || "未知");
+        await loadBankList();
+        if (r.versionId) await showPreview(r.versionId);
+        setMsg(r.unchanged ? "没有新内容" : "候选版本已保存，尚未发布", true);
+      } catch (e) { setMsg(e.message || "采集失败，生效版本未改变", false); }
+    };
+    $("btn-bank-all").onclick = async function () {
+      try {
+        setMsg("正在逐个检查已配置题库…", true);
+        var r = await ingestApi("collect", { all: true });
+        var lines = (r.results || []).map(function (item) {
+          return (item.code || "") + "：" + (item.ok ? ((item.unchanged ? "无变化 " : "已保存候选 ") + (item.versionId || "")) : ("失败，生效版本未改。" + (item.error || "")));
+        });
+        $("bank-batch").textContent = lines.join("\n") || "没有已配置题库";
+        if (bankState.code) await loadBankList();
+        setMsg("批量检查结束。每个题库独立成功或失败，都还没有发布。", true);
+      } catch (e) { setMsg(e.message || "批量检查失败", false); }
+    };
+    $("bank-versions").addEventListener("change", function (ev) {
+      var input = ev.target;
+      if (!input || input.name !== "bank-ver") return;
+      bankState.selected = input.value;
+      refreshBankActions();
+      showPreview(input.value).catch(function (e) { setMsg(e.message || "无法预览", false); });
+    });
+    $("btn-bank-publish").onclick = async function () {
+      var row = selectedVersion();
+      if (!row) return;
+      var phrase = "发布版本 " + row.id;
+      var typed = prompt("发布会把该题库的生效版本切换到所选候选。请输入确认短语：\n" + phrase, "");
+      if (typed !== phrase) { setMsg("未输入确认短语，已取消发布", false); return; }
+      try {
+        var r = await ingestApi("publish", { code: bankState.code, versionId: row.id, expectedActiveId: bankState.activeVersionId, confirm: phrase });
+        setMsg("已发布。生效版本 " + (r.activeVersionId || row.id), true);
+        await loadBankList();
+      } catch (e) { setMsg(e.message || "发布失败，生效版本未改变", false); }
+    };
+    $("btn-bank-rollback").onclick = async function () {
+      var row = selectedVersion();
+      if (!row) return;
+      var phrase = "回滚到版本 " + row.id;
+      var typed = prompt("回滚只切换生效指针，不重新采集，也不删除历史版本。请输入确认短语：\n" + phrase, "");
+      if (typed !== phrase) { setMsg("未输入确认短语，已取消回滚", false); return; }
+      try {
+        var r = await ingestApi("rollback", { code: bankState.code, versionId: row.id, expectedActiveId: bankState.activeVersionId, confirm: phrase });
+        setMsg("已回滚。生效版本 " + (r.activeVersionId || row.id), true);
+        await loadBankList();
+      } catch (e) { setMsg(e.message || "回滚失败，生效版本未改变", false); }
+    };
+  }
+
+  var bankState = { service: false, code: "", activeVersionId: null, selected: "", versions: [] };
+
+  function bankButtons(on) {
+    ["btn-bank-collect", "btn-bank-all", "btn-bank-publish", "btn-bank-rollback"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.disabled = !on;
+    });
+  }
+  function zhWhen(iso, fallback) {
+    if (fallback) return fallback;
+    if (!iso) return "未知";
+    try {
+      var parts = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(new Date(iso));
+      var g = function (t) { var hit = parts.filter(function (p) { return p.type === t; })[0]; return hit ? hit.value : ""; };
+      return g("year") + "-" + g("month") + "-" + g("day") + " " + g("hour") + ":" + g("minute") + ":" + g("second");
+    } catch (e) { return "未知"; }
+  }
+  async function ingestApi(action, payload) {
+    var body = Object.assign({ action: action }, payload || {});
+    try {
+      return await http("POST", "/functions/v1/itc-ingest", body, token, BASE);
+    } catch (e) {
+      if (DIRECT && DIRECT !== BASE && (e.status === 404 || /not allowed|upstream/i.test(e.message))) {
+        return await http("POST", "/functions/v1/itc-ingest", body, token, DIRECT);
+      }
+      throw e;
+    }
+  }
+  function selectedVersion() {
+    return (bankState.versions || []).filter(function (v) { return v.id === bankState.selected; })[0] || null;
+  }
+  function refreshBankActions() {
+    var row = selectedVersion();
+    var publish = $("btn-bank-publish");
+    var rollback = $("btn-bank-rollback");
+    if (!bankState.service) { bankButtons(false); return; }
+    $("btn-bank-collect").disabled = false;
+    $("btn-bank-all").disabled = false;
+    if (publish) publish.disabled = !row || row.status !== "candidate" || row.promotionBlocked === true;
+    if (rollback) rollback.disabled = !row || (row.status !== "retained" && row.status !== "published") || row.id === bankState.activeVersionId;
+  }
+  function renderBankVersions() {
+    var tb = $("bank-versions");
+    if (!tb) return;
+    if (!bankState.versions.length) { tb.innerHTML = "<tr><td colspan='8'>还没有候选或已发布版本。</td></tr>"; refreshBankActions(); return; }
+    tb.innerHTML = bankState.versions.map(function (v) {
+      var reasons = (v.validation && v.validation.reasons) || [];
+      var warnings = (v.validation && v.validation.warnings) || [];
+      var check = v.promotionBlocked ? ("阻止发布：" + reasons.join("、")) : ("可通过" + (warnings.length ? "；提示：" + warnings.join("、") : ""));
+      return "<tr><td><input type='radio' name='bank-ver' value='" + esc(v.id) + "'" + (v.id === bankState.selected ? " checked" : "") + "></td>" +
+        "<td><code>" + esc(v.id) + "</code></td><td>" + esc(v.status) + (v.id === bankState.activeVersionId ? " · 当前生效" : "") + "</td>" +
+        "<td>" + esc(v.questionCount) + "</td><td>" + esc(v.mediaCount) + "</td>" +
+        "<td>" + esc(v.sourceUpdatedAtZh || zhWhen(v.sourceUpdatedAt)) + "</td>" +
+        "<td>" + esc(v.collectedAtZh || zhWhen(v.collectedAt)) + "</td><td>" + esc(check) + "</td></tr>";
+    }).join("");
+    refreshBankActions();
+  }
+  async function loadBankList() {
+    var data = await ingestApi("list", { code: bankState.code });
+    bankState.activeVersionId = data.activeVersionId || null;
+    bankState.versions = data.versions || [];
+    if (!bankState.selected && bankState.versions[0]) bankState.selected = bankState.versions[0].id;
+    renderBankVersions();
+  }
+  async function showPreview(versionId) {
+    var data = await ingestApi("preview", { code: bankState.code, versionId: versionId });
+    var diff = data.diff || {};
+    var counts = diff.counts || {};
+    var lines = ["版本 " + versionId, "题目 " + (data.questionCount == null ? "未知" : data.questionCount) + " · 媒体 " + (data.mediaCount == null ? "未知" : data.mediaCount), "来源更新 " + (data.sourceUpdatedAtZh || "未知") + " · 采集 " + (data.collectedAtZh || "未知")];
+    if (data.provenance && data.provenance.warning) lines.push(String(data.provenance.warning));
+    lines.push("新增 " + (counts.new || 0) + " · 内容变化 " + (counts.changed || 0) + " · 答案变化 " + (counts["answer-changed"] || 0) + " · 可能删除 " + (counts["possibly-removed"] || 0) + " · 重复 " + (counts.duplicate || 0) + " · 冲突 " + (counts.conflict || 0) + " · 待人工核对 " + (counts["fuzzy-review"] || 0));
+    lines.push(data.promotionBlocked ? "此版本不能发布。" : "此版本可以发布。发布仍需确认短语。");
+    (diff.items || []).forEach(function (item) {
+      lines.push((item.reviewOnly ? "仅供核对 " : "") + item.kind + " " + (item.externalId || "") + " " + (item.stemExcerpt || ""));
+    });
+    $("bank-diff").textContent = lines.join("\n");
+    var row = selectedVersion();
+    if (row && data.promotionBlocked) row.promotionBlocked = true;
+    refreshBankActions();
+  }
+  async function openBanks() {
+    bankButtons(false);
+    try {
+      await ingestApi("registry", {});
+      bankState.service = true;
+      $("bank-service").textContent = "采集服务可连接。没有自动排程。未配置的名称不会被当成完整题库。";
+      refreshBankActions();
+    } catch (e) {
+      bankState.service = false;
+      bankButtons(false);
+      $("bank-service").textContent = e.status === 404 ? "题库采集服务尚未部署，采集、发布和回滚都不可用。" : (e.message || "采集服务不可用");
+      throw e;
+    }
+  }
+  async function resolveBank() {
+    if (!bankState.service) { setMsg("题库采集服务尚未部署", false); return; }
+    var code = ($("bank-code").value || "").trim();
+    var data = await ingestApi("resolve", { code: code });
+    if (!data.configured) {
+      bankState.code = "";
+      $("bank-source").textContent = data.message || "未配置";
+      $("btn-bank-collect").disabled = true;
+      setMsg(data.message || "未配置", false);
+      return;
+    }
+    bankState.code = data.bank.code;
+    var src = (data.bank.sources || [])[0] || {};
+    $("bank-source").textContent = data.bank.title + "（" + data.bank.code + "）\n来源 " + (src.repo || "未知") + "\n许可 " + (src.license || "未知") + " · AI 生成 " + (src.aiGenerated ? "是" : "否") + " · 官方题库 否 · 完整题库 否\n宣称题量 " + (src.advertisedCount == null ? "未知" : src.advertisedCount) + "\n上次查看来源结构 " + (src.lastInspectedAtZh || "未知") + "\n" + (src.note || "");
+    await loadBankList();
+    setMsg("已解析 " + data.bank.code, true);
   }
 
   async function boot() {

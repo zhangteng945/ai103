@@ -1,0 +1,10 @@
+{
+  "title": "AZ-305 fixture",
+  "description": "Original sample for the adapter test. Not the third-party bank.",
+  "questions": [
+    "questions/01-sample-single.json",
+    "questions/02-sample-multi.json",
+    "questions/03-sample-hotspot.json",
+    "questions/04-sample-ordering.json"
+  ]
+}

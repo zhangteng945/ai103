@@ -1,0 +1,13 @@
+{
+  "id": "fixture-single-storage",
+  "question": "A fictional team needs a place to store practice notes. Which sample option is the stored answer?",
+  "options": [
+    { "text": "Sample option alpha", "correct": false },
+    { "text": "Sample option beta", "correct": true },
+    { "text": "Sample option gamma", "correct": false },
+    { "text": "Sample option delta", "correct": false }
+  ],
+  "explanation": "Fixture explanation. Beta is marked correct only inside this sample.",
+  "category": "Design Data Storage Solutions",
+  "caseStudy": "scenarios/case-sample.json"
+}

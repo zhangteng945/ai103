@@ -24,8 +24,9 @@ window.__ITCERT_ACCOUNT__ = {
   // After login it reads one exam's catalog (meta) from Edge Function itc-bank, then
   // loads question pages / ids / sample on demand (js/account-auth.js). It never falls
   // back to questions.js or banks/*.js. Set false to keep shipping banks as public files.
-  // `banks` is the private Storage catalog the function should serve; the browser does not fetch these paths.
-  // Fill versions after: node scripts/admin-accounts.mjs upload-bank <examId> <file.js> <version>
+  // `banks` is the legacy private Storage catalog. The browser does not fetch these paths.
+  // az-305 is absent on purpose: it is served only after an admin publishes a bank_catalog version.
+  // Fill legacy versions after: node scripts/admin-accounts.mjs upload-bank <examId> <file.js> <version>
   protectedBanks: true,
   banks: {
     "ai103":   "ai103/202611011910.js",
