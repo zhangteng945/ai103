@@ -1,9 +1,0 @@
-{
-  "id": "fixture-order-steps",
-  "type": "ordering",
-  "question": "Arrange these original sample steps.",
-  "items": ["Step C shown first", "Step A shown second", "Step B shown third"],
-  "correctOrder": ["Step A shown second", "Step B shown third", "Step C shown first"],
-  "explanation": "Ordering is stored, not converted into fake choices.",
-  "category": "Design Business Continuity Solutions"
-}
