@@ -6,7 +6,7 @@
 
 ## 部署前（人工，且不要在未确认时执行）
 
-1. 阅读 `supabase/migrations/20261108183000_bank_versions.sql`。确认不会对生产库执行，直到明确同意。
+1. 阅读 `supabase/migrations/20261108183000_bank_versions.sql`。确认不会对生产库执行，直到明确同意。其中的锁和发布函数留在 `public`，这样 Edge 仍可通过 `/rpc` 调用；它们是 `SECURITY INVOKER`，`search_path` 只有 `pg_catalog`，只有 `service_role` 有 EXECUTE 和所需的表写入权限。
 2. 函数使用项目自带的 `SUPABASE_URL`、`SUPABASE_ANON_KEY`、`SUPABASE_SERVICE_ROLE_KEY`。不要把 service_role 写进前端或仓库。
 3. 调用者必须是已登录且 `app_metadata.role = "admin"` 的用户 JWT。过期账号会被拒绝。
 4. 存储沿用私有桶 `banks`。版本对象路径：`versions/<code>/<versionId>.json` 与 `versions/<code>/<versionId>/media/<sha256>`。不要给这些路径加公开读策略。

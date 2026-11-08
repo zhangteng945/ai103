@@ -1,6 +1,9 @@
 -- Question-bank versions. Source only: do not apply this against production from the agent.
 -- Existing exams keep working through itc-bank legacy files until a catalog row is published.
--- anon/authenticated have no grants and no policies. service_role is used only inside edge functions.
+-- anon/authenticated have no grants and no policies.
+-- Lock/publish functions stay in public so PostgREST /rpc keeps working, but they are
+-- SECURITY INVOKER with search_path = pg_catalog. service_role (BYPASSRLS) is the only
+-- EXECUTE grantee and the only role granted the table writes the functions perform.
 -- Versions and media are not deleted by this migration. There is no cleanup job.
 
 create table if not exists public.bank_catalog (
@@ -76,11 +79,19 @@ alter table public.bank_jobs enable row level security;
 alter table public.bank_audit enable row level security;
 alter table public.bank_media enable row level security;
 
-revoke all on public.bank_catalog from public, anon, authenticated;
-revoke all on public.bank_versions from public, anon, authenticated;
-revoke all on public.bank_jobs from public, anon, authenticated;
-revoke all on public.bank_audit from public, anon, authenticated;
-revoke all on public.bank_media from public, anon, authenticated;
+revoke all on public.bank_catalog from public, anon, authenticated, service_role;
+revoke all on public.bank_versions from public, anon, authenticated, service_role;
+revoke all on public.bank_jobs from public, anon, authenticated, service_role;
+revoke all on public.bank_audit from public, anon, authenticated, service_role;
+revoke all on public.bank_media from public, anon, authenticated, service_role;
+
+grant select, insert, update on public.bank_catalog to service_role;
+grant select, insert, update on public.bank_versions to service_role;
+grant select, insert, update on public.bank_jobs to service_role;
+grant select, insert on public.bank_audit to service_role;
+grant select, insert, update on public.bank_media to service_role;
+revoke all on sequence public.bank_audit_id_seq from public, anon, authenticated, service_role;
+grant usage, select on sequence public.bank_audit_id_seq to service_role;
 
 insert into public.bank_catalog (code, title)
 values ('az-305', 'AZ-305')
@@ -89,15 +100,15 @@ on conflict (code) do nothing;
 create or replace function public.itc_bank_try_lock(p_code text, p_job text, p_ttl_seconds integer)
 returns boolean
 language plpgsql
-security definer
-set search_path = public
+security invoker
+set search_path = pg_catalog
 as $$
 declare
   updated integer;
 begin
   update public.bank_catalog
     set lock_job_id = p_job,
-        lock_until = now() + make_interval(secs => greatest(p_ttl_seconds, 1)),
+        lock_until = now() + make_interval(secs => (CASE WHEN p_ttl_seconds < 1 THEN 1 ELSE p_ttl_seconds END)::double precision),
         updated_at = now()
     where code = p_code
       and (lock_job_id is null or lock_job_id = p_job or lock_until < now());
@@ -109,8 +120,8 @@ $$;
 create or replace function public.itc_bank_release_lock(p_code text, p_job text)
 returns void
 language plpgsql
-security definer
-set search_path = public
+security invoker
+set search_path = pg_catalog
 as $$
 begin
   update public.bank_catalog
@@ -122,8 +133,8 @@ $$;
 create or replace function public.itc_bank_abandon_stale(p_code text)
 returns void
 language plpgsql
-security definer
-set search_path = public
+security invoker
+set search_path = pg_catalog
 as $$
 begin
   update public.bank_jobs
@@ -132,7 +143,7 @@ begin
         finished_at = now()
     where bank_code = p_code
       and state = 'running'
-      and started_at < now() - interval '2 minutes';
+      and started_at < now() - make_interval(mins => 2);
 end;
 $$;
 
@@ -144,8 +155,8 @@ create or replace function public.itc_bank_cas_active(
   p_action text
 ) returns text
 language plpgsql
-security definer
-set search_path = public
+security invoker
+set search_path = pg_catalog
 as $$
 declare
   st text;

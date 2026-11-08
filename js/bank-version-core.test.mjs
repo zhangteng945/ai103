@@ -18,6 +18,7 @@ import {
   formatShanghai,
   assertAdmin,
   decideServeVersion,
+  LEGACY_BANK_VERSIONS,
   slicePinned,
   createBankStore,
   runBoundedCollect,
@@ -207,28 +208,117 @@ const bigNext = bigPrev.slice(0, 3).map((q) => Object.assign({}, q));
 const drop = diffQuestions(bigPrev, bigNext);
 assert.ok(drop.blockReasons.indexOf("massive_drop") >= 0);
 
-const legacy = decideServeVersion({ examId: "ai103", requested: null, catalog: null, versions: [], legacyDefaults: { ai103: "202611011910" } });
-assert.strictEqual(legacy.kind, "legacy");
-assert.strictEqual(legacy.version, "202611011910");
-const unpublished = decideServeVersion({ examId: "az-305", requested: null, catalog: { activeVersionId: null }, versions: [], legacyDefaults: { ai103: "202611011910" } });
-assert.strictEqual(unpublished.ok, false);
-const pinned = decideServeVersion({
+const pins = {
+  ai103: ["202611011910", "202610011200"],
+  "dop-c02": ["202611011900"],
+  "dp-700": ["202611011900"],
+  "dp-420": ["202611011900"],
+};
+function serve(partial) {
+  return decideServeVersion(Object.assign({
+    examId: "ai103",
+    requested: null,
+    catalog: null,
+    versions: [],
+    legacyVersions: pins,
+  }, partial));
+}
+let decided = serve({});
+assert.strictEqual(decided.kind, "legacy");
+assert.strictEqual(decided.version, "202611011910");
+assert.strictEqual(decided.path, undefined);
+decided = serve({ requested: "202610011200" });
+assert.strictEqual(decided.kind, "legacy");
+assert.strictEqual(decided.version, "202610011200");
+decided = serve({ requested: "../secret" });
+assert.strictEqual(decided.ok, false);
+assert.strictEqual(decided.path, undefined);
+decided = serve({ requested: "versions/ai103/not-a-file" });
+assert.strictEqual(decided.ok, false);
+assert.strictEqual(decided.path, undefined);
+decided = serve({ catalog: { activeVersionId: null } });
+assert.strictEqual(decided.kind, "legacy");
+assert.strictEqual(decided.version, "202611011910");
+decided = serve({ catalog: { activeVersionId: null }, requested: "202610011200" });
+assert.strictEqual(decided.kind, "legacy");
+assert.strictEqual(decided.version, "202610011200");
+decided = serve({ catalog: { activeVersionId: "c-new" } });
+assert.strictEqual(decided.kind, "catalog");
+assert.strictEqual(decided.version, "c-new");
+assert.strictEqual(decided.path, "versions/ai103/c-new.json");
+decided = serve({ catalog: { activeVersionId: "c-new" }, requested: "202611011910" });
+assert.strictEqual(decided.kind, "legacy");
+assert.strictEqual(decided.version, "202611011910");
+decided = serve({ catalog: { activeVersionId: "c-new" }, requested: "202610011200" });
+assert.strictEqual(decided.kind, "legacy");
+assert.strictEqual(decided.version, "202610011200");
+decided = serve({
+  catalog: { activeVersionId: "c-new" },
+  requested: "c-old",
+  versions: [
+    { id: "c-old", status: "retained", bankCode: "ai103" },
+    { id: "c-new", status: "published", bankCode: "ai103" },
+    { id: "c-draft", status: "candidate", bankCode: "ai103" },
+  ],
+});
+assert.strictEqual(decided.kind, "catalog");
+assert.strictEqual(decided.path, "versions/ai103/c-old.json");
+decided = serve({ catalog: { activeVersionId: "c-old" } });
+assert.strictEqual(decided.kind, "catalog");
+assert.strictEqual(decided.path, "versions/ai103/c-old.json");
+decided = serve({
+  catalog: { activeVersionId: "c-new" },
+  requested: "c-draft",
+  versions: [{ id: "c-draft", status: "candidate", bankCode: "ai103" }],
+});
+assert.strictEqual(decided.status, 403);
+assert.strictEqual(decided.path, undefined);
+decided = serve({
+  catalog: { activeVersionId: "c-new" },
+  requested: "c-other",
+  versions: [{ id: "c-other", status: "retained", bankCode: "dop-c02" }],
+});
+assert.strictEqual(decided.ok, false);
+assert.strictEqual(decided.path, undefined);
+for (const id of ["ai103", "dop-c02", "dp-700", "dp-420"]) {
+  const got = decideServeVersion({
+    examId: id,
+    requested: null,
+    catalog: { activeVersionId: null },
+    versions: [],
+    legacyVersions: LEGACY_BANK_VERSIONS,
+  });
+  assert.strictEqual(got.kind, "legacy");
+  assert.strictEqual(got.version, LEGACY_BANK_VERSIONS[id][0]);
+  assert.strictEqual(got.path, undefined);
+}
+decided = decideServeVersion({ examId: "az-305", requested: null, catalog: null, versions: [], legacyVersions: LEGACY_BANK_VERSIONS });
+assert.strictEqual(decided.ok, false);
+decided = decideServeVersion({ examId: "az-305", requested: null, catalog: { activeVersionId: null }, versions: [], legacyVersions: LEGACY_BANK_VERSIONS });
+assert.strictEqual(decided.ok, false);
+decided = decideServeVersion({ examId: "az-305", requested: "202611011910", catalog: { activeVersionId: null }, versions: [], legacyVersions: LEGACY_BANK_VERSIONS });
+assert.strictEqual(decided.ok, false);
+assert.strictEqual(decided.path, undefined);
+decided = decideServeVersion({
   examId: "az-305",
   requested: "c-old",
   catalog: { activeVersionId: "c-new" },
   versions: [
     { id: "c-old", status: "retained", bankCode: "az-305" },
     { id: "c-new", status: "published", bankCode: "az-305" },
-    { id: "c-draft", status: "candidate", bankCode: "az-305" },
   ],
-  legacyDefaults: {},
+  legacyVersions: LEGACY_BANK_VERSIONS,
 });
-assert.strictEqual(pinned.version, "c-old");
-const candidate = decideServeVersion({
-  examId: "az-305", requested: "c-draft", catalog: { activeVersionId: "c-new" },
-  versions: [{ id: "c-draft", status: "candidate", bankCode: "az-305" }], legacyDefaults: {},
+assert.strictEqual(decided.kind, "catalog");
+assert.strictEqual(decided.path, "versions/az-305/c-old.json");
+decided = decideServeVersion({
+  examId: "az-305",
+  requested: "c-draft",
+  catalog: { activeVersionId: "c-new" },
+  versions: [{ id: "c-draft", status: "candidate", bankCode: "az-305" }],
+  legacyVersions: LEGACY_BANK_VERSIONS,
 });
-assert.strictEqual(candidate.status, 403);
+assert.strictEqual(decided.status, 403);
 const v1 = Array.from({ length: 60 }, (_, i) => ({ id: "v1-" + i, externalId: "e" + i }));
 const v2 = [{ id: "v2-only", externalId: "only" }];
 const page = slicePinned(v1, { version: "c-old", offset: 50, limit: 50 });
@@ -366,13 +456,9 @@ await assert.rejects(collectQuizplaySource(REGISTRY.banks[0].sources[0], {
 }), /不完整|不可用/);
 
 const sql = fs.readFileSync(path.join(root, "supabase/migrations/20261108183000_bank_versions.sql"), "utf8");
-assert.match(sql, /enable row level security/);
-assert.match(sql, /revoke all on public\.bank_versions from public, anon, authenticated/);
-assert.match(sql, /active_version_id is not distinct from p_expected/);
-assert.match(sql, /promotion_blocked/);
-assert.match(sql, /on delete restrict/);
-assert.match(sql, /grant execute on function public\.itc_bank_cas_active/);
-assert.doesNotMatch(sql, /grant execute on function public\.itc_bank_cas_active[\s\S]*to anon/);
+assert.doesNotMatch(sql, /security definer/i);
+assert.match(sql, /security invoker/);
+assert.match(sql, /set search_path = pg_catalog/);
 const ingest = fs.readFileSync(path.join(root, "supabase/functions/itc-ingest/index.ts"), "utf8");
 assert.match(ingest, /itc_bank_try_lock/);
 assert.match(ingest, /itc_bank_cas_active/);

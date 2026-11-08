@@ -763,25 +763,75 @@ export function isMissingRelation(message) {
   return /bank_catalog|bank_versions|schema cache|does not exist|42P01/i.test(String(message || ""));
 }
 
-export function decideServeVersion({ examId, requested, catalog, versions, legacyDefaults }) {
-  const legacy = legacyDefaults ? legacyDefaults[examId] : null;
-  const want = requested ? String(requested) : null;
-  if (!catalog) {
-    if (legacy) return { ok: true, kind: "legacy", version: want || legacy };
+/** Server-side legacy file names. Not taken from the client. First entry is the default. */
+export const LEGACY_BANK_VERSIONS = Object.freeze({
+  ai103: Object.freeze(["202611011910"]),
+  "dop-c02": Object.freeze(["202611011900"]),
+  "dp-700": Object.freeze(["202611011900"]),
+  "dp-420": Object.freeze(["202611011900"]),
+});
+
+const VERSION_TOKEN = /^[A-Za-z0-9._-]{1,64}$/;
+const EXAM_TOKEN = /^[a-z0-9-]{1,32}$/;
+
+function trustedLegacyIds(legacyVersions, examId) {
+  const raw = legacyVersions && legacyVersions[examId];
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const id of raw) {
+    if (typeof id === "string" && VERSION_TOKEN.test(id) && out.indexOf(id) < 0) out.push(id);
+  }
+  return out;
+}
+
+function catalogSnapshotPath(examId, version) {
+  if (!EXAM_TOKEN.test(examId) || !VERSION_TOKEN.test(version)) return null;
+  return "versions/" + examId + "/" + version + ".json";
+}
+
+/**
+ * Pick one stored bank for this request.
+ * Trusted legacy ids keep serving the existing exam/version file until that session
+ * asks for a published catalog version. A catalog row with no active version does
+ * not hide the legacy default. Client strings that are not an allowlisted legacy id
+ * or a published/retained row do not become storage paths.
+ */
+export function decideServeVersion({ examId, requested, catalog, versions, legacyVersions }) {
+  const exam = String(examId || "");
+  if (!EXAM_TOKEN.test(exam)) return { ok: false, status: 404, error: "该题库尚未发布" };
+  const trusted = trustedLegacyIds(legacyVersions, exam);
+  const want = requested == null || requested === "" ? null : String(requested);
+  const active = catalog && typeof catalog.activeVersionId === "string" && VERSION_TOKEN.test(catalog.activeVersionId)
+    ? catalog.activeVersionId
+    : null;
+  if (want && active && want === active) {
+    const path = catalogSnapshotPath(exam, active);
+    return path
+      ? { ok: true, kind: "catalog", version: active, path: path }
+      : { ok: false, status: 404, error: "请求的题库版本不存在" };
+  }
+  if (want) {
+    const pin = trusted.find((id) => id === want);
+    if (pin) return { ok: true, kind: "legacy", version: pin };
+  }
+  if (!want) {
+    if (active) {
+      const path = catalogSnapshotPath(exam, active);
+      return path
+        ? { ok: true, kind: "catalog", version: active, path: path }
+        : { ok: false, status: 404, error: "该题库尚未发布" };
+    }
+    if (trusted.length) return { ok: true, kind: "legacy", version: trusted[0] };
     return { ok: false, status: 404, error: "该题库尚未发布" };
   }
-  const active = catalog.activeVersionId || null;
-  if (!active && !want) return { ok: false, status: 404, error: "该题库尚未发布" };
-  const version = want || active;
-  if (version === active) return { ok: true, kind: "catalog", version: version, path: "versions/" + examId + "/" + version + ".json" };
-  const row = (versions || []).find((v) => v.id === version && v.bankCode === examId);
-  if (!row) {
-    if (legacy && version === legacy) return { ok: true, kind: "legacy", version: version };
-    return { ok: false, status: 404, error: "请求的题库版本不存在" };
-  }
+  if (!VERSION_TOKEN.test(want)) return { ok: false, status: 404, error: "请求的题库版本不存在" };
+  const row = (versions || []).find((v) => v && v.id === want && v.bankCode === exam);
+  if (!row) return { ok: false, status: 404, error: "请求的题库版本不存在" };
   if (row.status === "candidate") return { ok: false, status: 403, error: "候选版本未发布" };
-  if (row.status === "published" || row.status === "retained") {
-    return { ok: true, kind: "catalog", version: version, path: "versions/" + examId + "/" + version + ".json" };
+  if ((row.status === "published" || row.status === "retained") && VERSION_TOKEN.test(row.id)) {
+    const path = catalogSnapshotPath(exam, row.id);
+    if (!path) return { ok: false, status: 404, error: "请求的题库版本不存在" };
+    return { ok: true, kind: "catalog", version: row.id, path: path };
   }
   return { ok: false, status: 404, error: "题库版本不可用" };
 }

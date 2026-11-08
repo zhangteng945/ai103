@@ -9,17 +9,10 @@
 // index items have no stems: {id, domain, type, control, caseStudy, caseStudyId, boxes, yn, dd, n?}
 // Rate limit: 120 requests / 5 min per user+exam.
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { decideServeVersion, findVersionMedia, isMissingRelation, unwrapBankDocument } from "../_shared/bank-version-core.mjs";
+import { decideServeVersion, findVersionMedia, isMissingRelation, LEGACY_BANK_VERSIONS, unwrapBankDocument } from "../_shared/bank-version-core.mjs";
 
 const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420", "az-305"] as const;
 type ExamId = (typeof ALLOWED_EXAMS)[number];
-
-const DEFAULT_VERSIONS: Partial<Record<ExamId, string>> = {
-  ai103: "202611011910",
-  "dop-c02": "202611011900",
-  "dp-700": "202611011900",
-  "dp-420": "202611011900",
-};
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 80;
@@ -370,7 +363,7 @@ async function resolveServe(
     requested,
     catalog: missing ? null : catalog,
     versions,
-    legacyDefaults: DEFAULT_VERSIONS,
+    legacyVersions: LEGACY_BANK_VERSIONS,
   });
 }
 async function loadCatalogBank(admin: any, path: string, version: string) {
@@ -444,14 +437,20 @@ Deno.serve(async (req: Request) => {
   let bankDoc: { media?: unknown[]; meta?: { media?: unknown[] } | null } | null = null;
   try {
     if (decision.kind === "catalog") {
-      const loaded = await loadCatalogBank(admin, decision.path || "", decision.version);
+      const expectedPath = "versions/" + params.exam + "/" + decision.version + ".json";
+      if (decision.path !== expectedPath) return err("请求的题库版本不存在", 404);
+      const loaded = await loadCatalogBank(admin, expectedPath, decision.version);
       questions = loaded.questions;
       usedVersion = loaded.version;
       bankDoc = loaded.doc;
-    } else {
+    } else if (decision.kind === "legacy") {
+      const allowed = (LEGACY_BANK_VERSIONS as Record<string, readonly string[] | undefined>)[params.exam] || [];
+      if (allowed.indexOf(decision.version) < 0) return err("请求的题库版本不存在", 404);
       const loaded = await loadBank(admin, params.exam, decision.version);
       questions = loaded.questions;
       usedVersion = loaded.version;
+    } else {
+      return err("请求的题库版本不存在", 404);
     }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
