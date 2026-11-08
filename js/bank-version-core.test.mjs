@@ -23,6 +23,7 @@ import {
   assertAdmin,
   decideServeVersion,
   LEGACY_BANK_VERSIONS,
+  acceptLegacyBankLoad,
   slicePinned,
   createBankStore,
   runBoundedCollect,
@@ -313,6 +314,54 @@ for (const id of ["ai103", "dop-c02", "dp-700", "dp-420"]) {
   assert.strictEqual(got.version, LEGACY_BANK_VERSIONS[id][0]);
   assert.strictEqual(got.path, undefined);
 }
+assert.deepStrictEqual(LEGACY_BANK_VERSIONS.ai103, ["202611011910", "202611011900"]);
+function bothLegacyLayers(requested, catalog, versions) {
+  const decision = decideServeVersion({
+    examId: "ai103",
+    requested: requested,
+    catalog: catalog,
+    versions: versions || [],
+    legacyVersions: LEGACY_BANK_VERSIONS,
+  });
+  if (!decision.ok || decision.kind !== "legacy") return decision;
+  const gate = acceptLegacyBankLoad("ai103", decision, LEGACY_BANK_VERSIONS);
+  if (!gate.ok) return gate;
+  return { ok: true, kind: "legacy", version: gate.version, storageStem: gate.storageStem, path: decision.path };
+}
+for (const catalog of [null, { activeVersionId: null }, { activeVersionId: "" }]) {
+  const pin = bothLegacyLayers("202611011900", catalog);
+  assert.strictEqual(pin.kind, "legacy");
+  assert.strictEqual(pin.version, "202611011900");
+  assert.strictEqual(pin.storageStem, "ai103/202611011900");
+  assert.strictEqual(pin.path, undefined);
+  const fresh = bothLegacyLayers(null, catalog);
+  assert.strictEqual(fresh.version, "202611011910");
+  assert.strictEqual(fresh.storageStem, "ai103/202611011910");
+}
+const pinnedBesideNew = bothLegacyLayers("202611011900", { activeVersionId: "c-new" }, [
+  { id: "c-new", status: "published", bankCode: "ai103" },
+]);
+assert.strictEqual(pinnedBesideNew.kind, "legacy");
+assert.strictEqual(pinnedBesideNew.version, "202611011900");
+assert.strictEqual(pinnedBesideNew.storageStem, "ai103/202611011900");
+const freshOnNew = decideServeVersion({
+  examId: "ai103",
+  requested: null,
+  catalog: { activeVersionId: "c-new" },
+  versions: [{ id: "c-new", status: "published", bankCode: "ai103" }],
+  legacyVersions: LEGACY_BANK_VERSIONS,
+});
+assert.strictEqual(freshOnNew.kind, "catalog");
+assert.strictEqual(freshOnNew.path, "versions/ai103/c-new.json");
+assert.notStrictEqual(freshOnNew.version, "202611011900");
+const forged = acceptLegacyBankLoad("ai103", { ok: true, kind: "legacy", version: "202611011900/../../x" }, LEGACY_BANK_VERSIONS);
+assert.strictEqual(forged.ok, false);
+assert.strictEqual(forged.storageStem, undefined);
+const otherFile = bothLegacyLayers("202611011899", null);
+assert.strictEqual(otherFile.ok, false);
+assert.strictEqual(otherFile.path, undefined);
+const crossed = bothLegacyLayers("../dop-c02/202611011900", null);
+assert.strictEqual(crossed.ok, false);
 decided = decideServeVersion({ examId: "az-305", requested: null, catalog: null, versions: [], legacyVersions: LEGACY_BANK_VERSIONS });
 assert.strictEqual(decided.ok, false);
 decided = decideServeVersion({ examId: "az-305", requested: null, catalog: { activeVersionId: null }, versions: [], legacyVersions: LEGACY_BANK_VERSIONS });

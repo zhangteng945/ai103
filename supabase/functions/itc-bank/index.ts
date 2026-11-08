@@ -9,7 +9,7 @@
 // index items have no stems: {id, domain, type, control, caseStudy, caseStudyId, boxes, yn, dd, n?}
 // Rate limit: 120 requests / 5 min per user+exam.
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { decideServeVersion, findVersionMedia, isMissingRelation, LEGACY_BANK_VERSIONS, unwrapBankDocument } from "../_shared/bank-version-core.mjs";
+import { acceptLegacyBankLoad, decideServeVersion, findVersionMedia, isMissingRelation, LEGACY_BANK_VERSIONS, unwrapBankDocument } from "../_shared/bank-version-core.mjs";
 
 const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420", "az-305"] as const;
 type ExamId = (typeof ALLOWED_EXAMS)[number];
@@ -444,9 +444,9 @@ Deno.serve(async (req: Request) => {
       usedVersion = loaded.version;
       bankDoc = loaded.doc;
     } else if (decision.kind === "legacy") {
-      const allowed = (LEGACY_BANK_VERSIONS as Record<string, readonly string[] | undefined>)[params.exam] || [];
-      if (allowed.indexOf(decision.version) < 0) return err("请求的题库版本不存在", 404);
-      const loaded = await loadBank(admin, params.exam, decision.version);
+      const gate = acceptLegacyBankLoad(params.exam, decision, LEGACY_BANK_VERSIONS);
+      if (!gate.ok || !gate.version) return err(gate.error || "请求的题库版本不存在", gate.status || 404);
+      const loaded = await loadBank(admin, params.exam, gate.version);
       questions = loaded.questions;
       usedVersion = loaded.version;
     } else {

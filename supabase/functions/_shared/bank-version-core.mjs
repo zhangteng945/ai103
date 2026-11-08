@@ -806,9 +806,14 @@ export function isMissingRelation(message) {
   return /bank_catalog|bank_versions|schema cache|does not exist|42P01/i.test(String(message || ""));
 }
 
-/** Server-side legacy file names. Not taken from the client. First entry is the default. */
+/**
+ * Server-side legacy file names. Not taken from the client.
+ * The first id is the default when a request does not pin a version.
+ * ai103 keeps 202611011900 because production storage still has that object
+ * and the current itc-bank serves it. It is not the default.
+ */
 export const LEGACY_BANK_VERSIONS = Object.freeze({
-  ai103: Object.freeze(["202611011910"]),
+  ai103: Object.freeze(["202611011910", "202611011900"]),
   "dop-c02": Object.freeze(["202611011900"]),
   "dp-700": Object.freeze(["202611011900"]),
   "dp-420": Object.freeze(["202611011900"]),
@@ -877,6 +882,18 @@ export function decideServeVersion({ examId, requested, catalog, versions, legac
     return { ok: true, kind: "catalog", version: row.id, path: path };
   }
   return { ok: false, status: 404, error: "题库版本不可用" };
+}
+
+/** Second gate before reading exam/<version>.json|js. Version must be the allowlist entry, not the raw request. */
+export function acceptLegacyBankLoad(examId, decision, legacyVersions = LEGACY_BANK_VERSIONS) {
+  if (!decision || decision.ok !== true || decision.kind !== "legacy") {
+    return { ok: false, status: 404, error: "请求的题库版本不存在" };
+  }
+  const exam = String(examId || "");
+  if (!EXAM_TOKEN.test(exam)) return { ok: false, status: 404, error: "请求的题库版本不存在" };
+  const version = trustedLegacyIds(legacyVersions, exam).find((id) => id === decision.version);
+  if (!version) return { ok: false, status: 404, error: "请求的题库版本不存在" };
+  return { ok: true, examId: exam, version: version, storageStem: exam + "/" + version };
 }
 
 export function unwrapBankDocument(parsed) {
