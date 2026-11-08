@@ -268,6 +268,85 @@ function sleepDefault(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function abortReadError() {
+  const err = new Error("响应读取超时");
+  err.name = "AbortError";
+  return err;
+}
+
+export async function readBoundedBody(res, limit, signal) {
+  const cap = Number(limit);
+  if (!Number.isFinite(cap) || cap < 1) throw new Error("响应大小限制无效");
+  if (signal && signal.aborted) throw abortReadError();
+  if (res && res.body && typeof res.body.getReader === "function") {
+    const reader = res.body.getReader();
+    const chunks = [];
+    let total = 0;
+    try {
+      while (true) {
+        const next = await new Promise((resolve, reject) => {
+          if (!signal) {
+            reader.read().then(resolve, reject);
+            return;
+          }
+          const onAbort = () => reject(abortReadError());
+          if (signal.aborted) { onAbort(); return; }
+          signal.addEventListener("abort", onAbort, { once: true });
+          reader.read().then(
+            (value) => { signal.removeEventListener("abort", onAbort); resolve(value); },
+            (err) => { signal.removeEventListener("abort", onAbort); reject(err); },
+          );
+        });
+        if (next.done) break;
+        const value = next.value || new Uint8Array(0);
+        if (total + value.byteLength > cap) {
+          const err = new Error("响应超过大小限制");
+          err.code = "too_large";
+          throw err;
+        }
+        chunks.push(value);
+        total += value.byteLength;
+      }
+    } finally {
+      try { await reader.cancel(); } catch (e) { /* 结束或超限后停止继续读取 */ }
+    }
+    const out = new Uint8Array(total);
+    let offset = 0;
+    for (const chunk of chunks) {
+      out.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    return out;
+  }
+  const announced = res && res.headers && res.headers.get ? Number(res.headers.get("content-length")) : NaN;
+  if (Number.isFinite(announced) && announced > cap) {
+    const err = new Error("响应超过大小限制");
+    err.code = "too_large";
+    throw err;
+  }
+  if (!res || typeof res.arrayBuffer !== "function") throw new Error("响应不能按块读取");
+  const raw = await new Promise((resolve, reject) => {
+    if (!signal) {
+      Promise.resolve(res.arrayBuffer()).then(resolve, reject);
+      return;
+    }
+    const onAbort = () => reject(abortReadError());
+    if (signal.aborted) { onAbort(); return; }
+    signal.addEventListener("abort", onAbort, { once: true });
+    Promise.resolve(res.arrayBuffer()).then(
+      (buf) => { signal.removeEventListener("abort", onAbort); resolve(buf); },
+      (err) => { signal.removeEventListener("abort", onAbort); reject(err); },
+    );
+  });
+  const out = raw instanceof Uint8Array ? raw : new Uint8Array(raw);
+  if (out.byteLength > cap) {
+    const err = new Error("响应超过大小限制");
+    err.code = "too_large";
+    throw err;
+  }
+  return out;
+}
+
 export async function fetchAllowlisted(rawUrl, deps) {
   const limits = Object.assign({}, COLLECT_LIMITS, deps.limits || {});
   const policy = deps.policy;
@@ -301,17 +380,20 @@ export async function fetchAllowlisted(rawUrl, deps) {
       if (attempt < limits.retries) { attempt++; await sleep(0); continue; }
       throw new Error("来源读取失败");
     }
-    clearTimeout(timer);
     const status = res.status;
     if (status >= 300 && status < 400) {
+      clearTimeout(timer);
       if (redirects <= 0) throw new Error("来源重定向次数过多");
       const loc = res.headers && res.headers.get ? res.headers.get("location") : "";
       if (!loc) throw new Error("来源重定向无效");
-      current = new URL(loc, u).toString();
+      const next = new URL(loc, u);
+      if (next.hostname.toLowerCase() !== u.hostname.toLowerCase()) throw new Error("已拒绝跨主机重定向");
+      current = next.toString();
       redirects--;
       continue;
     }
     if (status === 429 || status >= 500) {
+      clearTimeout(timer);
       if (attempt < limits.retries) { attempt++; await sleep(0); continue; }
       const err = new Error("来源不可用");
       err.code = "source_unavailable";
@@ -319,15 +401,25 @@ export async function fetchAllowlisted(rawUrl, deps) {
       throw err;
     }
     if (status === 401 || status === 403 || status === 404) {
+      clearTimeout(timer);
       const err = new Error("来源不可用");
       err.code = "source_unavailable";
       err.status = status;
       throw err;
     }
-    if (status !== 200) throw new Error("来源读取失败 " + status);
-    const buf = new Uint8Array(await res.arrayBuffer());
-    if (buf.byteLength > limits.maxFileBytes) throw new Error("来源响应超过大小限制");
-    return buf;
+    if (status !== 200) {
+      clearTimeout(timer);
+      throw new Error("来源读取失败 " + status);
+    }
+    try {
+      return await readBoundedBody(res, limits.maxFileBytes, ctl ? ctl.signal : null);
+    } catch (e) {
+      if (e && e.code === "too_large") throw new Error("来源响应超过大小限制");
+      if (e && e.name === "AbortError") throw new Error("来源读取超时");
+      throw e;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 }
 

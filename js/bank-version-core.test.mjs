@@ -104,8 +104,42 @@ await assert.rejects(fetchAllowlisted("https://raw.githubusercontent.com/quizpla
     redirected++;
     return { status: 302, headers: { get: () => "http://127.0.0.1/secret" }, arrayBuffer: async () => new Uint8Array() };
   },
-}), /https|私网|允许名单/);
+}), /跨主机/);
 assert.strictEqual(redirected, 1);
+let sameHostFetches = 0;
+await assert.rejects(fetchAllowlisted("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", {
+  policy: policy,
+  resolveHost: async () => ["185.199.108.133"],
+  fetchImpl: async () => {
+    sameHostFetches++;
+    return { status: 302, headers: { get: () => "https://raw.githubusercontent.com/other/secret" }, arrayBuffer: async () => new Uint8Array() };
+  },
+}), /允许名单/);
+assert.strictEqual(sameHostFetches, 1);
+let oversizedCancelled = false;
+await assert.rejects(fetchAllowlisted("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", {
+  policy: policy,
+  limits: { retries: 0, timeoutMs: 1000, maxFileBytes: 4, maxRedirects: 0 },
+  resolveHost: async () => ["185.199.108.133"],
+  fetchImpl: async () => ({
+    status: 200,
+    headers: { get: () => "" },
+    body: { getReader() { return { async read() { return { done: false, value: new Uint8Array(5) }; }, async cancel() { oversizedCancelled = true; } }; } },
+  }),
+}), /超过大小限制/);
+assert.strictEqual(oversizedCancelled, true);
+let hungCancelled = false;
+await assert.rejects(fetchAllowlisted("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", {
+  policy: policy,
+  limits: { retries: 0, timeoutMs: 40, maxFileBytes: 1000, maxRedirects: 0 },
+  resolveHost: async () => ["185.199.108.133"],
+  fetchImpl: async () => ({
+    status: 200,
+    headers: { get: () => "" },
+    body: { getReader() { return { read() { return new Promise(() => {}); }, async cancel() { hungCancelled = true; } }; } },
+  }),
+}), /超时/);
+assert.strictEqual(hungCancelled, true);
 await assert.rejects(fetchAllowlisted("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", {
   policy: policy,
   limits: { retries: 0, timeoutMs: 1000, maxFileBytes: 1000, maxRedirects: 1 },

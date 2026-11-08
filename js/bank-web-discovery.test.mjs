@@ -4,6 +4,7 @@
  */
 import assert from "node:assert";
 import {
+  collectVerifiedQuizUrl,
   createQuotaStore,
   discoverWithOptionalWeb,
   markSearchBillingBlocked,
@@ -11,6 +12,7 @@ import {
   reserveSearchCredits,
   tavilySearch,
   tavilySearchBody,
+  WEB_LIMITS,
 } from "../supabase/functions/_shared/bank-web-discovery.mjs";
 
 const SECRET = "tvly-test-secret-value";
@@ -38,10 +40,12 @@ const pages = {
   "https://locked.example/dop-c02": "<html>DOP-C02 login required captcha</html>",
 };
 function jsonResponse(status, obj, headers) {
+  const bytes = new TextEncoder().encode(typeof obj === "string" ? obj : JSON.stringify(obj));
   return {
     status: status,
     headers: { get: (name) => (headers && headers[name]) || "" },
-    arrayBuffer: async () => new TextEncoder().encode(typeof obj === "string" ? obj : JSON.stringify(obj)),
+    body: { getReader() { let done = false; return { async read() { if (done) return { done: true }; done = true; return { done: false, value: bytes }; }, async cancel() {} }; } },
+    arrayBuffer: async () => bytes,
   };
 }
 const byCode = {
@@ -59,8 +63,10 @@ const byCode = {
 };
 let tavilyCalls = 0;
 let privateFetches = 0;
+let outsideSearch = 0;
 async function fetchImpl(url, init) {
   const target = String(url);
+  if (target !== "https://api.tavily.com/search") outsideSearch++;
   if (target.indexOf("127.0.0.1") >= 0 || target.indexOf("169.254.169.254") >= 0) {
     privateFetches++;
     throw new Error("private fetch " + SECRET);
@@ -110,22 +116,27 @@ const az = await discoverWithOptionalWeb("AZ305", deps(quota));
 const ai = await discoverWithOptionalWeb("AI-103", deps(quota));
 const dp = await discoverWithOptionalWeb("DP700", deps(quota));
 const dop = await discoverWithOptionalWeb("DOP-C02", deps(quota));
-assert.strictEqual(az.web.candidates.find((c) => c.url.indexOf("quizzes.example") >= 0).selectable, true);
-assert.strictEqual(az.web.candidates.find((c) => c.url.indexOf("quizzes.example") >= 0).collected, false);
+const azHit = az.web.candidates.find((c) => c.url.indexOf("quizzes.example") >= 0);
+assert.strictEqual(azHit.selectable, false);
+assert.strictEqual(azHit.extraction, "pending-adapter");
+assert.strictEqual(azHit.collected, false);
+assert.ok(azHit.message.includes("不会抓取任意网页"));
 assert.strictEqual(az.org.origin, "quizplay-org");
 assert.ok(az.org.label.includes("不是全网搜索"));
-assert.strictEqual(ai.web.candidates[0].extraction, "quizplay-json");
+assert.strictEqual(ai.web.candidates[0].extraction, "pending-adapter");
 assert.strictEqual(ai.web.candidates[0].examMatch, "exact");
-assert.strictEqual(ai.web.candidates[0].selectable, true);
+assert.strictEqual(ai.web.candidates[0].selectable, false);
 assert.strictEqual(dp.web.candidates.find((c) => c.url.indexOf("dp-900") >= 0).examMatch, "mismatch");
 assert.strictEqual(dp.web.candidates.find((c) => c.url.indexOf("dp-900") >= 0).selectable, false);
-assert.strictEqual(dp.web.candidates.find((c) => c.url.indexOf("blog.example") >= 0).extraction, "html");
+assert.strictEqual(dp.web.candidates.find((c) => c.url.indexOf("blog.example") >= 0).extraction, "pending-adapter");
 assert.strictEqual(dp.web.candidates.find((c) => c.url.indexOf("blog.example") >= 0).collected, false);
-assert.strictEqual(dop.web.candidates[0].status, "access-blocked");
+assert.strictEqual(dop.web.candidates[0].status, "unsupported");
+assert.strictEqual(dop.web.candidates[0].extraction, "pending-adapter");
 assert.strictEqual(dop.web.candidates[0].collected, false);
 assert.strictEqual(az.web.candidates.find((c) => c.url.indexOf("169.254") >= 0).selectable, false);
 assert.strictEqual(az.web.candidates.find((c) => c.url.indexOf("redirect.example") >= 0).selectable, false);
 assert.strictEqual(privateFetches, 0);
+assert.strictEqual(outsideSearch, 0);
 assert.ok(!JSON.stringify({ az, ai, dp, dop }).includes(SECRET));
 assert.ok(!JSON.stringify({ az, ai, dp, dop }).includes("fixture stem"));
 
@@ -180,5 +191,59 @@ const unavailable = await tavilySearch({ apiKey: SECRET, code: "DOP-C02", quota:
 assert.strictEqual(unavailable.network, false);
 assert.strictEqual(unavailable.status, "quota_unavailable");
 assert.ok(!JSON.stringify(unavailable).includes(SECRET));
+
+let refusedFetches = 0;
+const refused = await collectVerifiedQuizUrl("https://quizzes.example/az-305/quiz.json", "AZ-305", { fetchImpl: async () => { refusedFetches++; throw new Error("fetched " + SECRET); }, resolveHost: async () => ["127.0.0.1"] });
+assert.strictEqual(refused.collected, false);
+assert.strictEqual(refused.fetched, false);
+assert.strictEqual(refusedFetches, 0);
+assert.ok(refused.error.includes("没有向外抓取"));
+assert.ok(!JSON.stringify(refused).includes(SECRET));
+
+let followed = 0;
+const redirected = await tavilySearch({
+  apiKey: SECRET,
+  code: "AZ-305",
+  quota: createQuotaStore({ limit: 2, period: "2026-11" }),
+  fetchImpl: async (url) => {
+    if (String(url) !== "https://api.tavily.com/search") { followed++; throw new Error("followed " + SECRET); }
+    return { status: 302, headers: { get: () => "http://169.254.169.254/latest/meta-data" }, body: { getReader() { return { async read() { return { done: true }; }, async cancel() {} }; } } };
+  },
+});
+assert.strictEqual(followed, 0);
+assert.strictEqual(redirected.ok, false);
+assert.ok(redirected.message.includes("没有跟随"));
+assert.ok(!JSON.stringify(redirected).includes(SECRET));
+
+let oversizedCancelled = false;
+const oversized = await tavilySearch({
+  apiKey: SECRET,
+  code: "AZ-305",
+  quota: createQuotaStore({ limit: 2, period: "2026-11" }),
+  fetchImpl: async () => ({
+    status: 200,
+    headers: { get: () => "" },
+    body: { getReader() { return { async read() { return { done: false, value: new Uint8Array(WEB_LIMITS.maxFileBytes + 1) }; }, async cancel() { oversizedCancelled = true; } }; } },
+  }),
+});
+assert.strictEqual(oversized.status, "timeout");
+assert.strictEqual(oversizedCancelled, true);
+assert.ok(oversized.message.includes("响应过大"));
+
+let hungCancelled = false;
+const hung = await tavilySearch({
+  apiKey: SECRET,
+  code: "AZ-305",
+  timeoutMs: 40,
+  quota: createQuotaStore({ limit: 2, period: "2026-11" }),
+  fetchImpl: async () => ({
+    status: 200,
+    headers: { get: () => "" },
+    body: { getReader() { return { read() { return new Promise(() => {}); }, async cancel() { hungCancelled = true; } }; } },
+  }),
+});
+assert.strictEqual(hung.status, "timeout");
+assert.strictEqual(hungCancelled, true);
+assert.ok(hung.message.includes("超时"));
 
 console.log("bank-web-discovery tests ok");

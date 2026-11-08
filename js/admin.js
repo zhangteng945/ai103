@@ -289,7 +289,9 @@
       if (!bankState.code) { setMsg("请先解析一个已配置的题库", false); return; }
       try {
         setMsg("正在采集，完成后才会出现候选版本…", true);
-        var r = await ingestApi("collect", { code: bankState.code, sourceRepo: ($("bank-source-repo") && $("bank-source-repo").value) || bankState.sourceRepo || "" });
+        var chosen = ($("bank-source-repo") && $("bank-source-repo").value) || bankState.sourceRepo || "";
+        if (/^https?:\/\//i.test(chosen)) { setMsg("不能按任意网址采集。请改选已核对的题集。", false); return; }
+        var r = await ingestApi("collect", { code: bankState.code, sourceRepo: chosen });
         bankState.selected = r.versionId || bankState.selected;
         $("bank-summary").textContent = (r.unchanged ? "内容哈希未变，沿用已有版本 " : "已保存候选版本 ") + (r.versionId || "") + "\n题目 " + (r.questionCount == null ? "见版本表" : r.questionCount) + " · 媒体 " + (r.mediaCount == null ? "见版本表" : r.mediaCount) + "\n来源更新 " + (r.sourceUpdatedAtZh || "未知") + " · 采集 " + (r.collectedAtZh || "未知");
         await loadBankList();
@@ -443,7 +445,8 @@
     if (!sel) return;
     function canSelect(c) {
       if (!c || c.collected) return false;
-      if (c.selectable === true) return !!(c.url || c.repo);
+      if (/^https?:\/\//i.test(c.url || "") && !c.repo) return false;
+      if (c.selectable === true) return !!c.repo;
       if (c.selectable === false) return false;
       return (c.status === "ready" || c.status === "needs-review") && !!c.repo && c.origin !== "web-search";
     }
@@ -454,7 +457,7 @@
       return;
     }
     sel.innerHTML = usable.map(function (c) {
-      return "<option value=\"" + esc(c.url || c.repo) + "\">" + esc(c.origin || "来源") + " · " + esc(c.extraction || c.status || "") + " · " + esc(c.questionCount == null ? "?" : c.questionCount) + " 题</option>";
+      return "<option value=\"" + esc(c.repo) + "\">" + esc(c.origin || "来源") + " · " + esc(c.extraction || c.status || "") + " · " + esc(c.questionCount == null ? "?" : c.questionCount) + " 题</option>";
     }).join("");
     bankState.sourceRepo = usable[0].repo;
   }
@@ -469,6 +472,10 @@
     if (data.web && data.web.rightsNote) lines.push(data.web.rightsNote);
     if (data.org && data.org.label) lines.push(data.org.label + "：" + (data.org.message || ""));
     (data.candidates || []).forEach(function (c) {
+      if (c.origin === "web-search" || c.extraction === "pending-adapter") {
+        lines.push("检索预览（未抓取、不可采集） " + (c.url || "") + " · " + (c.status || "") + " · " + (c.message || ""));
+        return;
+      }
       lines.push("发现（尚未采集） " + (c.repo || "") + " · 状态 " + (c.status || "") + " · 题目 " + (c.questionCount == null ? "未知" : c.questionCount) + " · 许可 " + (c.license || "未知") + " · 来源更新 " + (c.sourceUpdatedAtZh || "未知") + " · " + (c.aiWarning || "") + (c.retirementNote ? " · 退役说明：" + c.retirementNote : ""));
     });
     $("bank-source").textContent = lines.join("\n");
