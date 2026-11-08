@@ -7,9 +7,6 @@
  *   itcert_exam_last_v1_<exam> last mock exam result
  *   itcert_exam_hist_v1_<exam> [ {t, ...exam_last} ]  (history, added by sync layer)
  *   itcert_sync_meta_v1         {deviceId, ts:{key:ms}, lastSyncAt, uid}
- * Snapshots include schema "itcert-progress" and compat 2.
- * answerRevisions records the question revision that was graded.
- * legacyIsolated keeps answers that cannot be mapped onto the current question.
  *
  * clearedIds is an explicit tombstone: those question ids were removed on purpose
  * (reset / repair). Import-merge must not union them back. Manual upload/download
@@ -22,8 +19,6 @@
 })(typeof window !== "undefined" ? window : globalThis, function () {
   "use strict";
   var VERSION = 1;
-  var SCHEMA = "itcert-progress";
-  var COMPAT = 2;
   var META_KEY = "itcert_sync_meta_v1";
   var HIST_MAX = 50;
   var P = "itcert_practice_v1_", L = "itcert_exam_last_v1_", H = "itcert_exam_hist_v1_";
@@ -64,13 +59,13 @@
       if (!Array.isArray(hist)) hist = [];
       if (!p && !last && !hist.length) return;
       exams[id] = {
-        p: p ? { answers: isObj(p.answers) ? p.answers : {}, submitted: trueSet(p.submitted), flags: trueSet(p.flags), wrongIds: trueSet(p.wrongIds), clearedIds: trueSet(p.clearedIds), answerRevisions: isObj(p.answerRevisions) ? p.answerRevisions : {}, legacyIsolated: isObj(p.legacyIsolated) ? p.legacyIsolated : {} } : null,
+        p: p ? { answers: isObj(p.answers) ? p.answers : {}, submitted: trueSet(p.submitted), flags: trueSet(p.flags), wrongIds: trueSet(p.wrongIds), clearedIds: trueSet(p.clearedIds) } : null,
         pt: meta.ts[P + id] || 0,
         last: last, lt: meta.ts[L + id] || 0,
         hist: hist,
       };
     });
-    return { v: VERSION, schema: SCHEMA, compat: COMPAT, t: Date.now(), dev: meta.deviceId, exams: exams };
+    return { v: VERSION, t: Date.now(), dev: meta.deviceId, exams: exams };
   }
 
   function histKey(h) {
@@ -101,7 +96,7 @@
     if (!a) return b ? JSON.parse(JSON.stringify(b)) : null;
     if (!b) return JSON.parse(JSON.stringify(a));
     var newer = (bt || 0) > (at || 0) ? b : a, older = newer === a ? b : a;
-    var out = { answers: {}, submitted: {}, flags: {}, wrongIds: {}, clearedIds: {}, answerRevisions: {}, legacyIsolated: {} };
+    var out = { answers: {}, submitted: {}, flags: {}, wrongIds: {}, clearedIds: {} };
     Object.keys(older.answers || {}).forEach(function (k) { out.answers[k] = older.answers[k]; });
     Object.keys(newer.answers || {}).forEach(function (k) { out.answers[k] = newer.answers[k]; });
     ["submitted", "flags"].forEach(function (f) {
@@ -141,15 +136,11 @@
       if (nWrong || oWrong) out.wrongIds[id] = true;
     });
 
-    Object.assign(out.answerRevisions, isObj(older.answerRevisions) ? older.answerRevisions : {}, isObj(newer.answerRevisions) ? newer.answerRevisions : {});
-    Object.assign(out.legacyIsolated, isObj(older.legacyIsolated) ? older.legacyIsolated : {}, isObj(newer.legacyIsolated) ? newer.legacyIsolated : {});
     Object.keys(cleared).forEach(function (id) {
       delete out.answers[id];
       delete out.submitted[id];
       delete out.flags[id];
       delete out.wrongIds[id];
-      delete out.answerRevisions[id];
-      delete out.legacyIsolated[id];
       out.clearedIds[id] = true;
     });
     return out;
@@ -162,7 +153,7 @@
   }
 
   function mergeSnapshots(local, remote) {
-    var out = { v: VERSION, schema: SCHEMA, compat: COMPAT, t: Date.now(), dev: local && local.dev, exams: {} };
+    var out = { v: VERSION, t: Date.now(), dev: local && local.dev, exams: {} };
     var le = (local && local.exams) || {}, re = (remote && remote.exams) || {};
     Object.keys(Object.assign({}, le, re)).forEach(function (id) {
       var a = le[id] || {}, b = re[id] || {};
@@ -268,36 +259,10 @@
   }
   function validate(s) {
     if (!isObj(s) || !isObj(s.exams)) throw new Error("进度数据无效");
-    if (s.schema != null && s.schema !== SCHEMA) throw new Error("进度快照不兼容");
-    if (s.compat != null && Number(s.compat) > COMPAT) throw new Error("进度快照版本过新，无法覆盖导入");
     return s;
   }
-  function gradingDecision(storedRevision, currentRevision) {
-    if (!storedRevision || !currentRevision) return { grade: true, reason: "unversioned" };
-    if (storedRevision !== currentRevision) return { grade: false, reason: "revision-differs" };
-    return { grade: true, reason: "same-revision" };
-  }
-  function isolateRecord(bag, id, reason) {
-    if (!bag.legacyIsolated || typeof bag.legacyIsolated !== "object") bag.legacyIsolated = {};
-    if (!bag.legacyIsolated[id]) {
-      bag.legacyIsolated[id] = {
-        reason: reason || "unmapped",
-        answers: bag.answers ? bag.answers[id] : undefined,
-        submitted: !!(bag.submitted && bag.submitted[id]),
-        wrong: !!(bag.wrongIds && bag.wrongIds[id]),
-        flag: !!(bag.flags && bag.flags[id]),
-        answerRevision: bag.answerRevisions ? (bag.answerRevisions[id] || null) : null,
-      };
-    }
-    if (bag.answers) delete bag.answers[id];
-    if (bag.submitted) delete bag.submitted[id];
-    if (bag.wrongIds) delete bag.wrongIds[id];
-    if (bag.flags) delete bag.flags[id];
-    return bag.legacyIsolated[id];
-  }
 
-  return { VERSION: VERSION, SCHEMA: SCHEMA, COMPAT: COMPAT, META_KEY: META_KEY, snapshot: snapshot, mergeSnapshots: mergeSnapshots, mergePractice: mergePractice,
-    gradingDecision: gradingDecision, isolateRecord: isolateRecord,
+  return { VERSION: VERSION, META_KEY: META_KEY, snapshot: snapshot, mergeSnapshots: mergeSnapshots, mergePractice: mergePractice,
     mergeHist: mergeHist, sameData: sameData, apply: apply, noteWrite: noteWrite, clearAll: clearAll, replaceAll: replaceAll, readMeta: readMeta,
-    writeMeta: writeMeta, encode: encode, decode: decode, validate: validate, keys: { P: P, L: L, H: H } };
+    writeMeta: writeMeta, encode: encode, decode: decode, keys: { P: P, L: L, H: H } };
 });

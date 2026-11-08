@@ -64,31 +64,4 @@ var applied = JSON.parse(ls.getItem("itcert_practice_v1_ai103"));
 assert.deepStrictEqual(applied.answers.q1, ["A"]);
 assert.strictEqual(applied.wrongIds.junk, undefined);
 
-var stamped = PC.snapshot(ls, ["ai103"]);
-assert.strictEqual(stamped.schema, "itcert-progress");
-assert.strictEqual(stamped.compat, 2);
-assert.strictEqual(PC.gradingDecision("rev-a", "rev-b").grade, false);
-assert.strictEqual(PC.gradingDecision("", "rev-b").grade, true);
-var bag = { answers: { q1: ["Z"] }, submitted: { q1: true }, flags: { q1: true }, wrongIds: { q1: true }, answerRevisions: { q1: "old" }, legacyIsolated: {} };
-PC.isolateRecord(bag, "q1", "option-shape-unmapped");
-assert.strictEqual(bag.wrongIds.q1, undefined);
-assert.strictEqual(bag.legacyIsolated.q1.wrong, true);
-assert.strictEqual(bag.legacyIsolated.q1.answers[0], "Z");
-var withRev = {
-  v: 1,
-  schema: "itcert-progress",
-  compat: 2,
-  exams: { ai103: { p: { answers: { q1: ["A"] }, submitted: { q1: true }, flags: {}, wrongIds: {}, clearedIds: {}, answerRevisions: { q1: "rev-1" }, legacyIsolated: { q9: { reason: "kept" } } }, pt: 1, last: null, lt: 0, hist: [] } },
-};
-var ls2 = mem();
-ls2.setItem("itcert_practice_v1_dop-c02", JSON.stringify({ wrongIds: { keepme: true } }));
-PC.replaceAll(ls2, withRev);
-var round = JSON.parse(ls2.getItem("itcert_practice_v1_ai103"));
-assert.strictEqual(round.answerRevisions.q1, "rev-1");
-assert.strictEqual(round.legacyIsolated.q9.reason, "kept");
-assert.strictEqual(ls2.getItem("itcert_practice_v1_dop-c02"), null);
-assert.throws(function () { PC.validate({ schema: "other", exams: {} }); }, /不兼容/);
-assert.throws(function () { PC.validate({ compat: 9, exams: {} }); }, /过新/);
-PC.validate({ exams: {} });
-
 console.log("progress-core tests ok");
