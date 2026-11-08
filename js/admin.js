@@ -346,7 +346,7 @@
     };
   }
 
-  var bankState = { service: false, code: "", activeVersionId: null, selected: "", versions: [], candidates: [], sourceRepo: "", ingestEndpoint: "" };
+  var bankState = { service: false, code: "", activeVersionId: null, selected: "", versions: [], candidates: [], sourceRepo: "" };
 
   function bankButtons(on) {
     ["btn-bank-collect", "btn-bank-all", "btn-bank-publish", "btn-bank-rollback"].forEach(function (id) {
@@ -364,17 +364,15 @@
     } catch (e) { return "未知"; }
   }
   async function ingestApi(action, payload) {
-    var client = window.ITCERTAdminIngest;
-    if (!client) throw new Error("采集客户端未加载");
     var body = Object.assign({ action: action }, payload || {});
-    var got = await client.postIngest({
-      endpoints: client.endpointOrder(DIRECT, BASE),
-      remembered: bankState.ingestEndpoint || "",
-      body: body,
-      request: function (base) { return http("POST", "/functions/v1/itc-ingest", body, token, base); },
-    });
-    bankState.ingestEndpoint = got.endpoint;
-    return got.data;
+    try {
+      return await http("POST", "/functions/v1/itc-ingest", body, token, BASE);
+    } catch (e) {
+      if (DIRECT && DIRECT !== BASE && (e.status === 404 || /not allowed|upstream/i.test(e.message))) {
+        return await http("POST", "/functions/v1/itc-ingest", body, token, DIRECT);
+      }
+      throw e;
+    }
   }
   function selectedVersion() {
     return (bankState.versions || []).filter(function (v) { return v.id === bankState.selected; })[0] || null;
@@ -430,26 +428,15 @@
   }
   async function openBanks() {
     bankButtons(false);
-    var client = window.ITCERTAdminIngest;
     try {
-      var data = await ingestApi("registry", {});
-      if (!client || !client.isRegistryReady(data)) {
-        bankState.service = false;
-        bankButtons(false);
-        $("bank-service").textContent = "采集端点有响应，但不是已部署的题库采集服务。采集、发布和回滚都不可用。";
-        throw new Error($("bank-service").textContent);
-      }
+      await ingestApi("registry", {});
       bankState.service = true;
-      $("bank-service").textContent = client.registryText(data, bankState.ingestEndpoint, BASE);
+      $("bank-service").textContent = "采集服务可连接。按名称在允许的公开组织里查找并核验清单。没有自动排程。找不到来源不会编造题目，也不会改学员权限或当前生效版本。";
       refreshBankActions();
     } catch (e) {
       bankState.service = false;
       bankButtons(false);
-      if ($("bank-service").textContent.indexOf("不是已部署") < 0) {
-        $("bank-service").textContent = (e.status === 404 || /not allowed/i.test(e.message || ""))
-          ? "题库采集服务未从当前入口连上（HTTP " + (e.status || 404) + "）。采集、发布和回滚都不可用。"
-          : (e.message || "采集服务不可用");
-      }
+      $("bank-service").textContent = e.status === 404 ? "题库采集服务尚未部署，采集、发布和回滚都不可用。" : (e.message || "采集服务不可用");
       throw e;
     }
   }
@@ -480,8 +467,9 @@
     var data = await ingestApi("resolve", { code: code });
     bankState.code = data.code || "";
     var lines = ["规范代码：" + (data.code || "无法识别") + "。这只是查找结果，不会开通学员权限，也不会切换已有生效版本。", data.message || ""];
-    if (window.ITCERTAdminIngest) lines = lines.concat(window.ITCERTAdminIngest.webLines(data));
-    if (data.web && data.web.enabled === false && $("bank-service")) $("bank-service").textContent = data.web.message || "全网检索未启用。";
+    if (data.web) lines.push("全网检索：" + (data.web.message || data.web.status || ""));
+    if (data.web && data.web.quotaNote) lines.push(data.web.quotaNote);
+    if (data.web && data.web.rightsNote) lines.push(data.web.rightsNote);
     if (data.org && data.org.label) lines.push(data.org.label + "：" + (data.org.message || ""));
     (data.candidates || []).forEach(function (c) {
       if (c.origin === "web-search" || c.extraction === "pending-adapter") {
