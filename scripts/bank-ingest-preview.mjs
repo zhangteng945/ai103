@@ -5,7 +5,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { REGISTRY, normalizeQuizplayBundle } from "../supabase/functions/_shared/bank-version-core.mjs";
+import { normalizeQuizplayBundle } from "../supabase/functions/_shared/bank-version-core.mjs";
 
 const dir = path.resolve(process.argv[2] || "js/fixtures/az305-sample");
 const manifest = JSON.parse(fs.readFileSync(path.join(dir, "quiz.json"), "utf8"));
@@ -19,7 +19,18 @@ for (const rel of manifest.questions || []) {
   }
   if (files[rel].image) media[files[rel].image] = fs.readFileSync(path.join(dir, files[rel].image));
 }
-const source = REGISTRY.banks[0].sources[0];
+const source = {
+  id: "fixture",
+  repo: "quizplay-io/quiz-player-quizzes-az-305-question-set-1",
+  license: null,
+  aiGenerated: false,
+  official: false,
+  fullCorpus: false,
+  accuracyCertified: false,
+  advertisedCount: null,
+  note: "本地夹具，不是线上题库。",
+  bankCode: "az-305",
+};
 const snap = normalizeQuizplayBundle({
   source: source,
   bankCode: "az-305",

@@ -6,13 +6,17 @@ import {
   COLLECT_LIMITS,
   assertAdmin,
   casDecision,
+  candidateToSource,
   collectQuizplaySource,
   confirmPhrase,
   diffQuestions,
+  discoverExamSources,
   formatShanghai,
+  normalizeExamCode,
   previewCandidate,
-  resolveBankQuery,
   REGISTRY,
+  selectDiscoveryCandidate,
+  SITE_EXAM_CODES,
 } from "../_shared/bank-version-core.mjs";
 
 const cors = {
@@ -104,11 +108,18 @@ async function collectOne(
   admin: any,
   code: string,
   actor: string,
+  sourceRepo?: string,
 ) {
-  const resolved = resolveBankQuery(code);
-  if (!resolved.ok || !resolved.bank) return { ok: false, code, error: resolved.message || "未配置" };
-  const bank = resolved.bank;
-  const source = bank.sources[0];
+  const found = await discoverExamSources(code, { resolveHost, fetchImpl: fetch, limits: COLLECT_LIMITS });
+  if (!found.ok) {
+    return { ok: false, collected: false, discovered: true, code: found.code || normalizeExamCode(code), status: found.status, error: found.message, candidates: found.candidates || [] };
+  }
+  const chosen = selectDiscoveryCandidate(found, sourceRepo);
+  if (!chosen) {
+    return { ok: false, collected: false, discovered: true, code: found.code, status: "needs-review", error: found.message, candidates: found.candidates || [] };
+  }
+  const source = candidateToSource(chosen);
+  const bank = { code: found.code, title: chosen.title || found.code };
   const jobId = "job-" + crypto.randomUUID();
   const now = new Date().toISOString();
   await admin.from("bank_catalog").upsert({ code: bank.code, title: bank.title }, { onConflict: "code" });
@@ -251,69 +262,53 @@ Deno.serve(async (req: Request) => {
   if (action === "registry") {
     return json({
       ok: true,
-      banks: REGISTRY.banks.map((bank) => ({
-        code: bank.code,
-        title: bank.title,
-        aliases: bank.aliases,
-        sources: bank.sources.map((s) => ({
-          id: s.id,
-          repo: s.repo,
-          license: s.license,
-          aiGenerated: s.aiGenerated,
-          official: false,
-          fullCorpus: false,
-          accuracyCertified: false,
-          advertisedCount: s.advertisedCount,
-          note: s.note,
-          lastInspectedCommit: s.lastInspectedCommit,
-          lastInspectedAt: s.lastInspectedAt,
-          lastInspectedAtZh: formatShanghai(s.lastInspectedAt),
-        })),
-      })),
+      family: "quizplay-io",
+      siteExamCodes: SITE_EXAM_CODES,
+      discovery: "按题库代码在允许的公开组织中查找并核验清单，不是固定的一门考试，也不是任意网址。",
       refused: REGISTRY.refused.map((item) => ({ repo: item.repo, license: item.license, reason: item.reason })),
       scheduling: "disabled",
+      grantsAccess: false,
     });
   }
 
   if (action === "resolve") {
-    const resolved = resolveBankQuery(String(body.code || body.name || ""));
-    if (!resolved.ok || !resolved.bank) return json({ ok: true, configured: false, refused: !!resolved.refused, message: resolved.message, license: resolved.license || null });
-    const resolvedBank = resolved.bank;
+    const found = await discoverExamSources(String(body.code || body.name || ""), { resolveHost, fetchImpl: fetch, limits: COLLECT_LIMITS });
     return json({
       ok: true,
-      configured: true,
-      bank: {
-        code: resolvedBank.code,
-        title: resolvedBank.title,
-        sources: resolvedBank.sources.map((s: { id: string; repo: string; license: string; aiGenerated: boolean; advertisedCount: number; note: string; lastInspectedAt?: string }) => ({
-          id: s.id,
-          repo: s.repo,
-          license: s.license,
-          aiGenerated: true,
-          official: false,
-          fullCorpus: false,
-          advertisedCount: s.advertisedCount,
-          note: s.note,
-          lastInspectedAtZh: formatShanghai(s.lastInspectedAt),
-        })),
-      },
+      configured: found.configured === true,
+      discovered: true,
+      collected: false,
+      refused: !!found.refused,
+      status: found.status,
+      code: found.code,
+      message: found.message,
+      truncated: !!found.truncated,
+      license: found.license || null,
+      candidates: (found.candidates || []).map((c: any) => Object.assign({}, c, {
+        sourceUpdatedAtZh: formatShanghai(c.sourceUpdatedAt),
+        collected: false,
+      })),
     });
   }
 
   if (action === "list" || action === "preview" || action === "publish" || action === "rollback" || action === "collect") {
     if (action === "collect" && body.all === true) {
       const results = [];
-      for (const bank of REGISTRY.banks) {
-        results.push(await collectOne(admin, bank.code, actor));
+      for (const examCode of SITE_EXAM_CODES) {
+        try {
+          results.push(await collectOne(admin, examCode, actor));
+        } catch (e) {
+          results.push({ ok: false, collected: false, code: examCode, error: e instanceof Error ? e.message : "检查失败" });
+        }
       }
-      return json({ ok: true, results });
+      return json({ ok: true, results, published: false });
     }
-    const resolved = resolveBankQuery(String(body.code || ""));
-    if (!resolved.ok || !resolved.bank) return err(resolved.message || "未配置", 404);
-    const code = resolved.bank.code;
+    const code = normalizeExamCode(String(body.code || ""));
+    if (!code) return err("无法把该名称规范成题库代码", 404);
     if (action === "collect") {
-      const result = await collectOne(admin, code, actor);
-      return json(result, result.ok ? 200 : (result.status || 422));
+      const result = await collectOne(admin, code, actor, body.sourceRepo ? String(body.sourceRepo) : undefined);
+      const httpStatus = result.ok ? 200 : (result.status === "needs-review" ? 409 : (typeof result.status === "number" ? result.status : 422));
+      return json(result, httpStatus);
     }
     if (action === "list") {
       const { data: cat } = await admin.from("bank_catalog").select("code,title,active_version_id,lock_job_id,lock_until").eq("code", code).maybeSingle();

@@ -125,13 +125,16 @@
         <p class="muted small">采集只生成候选版本。发布和回滚都要输入确认短语，并且一次只切换该题库的生效版本。不会改学员进度、权限或账号。</p>
         <p id="bank-service" class="muted small">正在检查采集服务…</p>
         <form id="bank-resolve-form" class="admin-form">
-          <label>题库代码或名称
-            <input type="text" id="bank-code" value="AZ-305" autocomplete="off" />
+          <label>题库代码或名称（如 AZ305、AI-103、DOP-C02）
+            <input type="text" id="bank-code" value="AZ305" autocomplete="off" />
+          </label>
+          <label>发现的题集（多个时必须选择一个，不会合并）
+            <select id="bank-source-repo"><option value="">尚未发现</option></select>
           </label>
           <div class="ops">
             <button type="submit" class="btn btn-sm" id="btn-bank-resolve">解析来源</button>
             <button type="button" class="btn btn-sm" id="btn-bank-collect" disabled>采集候选版本</button>
-            <button type="button" class="btn btn-sm" id="btn-bank-all" disabled>检查全部已配置题库</button>
+            <button type="button" class="btn btn-sm" id="btn-bank-all" disabled>检查站点题库（各自成功或失败）</button>
           </div>
         </form>
         <div id="bank-source" class="muted small bank-note"></div>

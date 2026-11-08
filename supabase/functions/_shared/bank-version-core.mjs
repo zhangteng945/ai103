@@ -93,34 +93,16 @@ export const COLLECT_LIMITS = Object.freeze({
 
 export const USER_AGENT = "itcert-bank-ingest/0.1 (admin collector)";
 
-const AZ305_NOTE = "公开仓库 quizplay-io/quiz-player-quizzes-az-305-question-set-1：按题 JSON，README 写明 36 道 AI 生成练习题。不是 Microsoft 官方题库，不是完整题库，也不是最新考试题库。许可 AGPL-3.0。答案未经本站核验。";
+export const SOURCE_FAMILY = Object.freeze({
+  org: "quizplay-io",
+  listingPath: "/orgs/quizplay-io/repos",
+  listingQuery: "per_page=100&type=public",
+});
+
+/** Site exams to check in a batch. Discovery may still return not-found. */
+export const SITE_EXAM_CODES = Object.freeze(["ai-103", "dop-c02", "dp-700", "dp-420", "az-305"]);
 
 export const REGISTRY = Object.freeze({
-  banks: [
-    {
-      code: "az-305",
-      title: "AZ-305",
-      aliases: ["az-305", "az305", "azure-solutions-architect-expert", "designing-microsoft-azure-infrastructure-solutions"],
-      sources: [
-        {
-          id: "quizplay-az305-set1",
-          adapter: "quizplay-question-set",
-          repo: "quizplay-io/quiz-player-quizzes-az-305-question-set-1",
-          gitRef: "main",
-          license: "AGPL-3.0",
-          aiGenerated: true,
-          official: false,
-          fullCorpus: false,
-          accuracyCertified: false,
-          advertisedCount: 36,
-          manifestPath: "quiz.json",
-          note: AZ305_NOTE,
-          lastInspectedCommit: "a6c1b666c430bb47a45ae322e8ebe8fba6e3008a",
-          lastInspectedAt: "2026-03-11T15:36:13Z",
-        },
-      ],
-    },
-  ],
   refused: [
     {
       aliases: ["azurecertprep", "azurecertprep-github-io", "azurecertprep.github.io"],
@@ -131,28 +113,69 @@ export const REGISTRY = Object.freeze({
   ],
 });
 
+export function normalizeExamCode(input) {
+  const compact = String(input || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (!compact) return null;
+  const lettered = /^([a-z]{2,4})([a-z])(\d{2})$/.exec(compact);
+  if (lettered) return lettered[1] + "-" + lettered[2] + lettered[3];
+  const digits = /^([a-z]{2,4})(\d{2,4})$/.exec(compact);
+  if (digits) return digits[1] + "-" + digits[2];
+  return null;
+}
+
 export function canonBankCode(input) {
-  return String(input || "").trim().toLowerCase().replace(/[\s_]+/g, "-").replace(/[^a-z0-9.-]/g, "");
+  return normalizeExamCode(input) || "";
+}
+
+export function matchRefused(input) {
+  const compact = String(input || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  const dashed = String(input || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+  for (const item of REGISTRY.refused) {
+    if (item.aliases.indexOf(compact) >= 0 || item.aliases.indexOf(dashed) >= 0) return item;
+  }
+  return null;
 }
 
 export function resolveBankQuery(input) {
-  const key = canonBankCode(input);
-  if (!key) return { ok: false, configured: false, message: "请输入题库代码或名称。" };
-  for (const item of REGISTRY.refused) {
-    if (item.aliases.indexOf(key) >= 0) {
-      return { ok: false, configured: false, refused: true, license: item.license, repo: item.repo, message: item.reason };
-    }
+  const refused = matchRefused(input);
+  if (refused) {
+    return { ok: false, configured: false, refused: true, status: "unsupported", license: refused.license, repo: refused.repo, message: refused.reason };
   }
-  for (const bank of REGISTRY.banks) {
-    if (bank.code === key || bank.aliases.indexOf(key) >= 0) {
-      return { ok: true, configured: true, bank: bank };
-    }
+  const code = normalizeExamCode(input);
+  if (!code) {
+    return { ok: false, configured: false, status: "not-found", message: "无法把该名称规范成题库代码。任意名称不会生成题库，PDF 导入也尚未提供。" };
   }
-  return {
-    ok: false,
-    configured: false,
-    message: "未配置该名称的公开来源。任意题库名称不会生成完整或最新题库。PDF 导入尚未提供。",
-  };
+  return { ok: true, configured: false, status: "needs-discovery", code: code };
+}
+
+export function parseQuizplayRepoName(name) {
+  const m = /^quiz-player-quizzes-([a-z0-9]+(?:-[a-z0-9]+)*)-question-set-(\d+)$/.exec(String(name || ""));
+  if (!m) return null;
+  const code = m[1];
+  if (!/^[a-z]{2,4}-\d{2,4}$/.test(code) && !/^[a-z]{2,4}-[a-z]\d{2}$/.test(code)) return null;
+  const set = Number(m[2]);
+  if (!Number.isInteger(set) || set < 1 || set > 20) return null;
+  return { code: code, set: set, name: String(name), repo: "quizplay-io/" + name };
+}
+
+export function verifyQuizManifest(manifest) {
+  if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) return { ok: false, reason: "清单不是对象" };
+  if (!Array.isArray(manifest.questions) || !manifest.questions.length) return { ok: false, reason: "清单没有题目" };
+  if (manifest.questions.length > COLLECT_LIMITS.maxQuestions) return { ok: false, reason: "超过单次采集上限" };
+  for (const rel of manifest.questions) {
+    if (typeof rel !== "string" || !/^questions\/[A-Za-z0-9._-]+\.json$/.test(rel)) return { ok: false, reason: "题目路径不符合约定" };
+  }
+  return { ok: true, questionCount: manifest.questions.length, title: typeof manifest.title === "string" ? manifest.title : null };
+}
+
+export function questionShapeOk(raw) {
+  if (!raw || typeof raw !== "object" || raw.id == null || raw.id === "") return false;
+  const type = raw.type || "single";
+  if (type === "single" || type === "multi") return Array.isArray(raw.options) && raw.options.length > 0;
+  if (type === "ordering") return Array.isArray(raw.items) && Array.isArray(raw.correctOrder);
+  if (type === "matching") return Array.isArray(raw.sourceItems) && Array.isArray(raw.correctMapping);
+  if (type === "hotspot-dropdown" || type === "hotspot") return Array.isArray(raw.dropdowns) || Array.isArray(raw.zones);
+  return false;
 }
 
 export function policyForSource(source) {
@@ -161,6 +184,16 @@ export function policyForSource(source) {
     rules: [
       { host: "raw.githubusercontent.com", pathPrefix: "/" + repo + "/" },
       { host: "api.github.com", pathPrefix: "/repos/" + repo + "/commits/" },
+    ],
+  };
+}
+
+export function discoveryPolicy() {
+  return {
+    rules: [
+      { host: "api.github.com", path: SOURCE_FAMILY.listingPath, query: SOURCE_FAMILY.listingQuery },
+      { host: "api.github.com", pathPrefix: "/repos/quizplay-io/quiz-player-quizzes-" },
+      { host: "raw.githubusercontent.com", pathPrefix: "/quizplay-io/quiz-player-quizzes-" },
     ],
   };
 }
@@ -211,14 +244,22 @@ export function assertPublicUrl(raw, policy) {
   if (u.protocol !== "https:") throw new Error("仅允许 https 来源");
   if (u.username || u.password) throw new Error("来源 URL 不得携带凭据");
   if (u.port && u.port !== "443") throw new Error("来源端口不被允许");
-  if (u.search) throw new Error("来源 URL 不得携带查询参数");
   const host = u.hostname.toLowerCase();
   if (blockedHost(host)) throw new Error("已拒绝私网或非公开主机");
   let path;
   try { path = decodeURIComponent(u.pathname); } catch (e) { throw new Error("来源路径无效"); }
   if (path.indexOf("..") >= 0 || path.indexOf("\\") >= 0 || path.indexOf("\0") >= 0) throw new Error("来源路径无效");
   const rules = (policy && policy.rules) || [];
-  const ok = rules.some((r) => host === r.host && path.indexOf(r.pathPrefix) === 0);
+  const query = u.search ? u.search.slice(1) : "";
+  if (query) {
+    const queryOk = rules.some((r) => r.query && host === r.host && path === r.path && query === r.query);
+    if (!queryOk) throw new Error("来源 URL 不得携带查询参数");
+  }
+  const ok = rules.some((r) => {
+    if (host !== r.host) return false;
+    if (r.path) return path === r.path && (r.query ? query === r.query : !query);
+    return !!r.pathPrefix && path.indexOf(r.pathPrefix) === 0 && !query;
+  });
   if (!ok) throw new Error("来源不在允许名单");
   return u;
 }
@@ -374,7 +415,7 @@ export async function collectQuizplaySource(source, deps) {
   }
   return normalizeQuizplayBundle({
     source: source,
-    bankCode: deps.bankCode || "az-305",
+    bankCode: deps.bankCode || source.bankCode,
     manifest: manifest,
     files: files,
     scenarios: scenarios,
@@ -455,7 +496,9 @@ function answerFingerprint(q) {
 }
 
 export function normalizeQuizplayBundle(input) {
-  const source = Object.assign({ bankCode: input.bankCode || "az-305" }, input.source || {});
+  const bankCode = input.bankCode || (input.source && input.source.bankCode);
+  if (!bankCode) throw new Error("缺少题库代码");
+  const source = Object.assign({ bankCode: bankCode }, input.source || {});
   const files = input.files || {};
   const order = (input.manifest && input.manifest.questions) || Object.keys(files);
   const warnings = (input.extraWarnings || []).slice();
@@ -871,6 +914,181 @@ export function slicePinned(questions, params) {
   return { version: version, mode: params.q ? "search" : "page", offset: offset, limit: limit, total: list.length, questions: list.slice(offset, offset + limit) };
 }
 
+function publicCandidate(row) {
+  return {
+    status: row.status,
+    code: row.code,
+    repo: row.repo,
+    name: row.name,
+    set: row.set,
+    license: row.license,
+    questionCount: row.questionCount,
+    title: row.title,
+    sourceUpdatedAt: row.sourceUpdatedAt,
+    commitSha: row.commitSha,
+    aiGenerated: row.aiGenerated,
+    aiWarning: row.aiWarning,
+    official: false,
+    fullCorpus: false,
+    accuracyCertified: false,
+    retirementNote: row.retirementNote,
+    collected: false,
+  };
+}
+
+export function candidateToSource(row) {
+  const warning = row.aiGenerated === true
+    ? "README 写明题目为 AI 生成，不是官方题库，答案未经本站核验。"
+    : "README 未核到 AI 生成声明。不把缺少声明当成已授权或已核验。";
+  return {
+    id: "quizplay-" + row.code + "-set" + row.set,
+    adapter: "quizplay-question-set",
+    repo: row.repo,
+    gitRef: "main",
+    license: row.license || null,
+    aiGenerated: row.aiGenerated === true,
+    official: false,
+    fullCorpus: false,
+    accuracyCertified: false,
+    advertisedCount: row.questionCount,
+    manifestPath: "quiz.json",
+    bankCode: row.code,
+    note: warning + (row.retirementNote ? " 退役说明：" + row.retirementNote : "") + " 只采集这一个题集，不与其他题集合并。",
+  };
+}
+
+export function selectDiscoveryCandidate(found, sourceRepo) {
+  const usable = ((found && found.candidates) || []).filter((c) => c && (c.status === "ready" || c.status === "needs-review") && c.repo);
+  if (sourceRepo) {
+    const want = String(sourceRepo);
+    return usable.find((c) => c.repo === want || c.name === want) || null;
+  }
+  if (usable.length === 1 && usable[0].status === "ready") return usable[0];
+  return null;
+}
+
+function discoveryMessage(code, status, candidates) {
+  if (status === "not-found") {
+    return "未在允许的公开组织 quizplay-io 中核到与 " + code + " 兼容的题集。这不表示世界上没有该考试的题目，当前来源里没有。不会编造题目。";
+  }
+  if (status === "needs-review") {
+    return "已发现 " + candidates.length + " 个题集，尚未采集。有多个题集或含退役说明时需要明确选择一个仓库，不会自动合并，也不会把退役代码换成另一门考试。";
+  }
+  if (status === "unsupported") return "仓库名称相近，但清单或题目结构未通过校验，不能采集。";
+  if (status === "unavailable") return "公开来源目录不可用，没有采集。";
+  if (status === "ready") return "已核到 1 个可采集题集。发现不等于已采集，也不会发布或开通学员权限。";
+  return "没有可采集的来源。";
+}
+
+export async function discoverExamSources(input, deps) {
+  const refused = matchRefused(input);
+  if (refused) {
+    return { ok: false, configured: false, refused: true, status: "unsupported", code: null, message: refused.reason, license: refused.license, repo: refused.repo, candidates: [], collected: false };
+  }
+  const code = normalizeExamCode(input);
+  if (!code) {
+    return { ok: false, configured: false, status: "not-found", code: null, message: "无法把该名称规范成题库代码。任意名称不会生成题库。", candidates: [], collected: false };
+  }
+  const fetchDeps = Object.assign({}, deps, { policy: discoveryPolicy(), limits: Object.assign({}, COLLECT_LIMITS, deps.limits || {}) });
+  const listingUrl = "https://api.github.com" + SOURCE_FAMILY.listingPath + "?" + SOURCE_FAMILY.listingQuery;
+  let repos;
+  try {
+    const buf = await fetchAllowlisted(listingUrl, fetchDeps);
+    repos = JSON.parse(new TextDecoder().decode(buf));
+  } catch (e) {
+    return { ok: false, configured: false, status: "unavailable", code: code, message: discoveryMessage(code, "unavailable", []), candidates: [], collected: false };
+  }
+  if (!Array.isArray(repos)) {
+    return { ok: false, configured: false, status: "unavailable", code: code, message: discoveryMessage(code, "unavailable", []), candidates: [], collected: false };
+  }
+  const truncated = repos.length >= 100;
+  const matches = [];
+  for (const repo of repos) {
+    const parsed = parseQuizplayRepoName(repo && repo.name);
+    if (parsed && parsed.code === code) matches.push({ parsed: parsed, repo: repo });
+  }
+  matches.sort((a, b) => a.parsed.set - b.parsed.set);
+  const candidates = [];
+  for (const item of matches) {
+    const name = item.parsed.name;
+    const meta = item.repo || {};
+    const license = meta.license && meta.license.spdx_id ? meta.license.spdx_id : null;
+    const description = typeof meta.description === "string" ? meta.description : "";
+    const rawBase = "https://raw.githubusercontent.com/quizplay-io/" + name + "/main/";
+    let manifest;
+    try {
+      manifest = JSON.parse(new TextDecoder().decode(await fetchAllowlisted(rawBase + "quiz.json", fetchDeps)));
+    } catch (e) {
+      candidates.push({ status: "unsupported", code: code, repo: item.parsed.repo, name: name, set: item.parsed.set, license: license, reason: "清单无法读取", collected: false });
+      continue;
+    }
+    const verified = verifyQuizManifest(manifest);
+    if (!verified.ok) {
+      candidates.push({ status: "unsupported", code: code, repo: item.parsed.repo, name: name, set: item.parsed.set, license: license, reason: verified.reason, collected: false });
+      continue;
+    }
+    let sampleOk = false;
+    try {
+      const sample = JSON.parse(new TextDecoder().decode(await fetchAllowlisted(rawBase + manifest.questions[0], fetchDeps)));
+      sampleOk = questionShapeOk(sample);
+    } catch (e) { sampleOk = false; }
+    if (!sampleOk) {
+      candidates.push({ status: "unsupported", code: code, repo: item.parsed.repo, name: name, set: item.parsed.set, license: license, reason: "题目结构不兼容", collected: false });
+      continue;
+    }
+    let aiGenerated = null;
+    try {
+      const readme = new TextDecoder().decode(await fetchAllowlisted(rawBase + "README.md", fetchDeps));
+      aiGenerated = /AI-generated|AI generated|人工智能生成/i.test(readme) ? true : null;
+    } catch (e) { aiGenerated = null; }
+    let sourceUpdatedAt = null;
+    let commitSha = null;
+    try {
+      const commit = JSON.parse(new TextDecoder().decode(await fetchAllowlisted("https://api.github.com/repos/quizplay-io/" + name + "/commits/main", fetchDeps)));
+      if (commit && /^[0-9a-f]{40}$/.test(commit.sha || "")) commitSha = commit.sha;
+      const date = commit && commit.commit && commit.commit.committer && commit.commit.committer.date;
+      if (date && !Number.isNaN(Date.parse(date))) sourceUpdatedAt = new Date(date).toISOString();
+    } catch (e) { /* date stays unknown */ }
+    const retired = /retir|successor|consolidated into/i.test(description);
+    candidates.push({
+      status: retired ? "needs-review" : "ready",
+      code: code,
+      repo: item.parsed.repo,
+      name: name,
+      set: item.parsed.set,
+      license: license,
+      questionCount: verified.questionCount,
+      title: verified.title,
+      sourceUpdatedAt: sourceUpdatedAt,
+      commitSha: commitSha,
+      aiGenerated: aiGenerated,
+      aiWarning: aiGenerated === true ? "README 写明题目为 AI 生成，不是官方题库，答案未经本站核验。" : "README 未核到 AI 生成声明。",
+      official: false,
+      fullCorpus: false,
+      accuracyCertified: false,
+      retirementNote: retired ? description.slice(0, 240) : null,
+      collected: false,
+    });
+  }
+  const ready = candidates.filter((c) => c.status === "ready");
+  const review = candidates.filter((c) => c.status === "needs-review");
+  let status = "not-found";
+  if (!candidates.length) status = "not-found";
+  else if (!ready.length && !review.length) status = "unsupported";
+  else if (ready.length === 1 && !review.length) status = "ready";
+  else status = "needs-review";
+  return {
+    ok: status === "ready" || status === "needs-review",
+    configured: status === "ready",
+    status: status,
+    code: code,
+    truncated: truncated,
+    collected: false,
+    message: discoveryMessage(code, status, candidates),
+    candidates: candidates.map(publicCandidate),
+  };
+}
+
 export function createBankStore() {
   return {
     catalog: {},
@@ -899,9 +1117,10 @@ function abandonStale(store, code, nowMs) {
 }
 
 export function beginCollect(store, opts) {
-  const resolved = resolveBankQuery(opts.bankCode || opts.code);
-  if (!resolved.ok) return { ok: false, status: 404, error: resolved.message, refused: !!resolved.refused };
-  const code = resolved.bank.code;
+  const refused = matchRefused(opts.bankCode || opts.code);
+  if (refused) return { ok: false, status: 404, error: refused.reason, refused: true };
+  const code = normalizeExamCode(opts.bankCode || opts.code);
+  if (!code) return { ok: false, status: 404, error: "无法识别题库代码" };
   const nowMs = Date.parse(opts.now);
   const cat = ensureCatalog(store, code);
   abandonStale(store, code, nowMs);

@@ -9,6 +9,10 @@ import { fileURLToPath } from "node:url";
 import {
   sha256Text,
   resolveBankQuery,
+  normalizeExamCode,
+  discoverExamSources,
+  discoveryPolicy,
+  selectDiscoveryCandidate,
   assertPublicUrl,
   isPrivateAddress,
   fetchAllowlisted,
@@ -25,10 +29,23 @@ import {
   publishVersion,
   rollbackVersion,
   confirmPhrase,
-  REGISTRY,
   policyForSource,
 } from "../supabase/functions/_shared/bank-version-core.mjs";
 
+const azRepoSource = {
+  id: "quizplay-az305-set1",
+  repo: "quizplay-io/quiz-player-quizzes-az-305-question-set-1",
+  gitRef: "main",
+  license: "AGPL-3.0",
+  aiGenerated: true,
+  official: false,
+  fullCorpus: false,
+  accuracyCertified: false,
+  advertisedCount: 36,
+  manifestPath: "quiz.json",
+  note: "fixture",
+  bankCode: "az-305",
+};
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 assert.strictEqual(sha256Text("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
@@ -36,32 +53,36 @@ assert.strictEqual(formatShanghai("2026-03-11T15:36:13Z"), "2026-03-11 23:36:13"
 assert.strictEqual(formatShanghai(""), "未知");
 assert.strictEqual(formatShanghai(null), "未知");
 
-const az = resolveBankQuery(" AZ 305 ");
-assert.strictEqual(az.ok, true);
-assert.strictEqual(az.bank.code, "az-305");
-assert.strictEqual(az.bank.sources[0].license, "AGPL-3.0");
-assert.strictEqual(az.bank.sources[0].official, false);
-assert.strictEqual(az.bank.sources[0].fullCorpus, false);
+assert.strictEqual(normalizeExamCode(" AZ305 "), "az-305");
+assert.strictEqual(normalizeExamCode("AZ-305"), "az-305");
+assert.strictEqual(normalizeExamCode("DP700"), "dp-700");
+assert.strictEqual(normalizeExamCode("DP-700"), "dp-700");
+assert.strictEqual(normalizeExamCode("DOPC02"), "dop-c02");
+assert.strictEqual(normalizeExamCode("DOP-C02"), "dop-c02");
+assert.strictEqual(normalizeExamCode("AI103"), "ai-103");
+assert.strictEqual(normalizeExamCode("AI-103"), "ai-103");
+assert.notStrictEqual(normalizeExamCode("DP700"), "dp-900");
 const refused = resolveBankQuery("azurecertprep");
 assert.strictEqual(refused.configured, false);
 assert.strictEqual(refused.refused, true);
+assert.strictEqual(refused.status, "unsupported");
 assert.match(refused.message, /不会编造/);
-const unknown = resolveBankQuery("dp-900");
-assert.strictEqual(unknown.configured, false);
-assert.match(unknown.message, /不会生成完整或最新题库/);
+const unnamed = resolveBankQuery("not a bank name");
+assert.strictEqual(unnamed.status, "not-found");
+assert.match(unnamed.message, /不会生成题库/);
 
 assert.strictEqual(isPrivateAddress("127.0.0.1"), true);
 assert.strictEqual(isPrivateAddress("10.1.2.3"), true);
 assert.strictEqual(isPrivateAddress("169.254.169.254"), true);
 assert.strictEqual(isPrivateAddress("8.8.8.8"), false);
-assert.throws(() => assertPublicUrl("http://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", policyForSource(az.bank.sources[0])), /https/);
-assert.throws(() => assertPublicUrl("https://user:pw@raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", policyForSource(az.bank.sources[0])), /凭据/);
-assert.throws(() => assertPublicUrl("https://169.254.169.254/latest", policyForSource(az.bank.sources[0])), /私网|允许名单/);
-assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/other/repo/main/quiz.json", policyForSource(az.bank.sources[0])), /允许名单/);
-assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/../../other/secret", policyForSource(az.bank.sources[0])), /允许名单/);
-assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz%00.json", policyForSource(az.bank.sources[0])), /路径/);
+assert.throws(() => assertPublicUrl("http://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", policyForSource(azRepoSource)), /https/);
+assert.throws(() => assertPublicUrl("https://user:pw@raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz.json", policyForSource(azRepoSource)), /凭据/);
+assert.throws(() => assertPublicUrl("https://169.254.169.254/latest", policyForSource(azRepoSource)), /私网|允许名单/);
+assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/other/repo/main/quiz.json", policyForSource(azRepoSource)), /允许名单/);
+assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/../../other/secret", policyForSource(azRepoSource)), /允许名单/);
+assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/quizplay-io/quiz-player-quizzes-az-305-question-set-1/main/quiz%00.json", policyForSource(azRepoSource)), /路径/);
 
-const policy = policyForSource(az.bank.sources[0]);
+const policy = policyForSource(azRepoSource);
 let calls = 0;
 await assert.rejects(fetchAllowlisted("https://evil.example/quiz.json", {
   policy: policy,
@@ -113,7 +134,7 @@ function loadFixture() {
   return { manifest, files, scenarios, media };
 }
 const fixture = loadFixture();
-const source = Object.assign({}, REGISTRY.banks[0].sources[0], { advertisedCount: 4 });
+const source = Object.assign({}, azRepoSource, { advertisedCount: 4 });
 const snap = normalizeQuizplayBundle({
   source: source,
   bankCode: "az-305",
@@ -428,7 +449,7 @@ put("https://api.github.com/repos/quizplay-io/quiz-player-quizzes-az-305-questio
 put(repo + "quiz.json", JSON.stringify({ questions: ["questions/01-sample-single.json"] }));
 put(repo + "questions/01-sample-single.json", JSON.stringify(fixture.files["questions/01-sample-single.json"]));
 put(repo + "scenarios/case-sample.json", JSON.stringify(fixture.scenarios["scenarios/case-sample.json"]));
-const live = await collectQuizplaySource(REGISTRY.banks[0].sources[0], {
+const live = await collectQuizplaySource(azRepoSource, {
   bankCode: "az-305",
   now: "2026-11-08T00:00:00.000Z",
   resolveHost: async () => ["185.199.108.133"],
@@ -443,7 +464,7 @@ assert.strictEqual(live.questionCount, 1);
 assert.strictEqual(live.provenance.official, false);
 assert.strictEqual(live.provenance.countMatchesAdvertised, false);
 assert.ok(live.validation.warnings.indexOf("count_differs_from_advertised") >= 0);
-await assert.rejects(collectQuizplaySource(REGISTRY.banks[0].sources[0], {
+await assert.rejects(collectQuizplaySource(azRepoSource, {
   bankCode: "az-305",
   now: "2026-11-08T00:00:00.000Z",
   resolveHost: async () => ["185.199.108.133"],
@@ -466,6 +487,72 @@ assert.doesNotMatch(ingest, /user_progress/);
 const bankFn = fs.readFileSync(path.join(root, "supabase/functions/itc-bank/index.ts"), "utf8");
 assert.match(bankFn, /decideServeVersion/);
 assert.match(bankFn, /accountActive/);
+
+function textBuf(text) { return new TextEncoder().encode(text); }
+function jsonBuf(obj) { return textBuf(JSON.stringify(obj)); }
+const sampleQuestion = { id: "sample", question: "secret stem should not leak", options: [{ text: "Sample", correct: true }] };
+const offline = {};
+function addRepo(code, set, readme, description, license) {
+  const name = "quiz-player-quizzes-" + code + "-question-set-" + set;
+  const base = "https://raw.githubusercontent.com/quizplay-io/" + name + "/main/";
+  offline[base + "quiz.json"] = jsonBuf({ title: code + " fixture", questions: ["questions/01.json"] });
+  offline[base + "questions/01.json"] = jsonBuf(sampleQuestion);
+  offline[base + "README.md"] = textBuf(readme);
+  offline["https://api.github.com/repos/quizplay-io/" + name + "/commits/main"] = jsonBuf({ sha: "a".repeat(40), commit: { committer: { date: "2026-07-13T19:35:17Z" } } });
+  return { name: name, description: description, license: license ? { spdx_id: license } : null };
+}
+let listing = [
+  addRepo("az-305", 1, "These questions are AI-generated.", "AZ-305 set", "AGPL-3.0"),
+  addRepo("ai-103", 1, "These questions are AI-generated.", "AI-103 set", "AGPL-3.0"),
+  addRepo("dp-900", 1, "Practice questions.", "DP-900 set", "AGPL-3.0"),
+  addRepo("az-500", 1, "These questions are AI-generated.", "AZ-500 exam retires 2026-08-31; successor SC-500", "AGPL-3.0"),
+];
+const listingUrl = "https://api.github.com/orgs/quizplay-io/repos?per_page=100&type=public";
+offline[listingUrl] = jsonBuf(listing);
+async function offlineFetch(url) {
+  const hit = offline[url];
+  if (!hit) return { status: 404, headers: { get: () => "" }, arrayBuffer: async () => new Uint8Array() };
+  return { status: 200, headers: { get: () => "" }, arrayBuffer: async () => hit };
+}
+const discoverDeps = { resolveHost: async () => ["185.199.108.133"], fetchImpl: offlineFetch, sleep: async () => {} };
+const azFound = await discoverExamSources("AZ305", discoverDeps);
+assert.strictEqual(azFound.status, "ready");
+assert.strictEqual(azFound.code, "az-305");
+assert.strictEqual(azFound.collected, false);
+assert.strictEqual(azFound.candidates[0].questionCount, 1);
+assert.strictEqual(azFound.candidates[0].license, "AGPL-3.0");
+assert.strictEqual(azFound.candidates[0].aiGenerated, true);
+assert.strictEqual(azFound.candidates[0].official, false);
+assert.strictEqual(azFound.candidates[0].fullCorpus, false);
+assert.ok(!JSON.stringify(azFound).includes("secret stem"));
+const aiFound = await discoverExamSources("AI-103", discoverDeps);
+assert.strictEqual(aiFound.status, "ready");
+assert.strictEqual(aiFound.code, "ai-103");
+assert.notStrictEqual(aiFound.code, "ai103");
+const missingDp = await discoverExamSources("DP700", discoverDeps);
+assert.strictEqual(missingDp.status, "not-found");
+assert.strictEqual(missingDp.candidates.length, 0);
+const missingDop = await discoverExamSources("DOP C02", discoverDeps);
+assert.strictEqual(missingDop.code, "dop-c02");
+assert.strictEqual(missingDop.status, "not-found");
+const retired = await discoverExamSources("AZ500", discoverDeps);
+assert.strictEqual(retired.status, "needs-review");
+assert.strictEqual(retired.code, "az-500");
+assert.notStrictEqual(retired.code, "sc-500");
+assert.match(retired.candidates[0].retirementNote, /SC-500/);
+assert.strictEqual(selectDiscoveryCandidate(retired), null);
+assert.strictEqual(selectDiscoveryCandidate(retired, retired.candidates[0].repo).code, "az-500");
+assert.strictEqual(selectDiscoveryCandidate(azFound).repo, "quizplay-io/quiz-player-quizzes-az-305-question-set-1");
+listing = listing.concat([addRepo("az-305", 2, "These questions are AI-generated.", "set 2", "AGPL-3.0")]);
+offline[listingUrl] = jsonBuf(listing);
+const multi = await discoverExamSources("az-305", discoverDeps);
+assert.strictEqual(multi.status, "needs-review");
+assert.strictEqual(multi.collected, false);
+assert.strictEqual(selectDiscoveryCandidate(multi), null);
+assert.strictEqual(selectDiscoveryCandidate(multi, "quiz-player-quizzes-az-305-question-set-2").set, 2);
+assert.throws(() => assertPublicUrl("https://raw.githubusercontent.com/evil/quiz.json?x=1", discoveryPolicy()), /允许名单|查询/);
+assert.throws(() => assertPublicUrl("https://api.github.com/orgs/quizplay-io/repos?per_page=100&type=all", discoveryPolicy()), /查询|允许名单/);
+assert.strictEqual(assertPublicUrl(listingUrl, discoveryPolicy()).hostname, "api.github.com");
 
 console.log("bank-version-core tests ok");
 console.log("fixture parse: questions=" + snap.questionCount + " media=" + snap.mediaCount + " playable=" + snap.playableCount + " types=" + snap.questions.map((q) => q.type).join(",") + " version=" + snap.versionId);

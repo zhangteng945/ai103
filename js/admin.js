@@ -289,7 +289,7 @@
       if (!bankState.code) { setMsg("请先解析一个已配置的题库", false); return; }
       try {
         setMsg("正在采集，完成后才会出现候选版本…", true);
-        var r = await ingestApi("collect", { code: bankState.code });
+        var r = await ingestApi("collect", { code: bankState.code, sourceRepo: ($("bank-source-repo") && $("bank-source-repo").value) || bankState.sourceRepo || "" });
         bankState.selected = r.versionId || bankState.selected;
         $("bank-summary").textContent = (r.unchanged ? "内容哈希未变，沿用已有版本 " : "已保存候选版本 ") + (r.versionId || "") + "\n题目 " + (r.questionCount == null ? "见版本表" : r.questionCount) + " · 媒体 " + (r.mediaCount == null ? "见版本表" : r.mediaCount) + "\n来源更新 " + (r.sourceUpdatedAtZh || "未知") + " · 采集 " + (r.collectedAtZh || "未知");
         await loadBankList();
@@ -302,9 +302,11 @@
         setMsg("正在逐个检查已配置题库…", true);
         var r = await ingestApi("collect", { all: true });
         var lines = (r.results || []).map(function (item) {
-          return (item.code || "") + "：" + (item.ok ? ((item.unchanged ? "无变化 " : "已保存候选 ") + (item.versionId || "")) : ("失败，生效版本未改。" + (item.error || "")));
+          if (item.ok && item.collected !== false) return (item.code || "") + "：已采集候选 " + (item.versionId || "") + "，未发布";
+          if (item.status === "not-found" || item.status === "unsupported" || item.status === "needs-review") return (item.code || "") + "：" + (item.error || item.status) + "（未采集，生效版本未改）";
+          return (item.code || "") + "：未采集。" + (item.error || "失败") + " 生效版本未改。";
         });
-        $("bank-batch").textContent = lines.join("\n") || "没有已配置题库";
+        $("bank-batch").textContent = lines.join("\n") || "没有检查结果";
         if (bankState.code) await loadBankList();
         setMsg("批量检查结束。每个题库独立成功或失败，都还没有发布。", true);
       } catch (e) { setMsg(e.message || "批量检查失败", false); }
@@ -342,7 +344,7 @@
     };
   }
 
-  var bankState = { service: false, code: "", activeVersionId: null, selected: "", versions: [] };
+  var bankState = { service: false, code: "", activeVersionId: null, selected: "", versions: [], candidates: [], sourceRepo: "" };
 
   function bankButtons(on) {
     ["btn-bank-collect", "btn-bank-all", "btn-bank-publish", "btn-bank-rollback"].forEach(function (id) {
@@ -427,7 +429,7 @@
     try {
       await ingestApi("registry", {});
       bankState.service = true;
-      $("bank-service").textContent = "采集服务可连接。没有自动排程。未配置的名称不会被当成完整题库。";
+      $("bank-service").textContent = "采集服务可连接。按名称在允许的公开组织里查找并核验清单。没有自动排程。找不到来源不会编造题目，也不会改学员权限或当前生效版本。";
       refreshBankActions();
     } catch (e) {
       bankState.service = false;
@@ -436,22 +438,36 @@
       throw e;
     }
   }
+  function renderSourceChoices(candidates) {
+    var sel = $("bank-source-repo");
+    if (!sel) return;
+    var usable = (candidates || []).filter(function (c) { return c && (c.status === "ready" || c.status === "needs-review"); });
+    bankState.candidates = usable;
+    if (!usable.length) {
+      sel.innerHTML = "<option value=\"\">没有可采集题集</option>";
+      return;
+    }
+    sel.innerHTML = usable.map(function (c) {
+      return "<option value=\"" + esc(c.repo) + "\">题集 " + esc(c.set) + " · " + esc(c.questionCount) + " 题 · " + esc(c.status) + "</option>";
+    }).join("");
+    bankState.sourceRepo = usable[0].repo;
+  }
   async function resolveBank() {
     if (!bankState.service) { setMsg("题库采集服务尚未部署", false); return; }
     var code = ($("bank-code").value || "").trim();
     var data = await ingestApi("resolve", { code: code });
-    if (!data.configured) {
-      bankState.code = "";
-      $("bank-source").textContent = data.message || "未配置";
-      $("btn-bank-collect").disabled = true;
-      setMsg(data.message || "未配置", false);
-      return;
-    }
-    bankState.code = data.bank.code;
-    var src = (data.bank.sources || [])[0] || {};
-    $("bank-source").textContent = data.bank.title + "（" + data.bank.code + "）\n来源 " + (src.repo || "未知") + "\n许可 " + (src.license || "未知") + " · AI 生成 " + (src.aiGenerated ? "是" : "否") + " · 官方题库 否 · 完整题库 否\n宣称题量 " + (src.advertisedCount == null ? "未知" : src.advertisedCount) + "\n上次查看来源结构 " + (src.lastInspectedAtZh || "未知") + "\n" + (src.note || "");
-    await loadBankList();
-    setMsg("已解析 " + data.bank.code, true);
+    bankState.code = data.code || "";
+    var lines = ["规范代码：" + (data.code || "无法识别") + "。这只是查找结果，不会开通学员权限，也不会切换已有生效版本。", data.message || ""];
+    (data.candidates || []).forEach(function (c) {
+      lines.push("发现（尚未采集） " + (c.repo || "") + " · 状态 " + (c.status || "") + " · 题目 " + (c.questionCount == null ? "未知" : c.questionCount) + " · 许可 " + (c.license || "未知") + " · 来源更新 " + (c.sourceUpdatedAtZh || "未知") + " · " + (c.aiWarning || "") + (c.retirementNote ? " · 退役说明：" + c.retirementNote : ""));
+    });
+    $("bank-source").textContent = lines.join("\n");
+    renderSourceChoices(data.candidates || []);
+    var canCollect = (bankState.candidates || []).length > 0;
+    $("btn-bank-collect").disabled = !canCollect;
+    if (!data.code) { setMsg(data.message || "未找到来源", false); return; }
+    try { await loadBankList(); } catch (e) { /* 尚未建目录时列表可为空 */ }
+    setMsg(data.status === "ready" ? "已发现可采集来源，尚未采集、尚未发布" : (data.message || data.status || "已完成查找"), data.status === "ready" || data.status === "needs-review");
   }
 
   async function boot() {
