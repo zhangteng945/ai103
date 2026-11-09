@@ -1,0 +1,41 @@
+{
+  "name": "itcert-pdf-import",
+  "version": "1.0.0",
+  "description": "星火 · 本机PDF候选题库识别与本地回归测试",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/*test.* js/*.test.js",
+    "prepare:pdf-vendor": "node tooling/prepare-pdf-vendor.mjs",
+    "test:pdf:browser": "node tooling/test-pdf-browser.mjs",
+    "test:pdf:routing": "node tooling/test-pdf-routing.mjs",
+    "test:pdf:save": "node tooling/test-pdf-save.mjs",
+    "test:release": "node tooling/test-release.mjs",
+    "package:az305": "node tooling/package-az305.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhangteng945/ai103.git"
+  },
+  "keywords": [],
+  "author": "星火",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zhangteng945/ai103/issues"
+  },
+  "homepage": "https://github.com/zhangteng945/ai103#readme",
+  "dependencies": {
+    "pdfjs-dist": "6.5.438",
+    "tesseract.js": "7.0.0"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  }
+}

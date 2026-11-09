@@ -1,0 +1,4 @@
+node_modules/
+
+# CLI运行元数据，不提交本机状态。
+supabase/.temp/

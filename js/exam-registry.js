@@ -134,6 +134,7 @@
         return global.QUESTIONS_DP_420 || [];
       },
     },
+    {id:"az305",title:"AZ-305",shortLabel:"AZ-305",subtitleZh:"设计 Microsoft Azure 基础结构解决方案",subtitleEn:"Designing Microsoft Azure Infrastructure Solutions",mockDefaultCount:50,mockCounts:[30,50,60],mockDefaultMinutes:120,mockMinutes:[60,120],passScore:700,scoreMin:0,specialExam58:false,domainOrder:[],domainWeights:{},domainLabelsZh:{"Topic 1":"主题1","Topic 2":"主题2","Topic 3":"主题3","Topic 4":"主题4","Topic 5":"主题5","Topic 6":"主题6","Topic 7":"主题7","Topic 8":"主题8","Topic 9":"主题9","Topic 10":"主题10","Topic 11":"主题11","Topic 12":"主题12","Topic 13":"主题13","Topic 14":"主题14","Topic 15":"主题15","Topic 16":"主题16"},domainLabelsEn:{},statMode:"types",getQuestions:function(){return global.QUESTIONS_AZ305||[];}},
   ];
 
   function list() {

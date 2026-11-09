@@ -10,7 +10,7 @@
   var DIRECT = String(SB.url || "").replace(/\/+$/, "");
   var KEY = CFG.anonKey || SB.anonKey || "";
   var SESSION_KEY = "itcert_account_session_v1";
-  var EXAM_OPTS = ["ai103", "dop-c02", "dp-700", "dp-420", "*"];
+  var EXAM_OPTS = ["ai103", "dop-c02", "dp-700", "dp-420", "az305", "*"];
 
   function $(id) { return document.getElementById(id); }
   function parse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
@@ -57,7 +57,7 @@
       return await http("POST", "/functions/v1/itc-admin", body, token, BASE);
     } catch (e) {
       // 主路径走 SCF 代理；若本地尚未重部署代理，可选回退直连 Supabase 函数 URL
-      if (DIRECT && DIRECT !== BASE && (e.status === 404 || /not allowed|upstream/i.test(e.message))) {
+      if (DIRECT && DIRECT !== BASE && e.status !== 401 && e.status !== 403 && (e.status === 404 || /not allowed|upstream/i.test(e.message))) {
         return await http("POST", "/functions/v1/itc-admin", body, token, DIRECT);
       }
       throw e;
@@ -66,7 +66,13 @@
 
   async function verifyAdmin(session) {
     if (!session || !session.access) throw Object.assign(new Error("请先在练习站登录管理员账号"), { status: 401 });
-    var u = await http("GET", "/auth/v1/user", null, session.access, BASE);
+    var u;
+    try { u = await http("GET", "/auth/v1/user", null, session.access, BASE); }
+    catch(e) {
+      if (DIRECT && DIRECT !== BASE && e.status !== 401 && e.status !== 403 && (e.status === 404 || e.status === 502 || e.status === 503 || e instanceof TypeError || /not allowed|upstream/i.test(e.message)))
+        u = await http("GET", "/auth/v1/user", null, session.access, DIRECT);
+      else throw e;
+    }
     var role = (u.app_metadata && u.app_metadata.role) || null;
     if (role !== "admin") throw Object.assign(new Error("当前账号不是管理员"), { status: 403 });
     // 回写 role 到本地 session，供主站入口使用
@@ -288,6 +294,17 @@
       var session = readSession();
       adminUser = await verifyAdmin(session);
       token = session.access;
+      // Refresh and re-check app_metadata before each write; server independently verifies it too.
+      window.ITCertPdfAdmin = { call: async function(action, payload) {
+        var fresh = readSession(); await verifyAdmin(fresh);
+        var body = Object.assign({action:action}, payload || {});
+        try { return await http("POST", "/functions/v1/itc-pdf-candidate", body, fresh.access, BASE); }
+        catch(e) {
+          if (DIRECT && DIRECT !== BASE && e.status !== 401 && e.status !== 403 && (e.status === 404 || e.status === 502 || e.status === 503 || e instanceof TypeError || /not allowed|upstream/i.test(e.message)))
+            return await http("POST", "/functions/v1/itc-pdf-candidate", body, fresh.access, DIRECT);
+          throw e;
+        }
+      }};
       gate.classList.add("hidden");
       app.classList.remove("hidden");
       $("admin-who").textContent = "管理员：" + (adminUser.email || "");

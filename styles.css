@@ -2123,3 +2123,14 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 .ans-summary b{font-weight:700}
 .ans-summary.bad b:first-of-type{color:var(--success)}
 .ans-summary.bad b:last-of-type{color:var(--danger)}
+
+/* 星火 · 私有PDF图片题，窄屏不横向溢出。 */
+.pdf-question-image{display:block;max-width:100%;height:auto;margin:1rem auto;border:1px solid #d1d5db;border-radius:.4rem}
+.self-response-label{display:block;margin:1rem 0}.self-response{display:block;width:100%;box-sizing:border-box;min-height:7rem;padding:.7rem;background:var(--bg-card,#fff);color:inherit;border:1px solid #94a3b8;border-radius:.5rem}
+.self-answer{margin:1rem 0;padding:1rem;border:1px solid #94a3b8;border-radius:.5rem;overflow-wrap:anywhere}.correct-only{min-height:1rem;border:2px solid #16a34a;background:transparent}.pending-self{border:1px solid #ddd;padding:1rem;margin:1rem 0}.case-image{max-height:80vh;object-fit:contain}
+
+/* 提交正确仅绿框，不用整块绿色或答案文字提示。 */
+.option.correct.st-ok{background:transparent!important;color:inherit!important;border:2px solid #16a34a!important}
+
+.option.correct.st-ok .otext{color:var(--text)!important}
+.correct-only{background:transparent!important}

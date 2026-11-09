@@ -1,0 +1,7 @@
+import {test}from'node:test';import assert from'node:assert/strict';
+import {allowedAdmin,prefix,imageBytes,validateCandidate}from'../supabase/functions/itc-pdf-candidate/validation.mjs';
+const uid='123e4567-e89b-42d3-a456-426614174000',id='123e4567-e89b-42d3-a456-426614174001',root=prefix(uid,id);
+const candidate=()=>({schema:'itcert-pdf-candidate-v1',status:'candidate',name:'AZ-305',questions:[{id:'1',type:'single',stem:'a',options:[],answer:[],answerText:'B',images:[],answerEvidence:[]}]});
+test('非管理员及伪造user_metadata角色不能写入',()=>{assert.equal(allowedAdmin(null),false);assert.equal(allowedAdmin({user_metadata:{role:'admin'}}),false);assert.equal(allowedAdmin({app_metadata:{role:'student'}}),false);assert.equal(allowedAdmin({app_metadata:{role:'admin'}}),true);});
+test('禁止目录穿越和跨用户引用；只支持候选状态',()=>{assert.throws(()=>prefix(uid,'../../ai103'));let c=candidate();c.status='active';assert.throws(()=>validateCandidate(c,root));c=candidate();c.questions[0].images=[{path:'ai103/v1.json'}];assert.throws(()=>validateCandidate(c,root));assert.equal(validateCandidate(candidate(),root).name,'AZ-305');});
+test('非JPEG/超大原图/重复题标识拒绝',()=>{assert.throws(()=>imageBytes('data:image/svg+xml;base64,PHN2Zz4='));assert.throws(()=>imageBytes('data:image/jpeg;base64,'+'A'.repeat(2900001)));assert.throws(()=>imageBytes('data:image/jpeg;base64,SGVsbG8='));let c=candidate();c.questions.push({...c.questions[0]});assert.throws(()=>validateCandidate(c,root));});
