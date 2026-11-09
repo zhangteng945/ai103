@@ -9,11 +9,13 @@
 // index items have no stems: {id, domain, type, control, caseStudy, caseStudyId, boxes, yn, dd, n?}
 // Rate limit: 120 requests / 5 min per user+exam.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import {hasAzAccess,mediaPath,signMedia,AZ_VERSION} from "./media.mjs";
 
-const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420"] as const;
+const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420", "az305"] as const;
 type ExamId = (typeof ALLOWED_EXAMS)[number];
 
 const DEFAULT_VERSIONS: Record<ExamId, string> = {
+  az305: AZ_VERSION,
   ai103: "202611011910",
   "dop-c02": "202611011900",
   "dp-700": "202611011900",
@@ -220,7 +222,7 @@ function ddOf(q: unknown): string {
   return "dd" + (best + 1);
 }
 function entryNum(o: Record<string, unknown>, id: string): number | null {
-  const pdf = o.pdfQuestionNum;
+  const pdf = o.bankSequence || o.pdfQuestionNum;
   if (typeof pdf === "number" && pdf > 0) return pdf;
   if (typeof pdf === "string" && /^\d+$/.test(pdf)) return parseInt(pdf, 10);
   const m = /(\d+)$/.exec(id);
@@ -248,6 +250,7 @@ function indexEntry(q: unknown): Record<string, unknown> | null {
     domain: questionDomain(q),
     type: o.type ?? null,
     control: o.control ?? null,
+    gradingMode: o.gradingMode ?? null,
     caseStudy: !!o.caseStudy,
     caseStudyId: o.caseStudyId ?? null,
     boxes: boxes.length,
@@ -364,7 +367,7 @@ Deno.serve(async (req: Request) => {
   try { params = await parseParams(req); } catch { return err("参数无效"); }
   if (!params.exam) return err("缺少 exam");
   if (!isExamId(params.exam)) return err("未知 exam：" + params.exam);
-  if (!hasExam(am, params.exam)) return err("无该题库权限", 403);
+  if (params.exam === "az305" ? !hasAzAccess(am) : !hasExam(am, params.exam)) return err("无该题库权限", 403);
   if (params.ids && params.sample != null) return err("ids 与 sample 不能同时使用");
   if (params.q && (params.ids || params.sample != null)) return err("q 不能与 ids 或 sample 同时使用");
   if (params.ids && params.ids.length > MAX_LIMIT) return err(`ids 最多 ${MAX_LIMIT} 个`, 400);
@@ -387,6 +390,13 @@ Deno.serve(async (req: Request) => {
     if (!cErr && typeof count === "number" && count >= RATE_MAX) return err("请求过于频繁，请稍后再试", 429);
   } catch { /* best-effort */ }
 
+  const media = new URL(req.url).searchParams.get("media");
+  if(media){
+    if(params.exam!=="az305" || !mediaPath(media,version))return err("媒体路径无效",400);
+    const {data,error}=await admin.storage.from("banks").createSignedUrls([media],900);
+    if(error || !data?.[0]?.signedUrl || data[0].error)return err("媒体读取失败",404);
+    return json({ok:true,mode:"media",examId:params.exam,version,questions:[],mediaUrl:data[0].signedUrl});
+  }
   let questions: unknown[];
   let usedVersion = version;
   try {
@@ -465,6 +475,7 @@ Deno.serve(async (req: Request) => {
     mode = "page";
   }
 
+  if(params.exam === "az305") { try { slice = await signMedia(admin,slice,version); } catch { return err("题目原图暂时无法读取",503); } }
   await logAccess(admin, user.id, params.exam, offset, limit, total);
   const body: Record<string, unknown> = {
     ok: true,

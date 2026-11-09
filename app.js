@@ -224,7 +224,7 @@
       typeSingle: "单选题",
       typeCase: "案例",
       flagged: "已标记",
-      caseSummary: "案例背景（Case Study）",
+      caseSummary: "案例背景",
       pickBoxes: "请在答案区域为每个框选择选项",
       pickYn: "请为每条陈述选择 是 或 否",
       pickDrag: "按顺序点击选项填入步骤；再点步骤可清除",
@@ -558,6 +558,7 @@
     return c.key;
   }
   function domainLabelOf(q) {
+    if (currentExamId === "az305" && UI_LANG !== "en") return (currentExam().domainLabelsZh || {})[q.domain] || q.domainLabelZh || q.domainLabel;
     const pack = t();
     return pack.domain[q.domain] || (UI_LANG === "en" ? q.domainLabelEn || q.domainLabel : q.domainLabelZh || q.domainLabel);
   }
@@ -808,7 +809,9 @@
       if (!q) return;
       const a = state.practiceAnswers[id];
       let ok = true;
-      if (isBoxQ(q)) {
+      if (isSelfCheck(q)) {
+        ok = !!a && typeof a === "object" && !Array.isArray(a) && typeof a._response === "string";
+      } else if (isBoxQ(q)) {
         ok = !!a && typeof a === "object" && !Array.isArray(a) &&
           q.boxes.every((b) => {
             const v = a[b.id];
@@ -1214,7 +1217,7 @@
         storageExamLastKey(),
         JSON.stringify({
           result: {
-            correct: r.correct,
+            correct: r.correct, pending: r.pending || 0,
             total: r.total,
             pct: r.pct,
             score1000: r.score1000,
@@ -1257,7 +1260,7 @@
         total: data.result.total,
         pct: data.result.pct,
         score1000: data.result.score1000,
-        pass: data.result.pass,
+        pass: data.result.pass, pending: data.result.pending || 0,
         byDom: data.result.byDom || {},
         wrongList: (data.result.wrongIds || []).map((id) => questionMap()[id]).filter(Boolean),
         auto: !!data.result.auto,
@@ -1328,6 +1331,7 @@
   }
 
   function shuffleOptions(q) {
+    if (isSelfCheck(q) || (q.questionImages && q.questionImages.length)) return q;
     const YN = typeof window !== "undefined" ? window.ITCERT_YN : null;
     if (YN && typeof YN.keepOptionOrder === "function" && YN.keepOptionOrder(q)) return q;
     if (q && (q.type === "hotspot" || q.type === "drag") && q.boxes && q.boxes.length) return q;
@@ -1380,6 +1384,8 @@
   }
 
   function typeBadgeLabel(q, pack) {
+    if (["ordering","order"].includes(q.type)) return "排序题";
+    if (isSelfCheck(q) && q.type === "image") return "图片题";
     const c = getControl(q);
     if (c === "yn") return pack.typeYn;
     if (c === "select") return pack.typeHotspot;
@@ -1451,7 +1457,49 @@
     return o;
   }
 
+  function isSelfCheck(q) { return window.ITCERT_IMAGE.isSelfCheck(q); }
+  function selfSelection(s) { return window.ITCERT_IMAGE.selection(s); }
+  function imageHtml(items, cls) {
+    return (items || []).map(a => {
+      const url = window.ITCERT_IMAGE.safeImage(typeof a === "string" ? a : a.url);
+      const path = typeof a === "string" ? "" : (a.storagePath || a.file || "");
+      return url ? '<img class="pdf-question-image ' + (cls || '') + '" src="' + escapeHtml(url) + '" data-media-path="' + escapeHtml(path) + '" alt="PDF原图" loading="lazy" referrerpolicy="no-referrer">' : '';
+    }).join('');
+  }
+  function answerTextOf(q) { return pickText(q.answerTextZh || q.answerText, q.answerTextEn || q.answerText); }
+  function selfPanel(q, selected, revealed, rated, mode) {
+    const sel = selfSelection(selected);
+    if(rated && sel._selfCorrect)return "";
+    if (!revealed) return '<label class="self-response-label">你的作答（可留空，提交后对照原图自评）<textarea class="self-response" data-mode="'+mode+'" rows="4">'+escapeHtml(sel._response || '')+'</textarea></label>';
+    let html = '<div class="self-answer"><strong>PDF文字答案：</strong><div>'+formatMultiline(answerTextOf(q))+'</div>'+imageHtml(q.answerImages, 'answer-evidence')+'</div>';
+    if (!rated) html += '<p>请对照答案自评；选择后才计入统计与错题。</p><button type="button" class="btn" data-self-rate="1">自评答对</button> <button type="button" class="btn" data-self-rate="0">自评答错</button>';
+    else if (!sel._selfCorrect) html += '<p class="ans-summary bad">正确答案：'+escapeHtml(inl(answerTextOf(q)))+' ｜ 你的选择：'+escapeHtml(sel._response || '未填写文字')+'</p>';
+    return html;
+  }
+  function bindQuestionImages(root) {
+    $$(root+' img[data-media-path]').forEach(img=>img.addEventListener('error',async()=>{
+      if(img.dataset.retried)return;img.dataset.retried='1';
+      try { const url=await window.AI103Auth.loadExamMedia(currentExamId,img.dataset.mediaPath); const safe=window.ITCERT_IMAGE.safeImage(url); if(safe)img.src=safe; }catch(e){img.alt='原图加载失败，请重新进入题库';}
+    }));
+  }
+  function bindSelfPanel(q, mode, root) {
+    const ta=$(root+' .self-response');
+    if(ta)ta.addEventListener('input',()=>{
+      const key=mode==='practice'?'practiceAnswers':'examAnswers';
+      state[key][q.id]={...selfSelection(state[key][q.id]),_response:ta.value.slice(0,10000)};
+      if(mode==='practice')saveProgress();else saveExamProgress();
+    });
+    $$(root+' [data-self-rate]').forEach(btn=>btn.addEventListener('click',()=>rateSelfQuestion(q,btn.dataset.selfRate==='1',mode)));
+  }
+  function rateSelfQuestion(q,ok,mode) {
+    const key=mode==='practice'?'practiceAnswers':'examAnswers';const old=selfSelection(state[key][q.id]);
+    if(window.ITCERT_IMAGE.isRated(old))return;
+    state[key][q.id]={...old,_revealed:true,_selfCorrect:ok};
+    if(mode==='practice')submitPractice();
+    else { calculateExamResult(state.examResult && state.examResult.auto); if(!state.examResult.pending && !state.examScoreRecorded){recordMockScore(state.examResult);state.examScoreRecorded=true;} saveEx();saveProgress();saveExamLast(); if(state.mode==='result')renderResult();else renderExam(); }
+  }
   function normalizeSelection(q, selected) {
+    if (isSelfCheck(q)) return selfSelection(selected);
     if (isDropdownQ(q)) {
       if (!selected || Array.isArray(selected)) return emptyBoxAnswers(q);
       return selected;
@@ -1460,12 +1508,14 @@
   }
 
   function allBoxesSelected(q, selected) {
+    if (isSelfCheck(q)) return !!(selected && (String(selected._response || "").trim() || window.ITCERT_IMAGE.isRated(selected)));
     if (!isDropdownQ(q)) return (selected || []).length > 0;
     const sel = normalizeSelection(q, selected);
     return q.boxes.every((b) => sel[b.id] && String(sel[b.id]).trim() !== "");
   }
 
   function formatCorrectAnswer(q) {
+    if (isSelfCheck(q)) return answerTextOf(q);
     const sep = "\n";
     if (isDropdownQ(q)) {
       return q.boxes
@@ -1480,6 +1530,7 @@
   }
 
   function formatUserAnswer(q, selected) {
+    if (isSelfCheck(q)) return selfSelection(selected)._response || "未填写文字";
     const sep = "\n";
     const pack = Object.assign({}, t());
     if (UI_LANG === "both") {
@@ -1738,6 +1789,7 @@
   }
 
   function isCorrect(q, selected) {
+    if (isSelfCheck(q)) return window.ITCERT_IMAGE.isCorrect(selected);
     if (isDropdownQ(q)) {
       const sel = normalizeSelection(q, selected);
       return q.boxes.every((b) => sameKey(sel[b.id], b.answer));
@@ -2143,7 +2195,7 @@
     const jsel = $("#practice-jump-select");
     if (jsel) jsel.setAttribute("aria-label", bi("jumpPick"));
     const jin = $("#practice-jump-input");
-    if (jin) jin.setAttribute("aria-label", bi("jumpPre"));
+    if (jin) { jin.setAttribute("aria-label", bi("jumpPre")); jin.placeholder = maxQNum() ? "1–" + maxQNum() : "题号"; }
     const filtLab = $("#view-practice .toolbar label.muted");
     if (filtLab) {
       const sel = filtLab.querySelector("select");
@@ -2595,6 +2647,7 @@
   }
 
   function isPracticeRevealed(q) {
+    if (currentExamId === "az305" || isSelfCheck(q)) return false;
     if (!q || state.practiceSubmitted[q.id]) return false;
     return !!(state.practiceShowAll || state.practiceReveal[q.id]);
   }
@@ -2615,6 +2668,8 @@
   /* ---- Jump to question number (选题号) ---- */
   /** original question number from id ("q015" -> 15) */
   function qNumOf(q) {
+    if(q && q.bankSequence)return q.bankSequence;
+    if(q && q._stub && bankMeta.index){const e=bankMeta.index.find(e=>String(e.id)===String(q.id));if(e && e.n)return e.n;}
     const m = /(\d+)$/.exec(String(q && q.id));
     return m ? parseInt(m[1], 10) : 0;
   }
@@ -2785,6 +2840,8 @@
 
     const submitted = !!state.practiceSubmitted[q.id];
     const revealed = isPracticeRevealed(q);
+    const self = isSelfCheck(q);
+    const selfShown = self && !!selfSelection(state.practiceAnswers[q.id])._revealed;
     const showing = submitted || revealed;
     const flagged = !!state.practiceFlags[q.id];
 
@@ -2804,10 +2861,12 @@
     html += "</div>";
     if (q.caseStudy && q.caseStudyText) {
       html += '<details class="case-box"><summary>' + escapeHtml(pack.caseSummary) + '</summary><div class="case-body">' +
-        formatMultiline(caseStudyTextOf(q)) + "</div></details>";
+        formatMultiline(caseStudyTextOf(q)) + imageHtml(q.caseStudyImages,"case-image") + "</div></details>";
     }
     html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
-    if (isBoxQ(q)) {
+    html += imageHtml(q.questionImages,"question-evidence");
+    if (self) { html += selfPanel(q, selected, selfShown, submitted, "practice"); }
+    else if (isBoxQ(q)) {
       html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pickHintFor(q, pack)) + "</p>";
       revealOnly = revealed;
       try {
@@ -2845,7 +2904,7 @@
       html += "</div>";
     }
 
-    if (showing) {
+    if (showing && !self && !isCorrect(q, selected)) {
       const ok = isCorrect(q, selected);
       html +=
         '<div class="feedback ' +
@@ -2875,11 +2934,16 @@
       html += "</div>";
     }
 
+    if (submitted && isCorrect(q, selected)) html += '<div class="feedback ok correct-only" aria-label="回答正确"></div>';
     $("#practice-body").innerHTML = html;
     renderJumpSelect();
 
-    $("#btn-practice-submit").disabled = submitted || revealed || !allBoxesSelected(q, selected);
+    $("#btn-practice-submit").disabled = submitted || revealed || (self ? selfShown : !allBoxesSelected(q, selected));
+    const noReveal = currentExamId === "az305" || self;
+    $("#lbl-practice-showall").hidden = noReveal;
+    $("#lbl-practice-showall").classList.toggle("hidden",noReveal);
     const rb = $("#btn-practice-reveal");
+    if(rb){rb.hidden = noReveal;rb.classList.toggle("hidden",noReveal);}
     if (rb) {
       rb.textContent = revealed ? pack.hideAnswer : pack.showAnswer;
       rb.disabled = submitted || state.practiceShowAll;
@@ -2901,6 +2965,8 @@
 
     ensurePracticeWindow(state.practiceIndex + 1).then(function () { hydratePracticeList(); }).catch(function () {});
     bindBoxControls(q, "practice", showing);
+    bindQuestionImages("#practice-body");
+    if(self)bindSelfPanel(q,"practice","#practice-body");
     try { renderQExtras(q); } catch (err) { console.error(err); }
     if (!isBoxQ(q)) {
       $$("#practice-options .option").forEach((btn) => {
@@ -3028,6 +3094,9 @@
     const sel = state.practiceAnswers[q.id];
     if (state.practiceSubmitted[q.id]) return; // no double-submit
     if (isPracticeRevealed(q)) return; // revealed answers are never scored
+    if(isSelfCheck(q) && !window.ITCERT_IMAGE.isRated(sel)) {
+      state.practiceAnswers[q.id]={...selfSelection(sel),_revealed:true};saveProgress();renderPractice();return;
+    }
     if (!allBoxesSelected(q, sel)) return;
     state.practiceSubmitted[q.id] = true;
     const e = ex();
@@ -3338,6 +3407,7 @@
     const selected = normalizeSelection(q, state.examAnswers[q.id]);
     const flagged = !!state.examFlags[q.id];
     const reviewMode = state.examSubmitted && state.revealed;
+    const self = isSelfCheck(q);
 
     saveExamProgress();
     if (state.examReviewOpen && !state.examSubmitted) {
@@ -3370,10 +3440,12 @@
       const zh = UI_LANG !== "en";
       html += '<div class="case-tabs" role="tablist"><button type="button" role="tab" class="case-tab' + (showCase ? " active" : "") + '" data-tab="case">' + (zh ? "案例研究" : "Case study") + '</button><button type="button" role="tab" class="case-tab' + (showCase ? "" : " active") + '" data-tab="q">' + (zh ? "问题" : "Question") + "</button></div>";
     }
-    if (showCase) html += '<div class="case-body case-tabpanel">' + formatMultiline(caseStudyTextOf(q)) + "</div>";
+    if (showCase) html += '<div class="case-body case-tabpanel">' + formatMultiline(caseStudyTextOf(q)) + imageHtml(q.caseStudyImages,"case-image") + "</div>";
     html += '<div class="exam-qpanel' + (showCase ? " hidden" : "") + '">';
     html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
-    if (isBoxQ(q)) {
+    html += imageHtml(q.questionImages,"question-evidence");
+    if(self)html += selfPanel(q,selected,reviewMode,window.ITCERT_IMAGE.isRated(selected),"exam");
+    else if (isBoxQ(q)) {
       html += '<p class="muted" style="margin-bottom:0.75rem">' + escapeHtml(pickHintFor(q, pack)) + "</p>";
       html += renderBoxesHtml(q, selected, reviewMode, "exam");
     } else {
@@ -3406,7 +3478,7 @@
       html += "</div>";
     }
 
-    if (reviewMode) {
+    if (reviewMode && !self && !isCorrect(q, selected)) {
       const ok = isCorrect(q, selected);
       html +=
         '<div class="feedback ' +
@@ -3423,7 +3495,10 @@
     }
 
     html += "</div>";
+    if(reviewMode && isCorrect(q,selected))html+='<div class="feedback ok correct-only" aria-label="回答正确"></div>';
     $("#exam-body").innerHTML = html;
+    bindQuestionImages("#exam-body");
+    if(self)bindSelfPanel(q,"exam","#exam-body");
     $$("#exam-body .case-tab").forEach((b) => b.addEventListener("click", () => { state.caseTab = b.getAttribute("data-tab"); renderExam(); }));
     renderExamGrid(reviewMode);
 
@@ -3503,7 +3578,18 @@
     state.revealed = true;
     clearExamProgress();
 
-    let correct = 0;
+    state.examScoreRecorded=false;
+    calculateExamResult(auto);
+    try { if(!state.examResult.pending){recordMockScore(state.examResult);state.examScoreRecorded=true;} } catch (err) { console.error("score", err); }
+    try { saveEx(); } catch (err) {}
+    saveProgress();
+    saveExamLast();
+    showView("result");
+    renderResult();
+  }
+
+  function calculateExamResult(auto) {
+    let correct = 0, pending = 0;
     const byDom = {};
     DOMAIN_ORDER.forEach((d) => {
       byDom[d] = { total: 0, correct: 0, label: "" };
@@ -3513,6 +3599,7 @@
       if (!byDom[q.domain]) byDom[q.domain] = { total: 0, correct: 0, label: "" };
       byDom[q.domain].total++;
       byDom[q.domain].label = q.domainLabel;
+      if(isSelfCheck(q) && !window.ITCERT_IMAGE.isRated(state.examAnswers[q.id])){pending++;return;}
       const ok = isCorrect(q, state.examAnswers[q.id]);
       if (ok) {
         correct++;
@@ -3531,7 +3618,7 @@
       : 0;
     const score1000 = Math.round(SCORE_MIN + pct * (1000 - SCORE_MIN));
     state.examResult = {
-      correct,
+      correct, pending,
       total: state.examQuestions.length,
       pct,
       score1000,
@@ -3540,12 +3627,6 @@
       wrongList,
       auto: !!auto,
     };
-    try { recordMockScore(state.examResult); } catch (err) { console.error("score", err); }
-    try { saveEx(); } catch (err) {}
-    saveProgress();
-    saveExamLast();
-    showView("result");
-    renderResult();
   }
 
   function renderResult() {
@@ -3563,6 +3644,7 @@
       pack.scoreSub(r.correct, r.total, Math.round(r.pct * 100), r.pass, r.auto) +
       "</div>";
 
+    if(r.pending)hero.innerHTML='<p>已交卷，尚有 ' + r.pending + ' 道图片题需要自评，完成后才生成成绩。</p>';
     let bd = "";
     (DOMAIN_ORDER.length ? DOMAIN_ORDER : Object.keys(r.byDom || {})).forEach((d) => {
       const x = r.byDom[d];
@@ -3617,7 +3699,11 @@
         wrongHtml += "</div>";
       });
     }
+    const pendingQs=state.examQuestions.filter(q=>isSelfCheck(q)&&!window.ITCERT_IMAGE.isRated(state.examAnswers[q.id]));
+    if(pendingQs.length)wrongHtml='<h3>交卷后自评</h3>'+pendingQs.map(q=>'<section class="pending-self" data-qid="'+escapeHtml(q.id)+'"><div>'+formatStem(stemOf(q))+'</div>'+imageHtml(q.questionImages,'question-evidence')+selfPanel(q,state.examAnswers[q.id],true,false,'exam')+'</section>').join('')+wrongHtml;
     $("#result-wrong").innerHTML = wrongHtml;
+    pendingQs.forEach(q=>bindSelfPanel(q,'exam','#result-wrong [data-qid="'+q.id+'"]'));
+    bindQuestionImages('#result-wrong');
   }
 
   /** stem text with ``` fenced code blocks rendered as monospace <pre> */
@@ -3948,7 +4034,7 @@
   }
   function hydratePracticeList() {
     if (!state.practiceList) return;
-    if (state.practiceFilter === "all") {
+    if (state.practiceFilter === "all" && !isPracticeShuffled()) {
       state.practiceList = state.practiceList.map((item, i) => (qOrder[i] && !qOrder[i]._stub ? qOrder[i] : item));
       return;
     }
@@ -3961,7 +4047,7 @@
   function ensurePracticeWindow(index) {
     const A = typeof window !== "undefined" ? window.AI103Auth : null;
     if (!protectedBanksOn() || !A) return Promise.resolve();
-    if (state.practiceFilter === "all") {
+    if (state.practiceFilter === "all" && !isPracticeShuffled()) {
       const start = Math.floor(Math.max(0, index) / 50) * 50;
       const loadAt = (off) => {
         if (off >= statTotal()) return Promise.resolve();

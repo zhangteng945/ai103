@@ -8,11 +8,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node --test tests/pdf*test.* js/*.test.js",
+    "test": "node --test tests/*test.* js/*.test.js",
     "prepare:pdf-vendor": "node tooling/prepare-pdf-vendor.mjs",
     "test:pdf:browser": "node tooling/test-pdf-browser.mjs",
     "test:pdf:routing": "node tooling/test-pdf-routing.mjs",
-    "test:pdf:save": "node tooling/test-pdf-save.mjs"
+    "test:pdf:save": "node tooling/test-pdf-save.mjs",
+    "test:release": "node tooling/test-release.mjs",
+    "package:az305": "node tooling/package-az305.mjs"
   },
   "repository": {
     "type": "git",
@@ -32,5 +34,8 @@
   "devDependencies": {
     "playwright": "1.58.2"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  }
 }

@@ -134,6 +134,7 @@
   }
   var origList = null, origGet = null;
   function canAccessExam(id) {
+    if(id === "az305") { var u=state.session&&state.session.user; return !!u && (u.role==="admin" || (Array.isArray(u.exams) && u.exams.indexOf("az305")>=0)); }
     var allow = allowedExams();
     if (!allow) return true;
     return allow.indexOf(id) >= 0;
@@ -153,9 +154,9 @@
         if (cand && cand.id === allow[i]) { first = allow[i]; break; }
       }
     }
-    api.get = function (id) { if (allow && allow.indexOf(id) < 0) id = first; return origGet.call(api, id); };
+    api.get = function (id) { if (allow && allow.indexOf(id) < 0 && !(id === "az305" && canAccessExam(id))) id = first; return origGet.call(api, id); };
     var oldLoad = api._origLoad || api.loadSavedExamId; api._origLoad = oldLoad;
-    api.loadSavedExamId = function () { var id = oldLoad.call(api); return allow && allow.indexOf(id) < 0 ? first : id; };
+    api.loadSavedExamId = function () { var id = oldLoad.call(api); return allow && allow.indexOf(id) < 0 && !(id === "az305" && canAccessExam(id)) ? first : id; };
     var css = $("itcert-ent-css"); if (css) css.textContent = "";
   }
   /* -------- boot gate (auth ready; bank downloads do not block this) -------- */
@@ -181,7 +182,7 @@
   var BANK_IDS_MAX = 80;
   var BANK_DIRECT = "https://paswovhtsoljydywdmvb.supabase.co";
   var BANK_CACHE = "itcert-banks-v1";
-  var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420" };
+  var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420", "az305": "QUESTIONS_AZ305" };
   var bankMem = {};
   var bankInflight = {};
   var bankOrigin = "";
@@ -242,11 +243,12 @@
     return "题库加载失败，请检查网络后重试";
   }
   function shouldFallbackBank(e) {
-    return !!(e && (e.status === 404 || /not allowed|upstream/i.test(String(e.message || ""))));
+    return !!(e && e.status!==401 && e.status!==403 && (e.status===404 || e.network || /not allowed|upstream/i.test(String(e.message || ""))));
   }
   function bankQuery(examId, opt) {
     var p = ["exam=" + encodeURIComponent(examId)];
     if (opt.meta) p.push("meta=1");
+    if (opt.media) p.push("media="+encodeURIComponent(opt.media));
     if (opt.ids && opt.ids.length) p.push("ids=" + encodeURIComponent(opt.ids.join(",")));
     if (opt.sample) p.push("sample=" + encodeURIComponent(opt.sample));
     if (opt.seed) p.push("seed=" + encodeURIComponent(opt.seed));
@@ -786,7 +788,7 @@
       getState: function () { return { user: state.session ? state.session.user : null, ready: state.ready, mode: "account", enabled: true, featureUi: true, loggedIn: isLoggedIn(), expired: state.expired }; },
       statusMessage: function () { return state.status; }, signIn: signIn, signUp: function () { setStatus("账号由管理员发放，请联系管理员开通"); return Promise.resolve({ ok: false }); },
       signOut: signOut, getSession: function () { return Promise.resolve(state.session); },
-      canAccessExam: canAccessExam, allowedExams: allowedExams, loadExam: loadExam, examReady: bankReady,
+      canAccessExam: canAccessExam, allowedExams: allowedExams, loadExamMedia: function(id,path){return guardExam(id).then(function(){return fetchBankWithFallback(id,{media:path});}).then(function(data){return data.mediaUrl;});}, loadExam: loadExam, examReady: bankReady,
       loadExamMeta: loadExamMeta, loadExamPage: loadExamPage, loadExamByIds: loadExamByIds,
       loadExamSample: loadExamSample, loadExamSearch: loadExamSearch, getBank: getBank,
       migrateLocalToCloudIfNeeded: function () { return Promise.resolve(); },

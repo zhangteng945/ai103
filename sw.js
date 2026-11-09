@@ -1,8 +1,11 @@
 /* IT认证练习 service worker: offline cache. Assets are cached per full URL (incl. ?v=),
    so a new v= is fetched fresh; older versions of the same file are pruned. */
-const CACHE = "itcert-cache-202611092145";
+const CACHE = "itcert-cache-202611092210";
 self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener("activate", (e) => e.waitUntil((async () => {
+  await Promise.all((await caches.keys()).filter((key) => key.startsWith("itcert-cache-") && key !== CACHE).map((key) => caches.delete(key)));
+  await self.clients.claim();
+})()));
 self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
@@ -10,6 +13,7 @@ self.addEventListener("fetch", (e) => {
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  if (/\/(?:functions|storage|auth|rest)\/v1\//.test(url.pathname)) return;
   if (url.pathname.endsWith("admin.html") || /\/js\/pdf-import-|\/js\/vendor\/pdf-import\//.test(url.pathname)) {
     e.respondWith(fetch(req)); return;
   }
