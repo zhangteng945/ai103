@@ -2134,3 +2134,9 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 
 .option.correct.st-ok .otext{color:var(--text)!important}
 .correct-only{background:transparent!important}
+
+/* Only emitted by the opt-in normalized AZ-305 text renderer. */
+.pdf-text-table-wrap { overflow-x:auto; max-width:100%; margin:1rem 0; }
+.pdf-text-table { border-collapse:collapse; width:100%; font-size:.95em; }
+.pdf-text-table th,.pdf-text-table td { border:1px solid var(--border,#64748b); padding:.55rem .7rem; text-align:left; vertical-align:top; }
+.pdf-text-table th { background:rgba(127,127,127,.13); font-weight:650; }

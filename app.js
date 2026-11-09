@@ -2861,9 +2861,9 @@
     html += "</div>";
     if (q.caseStudy && q.caseStudyText) {
       html += '<details class="case-box"><summary>' + escapeHtml(pack.caseSummary) + '</summary><div class="case-body">' +
-        formatMultiline(caseStudyTextOf(q)) + imageHtml(q.caseStudyImages,"case-image") + "</div></details>";
+        formatQuestionCase(q) + imageHtml(q.caseStudyImages,"case-image") + "</div></details>";
     }
-    html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
+    html += '<div class="stem">' + formatQuestionStem(q) + "</div>";
     html += imageHtml(q.questionImages,"question-evidence");
     if (self) { html += selfPanel(q, selected, selfShown, submitted, "practice"); }
     else if (isBoxQ(q)) {
@@ -2892,7 +2892,7 @@
           '" data-oid="' +
           opt.id +
           '"' +
-          (showing ? " disabled" : "") +
+          (showing || isDisabledOption(q, opt) ? " disabled" : "") +
           ">" +
           '<span class="oid">' +
           dispLetter(q, opt.id) +
@@ -3055,6 +3055,7 @@
   }
 
   function toggleSelect(q, oid, mode) {
+    if (isDisabledOption(q, (q.options || []).find((o) => o.id === oid))) return;
     const key = mode === "practice" ? "practiceAnswers" : "examAnswers";
     let sel = (state[key][q.id] || []).slice();
     if (getControl(q) === "single") {
@@ -3440,9 +3441,9 @@
       const zh = UI_LANG !== "en";
       html += '<div class="case-tabs" role="tablist"><button type="button" role="tab" class="case-tab' + (showCase ? " active" : "") + '" data-tab="case">' + (zh ? "案例研究" : "Case study") + '</button><button type="button" role="tab" class="case-tab' + (showCase ? "" : " active") + '" data-tab="q">' + (zh ? "问题" : "Question") + "</button></div>";
     }
-    if (showCase) html += '<div class="case-body case-tabpanel">' + formatMultiline(caseStudyTextOf(q)) + imageHtml(q.caseStudyImages,"case-image") + "</div>";
+    if (showCase) html += '<div class="case-body case-tabpanel">' + formatQuestionCase(q) + imageHtml(q.caseStudyImages,"case-image") + "</div>";
     html += '<div class="exam-qpanel' + (showCase ? " hidden" : "") + '">';
-    html += '<div class="stem">' + formatStem(stemOf(q)) + "</div>";
+    html += '<div class="stem">' + formatQuestionStem(q) + "</div>";
     html += imageHtml(q.questionImages,"question-evidence");
     if(self)html += selfPanel(q,selected,reviewMode,window.ITCERT_IMAGE.isRated(selected),"exam");
     else if (isBoxQ(q)) {
@@ -3466,7 +3467,7 @@
           '" data-oid="' +
           opt.id +
           '"' +
-          (state.examSubmitted ? " disabled" : "") +
+          (state.examSubmitted || isDisabledOption(q, opt) ? " disabled" : "") +
           ">" +
           '<span class="oid">' +
           dispLetter(q, opt.id) +
@@ -3681,7 +3682,7 @@
           '<span class="badge domain">' +
           escapeHtml(domainLabelOf(q)) +
           "</span>";
-        wrongHtml += '<div class="r-stem">' + formatStem(stemOf(q)) + "</div>";
+        wrongHtml += '<div class="r-stem">' + formatQuestionStem(q) + "</div>";
         wrongHtml +=
           '<div class="r-ans">' +
           "<strong>" + escapeHtml(yaLabel()) + "</strong><br>" +
@@ -3700,10 +3701,26 @@
       });
     }
     const pendingQs=state.examQuestions.filter(q=>isSelfCheck(q)&&!window.ITCERT_IMAGE.isRated(state.examAnswers[q.id]));
-    if(pendingQs.length)wrongHtml='<h3>交卷后自评</h3>'+pendingQs.map(q=>'<section class="pending-self" data-qid="'+escapeHtml(q.id)+'"><div>'+formatStem(stemOf(q))+'</div>'+imageHtml(q.questionImages,'question-evidence')+selfPanel(q,state.examAnswers[q.id],true,false,'exam')+'</section>').join('')+wrongHtml;
+    if(pendingQs.length)wrongHtml='<h3>交卷后自评</h3>'+pendingQs.map(q=>'<section class="pending-self" data-qid="'+escapeHtml(q.id)+'"><div>'+formatQuestionStem(q)+'</div>'+imageHtml(q.questionImages,'question-evidence')+selfPanel(q,state.examAnswers[q.id],true,false,'exam')+'</section>').join('')+wrongHtml;
     $("#result-wrong").innerHTML = wrongHtml;
     pendingQs.forEach(q=>bindSelfPanel(q,'exam','#result-wrong [data-qid="'+q.id+'"]'));
     bindQuestionImages('#result-wrong');
+  }
+
+  // Only normalized AZ-305 candidates opt in; legacy four-bank formatting is unchanged.
+  function isPdfTextQuestion(q) {
+    return !!q && q.examId === "az305" && q.contentFormat === "pdf_text_v1";
+  }
+  function formatQuestionStem(q) {
+    return isPdfTextQuestion(q) && window.ITCERT_PDF_TEXT
+      ? window.ITCERT_PDF_TEXT.format(stemOf(q)) : formatStem(stemOf(q));
+  }
+  function formatQuestionCase(q) {
+    return isPdfTextQuestion(q) && window.ITCERT_PDF_TEXT
+      ? window.ITCERT_PDF_TEXT.format(caseStudyTextOf(q)) : formatMultiline(caseStudyTextOf(q));
+  }
+  function isDisabledOption(q, opt) {
+    return isPdfTextQuestion(q) && !!(opt && opt.disabled);
   }
 
   /** stem text with ``` fenced code blocks rendered as monospace <pre> */

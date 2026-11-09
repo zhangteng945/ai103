@@ -1,0 +1,5 @@
+const test=require('node:test');const assert=require('node:assert/strict');const pdf=require('../js/pdf-text.js');
+test('PDF text uses semantic tables and preserves resource IDs',()=>{const h=pdf.format('| Name | Kind |\n| --- | --- |\n| storage1 | StorageV2 |');assert.match(h,/<table/);assert.match(h,/<th scope="col">Name/);assert.match(h,/<td>storage1/);assert.match(h,/<td>StorageV2/);});
+test('PDF code is escaped, not interpreted as HTML or as tables',()=>{const h=pdf.format('```sql\nSELECT * FROM x WHERE a < 2;\n| not a table |\n```');assert.match(h,/<pre class="stem-code"><code>/);assert.match(h,/a &lt; 2/);assert.doesNotMatch(h,/<table/);});
+test('PDF table cells and prose cannot inject scripts or images',()=>{const h=pdf.format('<img src=x onerror=alert(1)>\n\n| A | B |\n| --- | --- |\n| <script>alert(1)</script> | "test" |');assert.doesNotMatch(h,/<img|<script/);assert.match(h,/&lt;script&gt;/);assert.match(h,/&quot;test&quot;/);});
+test('PDF text has no image, URL, or executable markdown behavior',()=>{const h=pdf.format('![answer](https://example.invalid/x)\n[click](javascript:alert(1))');assert.doesNotMatch(h,/<a |<img|href=/);});
