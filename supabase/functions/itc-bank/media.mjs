@@ -1,4 +1,4 @@
-export const AZ_VERSION='202611092210';
+export const AZ_VERSION='202611092331';
 export function hasAzAccess(am){return am?.role==='admin'||(Array.isArray(am?.exams)&&am.exams.includes('az305'));}
 export function mediaPath(path,version){return typeof path==='string' && path.startsWith(`az305/${version}/media/`) && /^az305\/[A-Za-z0-9._-]{1,64}\/media\/[a-zA-Z0-9._-]+\.png$/.test(path) ? path : null;}
 export async function signMedia(client,questions,version){
