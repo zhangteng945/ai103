@@ -1,13 +1,18 @@
 /* IT认证练习 service worker: offline cache. Assets are cached per full URL (incl. ?v=),
    so a new v= is fetched fresh; older versions of the same file are pruned. */
-const CACHE = "itcert-cache-202611090722";
+const CACHE = "itcert-cache-202611092145";
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
+  // 管理页离线不可回退为练习首页；识别引擎依赖固定路径，更新必须刷新。
+
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  if (url.pathname.endsWith("admin.html") || /\/js\/pdf-import-|\/js\/vendor\/pdf-import\//.test(url.pathname)) {
+    e.respondWith(fetch(req)); return;
+  }
   if (req.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith("index.html")) {
     // network-first for the page so new versions arrive
     e.respondWith(

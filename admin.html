@@ -42,6 +42,7 @@
       .admin-wrap { padding: .75rem .6rem 2.5rem; }
       table.admin-table { font-size: .78rem; }
     }
+    .pdf-grid {align-items:start;display:grid;grid-template-columns:1fr 1fr;gap:1rem} .pdf-grid img {max-width:100%;border:1px solid #ddd;margin-bottom:.5rem} .pdf-grid textarea {width:100%;box-sizing:border-box} @media(max-width:760px){.pdf-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -62,6 +63,7 @@
         <button type="button" class="btn btn-sm active" data-tab="users">学员列表</button>
         <button type="button" class="btn btn-sm" data-tab="create">开号</button>
         <button type="button" class="btn btn-sm" data-tab="reports">报错列表</button>
+        <button type="button" class="btn btn-sm" data-tab="pdf">导入PDF题库</button>
       </div>
       <section id="tab-users" class="admin-panel active card">
         <h2>学员列表</h2>
@@ -114,9 +116,42 @@
           </table>
         </div>
       </section>
+      <section id="tab-pdf" class="admin-panel card">
+        <h2>手动导入PDF题库</h2>
+        <p>星火 · 文字页直接提取，图片页本机识别。只采用PDF答案标注，不采用讨论答案。原文件不会上传。</p>
+        <p>先预览校对，再保存为隔离的候选；不会覆盖旧题库，不会自动发布。文字识别并不等于理解圈选/热区，图片答案请对照原图编辑。</p>
+        <div class="admin-form">
+          <label>题库名称<input id="pdf-bank-name" type="text" value="AZ-305" maxlength="80"></label>
+          <label>PDF文件（最多256兆字节、1500页）<input id="pdf-file" type="file" accept=".pdf,application/pdf"></label>
+          <label>识别语言<select id="pdf-language"><option value="eng">英文</option><option value="eng+chi_sim">中英混合</option></select></label>
+          <label>起始页<input id="pdf-from" type="number" value="1" min="1"></label>
+          <label>结束页（留空表示全部；扫描大文件建议分批）<input id="pdf-to" type="number" min="1"></label>
+        </div>
+        <p><button id="pdf-start" class="btn" type="button">自动识别并预览</button> <button id="pdf-stop" class="btn" type="button" disabled>停止识别</button></p>
+        <p id="pdf-status" role="status" aria-live="polite">尚未选择文件；识别过程不连接后端。</p>
+        <div id="pdf-editor" hidden>
+          <p id="pdf-index"></p><p id="pdf-notes" class="muted"></p>
+          <p><button id="pdf-prev" class="btn" type="button">上一题</button> <button id="pdf-next" class="btn" type="button">下一题</button></p>
+          <div class="pdf-grid">
+            <div><h3>题目原图</h3><div id="pdf-question-images"></div><h3>PDF答案区原图</h3><div id="pdf-answer-images"></div></div>
+            <div class="admin-form">
+              <label>题型<select id="pdf-type"><option value="single">单选</option><option value="multi">多选</option><option value="image">图片题</option><option value="hotspot">热区题</option><option value="drag">拖拽题</option></select></label>
+              <label>题干<textarea id="pdf-stem" rows="12"></textarea></label>
+              <label>图片中文字（图片选项、表格等最佳转写）<textarea id="pdf-image-text" rows="6"></textarea></label>
+              <label>选项（每行一项，字母加句点）<textarea id="pdf-options" rows="8"></textarea></label>
+              <label>正确答案（来自PDF；可直接编辑图片答案转写）<textarea id="pdf-answer" rows="10"></textarea></label>
+            </div>
+          </div>
+        </div>
+        <p><button id="pdf-export" type="button" class="btn" disabled>导出候选文件</button> <button id="pdf-save" type="button" class="btn" disabled>保存为私有候选题库</button></p>
+        <p class="muted">正式发布需要另行确认，此页不提供正式发布操作。识别结果仅存本页内存，离开前请导出。</p>
+      </section>
     </div>
-    <p class="muted small" style="margin-top:1.5rem">作者：星火 · service_role 不进前端</p>
+    <p class="muted small" style="margin-top:1.5rem">作者：星火 · 管理权限由服务端校验</p>
   </div>
-  <script src="js/admin.js?v=202611090722"></script>
+  <script src="js/admin.js?v=202611092145"></script>
+  <script src="js/pdf-import-core.js?v=202611092145"></script>
+  <script src="js/vendor/pdf-import/ocr/tesseract.min.js?v=7.0.0"></script>
+  <script type="module" src="js/pdf-import-ui.mjs?v=202611092145"></script>
 </body>
 </html>
