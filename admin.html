@@ -40,9 +40,12 @@
         <button type="button" class="admin-tab" data-tab="reports" aria-label="报错列表">
           <span class="tab-full">报错列表</span><span class="tab-short">报错</span>
         </button>
+        <!-- PDF 导入暂停 2026-11-10，恢复时取消注释 -->
+        <!--
         <button type="button" class="admin-tab" data-tab="pdf" aria-label="导入PDF题库">
           <span class="tab-full">导入PDF题库</span><span class="tab-short">导入</span>
         </button>
+        -->
       </div>
     </div>
     <div id="admin-msg" class="admin-msg" role="status"></div>
@@ -105,6 +108,8 @@
         </div>
         <div class="admin-report-cards" id="reports-cards"></div>
       </section>
+      <!-- PDF 导入暂停 2026-11-10，恢复时取消注释 -->
+      <!--
       <section id="tab-pdf" class="admin-panel card">
         <h2>手动导入PDF题库</h2>
         <p>星火 · 文字页直接提取，图片页本机识别。只采用PDF答案标注，不采用讨论答案。原文件不会上传。</p>
@@ -150,6 +155,7 @@
         </div>
         <p class="muted">正式发布需要另行确认，此页不提供正式发布操作。识别结果仅存本页内存，离开前请导出。</p>
       </section>
+      -->
     </div>
     <p class="muted small admin-foot">作者：星火 · 管理权限由服务端校验</p>
   </div>
@@ -167,8 +173,11 @@
     </div>
   </div>
   <script src="js/admin.js?v=202611101830"></script>
+  <!-- PDF 导入暂停 2026-11-10，恢复时取消注释 -->
+  <!--
   <script src="js/pdf-import-core.js?v=202611101830"></script>
   <script src="js/vendor/pdf-import/ocr/tesseract.min.js?v=7.0.0"></script>
   <script type="module" src="js/pdf-import-ui.mjs?v=202611101830"></script>
+  -->
 </body>
 </html>

@@ -25,7 +25,6 @@ test('管理页保留原有入口，并增加手机卡片与操作面板', () =>
     'admin-who', 'admin-msg', 'admin-gate', 'admin-app', 'btn-refresh',
     'users-table', 'users-body', 'users-cards', 'create-form', 'c-user',
     'c-days', 'c-max', 'c-exams', 'c-all', 'reports-body', 'reports-cards',
-    'tab-pdf', 'pdf-start', 'pdf-save', 'pdf-export', 'pdf-stop',
     'admin-overlay', 'admin-sheet', 'admin-sheet-title', 'admin-sheet-body',
     'admin-sheet-ok', 'admin-sheet-cancel'
   ]) {
@@ -34,14 +33,22 @@ test('管理页保留原有入口，并增加手机卡片与操作面板', () =>
   assert.match(adminHtml, /data-tab="users"/);
   assert.match(adminHtml, /data-tab="create"/);
   assert.match(adminHtml, /data-tab="reports"/);
-  assert.match(adminHtml, /data-tab="pdf"/);
   assert.match(adminHtml, /tab-short">学员</);
   assert.match(adminHtml, /tab-short">开号</);
   assert.match(adminHtml, /tab-short">报错</);
-  assert.match(adminHtml, /tab-short">导入</);
   assert.match(adminHtml, /作者：星火/);
   assert.match(adminHtml, /class="admin-page"/);
   assert.doesNotMatch(adminHtml, /<style>/);
+  const visibleAdmin = adminHtml.replace(/<!--[\s\S]*?-->/g, '');
+  assert.doesNotMatch(visibleAdmin, /data-tab="pdf"/);
+  assert.doesNotMatch(visibleAdmin, /id="tab-pdf"|id="pdf-start"|pdf-import-core|tesseract\.min|pdf-import-ui/);
+  assert.match(adminHtml, /<!-- PDF 导入暂停 2026-11-10，恢复时取消注释 -->/);
+  assert.match(adminHtml, /data-tab="pdf"/);
+  assert.match(adminHtml, /id="tab-pdf"/);
+  assert.match(adminHtml, /tab-short">导入</);
+  assert.ok(fs.existsSync(path.join(repo, 'js/pdf-import-ui.mjs')));
+  assert.ok(fs.existsSync(path.join(repo, 'js/pdf-import-core.js')));
+  assert.ok(fs.existsSync(path.join(repo, 'js/pdf-import-engine.mjs')));
 });
 
 test('学员与报错在窄屏用卡片，桌面保留表格', () => {
