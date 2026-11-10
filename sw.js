@@ -1,6 +1,6 @@
 /* IT认证练习 service worker: offline cache. Assets are cached per full URL (incl. ?v=),
    so a new v= is fetched fresh; older versions of the same file are pruned. */
-const CACHE = "itcert-cache-202611102145";
+const CACHE = "itcert-cache-202611102200";
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil((async () => {
   await Promise.all((await caches.keys()).filter((key) => key.startsWith("itcert-cache-") && key !== CACHE).map((key) => caches.delete(key)));

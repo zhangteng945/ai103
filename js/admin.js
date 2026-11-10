@@ -70,6 +70,12 @@
     resetDevices: function (email) { return { action: "reset-devices", payload: { email: email } }; },
     maxDevices: function (email, n) {
       return { action: "max-devices", payload: { email: email, max_devices: Number(n) } };
+    },
+    resolveReport: function (id, status) {
+      return { action: "resolve-report", payload: { id: id, status: status } };
+    },
+    deleteReport: function (id) {
+      return { action: "delete-report", payload: { id: id } };
     }
   };
 
@@ -247,36 +253,90 @@
     }
   }
 
+  var lastReports = [];
+  var reportFilter = "open";
+
+  function questionLabel(r) {
+    var fn = window.ITCERT_ISSUE_REPORT && window.ITCERT_ISSUE_REPORT.questionLabel;
+    var payload = r && r.payload;
+    var qid = r && r.qid;
+    if (typeof fn === "function") return fn(payload, qid);
+    if (payload && payload.num != null && String(payload.num).trim() !== "") {
+      var n = String(payload.num).trim();
+      return /^第/.test(n) ? n : ("第" + n + "题");
+    }
+    return String(qid || "");
+  }
+  function reportStatusOf(r) {
+    return (r && r.status) === "resolved" ? "resolved" : "open";
+  }
+  function visibleReports(reports, filter) {
+    var list = reports || [];
+    var f = filter || reportFilter || "open";
+    if (f === "all") return list.slice();
+    return list.filter(function (r) { return reportStatusOf(r) !== "resolved"; });
+  }
+  function setReportFilter(next) {
+    reportFilter = next === "all" ? "all" : "open";
+    var bar = $("reports-filter");
+    if (bar) {
+      bar.querySelectorAll("[data-report-filter]").forEach(function (b) {
+        var on = b.getAttribute("data-report-filter") === reportFilter;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+    }
+    renderReports(lastReports);
+  }
+  function reportActionsHtml(r) {
+    var resolved = reportStatusOf(r) === "resolved";
+    return "<div class='ops admin-report-actions'>" +
+      (resolved
+        ? "<button type='button' class='btn' data-act='reopen'>标为未处理</button>"
+        : "<button type='button' class='btn btn-primary' data-act='resolve'>已处理</button>") +
+      "<button type='button' class='btn btn-danger' data-act='delete'>删除</button>" +
+      "</div>";
+  }
   function renderReports(reports) {
+    lastReports = reports || [];
     var tb = $("reports-body");
     var cards = $("reports-cards");
     if (!tb && !cards) return;
-    if (!reports || !reports.length) {
-      if (tb) tb.innerHTML = "<tr><td colspan='5'>暂无报错</td></tr>";
-      if (cards) cards.innerHTML = "<p class='muted admin-empty'>暂无报错</p>";
+    var shown = visibleReports(lastReports, reportFilter);
+    if (!shown.length) {
+      var empty = lastReports.length && reportFilter !== "all" ? "暂无未处理报错" : "暂无报错";
+      if (tb) tb.innerHTML = "<tr><td colspan='7'>" + empty + "</td></tr>";
+      if (cards) cards.innerHTML = "<p class='muted admin-empty'>" + empty + "</p>";
       return;
     }
     if (tb) {
-      tb.innerHTML = reports.map(function (r) {
-        return "<tr><td>" + esc(r.created_at_zh || r.created_at) + "</td>" +
+      tb.innerHTML = shown.map(function (r) {
+        var resolved = reportStatusOf(r) === "resolved";
+        return "<tr class='" + (resolved ? "is-resolved" : "is-open") + "' data-id='" + esc(r.id) + "'>" +
+          "<td>" + esc(r.created_at_zh || r.created_at) + "</td>" +
           "<td>" + esc(shortEmail(r.email)) + "</td>" +
           "<td>" + esc(r.exam_id) + "</td>" +
-          "<td>" + esc(r.qid) + "</td>" +
-          "<td>" + esc(r.note || "") + "</td></tr>";
+          "<td>" + esc(questionLabel(r)) + "</td>" +
+          "<td>" + esc(r.note || "") + "</td>" +
+          "<td><span class='admin-status st-" + (resolved ? "已处理" : "未处理") + "'>" + (resolved ? "已处理" : "未处理") + "</span></td>" +
+          "<td>" + reportActionsHtml(r) + "</td></tr>";
       }).join("");
     }
     if (cards) {
-      cards.innerHTML = reports.map(function (r) {
-        return "<article class='admin-report-card'>" +
+      cards.innerHTML = shown.map(function (r) {
+        var resolved = reportStatusOf(r) === "resolved";
+        return "<article class='admin-report-card " + (resolved ? "is-resolved" : "is-open") + "' data-id='" + esc(r.id) + "'>" +
           "<header class='admin-report-head'>" +
             "<strong>" + esc(shortEmail(r.email)) + "</strong>" +
-            "<span class='muted small'>" + esc(r.created_at_zh || r.created_at || "") + "</span>" +
+            "<span class='admin-status st-" + (resolved ? "已处理" : "未处理") + "'>" + (resolved ? "已处理" : "未处理") + "</span>" +
           "</header>" +
+          "<p class='muted small'>" + esc(r.created_at_zh || r.created_at || "") + "</p>" +
           "<dl class='admin-user-meta'>" +
             "<div><dt>题库</dt><dd>" + esc(r.exam_id || "-") + "</dd></div>" +
-            "<div><dt>题号</dt><dd>" + esc(r.qid || "-") + "</dd></div>" +
+            "<div><dt>题号</dt><dd>" + esc(questionLabel(r) || "-") + "</dd></div>" +
           "</dl>" +
           "<p class='admin-report-note'>" + esc(r.note || "（无说明）") + "</p>" +
+          reportActionsHtml(r) +
         "</article>";
       }).join("");
     }
@@ -581,6 +641,45 @@
     });
   }
 
+  function findReport(id) {
+    return (lastReports || []).find(function (r) { return String(r.id) === String(id); }) || null;
+  }
+  async function onReportAct(id, act) {
+    try {
+      var r = findReport(id);
+      if (!r) { setMsg("找不到该报错", false); return; }
+      if (act === "delete") {
+        var ok = await confirmSheet(
+          "删除报错",
+          "确认删除 " + shortEmail(r.email) + " 对 " + (r.exam_id || "") + " " + questionLabel(r) + " 的报错？此操作不可恢复。",
+          "删除"
+        );
+        if (!ok) return;
+        var del = await callAdmin(AdminPayload.deleteReport(id), token);
+        setMsg(del.message || "已删除", true);
+        await loadReports();
+        return;
+      }
+      if (act === "resolve" || act === "reopen") {
+        var status = act === "resolve" ? "resolved" : "open";
+        var up = await callAdmin(AdminPayload.resolveReport(id, status), token);
+        setMsg(up.message || "已更新", true);
+        await loadReports();
+      }
+    } catch (e) {
+      setMsg(e.message || "操作失败", false);
+    }
+  }
+  function bindReportActs(root) {
+    if (!root) return;
+    root.addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-act]"); if (!b) return;
+      var row = b.closest("[data-id]");
+      var id = row && row.getAttribute("data-id");
+      if (id) onReportAct(id, b.getAttribute("data-act"));
+    });
+  }
+
   function bindUi() {
     bindSheetChrome();
     document.querySelectorAll(".admin-tabs [data-tab]").forEach(function (btn) {
@@ -606,6 +705,16 @@
     };
     bindUserActs($("users-body"));
     bindUserActs($("users-cards"));
+    bindReportActs($("reports-body"));
+    bindReportActs($("reports-cards"));
+    var filterBar = $("reports-filter");
+    if (filterBar) {
+      filterBar.addEventListener("click", function (ev) {
+        var b = ev.target.closest("[data-report-filter]");
+        if (!b) return;
+        setReportFilter(b.getAttribute("data-report-filter"));
+      });
+    }
     var all = $("c-all");
     if (all) all.addEventListener("change", function () {
       if (!all.checked) return;
@@ -677,6 +786,10 @@
     examChecksHtml: examChecksHtml,
     renderUsers: renderUsers,
     renderReports: renderReports,
+    questionLabel: questionLabel,
+    visibleReports: visibleReports,
+    setReportFilter: setReportFilter,
+    getReportFilter: function () { return reportFilter; },
     confirm: function (message, title, label) {
       bindSheetChrome();
       return confirmSheet(title || "请确认", message, label || "确定");

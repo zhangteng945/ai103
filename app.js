@@ -1022,34 +1022,48 @@
     const rec = { qid: q.id, exam: currentExamId, num: q.pdfQuestionNum || q.id, msg: msg.slice(0, 500), ts: dayStr(new Date()) + " " + new Date().toTimeString().slice(0, 5) };
     reportSink(rec);
     const txt = reportText([rec]);
-    alert((copyText(txt) ? L("已保存并复制，请发给 星火：\n\n", "Saved & copied. Please send to 星火:\n\n") : L("已保存，请复制以下内容发给 星火：\n\n", "Saved. Copy this and send to 星火:\n\n")) + txt);
-    // 登录态额外写入云端 issue_reports（经 apiBase 代理；失败不影响本地）
+    const copied = copyText(txt);
+    const IR = window.ITCERT_ISSUE_REPORT;
+    function finish(result) {
+      const ok = !!(result && result.ok);
+      const text = (IR && IR.resultMessage) ? IR.resultMessage(result) : (ok ? "已提交" : "云端提交失败，已仅保存在本机并复制，请发给 星火。");
+      renderQExtras(q);
+      if (IR && IR.showStatus) IR.showStatus(text, ok);
+      else alert(text + (!ok && !copied ? "\n\n" + txt : ""));
+    }
     try {
       const sess = JSON.parse(localStorage.getItem("itcert_account_session_v1") || "null");
       const cfg = window.__ITCERT_ACCOUNT__ || {};
       const sb = window.__AI103_SUPABASE__ || {};
-      const base = String(cfg.apiBase || sb.url || "").replace(/\/+$/, "");
+      const apiBase = String(cfg.apiBase || "").replace(/\/+$/, "");
+      const direct = String(sb.url || (IR && IR.DIRECT_DEFAULT) || "").replace(/\/+$/, "");
       const key = cfg.anonKey || sb.anonKey || "";
-      if (sess && sess.access && sess.user && sess.user.id && base && key) {
-        fetch(base + "/rest/v1/issue_reports", {
-          method: "POST",
-          headers: {
-            apikey: key,
-            Authorization: "Bearer " + sess.access,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify({
-            user_id: sess.user.id,
-            exam_id: String(currentExamId || ""),
-            qid: String(q.id || ""),
-            note: String(msg).slice(0, 500),
-            payload: { num: rec.num, ts: rec.ts, local: true }
-          }),
-          cache: "no-store"
-        }).catch(function () {});
+      if (!(sess && sess.access && sess.user && sess.user.id && key && (apiBase || direct))) {
+        finish({ ok: false, copied: copied, reason: "not-logged-in", offline: !(sess && sess.access) });
+        return;
       }
-    } catch (e) {}
+      if (!IR || typeof IR.postIssueReport !== "function") {
+        finish({ ok: false, copied: copied, error: new Error("报错模块未加载") });
+        return;
+      }
+      IR.postIssueReport({
+        apiBase: apiBase,
+        directBase: direct,
+        anonKey: key,
+        access: sess.access,
+        userId: sess.user.id,
+        examId: currentExamId,
+        qid: q.id,
+        note: msg,
+        payload: { num: rec.num, ts: rec.ts, local: true }
+      }).then(function (r) {
+        finish(Object.assign({ copied: copied }, r));
+      }, function (e) {
+        finish({ ok: false, copied: copied, error: e });
+      });
+    } catch (e) {
+      finish({ ok: false, copied: copied, error: e });
+    }
   }
   function renderQExtras(q) {
     let box = $("#q-extras");

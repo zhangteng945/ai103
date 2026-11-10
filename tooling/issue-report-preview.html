@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>报错提示预览</title>
+  <link rel="stylesheet" href="../styles.css?v=202611102200" />
+  <style>
+    body { margin: 0; background: var(--bg); }
+    .preview-pad { padding: 1rem 1rem 5rem; max-width: 720px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="preview-pad">
+    <header class="topbar" style="position:relative">
+      <div class="brand">
+        <div class="brand-icon">DVA</div>
+        <div>
+          <h1>IT认证练习 · DVA-C02</h1>
+          <div class="sub muted small">AWS Certified Developer – Associate · 600 题</div>
+        </div>
+      </div>
+    </header>
+    <section id="view-practice">
+      <div class="card" id="practice-body">
+        <p class="q-id muted small">#dva-c02-pdf-q1 · 单选题</p>
+        <div class="stem">一家公司正在使用 AWS Lambda 函数开发无服务器应用程序。其中一个 Lambda 函数需要访问位于 VPC 内私有子网的 Amazon RDS 数据库实例。开发者应采取哪些措施？（预览用题干）</div>
+      </div>
+      <div id="q-extras" class="q-extras">
+        <div class="qx-row">
+          <button type="button" class="btn btn-sm">☆ 收藏</button>
+          <button type="button" class="btn btn-sm">⚑ 报错 ✓</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="../js/issue-report.js?v=202611102200"></script>
+</body>
+</html>
