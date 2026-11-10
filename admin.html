@@ -2,68 +2,41 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="author" content="星火" />
   <meta name="robots" content="noindex,nofollow" />
   <title>管理后台 · IT认证练习</title>
-  <link rel="stylesheet" href="styles.css?v=202611100900" />
-  <script src="js/account-config.js?v=202611100900"></script>
-  <script src="js/supabase-config.js?v=202611100900"></script>
-  <style>
-    .admin-wrap { max-width: 1100px; margin: 0 auto; padding: 1rem 1rem 3rem; }
-    .admin-top { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-bottom: 1rem; }
-    .admin-top h1 { font-size: 1.25rem; margin: 0; flex: 1 1 auto; }
-    .admin-msg { min-height: 1.4em; font-size: .9rem; margin: .5rem 0 1rem; }
-    .admin-msg.err { color: var(--danger-strong, #b91c1c); }
-    .admin-msg.ok { color: #15803d; }
-    .admin-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .admin-panel { display: none; }
-    .admin-panel.active { display: block; }
-    .admin-form { display: grid; gap: .65rem; max-width: 520px; }
-    .admin-form label { display: grid; gap: .25rem; font-size: .88rem; }
-    .admin-form input[type=text], .admin-form input[type=number], .admin-form input[type=date] {
-      padding: .45rem .6rem; border-radius: 8px; border: 1px solid rgba(127,127,127,.35); background: var(--bg-card, #fff); color: inherit;
-    }
-    .exam-checks { display: flex; flex-wrap: wrap; gap: .5rem .9rem; }
-    .exam-checks label { display: inline-flex; align-items: center; gap: .3rem; font-size: .88rem; }
-    .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid rgba(127,127,127,.2); }
-    table.admin-table { width: 100%; border-collapse: collapse; font-size: .82rem; min-width: 720px; }
-    table.admin-table th, table.admin-table td { padding: .45rem .5rem; text-align: left; border-bottom: 1px solid rgba(127,127,127,.15); vertical-align: top; }
-    table.admin-table th { background: rgba(127,127,127,.08); position: sticky; top: 0; white-space: nowrap; }
-    table.admin-table tr:hover td { background: rgba(37,99,235,.04); }
-    .st-有效 { color: #15803d; font-weight: 600; }
-    .st-已过期, .st-停用 { color: #b91c1c; font-weight: 600; }
-    .ops { display: flex; flex-wrap: wrap; gap: .25rem; max-width: 220px; }
-    .ops .btn { font-size: .75rem; padding: .25rem .45rem; min-height: 28px; }
-    .pw-box { margin-top: .75rem; padding: .75rem 1rem; border-radius: 10px; background: #fef3c7; color: #92400e; word-break: break-all; }
-    .pw-box code { font-size: 1.05rem; font-weight: 700; }
-    .gate { padding: 2rem 1rem; text-align: center; }
-    @media (max-width: 640px) {
-      .admin-wrap { padding: .75rem .6rem 2.5rem; }
-      table.admin-table { font-size: .78rem; }
-    }
-    .pdf-grid {align-items:start;display:grid;grid-template-columns:1fr 1fr;gap:1rem} .pdf-grid img {max-width:100%;border:1px solid #ddd;margin-bottom:.5rem} .pdf-grid textarea {width:100%;box-sizing:border-box} @media(max-width:760px){.pdf-grid{grid-template-columns:1fr}}
-  </style>
+  <link rel="stylesheet" href="styles.css?v=202611101430" />
+  <script src="js/account-config.js?v=202611101430"></script>
+  <script src="js/supabase-config.js?v=202611101430"></script>
+
 </head>
-<body>
+<body class="admin-page">
   <div class="admin-wrap">
-    <div class="admin-top">
-      <h1>IT认证练习 · 管理后台</h1>
-      <a class="btn btn-sm btn-ghost" href="index.html">← 返回练习站</a>
-      <button type="button" class="btn btn-sm" id="btn-refresh">刷新列表</button>
-    </div>
-    <div id="admin-who" class="muted small"></div>
+    <header class="admin-topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">IT</div>
+        <div>
+          <h1>IT认证练习 · 管理后台</h1>
+          <div id="admin-who" class="sub muted small"></div>
+        </div>
+      </div>
+      <div class="admin-top-actions">
+        <a class="btn btn-sm btn-ghost" href="index.html">← 返回练习站</a>
+        <button type="button" class="btn btn-sm" id="btn-refresh">刷新列表</button>
+      </div>
+    </header>
     <div id="admin-msg" class="admin-msg" role="status"></div>
     <div id="admin-gate" class="gate card hidden">
       <p id="gate-text">正在校验管理员身份…</p>
-      <p><a class="btn btn-sm" href="index.html">返回首页登录</a></p>
+      <p><a class="btn btn-sm btn-primary" href="index.html">返回首页登录</a></p>
     </div>
     <div id="admin-app" class="hidden">
       <div class="admin-tabs" role="tablist">
-        <button type="button" class="btn btn-sm active" data-tab="users">学员列表</button>
-        <button type="button" class="btn btn-sm" data-tab="create">开号</button>
-        <button type="button" class="btn btn-sm" data-tab="reports">报错列表</button>
-        <button type="button" class="btn btn-sm" data-tab="pdf">导入PDF题库</button>
+        <button type="button" class="admin-tab active" data-tab="users">学员列表</button>
+        <button type="button" class="admin-tab" data-tab="create">开号</button>
+        <button type="button" class="admin-tab" data-tab="reports">报错列表</button>
+        <button type="button" class="admin-tab" data-tab="pdf">导入PDF题库</button>
       </div>
       <section id="tab-users" class="admin-panel active card">
         <h2>学员列表</h2>
@@ -91,7 +64,7 @@
             <input type="number" id="c-max" min="0" value="2" />
           </label>
           <div>
-            <div style="font-size:.88rem;margin-bottom:.35rem">可见题库</div>
+            <div class="admin-fieldset-label">可见题库</div>
             <div class="exam-checks" id="c-exams">
               <label><input type="checkbox" value="ai103" checked /> ai103</label>
               <label><input type="checkbox" value="dop-c02" /> dop-c02</label>
@@ -148,11 +121,11 @@
         <p class="muted">正式发布需要另行确认，此页不提供正式发布操作。识别结果仅存本页内存，离开前请导出。</p>
       </section>
     </div>
-    <p class="muted small" style="margin-top:1.5rem">作者：星火 · 管理权限由服务端校验</p>
+    <p class="muted small admin-foot">作者：星火 · 管理权限由服务端校验</p>
   </div>
-  <script src="js/admin.js?v=202611100900"></script>
-  <script src="js/pdf-import-core.js?v=202611100900"></script>
+  <script src="js/admin.js?v=202611101430"></script>
+  <script src="js/pdf-import-core.js?v=202611101430"></script>
   <script src="js/vendor/pdf-import/ocr/tesseract.min.js?v=7.0.0"></script>
-  <script type="module" src="js/pdf-import-ui.mjs?v=202611100900"></script>
+  <script type="module" src="js/pdf-import-ui.mjs?v=202611101430"></script>
 </body>
 </html>

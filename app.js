@@ -1179,7 +1179,7 @@
     if (!graded) return isAns ? { cls: " correct st-ans", tag: tg("t-ok", "✓ 正确答案", "✓ Answer") } : { cls: " st-dim", tag: "" };
     if (isAns && isSel) return { cls: " correct st-ok", tag: "" };
     if (isSel) return { cls: " wrong st-bad", tag: "" };
-    if (isAns) return { cls: " st-miss", tag: "" };
+    if (isAns) return { cls: " correct st-miss", tag: tg("t-ok", "正确答案", "Answer") };
     return { cls: " st-dim", tag: "" };
   }
   function answerSummary(q, sel, graded) {
@@ -2569,6 +2569,12 @@
   }
 
   /* ---- Practice ---- */
+  try {
+    if (window.matchMedia && (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(hover: none)").matches)) {
+      document.body.classList.add("touch");
+    }
+  } catch (e) { /* ignore */ }
+
   function startPractice(filter) {
     if (protectedBanksOn() && !bankMeta.ready) {
       ensureExamMeta(currentExamId).then(function () {
@@ -2602,17 +2608,26 @@
     const ids = state.practiceOrder[state.practiceFilter];
     if (!Array.isArray(ids) || !ids.length) return;
     const byId = {};
-    state.practiceList.forEach((q) => (byId[q.id] = q));
+    state.practiceList.forEach((q) => {
+      const id = resolvePracticeId(q) || q.id;
+      if (id && !byId[id]) byId[id] = q;
+      if (q && q.id != null && !byId[q.id]) byId[q.id] = q;
+    });
     const out = [];
     const seen = {};
     ids.forEach((id) => {
-      if (byId[id] && !seen[id]) {
-        out.push(byId[id]);
-        seen[id] = 1;
+      const key = String(id);
+      if (byId[key] && !seen[key]) {
+        out.push(byId[key]);
+        seen[key] = 1;
       }
     });
     state.practiceList.forEach((q) => {
-      if (!seen[q.id]) out.push(q);
+      const key = String(resolvePracticeId(q) || q.id);
+      if (!seen[key] && (q.id == null || !seen[String(q.id)])) {
+        out.push(q);
+        seen[key] = 1;
+      }
     });
     state.practiceList = out;
   }
@@ -2632,8 +2647,20 @@
       const i = cur ? state.practiceList.findIndex((q) => q.id === cur.id) : 0;
       state.practiceIndex = i >= 0 ? i : 0;
     } else {
-      state.practiceList = shuffle(base);
-      state.practiceOrder[filter] = state.practiceList.map((q) => q.id);
+      const unresolved = (base || []).some((q) => {
+        const id = resolvePracticeId(q);
+        return !id || String(id).indexOf("__") === 0;
+      });
+      if (unresolved) {
+        alert("题库索引未就绪，暂时无法乱序。");
+        return;
+      }
+      const resolved = (base || []).map((q) => {
+        const id = resolvePracticeId(q);
+        return (id && loadedQuestion(id)) || (q && q.id !== id ? Object.assign({}, q, { id: id }) : q);
+      });
+      state.practiceList = shuffle(resolved);
+      state.practiceOrder[filter] = state.practiceList.map((q) => resolvePracticeId(q) || q.id);
       let i = state.practiceList.findIndex((q) => !state.practiceSubmitted[q.id]);
       state.practiceIndex = i >= 0 ? i : 0;
     }
@@ -2720,8 +2747,12 @@
         const f = $("#practice-filter");
         if (f) f.value = "all";
       }
-      let pos = id ? state.practiceList.findIndex((q) => String(q.id) === id) : bankPos;
-      if (pos < 0) pos = Math.min(bankPos, state.practiceList.length - 1);
+      let pos = id ? state.practiceList.findIndex((q) => resolvePracticeId(q) === id || String(q.id) === id) : -1;
+      if (pos < 0 && !isPracticeShuffled() && bankPos >= 0) pos = Math.min(bankPos, Math.max(0, state.practiceList.length - 1));
+      if (pos < 0) {
+        setJumpHint(bi("jumpInvalid", maxQNum()), "warn");
+        return false;
+      }
       state.practiceIndex = pos;
       renderPractice();
       setJumpHint("");
@@ -4044,6 +4075,16 @@
     if (!bankMeta.index || !bankMeta.index.length) return { error: "题库服务未提供题目索引，暂时无法按领域筛选。请使用「全部」。不会下载整库。" };
     return bankMeta.index.filter((e) => e.domain === filter || e.dd === filter).map((e) => loadedQuestion(e.id) || { _stub: true, id: indexEntryId(e), domain: e.domain || e.dd });
   }
+  function resolvePracticeId(q) {
+    if (!q) return "";
+    const raw = q.id != null ? String(q.id) : "";
+    if (raw && raw.indexOf("__") !== 0) return raw;
+    if (q._index != null && bankMeta.index && bankMeta.index[q._index]) {
+      const id = indexEntryId(bankMeta.index[q._index]);
+      if (id) return id;
+    }
+    return raw;
+  }
   function hydratePracticeList() {
     if (!state.practiceList) return;
     if (state.practiceFilter === "all" && !isPracticeShuffled()) {
@@ -4054,7 +4095,10 @@
       state.practiceList = state.practiceList.map((item, i) => state.searchResults[i] || item);
       return;
     }
-    state.practiceList = state.practiceList.map((item) => (item && item.id && loadedQuestion(item.id)) || item);
+    state.practiceList = state.practiceList.map((item) => {
+      const id = resolvePracticeId(item);
+      return (id && loadedQuestion(id)) || item;
+    });
   }
   function ensurePracticeWindow(index) {
     const A = typeof window !== "undefined" ? window.AI103Auth : null;
@@ -4081,7 +4125,8 @@
     }
     const ids = [];
     state.practiceList.slice(Math.max(0, index - 2), index + 20).forEach((q) => {
-      if (q && q._stub && q.id && String(q.id).indexOf("__") !== 0 && !loadedQuestion(q.id)) ids.push(q.id);
+      const id = resolvePracticeId(q);
+      if (id && id.indexOf("__") !== 0 && !loadedQuestion(id)) ids.push(id);
     });
     if (!ids.length || typeof A.loadExamByIds !== "function") return Promise.resolve();
     return A.loadExamByIds(currentExamId, ids).then((qs) => absorbQuestions(qs, null));

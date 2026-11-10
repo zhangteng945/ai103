@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="author" content="星火" />
-  <meta name="description" content="IT认证练习 — AI-103 / DOP-C02 多题库中英对照练习" />
+  <meta name="description" content="IT认证练习 — AI-103、AZ-305、DOP-C02、DP-700、DP-420 多题库中英对照练习" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
   <title>IT认证练习</title>
   <link rel="manifest" href="manifest.webmanifest" />
@@ -12,8 +12,8 @@
   <meta name="theme-color" content="#2563eb" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="IT认证练习" />
-  <link rel="stylesheet" href="styles.css?v=202611100900" />
-  <script src="js/account-config.js?v=202611100900"></script>
+  <link rel="stylesheet" href="styles.css?v=202611101430" />
+  <script src="js/account-config.js?v=202611101430"></script>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
     (function () {
@@ -106,49 +106,58 @@
     </section>
 
     <section id="view-practice" class="hidden">
-      <div class="toolbar">
-        <button type="button" class="btn btn-sm btn-ghost" id="btn-practice-back">← 首页</button>
-        <label class="muted">
-          筛选
-          <select id="practice-filter" aria-label="按领域筛选">
-            <option value="all">全部</option>
-            <option value="flagged">已标记</option>
-            <option value="wrong">错题</option>
-            <option value="unanswered">未作答</option>
-            <option value="plan">规划和管理 Azure AI 解决方案</option>
-            <option value="genai">实现生成式 AI 与智能体解决方案</option>
-            <option value="vision">实现计算机视觉解决方案</option>
-            <option value="text">实现文本分析解决方案</option>
-            <option value="extract">实现信息提取解决方案</option>
-          </select>
-        </label>
-        <button type="button" class="btn btn-sm btn-danger" id="btn-practice-reset">重置进度</button>
-        <button type="button" class="btn btn-sm" id="btn-practice-shuffle" title="随机打乱当前题目顺序">乱序</button>
-        <label class="showans-toggle" id="lbl-practice-showall"><input type="checkbox" id="chk-practice-showall"> <span>始终显示答案（背题模式）</span></label>
-        <div class="progress-wrap">
-          <div class="progress-bar"><i id="practice-progress-bar"></i></div>
-          <div class="progress-label" id="practice-progress-label"></div>
+      <div class="toolbar practice-toolbar">
+        <div class="toolbar-row toolbar-main">
+          <button type="button" class="btn btn-sm btn-ghost" id="btn-practice-back">← 首页</button>
+          <label class="muted toolbar-filter">
+            筛选
+            <select id="practice-filter" aria-label="按领域筛选">
+              <option value="all">全部</option>
+              <option value="flagged">已标记</option>
+              <option value="wrong">错题</option>
+              <option value="unanswered">未作答</option>
+              <option value="plan">规划和管理 Azure AI 解决方案</option>
+              <option value="genai">实现生成式 AI 与智能体解决方案</option>
+              <option value="vision">实现计算机视觉解决方案</option>
+              <option value="text">实现文本分析解决方案</option>
+              <option value="extract">实现信息提取解决方案</option>
+            </select>
+          </label>
+          <button type="button" class="btn btn-sm" id="btn-practice-shuffle" title="随机打乱当前题目顺序">乱序</button>
+          <label class="showans-toggle" id="lbl-practice-showall"><input type="checkbox" id="chk-practice-showall"> <span>始终显示答案（背题模式）</span></label>
+        </div>
+        <div class="toolbar-row toolbar-progress">
+          <div class="progress-wrap">
+            <div class="progress-bar"><i id="practice-progress-bar"></i></div>
+            <div class="progress-label" id="practice-progress-label"></div>
+          </div>
+          <button type="button" class="btn btn-sm btn-ghost toolbar-reset" id="btn-practice-reset">重置进度</button>
         </div>
       </div>
       <div class="card" id="practice-body"></div>
-      <div class="nav-row">
-        <button type="button" class="btn" id="btn-practice-prev">上一题</button>
-        <button type="button" class="btn" id="btn-practice-flag">标记复习</button>
-        <button type="button" class="btn" id="btn-practice-skip">跳过</button>
-        <span class="spacer"></span>
-        <button type="button" class="btn btn-ghost" id="btn-practice-reveal">显示答案</button>
-        <button type="button" class="btn btn-primary" id="btn-practice-submit">提交</button>
-        <button type="button" class="btn" id="btn-practice-next">下一题</button>
-      </div>
-      <form class="jump-row" id="practice-jump" novalidate autocomplete="off">
-        <label class="jump-label" for="practice-jump-input"><span class="jump-pre" id="practice-jump-pre">跳到第</span>
-          <input type="text" id="practice-jump-input" inputmode="numeric" enterkeyhint="go" maxlength="5" placeholder="1–187" aria-describedby="practice-jump-hint" />
-          <span class="jump-suf" id="practice-jump-suf">题</span></label>
-        <button type="submit" class="btn" id="btn-practice-jump">跳转</button>
-        <select id="practice-jump-select" aria-label="选择题号"></select>
-        <span class="jump-hint" id="practice-jump-hint" role="status" aria-live="polite"></span>
-      </form>
       <p class="kbd-hint"><kbd>A</kbd>–<kbd>F</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题 · <kbd>←</kbd><kbd>→</kbd> 切题 · <kbd>?</kbd> 帮助</p>
+      <div class="action-dock" id="practice-dock">
+        <form class="jump-row" id="practice-jump" novalidate autocomplete="off">
+          <label class="jump-label" for="practice-jump-input"><span class="jump-pre" id="practice-jump-pre">跳到第</span>
+            <input type="text" id="practice-jump-input" inputmode="numeric" enterkeyhint="go" maxlength="5" placeholder="1–187" aria-describedby="practice-jump-hint" />
+            <span class="jump-suf" id="practice-jump-suf">题</span></label>
+          <button type="submit" class="btn" id="btn-practice-jump">跳转</button>
+          <select id="practice-jump-select" aria-label="选择题号"></select>
+          <span class="jump-hint" id="practice-jump-hint" role="status" aria-live="polite"></span>
+        </form>
+        <div class="action-bar">
+          <div class="action-secondary">
+            <button type="button" class="btn btn-sm" id="btn-practice-flag">标记复习</button>
+            <button type="button" class="btn btn-sm" id="btn-practice-skip">跳过</button>
+            <button type="button" class="btn btn-sm btn-ghost" id="btn-practice-reveal">显示答案</button>
+          </div>
+          <div class="action-primary">
+            <button type="button" class="btn" id="btn-practice-prev">上一题</button>
+            <button type="button" class="btn btn-primary" id="btn-practice-submit">提交</button>
+            <button type="button" class="btn" id="btn-practice-next">下一题</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="view-exam-config" class="card hidden">
@@ -181,7 +190,7 @@
     </section>
 
     <section id="view-exam" class="hidden">
-      <div class="toolbar">
+      <div class="toolbar exam-toolbar">
         <button type="button" class="btn btn-sm btn-ghost" id="btn-exam-back">← 离开</button>
         <div class="timer" id="exam-timer" aria-live="polite">90:00</div>
         <div class="progress-wrap">
@@ -190,19 +199,22 @@
         </div>
       </div>
       <div class="card" id="exam-body"></div>
-      <div class="card">
-        <div class="muted" style="margin-bottom:0.4rem">题目导航（点击跳转；底边高亮 = 已标记）</div>
+      <div class="card exam-nav-card">
+        <div class="muted exam-nav-legend">题目导航（点击跳转；底边高亮 = 已标记）</div>
         <div class="exam-grid" id="exam-grid"></div>
       </div>
-      <div class="nav-row">
-        <button type="button" class="btn" id="btn-exam-prev">上一题</button>
-        <button type="button" class="btn" id="btn-exam-flag">标记</button>
-        <button type="button" class="btn" id="btn-exam-next">下一题</button>
-        <span class="spacer"></span>
-        <button type="button" class="btn btn-primary" id="btn-exam-submit">交卷</button>
-        <button type="button" class="btn btn-primary hidden" id="btn-exam-to-result">查看成绩</button>
-      </div>
       <p class="kbd-hint"><kbd>A</kbd>–<kbd>F</kbd> 选择 · <kbd>Enter</kbd> 下一题 · <kbd>←</kbd><kbd>→</kbd> 切题 · <kbd>?</kbd> 帮助</p>
+      <div class="action-dock" id="exam-dock">
+        <div class="action-bar exam-action-bar">
+          <div class="action-primary exam-primary">
+            <button type="button" class="btn" id="btn-exam-prev">上一题</button>
+            <button type="button" class="btn" id="btn-exam-flag">标记</button>
+            <button type="button" class="btn" id="btn-exam-next">下一题</button>
+            <button type="button" class="btn btn-primary" id="btn-exam-submit">交卷</button>
+            <button type="button" class="btn btn-primary hidden" id="btn-exam-to-result">查看成绩</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="view-result" class="hidden">
@@ -225,22 +237,22 @@
     </section>
 
     <footer class="app-foot">
-      <span class="foot-text">IT认证练习 · 本地运行 · 进度按题库隔离保存在 localStorage</span>
+      <span class="foot-text">IT认证练习 · 进度按题库隔离保存在本机</span>
       <span class="foot-author">作者：星火</span>
     </footer>
   </div>
 
   <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>正在读取题库信息…</div>
   <!-- Account login (js/account-auth.js, enabled in account-config.js). password-gate.js stays as fallback: it self-disables in account mode. -->
-  <script src="js/supabase-config.js?v=202611100900"></script>
-  <script src="js/progress-core.js?v=202611100900"></script>
-  <script src="js/exam-registry.js?v=202611100900"></script>
-  <script src="js/yn-order.js?v=202611100900"></script>
-  <script src="js/account-auth.js?v=202611100900"></script>
-  <script src="js/password-gate.js?v=202611100900"></script>
-  <script>(function(){var c=window.__ITCERT_ACCOUNT__||{};if(c.enabled&&c.protectedBanks)return;document.write('<script src="questions.js?v=202611100900"><\/script>');try{var x=localStorage.getItem("itcert_exam_id_v1");if(x==="dop-c02"||x==="dp-700"||x==="dp-420")document.write('<script src="banks/questions-'+x+'.js?v=202611100900"><\/script>');}catch(e){}})();</script>
-  <script src="js/image-questions.js?v=202611100900"></script>
-  <script src="js/pdf-text.js?v=202611100900"></script>
-  <script src="app.js?v=202611100900"></script>
+  <script src="js/supabase-config.js?v=202611101430"></script>
+  <script src="js/progress-core.js?v=202611101430"></script>
+  <script src="js/exam-registry.js?v=202611101430"></script>
+  <script src="js/yn-order.js?v=202611101430"></script>
+  <script src="js/account-auth.js?v=202611101430"></script>
+  <script src="js/password-gate.js?v=202611101430"></script>
+  <script>(function(){var c=window.__ITCERT_ACCOUNT__||{};if(c.enabled&&c.protectedBanks)return;document.write('<script src="questions.js?v=202611101430"><\/script>');try{var x=localStorage.getItem("itcert_exam_id_v1");if(x==="dop-c02"||x==="dp-700"||x==="dp-420")document.write('<script src="banks/questions-'+x+'.js?v=202611101430"><\/script>');}catch(e){}})();</script>
+  <script src="js/image-questions.js?v=202611101430"></script>
+  <script src="js/pdf-text.js?v=202611101430"></script>
+  <script src="app.js?v=202611101430"></script>
 </body>
 </html>
