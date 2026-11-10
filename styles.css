@@ -744,12 +744,12 @@ footer.app-foot {
 }
 
 .box-row.correct {
-  border-color: var(--success);
+  border-color: transparent;
   background: var(--success-bg);
 }
 
 .box-row.wrong {
-  border-color: var(--danger);
+  border-color: transparent;
   background: var(--danger-bg);
 }
 
@@ -1739,8 +1739,8 @@ input, select, textarea { font-family: inherit; }
 /* --- Answer areas (dropdown / yes-no / ordering) --- */
 .answer-area { background: var(--bg-elevated); border: 0; border-radius: 14px; }
 .box-row { background: var(--bg-card); border: 1.5px solid transparent; border-radius: 12px; }
-.box-row.correct { border-color: var(--success); background: var(--success-bg); }
-.box-row.wrong { border-color: var(--danger); background: var(--danger-bg); }
+.box-row.correct { border-color: transparent; background: var(--success-bg); }
+.box-row.wrong { border-color: transparent; background: var(--danger-bg); }
 .box-select { background-color: var(--bg-card); border-color: var(--border); }
 .box-select.is-correct { border-color: var(--success); background: var(--success-bg); }
 .box-select.is-wrong { border-color: var(--danger); background: var(--danger-bg); }
@@ -2077,8 +2077,8 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .option.st-ok .oid{background:#fff;color:var(--success);border-color:#fff}
 .option.st-ok .otext{color:#fff}
 .option.st-bad{border:2px solid var(--danger);background:var(--danger-bg)}
-.option.st-miss{border:2px solid var(--success);background:transparent}
-.option.st-miss .oid{background:transparent;color:var(--success);border:2px solid var(--success)}
+.option.st-miss{border:2px dashed var(--success);background:var(--success-bg)}
+.option.st-miss .oid{background:transparent;color:var(--success);border:2px dashed var(--success)}
 .option.st-ans{border:2px solid var(--success)}
 .option.st-dim{opacity:.5;filter:grayscale(1)}
 .option:disabled.st-ok,.option:disabled.st-bad,.option:disabled.st-miss,.option:disabled.st-ans{opacity:1}
@@ -2086,7 +2086,7 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .otag.t-ok{background:#fff;color:var(--success-strong,#15803d)}
 .option.st-ans .otag.t-ok{background:var(--success);color:#fff}
 .otag.t-bad{background:var(--danger);color:#fff}
-.otag.t-miss{border:0;color:var(--success-strong);background:var(--success-bg)}
+.otag.t-miss{border:1.5px dashed var(--success);color:var(--success-strong,#15803d);background:transparent}
 .ans-summary{margin:0 0 .6rem;padding:.45rem .7rem;border-radius:10px;background:var(--bg-soft,rgba(127,127,127,.12));font-size:.92rem}
 .ans-summary.ok{border-left:4px solid var(--success)}.ans-summary.bad{border-left:4px solid var(--danger)}
 .otext .otag{display:table;margin:.4rem 0 0;margin-left:0}
@@ -2102,7 +2102,7 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 
 /* Yes/No after submit: green = correct choice, red = wrong pick, others muted */
 .yn-btn.is-dim { background: var(--fill, transparent); color: var(--text); opacity: 0.55; }
-.yn-btn.picked { box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--text); }
+.yn-btn.picked { box-shadow: none; }
 .yn-btn.is-answer:not(.picked) { opacity: 1; }
 /* answer summary: readable, consistent with option colors */
 .ans-summary{color:var(--text)!important;opacity:1!important;filter:none!important}
@@ -2114,14 +2114,13 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 /* 星火 · 私有PDF图片题，窄屏不横向溢出。 */
 .pdf-question-image{display:block;max-width:100%;height:auto;margin:1rem auto;border:1px solid var(--border);border-radius:.5rem;background:var(--bg-elevated)}
 .self-response-label{display:block;margin:1rem 0}.self-response{display:block;width:100%;box-sizing:border-box;min-height:7rem;padding:.7rem;background:var(--bg-elevated);color:inherit;border:1px solid var(--border);border-radius:.5rem;font-size:16px}
-.self-answer{margin:1rem 0;padding:1rem;border:1px solid var(--border);border-radius:.5rem;overflow-wrap:anywhere;background:var(--bg-elevated)}.correct-only{min-height:1rem;border:2px solid var(--success);background:transparent}.pending-self{border:1px solid var(--border);padding:1rem;margin:1rem 0;background:var(--bg-elevated)}.case-image{max-height:80vh;object-fit:contain}
+.self-answer{margin:1rem 0;padding:1rem;border:1px solid var(--border);border-radius:.5rem;overflow-wrap:anywhere;background:var(--bg-elevated)}.pending-self{border:1px solid var(--border);padding:1rem;margin:1rem 0;background:var(--bg-elevated)}.case-image{max-height:80vh;object-fit:contain}
 
 /* 提交正确仅绿框，不用整块绿色或答案文字提示。 */
-.option.correct.st-ok,.option.correct.st-miss,.option.correct.st-ans,.option.st-miss{background:transparent!important;color:inherit!important;border:2px solid var(--success)!important}
+.option.correct.st-ok,.option.correct.st-ans{background:transparent!important;color:inherit!important;border:2px solid var(--success)!important}
 
-.option.correct.st-ok .otext,.option.correct.st-miss .otext,.option.correct.st-ans .otext,.option.st-miss .otext{color:var(--text)!important}
-.option.correct.st-ok .oid,.option.correct.st-miss .oid,.option.correct.st-ans .oid,.option.st-miss .oid{background:transparent;color:var(--success);border:2px solid var(--success)}
-.correct-only{background:transparent!important}
+.option.correct.st-ok .otext,.option.correct.st-ans .otext{color:var(--text)!important}
+.option.correct.st-ok .oid,.option.correct.st-ans .oid{background:transparent;color:var(--success);border:2px solid var(--success)}
 
 /* Only emitted by the opt-in normalized AZ-305 text renderer. */
 .pdf-text-table-wrap { overflow-x:auto; max-width:100%; margin:1rem 0; }
@@ -2312,31 +2311,9 @@ body.touch #view-practice .hint-keys { display: none !important; }
 .admin-tab:active {
   transform: scale(0.97);
 }
-.feedback.ok.correct-only {
-  animation: correctIn 0.35s var(--press);
-}
-@keyframes correctIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
 .progress-wrap { min-width: 120px; }
 .jump-row input,
 .jump-row select { font-size: 16px; }
-
-/* Missed correct = same solid green outline; label distinguishes it */
-.otag.t-ok,
-.otag.t-miss {
-  border: 0;
-  background: var(--success-bg);
-  color: var(--success-strong);
-  font-weight: 650;
-}
-.option.st-ans .otag.t-ok,
-.option.st-miss .otag.t-ok,
-.option.correct.st-miss .otag.t-ok {
-  background: var(--success-bg);
-  color: var(--success-strong);
-}
 
 @media (max-width: 640px) {
   .app { padding-left: max(0.85rem, env(safe-area-inset-left, 0px)); padding-right: max(0.85rem, env(safe-area-inset-right, 0px)); }
@@ -2369,7 +2346,6 @@ body.touch #view-practice .hint-keys { display: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .feedback.ok.correct-only { animation: none; }
   .progress-bar > i { transition: none; }
 }
 

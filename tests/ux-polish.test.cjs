@@ -10,7 +10,7 @@ const css = fs.readFileSync(path.join(repo, 'styles.css'), 'utf8');
 const index = fs.readFileSync(path.join(repo, 'index.html'), 'utf8');
 const admin = fs.readFileSync(path.join(repo, 'admin.html'), 'utf8');
 
-test('提交后漏选正确选项使用实线绿框和「正确答案」标签，样式不含虚线', () => {
+test('提交后漏选正确选项恢复虚线绿框，且不加「正确答案」标签', () => {
   const start = appSrc.indexOf('  function optGrade(q, opt, isSel, graded) {');
   const end = appSrc.indexOf('\n  function answerSummary', start);
   assert.ok(start >= 0 && end > start);
@@ -20,10 +20,10 @@ test('提交后漏选正确选项使用实线绿框和「正确答案」标签�
   };
   vm.runInNewContext(appSrc.slice(start, end), ctx);
   const missed = ctx.optGrade({ answer: ['A', 'C'] }, { id: 'C' }, false, true);
-  assert.match(missed.cls, /correct/);
   assert.match(missed.cls, /st-miss/);
-  assert.match(missed.tag, /正确答案/);
-  assert.doesNotMatch(missed.tag, /✗/);
+  assert.doesNotMatch(missed.cls, /correct/);
+  assert.equal(missed.tag, '');
+  assert.doesNotMatch(missed.tag, /正确答案/);
   const picked = ctx.optGrade({ answer: ['A'] }, { id: 'A' }, true, true);
   assert.match(picked.cls, /st-ok/);
   assert.equal(picked.tag, '');
@@ -31,11 +31,29 @@ test('提交后漏选正确选项使用实线绿框和「正确答案」标签�
   assert.match(wrong.cls, /st-bad/);
   assert.doesNotMatch(wrong.tag, /✗/);
 
-  const dashedHits = css.match(/\.option(?:\.correct)?\.st-miss[^{]*\{[^}]*dashed|\.otag\.t-miss[^{]*\{[^}]*dashed/g);
-  assert.equal(dashedHits, null);
-  assert.match(css, /\.option\.st-miss\{border:2px solid var\(--success\)/);
-  assert.doesNotMatch(css, /\.option\.st-miss\{[^}]*dashed/);
-  assert.doesNotMatch(css, /\.otag\.t-miss\{[^}]*dashed/);
+  assert.match(css, /\.option\.st-miss\{border:2px dashed var\(--success\)/);
+  assert.match(css, /\.option\.st-miss \.oid\{[^}]*border:2px dashed var\(--success\)/);
+  assert.match(css, /\.otag\.t-miss\{border:1\.5px dashed var\(--success\)/);
+  assert.doesNotMatch(css, /\.option(?:\.correct)?\.st-miss[^{]*\{[^}]*border:2px solid/);
+  assert.match(css, /\.option\.correct\.st-ok[,{]/);
+});
+
+test('答对后页面不含空的 .correct-only 节点', () => {
+  assert.doesNotMatch(appSrc, /class="feedback ok correct-only"/);
+  assert.doesNotMatch(appSrc, /correct-only/);
+  assert.doesNotMatch(css, /\.correct-only/);
+});
+
+test('判断题/下拉卡片提交后不加彩色外框，是/否按钮不再套阴影圈', () => {
+  const rows = css.match(/\.box-row\.(?:correct|wrong)\s*\{[^}]*\}/g) || [];
+  assert.ok(rows.length >= 2, 'missing box-row grade rules');
+  for (const rule of rows) {
+    assert.match(rule, /border-color:\s*transparent/);
+    assert.doesNotMatch(rule, /border-color:\s*var\(--(?:success|danger)\)/);
+  }
+  assert.match(css, /\.yn-btn\.picked\s*\{\s*box-shadow:\s*none/);
+  assert.doesNotMatch(css, /\.yn-btn\.picked\s*\{[^}]*0 0 0 4px/);
+  assert.match(css, /\.slot-value\.empty\s*\{[^}]*dashed/);
 });
 
 test('练习页工具栏与底部操作栏保留全部原有控件，重置不再抢眼', () => {
