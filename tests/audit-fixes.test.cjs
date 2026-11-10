@@ -58,10 +58,43 @@ test('旧四库所有框题沿用相同答错摘要/答对仅绿色规则',{skip
  }
  assert.equal(questions,972);assert(boxes>0);
 });
-test('前台/后台/SW/题库指针统一新版本，旧四库pin未变化',()=>{
- const version='202611100825';
- for(const f of ['index.html','admin.html','sw.js','js/account-config.js','supabase/functions/itc-bank/media.mjs']){
-  const text=fs.readFileSync(path.join(repo,f),'utf8');assert(text.includes(version),f);
-  if(['index.html','admin.html','sw.js'].includes(f))assert(!/202611092331|202611092210/.test(text),f);
+test('前台缓存版本升级，题库指针仍指向202611100825',()=>{
+ const front='202611100900', bank='202611100825';
+ for(const f of ['index.html','admin.html','sw.js']){
+  const text=fs.readFileSync(path.join(repo,f),'utf8');assert(text.includes(front),f);
+  assert(!/202611100825|202611092331|202611092210/.test(text),f);
  }
+ const cfg=fs.readFileSync(path.join(repo,'js/account-config.js'),'utf8');
+ assert(cfg.includes('az305/'+bank+'.json'));
+ assert(!cfg.includes(front));
+ const media=fs.readFileSync(path.join(repo,'supabase/functions/itc-bank/media.mjs'),'utf8');
+ assert(media.includes("AZ_VERSION='"+bank+"'"));
+});
+test('练习模式显示答案：仅自评题隐藏，AZ-305交互题可显示/始终显示',()=>{
+ assert(!/currentExamId === "az305" \|\| isSelfCheck/.test(source));
+ assert(!/const noReveal = currentExamId === "az305" \|\| self/.test(source));
+ const start=source.indexOf('  function isPracticeRevealed(q) {');
+ const end=source.indexOf('\n  }',start);
+ const body=source.slice(start,end+4);
+ assert(body.includes('if (isSelfCheck(q)) return false;'));
+ assert(!body.includes('az305'));
+ const nr=source.indexOf('const noReveal = self;');
+ assert(nr>0);
+ // evaluate isPracticeRevealed against interactive vs self-check
+ const c={window:{ITCERT_IMAGE:require('../js/image-questions.js')},state:{practiceSubmitted:{},practiceShowAll:false,practiceReveal:{}},currentExamId:'az305',isSelfCheck:null};
+ c.isSelfCheck=(q)=>c.window.ITCERT_IMAGE.isSelfCheck(q);
+ vm.createContext(c);
+ vm.runInContext(body,c);
+ const box={id:'az305-pdf-t1-q1',type:'hotspot',control:'select',boxes:[{id:'1',answer:'A',choices:[{key:'A'},{key:'B'}]}],answer:['A']};
+ const selfQ={id:'img1',type:'drag',options:[],answer:[]};
+ assert(c.window.ITCERT_IMAGE.isSelfCheck(selfQ));
+ assert(!c.window.ITCERT_IMAGE.isSelfCheck(box));
+ c.state.practiceReveal[box.id]=true;
+ assert.equal(c.isPracticeRevealed(box),true);
+ assert.equal(c.isPracticeRevealed(selfQ),false);
+ c.state.practiceReveal={};c.state.practiceShowAll=true;
+ assert.equal(c.isPracticeRevealed(box),true);
+ assert.equal(c.isPracticeRevealed(selfQ),false);
+ c.state.practiceShowAll=false;c.state.practiceSubmitted[box.id]=true;c.state.practiceReveal[box.id]=true;
+ assert.equal(c.isPracticeRevealed(box),false);
 });
