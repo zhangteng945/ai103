@@ -2809,6 +2809,40 @@ table.admin-table { display: table; width: 100%; }
 .admin-page .title-short,
 .admin-page .act-short,
 .admin-page .tab-short { display: none; }
+/* Tabs live in the chrome; keep them hidden until the gate opens the app. */
+.admin-page:has(#admin-app.hidden) .admin-tabs { display: none; }
+
+/* Header + tabs share one sticky chrome at every width so a sticky
+   topbar cannot cover the tabs when the page scrolls. */
+.admin-page .admin-chrome {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  margin: 0 calc(0px - max(1rem, env(safe-area-inset-left, 0px))) 1.15rem;
+  padding-bottom: 0.65rem;
+  background: var(--bar-bg-solid, var(--bg-card));
+  border-bottom: 0.5px solid var(--border);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .admin-page .admin-chrome {
+    background: var(--bar-bg, var(--glass, var(--bg-card)));
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+}
+.admin-page .admin-topbar {
+  position: static;
+  z-index: auto;
+  margin: 0;
+  border-bottom: 0;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.admin-page .admin-tabs {
+  margin: 0 max(1rem, env(safe-area-inset-right, 0px)) 0 max(1rem, env(safe-area-inset-left, 0px));
+}
 .admin-page .admin-user-cards,
 .admin-page .admin-report-cards { display: none; }
 .admin-page .admin-user-actions {
@@ -2963,6 +2997,7 @@ body.admin-sheet-open { overflow: hidden; }
     flex-wrap: nowrap;
     align-items: center;
     gap: 0.5rem 0.65rem;
+    padding-bottom: 0.5rem;
   }
   .admin-page .admin-topbar h1 { font-size: 1.02rem; }
   .admin-page .admin-top-actions {
@@ -2974,16 +3009,10 @@ body.admin-sheet-open { overflow: hidden; }
     padding: 0.4rem 0.7rem;
     white-space: nowrap;
   }
-
   .admin-page .admin-tabs {
     display: flex;
     flex-wrap: nowrap;
-    width: 100%;
-    position: -webkit-sticky;
-    position: sticky;
-    top: calc(3.55rem + env(safe-area-inset-top, 0px));
-    z-index: 35;
-    margin-left: 0;
+    width: auto;
     background: var(--fill);
     padding: 3px;
   }
