@@ -2530,6 +2530,46 @@ table.admin-table tr:last-child td { border-bottom: 0; }
 table.admin-table tr:hover td { background: var(--primary-tint); }
 .st-有效 { color: var(--success-strong); font-weight: 600; }
 .st-已过期, .st-停用 { color: var(--danger-strong); font-weight: 600; }
+table.admin-table { min-width: 880px; }
+.admin-reports-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0 0 0.85rem; }
+.admin-seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--fill-2);
+}
+.admin-seg-btn {
+  border: 0;
+  background: transparent;
+  min-height: 36px;
+  padding: 0.28rem 0.95rem;
+  font-weight: 650;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.admin-seg-btn.active {
+  background: var(--bg-elevated);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--border);
+}
+table.admin-table tr.is-resolved td {
+  background: var(--fill-2);
+  color: var(--text-muted);
+}
+table.admin-table tr.is-resolved:hover td { background: var(--fill-2); }
+.admin-page .admin-status.st-未处理 { background: var(--warning-bg); color: var(--warning-strong); }
+.admin-page .admin-status.st-已处理 { background: var(--fill-2); color: var(--text-muted); }
+.issue-report-status {
+  margin: 0.55rem 0 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.issue-report-status.ok { background: var(--success-bg); color: var(--success-strong); }
+.issue-report-status.err { background: var(--warning-bg); color: var(--warning-strong); }
 .ops { display: flex; flex-wrap: wrap; gap: 0.3rem; max-width: 260px; }
 .ops .btn { font-size: 0.75rem; padding: 0.28rem 0.5rem; min-height: 32px; }
 .pw-box {
@@ -3081,10 +3121,24 @@ body.admin-sheet-open { overflow: hidden; }
     padding: 0.45rem 0.35rem;
   }
   .admin-page .admin-report-note {
-    margin: 0;
+    margin: 0 0 0.75rem;
     font-size: 0.9rem;
     overflow-wrap: anywhere;
   }
+  .admin-page .admin-report-card.is-resolved {
+    background: var(--fill-2);
+  }
+  .admin-page .admin-report-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+  .admin-page .admin-report-actions .btn {
+    min-height: 44px;
+    width: 100%;
+    font-size: 0.88rem;
+  }
+  .admin-page .admin-seg-btn { min-height: 44px; }
 
   .admin-page .admin-form {
     max-width: none;

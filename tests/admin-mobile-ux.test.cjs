@@ -26,7 +26,7 @@ test('管理页保留原有入口，并增加手机卡片与操作面板', () =>
     'users-table', 'users-body', 'users-cards', 'create-form', 'c-user',
     'c-days', 'c-max', 'c-exams', 'c-all', 'reports-body', 'reports-cards',
     'admin-overlay', 'admin-sheet', 'admin-sheet-title', 'admin-sheet-body',
-    'admin-sheet-ok', 'admin-sheet-cancel'
+    'admin-sheet-ok', 'admin-sheet-cancel', 'reports-filter'
   ]) {
     assert.ok(adminHtml.includes('id="' + id + '"'), id);
   }
@@ -207,3 +207,39 @@ test('顶栏与标签在窄屏共用一块吸顶区域，互不重叠', () => {
   assert.match(css, /\.admin-page:has\(#admin-app\.hidden\) \.admin-tabs/);
 });
 
+test('报错列表载荷含处理/删除，题号可读，已处理可区分并可筛选', () => {
+  const { ui, document } = loadAdmin();
+  assert.deepEqual(plain(ui.payload.resolveReport('ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b', 'resolved')), {
+    action: 'resolve-report',
+    payload: { id: 'ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b', status: 'resolved' }
+  });
+  assert.deepEqual(plain(ui.payload.resolveReport('ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b', 'open')), {
+    action: 'resolve-report',
+    payload: { id: 'ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b', status: 'open' }
+  });
+  assert.deepEqual(plain(ui.payload.deleteReport('ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b')), {
+    action: 'delete-report',
+    payload: { id: 'ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b' }
+  });
+
+  const rows = [
+    { id: '11111111-1111-4111-8111-111111111111', email: 'lihuiling@ai103.local', exam_id: 'dva-c02', qid: 'dva-c02-pdf-q1', payload: { num: 1 }, note: '选项笔误', created_at_zh: '2026/11/10 21:31:04', status: 'open' },
+    { id: '22222222-2222-4222-8222-222222222222', email: 'zhangteng@ai103.local', exam_id: 'ai103', qid: 'q001', payload: {}, note: '已核对', created_at_zh: '2026/11/10 21:31:05', status: 'resolved' }
+  ];
+  ui.renderReports(rows);
+  const openHtml = document.getElementById('reports-body').innerHTML + document.getElementById('reports-cards').innerHTML;
+  assert.match(openHtml, /第1题/);
+  assert.match(openHtml, /已处理/);
+  assert.match(openHtml, /删除/);
+  assert.doesNotMatch(openHtml, /已核对/);
+  assert.equal(ui.getReportFilter(), 'open');
+  ui.setReportFilter('all');
+  const allHtml = document.getElementById('reports-body').innerHTML + document.getElementById('reports-cards').innerHTML;
+  assert.match(allHtml, /已核对/);
+  assert.match(allHtml, /is-resolved/);
+  assert.match(allHtml, /标为未处理/);
+  assert.equal(ui.questionLabel(rows[0]), '第1题');
+  assert.equal(ui.questionLabel(rows[1]), 'q001');
+  assert.equal(ui.visibleReports(rows, 'open').length, 1);
+  assert.equal(ui.visibleReports(rows, 'all').length, 2);
+});
