@@ -2642,7 +2642,7 @@
   }
 
   function isPracticeRevealed(q) {
-    if (currentExamId === "az305" || isSelfCheck(q)) return false;
+    if (isSelfCheck(q)) return false;
     if (!q || state.practiceSubmitted[q.id]) return false;
     return !!(state.practiceShowAll || state.practiceReveal[q.id]);
   }
@@ -2934,7 +2934,7 @@
     renderJumpSelect();
 
     $("#btn-practice-submit").disabled = submitted || revealed || (self ? selfShown : !allBoxesSelected(q, selected));
-    const noReveal = currentExamId === "az305" || self;
+    const noReveal = self;
     $("#lbl-practice-showall").hidden = noReveal;
     $("#lbl-practice-showall").classList.toggle("hidden",noReveal);
     const rb = $("#btn-practice-reveal");
