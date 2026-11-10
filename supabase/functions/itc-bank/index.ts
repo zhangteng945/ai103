@@ -9,13 +9,15 @@
 // index items have no stems: {id, domain, type, control, caseStudy, caseStudyId, boxes, yn, dd, n?}
 // Rate limit: 120 requests / 5 min per user+exam.
 import { createClient } from "npm:@supabase/supabase-js@2";
-import {hasAzAccess,mediaPath,signMedia,AZ_VERSION} from "./media.mjs";
+import {hasRestrictedExamAccess,mediaPath,signMedia,AZ_VERSION,DVA_VERSION} from "./media.mjs";
 
-const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420", "az305"] as const;
+const ALLOWED_EXAMS = ["ai103", "dop-c02", "dp-700", "dp-420", "az305", "dva-c02"] as const;
 type ExamId = (typeof ALLOWED_EXAMS)[number];
+const RESTRICTED_EXAMS = new Set<ExamId>(["az305", "dva-c02"]);
 
 const DEFAULT_VERSIONS: Record<ExamId, string> = {
   az305: AZ_VERSION,
+  "dva-c02": DVA_VERSION,
   ai103: "202611011910",
   "dop-c02": "202611011900",
   "dp-700": "202611011900",
@@ -367,7 +369,7 @@ Deno.serve(async (req: Request) => {
   try { params = await parseParams(req); } catch { return err("参数无效"); }
   if (!params.exam) return err("缺少 exam");
   if (!isExamId(params.exam)) return err("未知 exam：" + params.exam);
-  if (params.exam === "az305" ? !hasAzAccess(am) : !hasExam(am, params.exam)) return err("无该题库权限", 403);
+  if (RESTRICTED_EXAMS.has(params.exam as ExamId) ? !hasRestrictedExamAccess(am, params.exam) : !hasExam(am, params.exam)) return err("无该题库权限", 403);
   if (params.ids && params.sample != null) return err("ids 与 sample 不能同时使用");
   if (params.q && (params.ids || params.sample != null)) return err("q 不能与 ids 或 sample 同时使用");
   if (params.ids && params.ids.length > MAX_LIMIT) return err(`ids 最多 ${MAX_LIMIT} 个`, 400);

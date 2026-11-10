@@ -86,13 +86,18 @@ test('练习页工具栏与底部操作栏保留全部原有控件，重置不�
 });
 
 test('管理页保留原有功能入口与标识，样式改走全局主题', () => {
-  for (const id of ['admin-who', 'admin-msg', 'admin-gate', 'admin-app', 'btn-refresh', 'users-table', 'users-body', 'create-form', 'c-user', 'c-days', 'c-max', 'c-exams', 'c-all', 'reports-body', 'tab-pdf', 'pdf-start', 'pdf-save']) {
+  for (const id of ['admin-who', 'admin-msg', 'admin-gate', 'admin-app', 'btn-refresh', 'users-table', 'users-body', 'create-form', 'c-user', 'c-days', 'c-max', 'c-exams', 'c-all', 'reports-body']) {
     assert.ok(admin.includes('id="' + id + '"'), id);
   }
   assert.match(admin, /data-tab="users"/);
   assert.match(admin, /data-tab="create"/);
   assert.match(admin, /data-tab="reports"/);
+  const visibleAdmin = admin.replace(/<!--[\s\S]*?-->/g, '');
+  assert.doesNotMatch(visibleAdmin, /data-tab="pdf"/);
+  assert.doesNotMatch(visibleAdmin, /id="tab-pdf"|pdf-import-core|tesseract\.min|pdf-import-ui/);
+  assert.match(admin, /<!-- PDF 导入暂停 2026-11-10，恢复时取消注释 -->/);
   assert.match(admin, /data-tab="pdf"/);
+  assert.match(admin, /id="tab-pdf"/);
   assert.match(admin, /作者：星火/);
   assert.match(admin, /class="admin-page"/);
   assert.doesNotMatch(admin, /<style>/);

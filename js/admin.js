@@ -10,7 +10,7 @@
   var DIRECT = String(SB.url || "").replace(/\/+$/, "");
   var KEY = CFG.anonKey || SB.anonKey || "";
   var SESSION_KEY = "itcert_account_session_v1";
-  var EXAM_OPTS = ["ai103", "dop-c02", "dp-700", "dp-420", "az305", "*"];
+  var EXAM_OPTS = ["ai103", "dop-c02", "dp-700", "dp-420", "az305", "dva-c02", "*"];
   var DEFAULT_DAYS = 30;
   var DEFAULT_MAX_DEVICES = 2;
 
@@ -36,6 +36,7 @@
   function examLabel(v) {
     if (v === "*") return "全部 (*)";
     if (v === "az305") return "AZ-305";
+    if (v === "dva-c02") return "DVA-C02";
     return v;
   }
 
