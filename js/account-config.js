@@ -28,7 +28,7 @@ window.__ITCERT_ACCOUNT__ = {
   // Fill versions after: node scripts/admin-accounts.mjs upload-bank <examId> <file.js> <version>
   protectedBanks: true,
   banks: {
-    "az305": "az305/202611092331.json",
+    "az305": "az305/202611100825.json",
     "ai103":   "ai103/202611011910.js",
     "dop-c02": "dop-c02/202611011900.js",
     "dp-700":  "dp-700/202611011900.js",

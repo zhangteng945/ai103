@@ -13,7 +13,7 @@
     "test:pdf:browser": "node tooling/test-pdf-browser.mjs",
     "test:pdf:routing": "node tooling/test-pdf-routing.mjs",
     "test:pdf:save": "node tooling/test-pdf-save.mjs",
-    "test:release": "node tooling/test-az305-interactive.cjs /workspace/ai103-redo-work/interactive/full-draft/bank-final.json && node tooling/validate-az305-interactive.cjs /workspace/ai103-redo-work/interactive/full-draft/bank-final.json --full",
+    "test:release": "node tooling/test-az305-interactive.cjs /workspace/ai103-redo-work/interactive/audit-fix-202611100825/bank-final.json && node tooling/validate-az305-interactive.cjs /workspace/ai103-redo-work/interactive/audit-fix-202611100825/bank-final.json --full",
     "package:az305": "node tooling/package-az305-interactive.mjs",
     "test:release:legacy": "node tooling/test-release.mjs"
   },
