@@ -1331,6 +1331,8 @@
   }
 
   function shuffleOptions(q) {
+    // Text referring to original option letters/groups must keep its PDF order.
+    if (q && q.preserveOptionOrder === true) return q;
     if (isSelfCheck(q) || (q.questionImages && q.questionImages.length)) return q;
     const YN = typeof window !== "undefined" ? window.ITCERT_YN : null;
     if (YN && typeof YN.keepOptionOrder === "function" && YN.keepOptionOrder(q)) return q;
@@ -2286,6 +2288,18 @@
     return pickText(b.positionNoteZh || b.positionNote, b.positionNoteEn || b.positionNote);
   }
 
+  /** Shared by all banks: incorrect boxes show both values; correct boxes stay green only. */
+  function boxFeedbackText(b, val) {
+    const choices = b.choices || [];
+    const answer = choices.find((c) => sameKey(choiceKey(c), b.answer));
+    const picked = choices.find((c) => sameKey(choiceKey(c), val));
+    const ansText = inl(answer ? choiceText(answer) : b.answer);
+    if (revealOnly) return escapeHtml(caLabel() + ansText);
+    if (sameKey(val, b.answer)) return "";
+    const pickedText = val ? inl(picked ? choiceText(picked) : val) : "未选择";
+    return escapeHtml("正确答案：" + ansText + " ｜ 你的选择：" + pickedText);
+  }
+
   function renderOneSelectHtml(q, b, selectedVal, submittedOrReview, selectIdPrefix, inline) {
     const order = getBoxOrder(q);
     const pack = t();
@@ -2322,15 +2336,8 @@
     });
     html += "</select>";
     if (submittedOrReview) {
-      const chAns = (b.choices || []).find((c) => choiceKey(c) === b.answer);
-      const ansTxt = chAns ? choiceText(chAns) : b.answer;
-      const ok = sameKey(val, b.answer);
-      html +=
-        '<span class="box-mark' +
-        (inline ? " inline-mark" : "") +
-        '">' +
-        (ok ? okMark(ansTxt) : "✗ " + escapeHtml(caLabel()) + escapeHtml(inl(ansTxt))) +
-        "</span>";
+      const feedback = boxFeedbackText(b, val);
+      if (feedback) html += '<span class="box-mark' + (inline ? " inline-mark" : "") + '">' + feedback + "</span>";
     }
     return html;
   }
@@ -2474,14 +2481,8 @@
       });
       html += "</div>";
       if (submittedOrReview) {
-        const chAns = (b.choices || []).find((c) => choiceKey(c) === b.answer);
-        const ansTxt = chAns ? choiceText(chAns) : b.answer;
-        html +=
-          '<div class="box-mark">' +
-          (sameKey(val, b.answer)
-            ? okMark(ansTxt)
-            : "✗ " + escapeHtml(caLabel()) + escapeHtml(inl(ansTxt))) +
-          "</div>";
+        const feedback = boxFeedbackText(b, val);
+        if (feedback) html += '<div class="box-mark">' + feedback + "</div>";
       }
       html += "</div>";
     });
@@ -2544,14 +2545,8 @@
         html += '<div class="slot-value empty">' + escapeHtml(pack.emptySlot) + "</div>";
       }
       if (submittedOrReview) {
-        const chAns = (b.choices || []).find((c) => choiceKey(c) === b.answer);
-        const ansTxt = chAns ? choiceText(chAns) : b.answer;
-        html +=
-          '<div class="box-mark">' +
-          (sameKey(val, b.answer)
-            ? okMark(ansTxt)
-            : "✗ " + escapeHtml(caLabel()) + escapeHtml(inl(ansTxt))) +
-          "</div>";
+        const feedback = boxFeedbackText(b, val);
+        if (feedback) html += '<div class="box-mark">' + feedback + "</div>";
       }
       html += "</div>";
     });
