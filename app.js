@@ -1179,7 +1179,7 @@
     if (!graded) return isAns ? { cls: " correct st-ans", tag: tg("t-ok", "✓ 正确答案", "✓ Answer") } : { cls: " st-dim", tag: "" };
     if (isAns && isSel) return { cls: " correct st-ok", tag: "" };
     if (isSel) return { cls: " wrong st-bad", tag: "" };
-    if (isAns) return { cls: " correct st-miss", tag: tg("t-ok", "正确答案", "Answer") };
+    if (isAns) return { cls: " st-miss", tag: "" };
     return { cls: " st-dim", tag: "" };
   }
   function answerSummary(q, sel, graded) {
@@ -2960,7 +2960,6 @@
       html += "</div>";
     }
 
-    if (submitted && isCorrect(q, selected)) html += '<div class="feedback ok correct-only" aria-label="回答正确"></div>';
     $("#practice-body").innerHTML = html;
     renderJumpSelect();
 
@@ -3522,7 +3521,6 @@
     }
 
     html += "</div>";
-    if(reviewMode && isCorrect(q,selected))html+='<div class="feedback ok correct-only" aria-label="回答正确"></div>';
     $("#exam-body").innerHTML = html;
     bindQuestionImages("#exam-body");
     if(self)bindSelfPanel(q,"exam","#exam-body");
