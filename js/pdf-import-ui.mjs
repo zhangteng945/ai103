@@ -41,7 +41,7 @@ $('pdf-export').onclick=()=>{try{download(getCandidate(),'PDF候选题库.json')
 $('pdf-save').onclick=async()=>{
  if(!window.ITCertPdfAdmin){status('请先登录管理员');return;}
  let candidate;try{candidate=getCandidate();}catch(e){status(e.message);return;}
- if(!confirm('仅保存为新的私有候选题库，不发布、不替换现有题库。确认上传？'))return;
+ const ok=window.ITCertAdminUI&&window.ITCertAdminUI.confirm?await window.ITCertAdminUI.confirm('仅保存为新的私有候选题库，不发布、不替换现有题库。确认上传？','保存候选题库','确认上传'):confirm('仅保存为新的私有候选题库，不发布、不替换现有题库。确认上传？');if(!ok)return;
  busy=true;buttons();
  try{
   const api=window.ITCertPdfAdmin;const {id}=await api.call('begin',{});

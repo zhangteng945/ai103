@@ -17,13 +17,16 @@
       <div class="brand">
         <div class="brand-icon" aria-hidden="true">IT</div>
         <div>
-          <h1>IT认证练习 · 管理后台</h1>
+          <h1>
+            <span class="title-full">IT认证练习 · 管理后台</span>
+            <span class="title-short">管理后台</span>
+          </h1>
           <div id="admin-who" class="sub muted small"></div>
         </div>
       </div>
       <div class="admin-top-actions">
-        <a class="btn btn-sm btn-ghost" href="index.html">← 返回练习站</a>
-        <button type="button" class="btn btn-sm" id="btn-refresh">刷新列表</button>
+        <a class="btn btn-sm btn-ghost" href="index.html"><span class="act-full">← 返回练习站</span><span class="act-short">返回</span></a>
+        <button type="button" class="btn btn-sm" id="btn-refresh"><span class="act-full">刷新列表</span><span class="act-short">刷新</span></button>
       </div>
     </header>
     <div id="admin-msg" class="admin-msg" role="status"></div>
@@ -33,14 +36,22 @@
     </div>
     <div id="admin-app" class="hidden">
       <div class="admin-tabs" role="tablist">
-        <button type="button" class="admin-tab active" data-tab="users">学员列表</button>
-        <button type="button" class="admin-tab" data-tab="create">开号</button>
-        <button type="button" class="admin-tab" data-tab="reports">报错列表</button>
-        <button type="button" class="admin-tab" data-tab="pdf">导入PDF题库</button>
+        <button type="button" class="admin-tab active" data-tab="users" aria-label="学员列表">
+          <span class="tab-full">学员列表</span><span class="tab-short">学员</span>
+        </button>
+        <button type="button" class="admin-tab" data-tab="create" aria-label="开号">
+          <span class="tab-full">开号</span><span class="tab-short">开号</span>
+        </button>
+        <button type="button" class="admin-tab" data-tab="reports" aria-label="报错列表">
+          <span class="tab-full">报错列表</span><span class="tab-short">报错</span>
+        </button>
+        <button type="button" class="admin-tab" data-tab="pdf" aria-label="导入PDF题库">
+          <span class="tab-full">导入PDF题库</span><span class="tab-short">导入</span>
+        </button>
       </div>
       <section id="tab-users" class="admin-panel active card">
         <h2>学员列表</h2>
-        <div class="admin-table-wrap">
+        <div class="admin-table-wrap admin-users-table">
           <table class="admin-table" id="users-table">
             <thead>
               <tr>
@@ -50,6 +61,7 @@
             <tbody id="users-body"></tbody>
           </table>
         </div>
+        <div class="admin-user-cards" id="users-cards"></div>
       </section>
       <section id="tab-create" class="admin-panel card">
         <h2>开号</h2>
@@ -81,7 +93,7 @@
       <section id="tab-reports" class="admin-panel card">
         <h2>报错列表</h2>
         <p class="muted small">来自学员练习页「报错」；登录后会写入云端。</p>
-        <div class="admin-table-wrap">
+        <div class="admin-table-wrap admin-reports-table">
           <table class="admin-table">
             <thead>
               <tr><th>时间</th><th>账号</th><th>题库</th><th>题号</th><th>说明</th></tr>
@@ -89,25 +101,38 @@
             <tbody id="reports-body"></tbody>
           </table>
         </div>
+        <div class="admin-report-cards" id="reports-cards"></div>
       </section>
       <section id="tab-pdf" class="admin-panel card">
         <h2>手动导入PDF题库</h2>
         <p>星火 · 文字页直接提取，图片页本机识别。只采用PDF答案标注，不采用讨论答案。原文件不会上传。</p>
         <p>先预览校对，再保存为隔离的候选；不会覆盖旧题库，不会自动发布。文字识别并不等于理解圈选/热区，图片答案请对照原图编辑。</p>
-        <div class="admin-form">
+        <div class="admin-form pdf-setup">
           <label>题库名称<input id="pdf-bank-name" type="text" value="AZ-305" maxlength="80"></label>
           <label>PDF文件（最多256兆字节、1500页）<input id="pdf-file" type="file" accept=".pdf,application/pdf"></label>
           <label>识别语言<select id="pdf-language"><option value="eng">英文</option><option value="eng+chi_sim">中英混合</option></select></label>
           <label>起始页<input id="pdf-from" type="number" value="1" min="1"></label>
           <label>结束页（留空表示全部；扫描大文件建议分批）<input id="pdf-to" type="number" min="1"></label>
         </div>
-        <p><button id="pdf-start" class="btn" type="button">自动识别并预览</button> <button id="pdf-stop" class="btn" type="button" disabled>停止识别</button></p>
-        <p id="pdf-status" role="status" aria-live="polite">尚未选择文件；识别过程不连接后端。</p>
-        <div id="pdf-editor" hidden>
-          <p id="pdf-index"></p><p id="pdf-notes" class="muted"></p>
-          <p><button id="pdf-prev" class="btn" type="button">上一题</button> <button id="pdf-next" class="btn" type="button">下一题</button></p>
+        <div class="pdf-toolbar">
+          <button id="pdf-start" class="btn btn-primary" type="button">自动识别并预览</button>
+          <button id="pdf-stop" class="btn" type="button" disabled>停止识别</button>
+        </div>
+        <p id="pdf-status" class="pdf-status" role="status" aria-live="polite">尚未选择文件；识别过程不连接后端。</p>
+        <div id="pdf-editor" class="pdf-editor" hidden>
+          <div class="pdf-editor-nav">
+            <p id="pdf-index"></p>
+            <p id="pdf-notes" class="muted"></p>
+            <div class="pdf-pager">
+              <button id="pdf-prev" class="btn" type="button">上一题</button>
+              <button id="pdf-next" class="btn" type="button">下一题</button>
+            </div>
+          </div>
           <div class="pdf-grid">
-            <div><h3>题目原图</h3><div id="pdf-question-images"></div><h3>PDF答案区原图</h3><div id="pdf-answer-images"></div></div>
+            <div class="pdf-preview">
+              <h3>题目原图</h3><div id="pdf-question-images"></div>
+              <h3>PDF答案区原图</h3><div id="pdf-answer-images"></div>
+            </div>
             <div class="admin-form">
               <label>题型<select id="pdf-type"><option value="single">单选</option><option value="multi">多选</option><option value="image">图片题</option><option value="hotspot">热区题</option><option value="drag">拖拽题</option></select></label>
               <label>题干<textarea id="pdf-stem" rows="12"></textarea></label>
@@ -117,11 +142,27 @@
             </div>
           </div>
         </div>
-        <p><button id="pdf-export" type="button" class="btn" disabled>导出候选文件</button> <button id="pdf-save" type="button" class="btn" disabled>保存为私有候选题库</button></p>
+        <div class="pdf-toolbar">
+          <button id="pdf-export" type="button" class="btn" disabled>导出候选文件</button>
+          <button id="pdf-save" type="button" class="btn btn-primary" disabled>保存为私有候选题库</button>
+        </div>
         <p class="muted">正式发布需要另行确认，此页不提供正式发布操作。识别结果仅存本页内存，离开前请导出。</p>
       </section>
     </div>
     <p class="muted small admin-foot">作者：星火 · 管理权限由服务端校验</p>
+  </div>
+  <div id="admin-overlay" class="admin-overlay hidden" hidden>
+    <div class="admin-overlay-backdrop" data-sheet-dismiss="1"></div>
+    <div id="admin-sheet" class="admin-sheet" role="dialog" aria-modal="true" aria-labelledby="admin-sheet-title">
+      <div class="admin-sheet-handle" aria-hidden="true"></div>
+      <h3 id="admin-sheet-title"></h3>
+      <p id="admin-sheet-desc" class="muted small"></p>
+      <div id="admin-sheet-body" class="admin-form"></div>
+      <div class="admin-sheet-actions">
+        <button type="button" class="btn" id="admin-sheet-cancel">取消</button>
+        <button type="button" class="btn btn-primary" id="admin-sheet-ok">确定</button>
+      </div>
+    </div>
   </div>
   <script src="js/admin.js?v=202611101615"></script>
   <script src="js/pdf-import-core.js?v=202611101615"></script>
