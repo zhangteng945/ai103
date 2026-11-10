@@ -54,9 +54,13 @@ test('练习页工具栏与底部操作栏保留全部原有控件，重置不�
   assert.match(index, /id="exam-dock"/);
   assert.match(index, /action-primary/);
   const practice = index.slice(index.indexOf('id="view-practice"'), index.indexOf('id="view-exam-config"'));
-  const dockAt = practice.indexOf('id="practice-dock"');
+  const bodyAt = practice.indexOf('id="practice-body"');
   const jumpAt = practice.indexOf('id="practice-jump"');
-  assert.ok(jumpAt > dockAt && dockAt > 0, '跳转应并入底部操作栏');
+  const dockAt = practice.indexOf('id="practice-dock"');
+  assert.ok(bodyAt >= 0 && jumpAt > bodyAt && dockAt > jumpAt, '跳转应在题目和底部操作栏之间，不进底部栏');
+  assert.match(practice, /jump-row-quiet/);
+  const dock = practice.slice(dockAt);
+  assert.doesNotMatch(dock, /id="practice-jump"/);
   assert.match(index, /进度按题库隔离保存在本机/);
   assert.doesNotMatch(index, /本地运行/);
   assert.match(index, /AZ-305/);
