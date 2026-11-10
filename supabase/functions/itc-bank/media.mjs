@@ -1,5 +1,10 @@
 export const AZ_VERSION='202611100825';
-export function hasAzAccess(am){return am?.role==='admin'||(Array.isArray(am?.exams)&&am.exams.includes('az305'));}
+export const DVA_VERSION='202611102145';
+export function hasRestrictedExamAccess(am, examId){
+  return am?.role==='admin'||(Array.isArray(am?.exams)&&am.exams.includes(examId));
+}
+export function hasAzAccess(am){return hasRestrictedExamAccess(am,'az305');}
+export function hasDvaAccess(am){return hasRestrictedExamAccess(am,'dva-c02');}
 export function mediaPath(path,version){return typeof path==='string' && path.startsWith(`az305/${version}/media/`) && /^az305\/[A-Za-z0-9._-]{1,64}\/media\/[a-zA-Z0-9._-]+\.png$/.test(path) ? path : null;}
 export async function signMedia(client,questions,version){
  const paths=new Set();for(const q of questions)for(const field of ['questionImages','answerImages','caseStudyImages'])for(const a of q[field]||[]){const path=mediaPath(a.file,version);if(!path)throw Error('媒体路径无效');paths.add(path);}

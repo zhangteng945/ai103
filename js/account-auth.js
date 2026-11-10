@@ -133,8 +133,12 @@
     return ex;
   }
   var origList = null, origGet = null;
+  function isRestrictedExam(id) { return id === "az305" || id === "dva-c02"; }
   function canAccessExam(id) {
-    if(id === "az305") { var u=state.session&&state.session.user; return !!u && (u.role==="admin" || (Array.isArray(u.exams) && u.exams.indexOf("az305")>=0)); }
+    if (isRestrictedExam(id)) {
+      var u = state.session && state.session.user;
+      return !!u && (u.role === "admin" || (Array.isArray(u.exams) && u.exams.indexOf(id) >= 0));
+    }
     var allow = allowedExams();
     if (!allow) return true;
     return allow.indexOf(id) >= 0;
@@ -154,9 +158,9 @@
         if (cand && cand.id === allow[i]) { first = allow[i]; break; }
       }
     }
-    api.get = function (id) { if (allow && allow.indexOf(id) < 0 && !(id === "az305" && canAccessExam(id))) id = first; return origGet.call(api, id); };
+    api.get = function (id) { if (allow && allow.indexOf(id) < 0 && !canAccessExam(id)) id = first; return origGet.call(api, id); };
     var oldLoad = api._origLoad || api.loadSavedExamId; api._origLoad = oldLoad;
-    api.loadSavedExamId = function () { var id = oldLoad.call(api); return allow && allow.indexOf(id) < 0 && !(id === "az305" && canAccessExam(id)) ? first : id; };
+    api.loadSavedExamId = function () { var id = oldLoad.call(api); return allow && allow.indexOf(id) < 0 && !canAccessExam(id) ? first : id; };
     var css = $("itcert-ent-css"); if (css) css.textContent = "";
   }
   /* -------- boot gate (auth ready; bank downloads do not block this) -------- */
@@ -182,7 +186,7 @@
   var BANK_IDS_MAX = 80;
   var BANK_DIRECT = "https://paswovhtsoljydywdmvb.supabase.co";
   var BANK_CACHE = "itcert-banks-v1";
-  var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420", "az305": "QUESTIONS_AZ305" };
+  var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420", "az305": "QUESTIONS_AZ305", "dva-c02": "QUESTIONS_DVA_C02" };
   var bankMem = {};
   var bankInflight = {};
   var bankOrigin = "";

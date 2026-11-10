@@ -77,7 +77,7 @@ test('操作面板替换 prompt/confirm，API 载荷形状保持不变', () => {
 
   const { ui } = loadAdmin();
   assert.ok(ui && ui.payload);
-  assert.deepEqual(plain(ui.EXAM_OPTS), ['ai103', 'dop-c02', 'dp-700', 'dp-420', 'az305', '*']);
+  assert.deepEqual(plain(ui.EXAM_OPTS), ['ai103', 'dop-c02', 'dp-700', 'dp-420', 'az305', 'dva-c02', '*']);
   assert.equal(ui.DEFAULT_DAYS, 30);
   assert.equal(ui.DEFAULT_MAX_DEVICES, 2);
 
@@ -159,7 +159,7 @@ test('学员列表同时输出桌面表格与手机卡片，操作仅主按钮+�
   assert.match(cards, /data-status='停用'/);
 
   const html = ui.examChecksHtml(['ai103'], 's-');
-  for (const id of ['ai103', 'dop-c02', 'dp-700', 'dp-420', 'az305', '*']) {
+  for (const id of ['ai103', 'dop-c02', 'dp-700', 'dp-420', 'az305', 'dva-c02', '*']) {
     assert.match(html, new RegExp("value='" + id.replace('*', '\\*') + "'"));
   }
 });

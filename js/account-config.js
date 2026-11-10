@@ -29,6 +29,7 @@ window.__ITCERT_ACCOUNT__ = {
   protectedBanks: true,
   banks: {
     "az305": "az305/202611100825.json",
+    "dva-c02": "dva-c02/202611102145.json",
     "ai103":   "ai103/202611011910.js",
     "dop-c02": "dop-c02/202611011900.js",
     "dp-700":  "dp-700/202611011900.js",

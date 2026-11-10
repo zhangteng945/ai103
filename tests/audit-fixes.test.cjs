@@ -59,16 +59,18 @@ test('旧四库所有框题沿用相同答错摘要/答对仅绿色规则',{skip
  assert.equal(questions,972);assert(boxes>0);
 });
 test('前台缓存版本升级，题库指针仍指向202611100825',()=>{
- const front='202611101830', bank='202611100825';
+ const front='202611102145', bank='202611100825';
  for(const f of ['index.html','admin.html','sw.js']){
   const text=fs.readFileSync(path.join(repo,f),'utf8');assert(text.includes(front),f);
   assert(!/202611100825|202611092331|202611092210/.test(text),f);
  }
  const cfg=fs.readFileSync(path.join(repo,'js/account-config.js'),'utf8');
  assert(cfg.includes('az305/'+bank+'.json'));
- assert(!cfg.includes(front));
+ assert(!cfg.includes('az305/'+front+'.json'));
+ assert(cfg.includes('dva-c02/'+front+'.json'));
  const media=fs.readFileSync(path.join(repo,'supabase/functions/itc-bank/media.mjs'),'utf8');
  assert(media.includes("AZ_VERSION='"+bank+"'"));
+ assert(media.includes("DVA_VERSION='"+front+"'"));
 });
 test('练习模式显示答案：仅自评题隐藏，AZ-305交互题可显示/始终显示',()=>{
  assert(!/currentExamId === "az305" \|\| isSelfCheck/.test(source));
