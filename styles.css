@@ -745,12 +745,12 @@ footer.app-foot {
 
 .box-row.correct {
   border-color: transparent;
-  background: var(--success-bg);
+  background: var(--bg-card);
 }
 
 .box-row.wrong {
   border-color: transparent;
-  background: var(--danger-bg);
+  background: var(--bg-card);
 }
 
 .box-label {
@@ -857,15 +857,21 @@ footer.app-foot {
   border-color: var(--primary);
   color: #fff;
 }
-.yn-btn.is-answer {
-  background: var(--success);
-  border-color: var(--success);
-  color: #fff;
+.yn-btn.is-answer.picked {
+  background: transparent;
+  border: 2px solid var(--success);
+  color: inherit;
+}
+.yn-btn.is-answer:not(.picked) {
+  background: var(--success-bg);
+  border: 2px dashed var(--success);
+  color: inherit;
+  opacity: 1;
 }
 .yn-btn.is-wrong {
-  background: var(--danger);
-  border-color: var(--danger);
-  color: #fff;
+  background: var(--danger-bg);
+  border: 2px solid var(--danger);
+  color: inherit;
 }
 .yn-btn:disabled {
   cursor: default;
@@ -1033,13 +1039,18 @@ footer.app-foot {
 }
 
 .box-select.is-correct {
-  border-color: var(--success);
-  background: var(--success-bg);
+  border: 2px solid var(--success);
+  background: transparent;
 }
 
 .box-select.is-wrong {
-  border-color: var(--danger);
+  border: 2px solid var(--danger);
   background: var(--danger-bg);
+}
+
+.box-select.is-miss {
+  border: 2px dashed var(--success);
+  background: var(--success-bg);
 }
 
 .box-mark.inline-mark {
@@ -1739,11 +1750,12 @@ input, select, textarea { font-family: inherit; }
 /* --- Answer areas (dropdown / yes-no / ordering) --- */
 .answer-area { background: var(--bg-elevated); border: 0; border-radius: 14px; }
 .box-row { background: var(--bg-card); border: 1.5px solid transparent; border-radius: 12px; }
-.box-row.correct { border-color: transparent; background: var(--success-bg); }
-.box-row.wrong { border-color: transparent; background: var(--danger-bg); }
+.box-row.correct { border-color: transparent; background: var(--bg-card); }
+.box-row.wrong { border-color: transparent; background: var(--bg-card); }
 .box-select { background-color: var(--bg-card); border-color: var(--border); }
-.box-select.is-correct { border-color: var(--success); background: var(--success-bg); }
-.box-select.is-wrong { border-color: var(--danger); background: var(--danger-bg); }
+.box-select.is-correct { border: 2px solid var(--success); background: transparent; }
+.box-select.is-wrong { border: 2px solid var(--danger); background: var(--danger-bg); }
+.box-select.is-miss { border: 2px dashed var(--success); background: var(--success-bg); }
 .box-select.inline-select { min-height: 32px; border-radius: 8px; }
 
 .yn-btn {
@@ -1756,8 +1768,9 @@ input, select, textarea { font-family: inherit; }
 @media (hover: hover) { .yn-btn:hover:not(:disabled):not(.selected) { background: var(--primary-tint-2); border: 0; } }
 .yn-btn:active:not(:disabled) { transform: scale(0.96); }
 .yn-btn.selected { background: var(--primary); color: #fff; }
-.yn-btn.is-answer { background: var(--success); color: #fff; }
-.yn-btn.is-wrong { background: var(--danger); color: #fff; }
+.yn-btn.is-answer.picked { background: transparent; color: inherit; border: 2px solid var(--success); }
+.yn-btn.is-answer:not(.picked) { background: var(--success-bg); color: inherit; border: 2px dashed var(--success); opacity: 1; }
+.yn-btn.is-wrong { background: var(--danger-bg); color: inherit; border: 2px solid var(--danger); }
 
 .drag-chip {
   border: 1px solid var(--border);
@@ -1772,6 +1785,9 @@ input, select, textarea { font-family: inherit; }
 .slot-value.empty { border: 1.5px dashed var(--border-strong); font-style: normal; }
 .slot-value.filled { border-color: var(--primary); background: var(--primary-tint); }
 .slot-value.filled:hover:not(:disabled) { background: var(--primary-tint-2); }
+.slot-value.filled.is-correct { border: 2px solid var(--success); background: transparent; color: inherit; }
+.slot-value.filled.is-wrong { border: 2px solid var(--danger); background: var(--danger-bg); color: inherit; }
+.slot-value.empty.is-miss { border: 2px dashed var(--success); background: var(--success-bg); color: inherit; }
 
 /* --- Exam grid --- */
 .exam-grid { gap: 0.4rem; }
@@ -2121,6 +2137,35 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 
 .option.correct.st-ok .otext,.option.correct.st-ans .otext{color:var(--text)!important}
 .option.correct.st-ok .oid,.option.correct.st-ans .oid{background:transparent;color:var(--success);border:2px solid var(--success)}
+
+/* 判断/下拉/拖拽提交后与单选/多选对齐：选对实线绿框透明底，选错红框淡红底，漏选虚线绿框；行上不再铺第二层底。 */
+.box-row.correct,
+.box-row.wrong {
+  border-color: transparent !important;
+  background: var(--bg-card) !important;
+}
+.yn-btn.is-answer.picked,
+.box-select.is-correct,
+.slot-value.filled.is-correct {
+  background: transparent !important;
+  color: inherit !important;
+  border: 2px solid var(--success) !important;
+}
+.yn-btn.is-wrong,
+.box-select.is-wrong,
+.slot-value.filled.is-wrong {
+  background: var(--danger-bg) !important;
+  color: inherit !important;
+  border: 2px solid var(--danger) !important;
+}
+.yn-btn.is-answer:not(.picked),
+.box-select.is-miss,
+.slot-value.empty.is-miss {
+  background: var(--success-bg) !important;
+  color: inherit !important;
+  border: 2px dashed var(--success) !important;
+  opacity: 1;
+}
 
 /* Only emitted by the opt-in normalized AZ-305 text renderer. */
 .pdf-text-table-wrap { overflow-x:auto; max-width:100%; margin:1rem 0; }

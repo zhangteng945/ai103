@@ -2307,6 +2307,7 @@
     let cls = inline ? "box-select inline-select" : "box-select";
     if (submittedOrReview) {
       if (sameKey(val, b.answer)) cls += " is-correct";
+      else if (!val) cls += " is-miss";
       else cls += " is-wrong";
     }
     let html =
@@ -2531,8 +2532,14 @@
       if (val) {
         const ch = pool.find((c) => choiceKey(c) === val) || (b.choices || []).find((c) => choiceKey(c) === val);
         const txt = ch ? choiceText(ch) : val;
+        let slotCls = "slot-value filled";
+        if (submittedOrReview) {
+          slotCls += sameKey(val, b.answer) ? " is-correct" : " is-wrong";
+        }
         html +=
-          '<button type="button" class="slot-value filled" data-boxid="' +
+          '<button type="button" class="' +
+          slotCls +
+          '" data-boxid="' +
           escapeHtml(b.id) +
           '" data-action="clear"' +
           (submittedOrReview ? " disabled" : "") +
@@ -2542,7 +2549,9 @@
           escapeHtml(txt).replace(/\n/g, " / ") +
           ' <span class="slot-clear">×</span></button>';
       } else {
-        html += '<div class="slot-value empty">' + escapeHtml(pack.emptySlot) + "</div>";
+        let emptyCls = "slot-value empty";
+        if (submittedOrReview) emptyCls += " is-miss";
+        html += '<div class="' + emptyCls + '">' + escapeHtml(pack.emptySlot) + "</div>";
       }
       if (submittedOrReview) {
         const feedback = boxFeedbackText(b, val);
