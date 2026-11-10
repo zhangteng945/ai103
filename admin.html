@@ -13,28 +13,23 @@
 </head>
 <body class="admin-page">
   <div class="admin-wrap">
-    <header class="admin-topbar">
-      <div class="brand">
-        <div class="brand-icon" aria-hidden="true">IT</div>
-        <div>
-          <h1>
-            <span class="title-full">IT认证练习 · 管理后台</span>
-            <span class="title-short">管理后台</span>
-          </h1>
-          <div id="admin-who" class="sub muted small"></div>
+    <div class="admin-chrome">
+      <header class="admin-topbar">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">IT</div>
+          <div>
+            <h1>
+              <span class="title-full">IT认证练习 · 管理后台</span>
+              <span class="title-short">管理后台</span>
+            </h1>
+            <div id="admin-who" class="sub muted small"></div>
+          </div>
         </div>
-      </div>
-      <div class="admin-top-actions">
-        <a class="btn btn-sm btn-ghost" href="index.html"><span class="act-full">← 返回练习站</span><span class="act-short">返回</span></a>
-        <button type="button" class="btn btn-sm" id="btn-refresh"><span class="act-full">刷新列表</span><span class="act-short">刷新</span></button>
-      </div>
-    </header>
-    <div id="admin-msg" class="admin-msg" role="status"></div>
-    <div id="admin-gate" class="gate card hidden">
-      <p id="gate-text">正在校验管理员身份…</p>
-      <p><a class="btn btn-sm btn-primary" href="index.html">返回首页登录</a></p>
-    </div>
-    <div id="admin-app" class="hidden">
+        <div class="admin-top-actions">
+          <a class="btn btn-sm btn-ghost" href="index.html"><span class="act-full">← 返回练习站</span><span class="act-short">返回</span></a>
+          <button type="button" class="btn btn-sm" id="btn-refresh"><span class="act-full">刷新列表</span><span class="act-short">刷新</span></button>
+        </div>
+      </header>
       <div class="admin-tabs" role="tablist">
         <button type="button" class="admin-tab active" data-tab="users" aria-label="学员列表">
           <span class="tab-full">学员列表</span><span class="tab-short">学员</span>
@@ -49,6 +44,13 @@
           <span class="tab-full">导入PDF题库</span><span class="tab-short">导入</span>
         </button>
       </div>
+    </div>
+    <div id="admin-msg" class="admin-msg" role="status"></div>
+    <div id="admin-gate" class="gate card hidden">
+      <p id="gate-text">正在校验管理员身份…</p>
+      <p><a class="btn btn-sm btn-primary" href="index.html">返回首页登录</a></p>
+    </div>
+    <div id="admin-app" class="hidden">
       <section id="tab-users" class="admin-panel active card">
         <h2>学员列表</h2>
         <div class="admin-table-wrap admin-users-table">

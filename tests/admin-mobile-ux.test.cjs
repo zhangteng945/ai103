@@ -179,3 +179,24 @@ test('题库勾选与开号默认值一致：全部为星号，空选回退 ai10
   z.checked = false;
   assert.deepEqual(plain(ui.collectExamValues(root, 'c-all')), ['ai103']);
 });
+
+test('顶栏与标签在窄屏共用一块吸顶区域，互不重叠', () => {
+  const chromeAt = adminHtml.indexOf('class="admin-chrome"');
+  const headerAt = adminHtml.indexOf('class="admin-topbar"');
+  const tabsAt = adminHtml.indexOf('class="admin-tabs"');
+  const msgAt = adminHtml.indexOf('id="admin-msg"');
+  const appAt = adminHtml.indexOf('id="admin-app"');
+  assert.ok(chromeAt > 0 && chromeAt < headerAt && headerAt < tabsAt && tabsAt < msgAt && msgAt < appAt);
+  assert.match(adminHtml, /class="admin-chrome"/);
+  assert.doesNotMatch(css, /top:\s*calc\(3\.55rem/);
+  const section = css.slice(css.indexOf('Admin mobile operations'));
+  const chromeRule = section.slice(section.indexOf('.admin-page .admin-chrome {'), section.indexOf('.admin-page .admin-topbar {'));
+  assert.match(chromeRule, /position:\s*sticky/);
+  assert.match(chromeRule, /top:\s*0/);
+  const topbarRule = section.slice(section.indexOf('.admin-page .admin-topbar {'), section.indexOf('.admin-page .admin-tabs {'));
+  assert.match(topbarRule, /position:\s*static/);
+  const tabsRule = section.slice(section.indexOf('.admin-page .admin-tabs {'), section.indexOf('@media (max-width: 760px)'));
+  assert.doesNotMatch(tabsRule, /position:\s*sticky/);
+  assert.match(css, /\.admin-page:has\(#admin-app\.hidden\) \.admin-tabs/);
+});
+
