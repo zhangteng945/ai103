@@ -12,8 +12,8 @@
   <meta name="theme-color" content="#2563eb" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="IT认证练习" />
-  <link rel="stylesheet" href="styles.css?v=202611112008" />
-  <script src="js/account-config.js?v=202611112008"></script>
+  <link rel="stylesheet" href="styles.css?v=202611112018" />
+  <script src="js/account-config.js?v=202611112018"></script>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
     (function () {
@@ -70,28 +70,12 @@
 
     <section id="view-home" class="card">
       <h2>题库概览</h2>
-      <p class="muted exam-bank-hint">题库列表（全部可见；无权限的题库会显示锁定，点击可提示）</p>
       <div class="exam-switcher exam-bank-list" id="exam-switcher" role="list" aria-label="题库列表">
         <!-- 由 app.js 根据 exam-registry 渲染 -->
       </div>
-      <p class="muted">题源来自你提供的 PDF；已人工/对照文档核对答案，更正处有标记。覆盖官方 skills measured（参考 2026-04 大纲）。非官方真题，仅供备考练习。</p>
-      <div class="stats" id="home-stats" aria-label="题库统计">
-        <div class="stat"><div class="n" id="stat-total">0</div><div class="l">全部题目</div></div>
-        <div class="stat"><div class="n" id="stat-plan">0</div><div class="l">规划管理</div></div>
-        <div class="stat"><div class="n" id="stat-genai">0</div><div class="l">生成式/智能体</div></div>
-        <div class="stat"><div class="n" id="stat-vision">0</div><div class="l">计算机视觉</div></div>
-        <div class="stat"><div class="n" id="stat-text">0</div><div class="l">文本分析</div></div>
-        <div class="stat"><div class="n" id="stat-extract">0</div><div class="l">信息提取</div></div>
-      </div>
       <div class="home-actions">
-        <button type="button" class="btn btn-primary" id="btn-go-practice">
-          全题库练习
-          <span class="desc">按领域筛选 · 即时反馈与解析 · 进度本地保存</span>
-        </button>
-        <button type="button" class="btn" id="btn-go-exam">
-          模拟考试
-          <span class="desc">限时抽题 · 结束计分（700/1000 及格）· 错题回顾</span>
-        </button>
+        <button type="button" class="btn btn-primary" id="btn-go-practice">全题库练习</button>
+        <button type="button" class="btn" id="btn-go-exam">模拟考试</button>
         <button type="button" class="btn" id="btn-go-flagged" disabled>
           标记复习
           <span class="desc">暂无标记题目</span>
@@ -104,9 +88,6 @@
           上次考试成绩
           <span class="desc"></span>
         </button>
-      </div>
-      <div class="note">
-        及格线参考 Microsoft 认证常见换算：约 700 / 1000。若某题答案相对 PDF 有更正，练习反馈中会显示「答案已更正」说明。快捷键：数字键 1–6 选题，Enter 提交/下一题。
       </div>
     </section>
 
@@ -147,7 +128,6 @@
         <select id="practice-jump-select" aria-label="选择题号"></select>
         <span class="jump-hint" id="practice-jump-hint" role="status" aria-live="polite"></span>
       </form>
-      <p class="kbd-hint"><kbd>A</kbd>–<kbd>F</kbd> 选择 · <kbd>Enter</kbd> 提交 / 下一题 · <kbd>←</kbd><kbd>→</kbd> 切题 · <kbd>?</kbd> 帮助</p>
       <div class="action-dock" id="practice-dock">
         <div class="action-bar">
           <div class="action-secondary">
@@ -166,7 +146,6 @@
 
     <section id="view-exam-config" class="card hidden">
       <h2>模拟考试设置</h2>
-      <p class="muted">真实考试结构：48 道普通题 + 3 道多判断 + 7 道案例研究（选 58 题时分为 3 个部分，结束一个部分后不能返回）。可标记复习，交卷前有检查屏幕；考试中不显示对错。</p>
       <div class="exam-config">
         <label>
           <span>题目数量</span>
@@ -202,10 +181,8 @@
       </div>
       <div class="card" id="exam-body"></div>
       <div class="card exam-nav-card">
-        <div class="muted exam-nav-legend">题目导航（点击跳转；底边高亮 = 已标记）</div>
         <div class="exam-grid" id="exam-grid"></div>
       </div>
-      <p class="kbd-hint"><kbd>A</kbd>–<kbd>F</kbd> 选择 · <kbd>Enter</kbd> 下一题 · <kbd>←</kbd><kbd>→</kbd> 切题 · <kbd>?</kbd> 帮助</p>
       <div class="action-dock" id="exam-dock">
         <div class="action-bar exam-action-bar">
           <div class="action-primary exam-primary">
@@ -239,23 +216,22 @@
     </section>
 
     <footer class="app-foot">
-      <span class="foot-text">IT认证练习 · 进度按题库隔离保存在本机</span>
-      <span class="foot-author">作者：星火</span>
+      <span class="foot-author">星火</span>
     </footer>
   </div>
 
   <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>正在读取题库信息…</div>
   <!-- Account login (js/account-auth.js, enabled in account-config.js). password-gate.js stays as fallback: it self-disables in account mode. -->
-  <script src="js/supabase-config.js?v=202611112008"></script>
-  <script src="js/progress-core.js?v=202611112008"></script>
-  <script src="js/exam-registry.js?v=202611112008"></script>
-  <script src="js/yn-order.js?v=202611112008"></script>
-  <script src="js/account-auth.js?v=202611112008"></script>
-  <script src="js/password-gate.js?v=202611112008"></script>
-  <script>(function(){var c=window.__ITCERT_ACCOUNT__||{};if(c.enabled&&c.protectedBanks)return;document.write('<script src="questions.js?v=202611112008"><\/script>');try{var x=localStorage.getItem("itcert_exam_id_v1");if(x==="dop-c02"||x==="dp-700"||x==="dp-420")document.write('<script src="banks/questions-'+x+'.js?v=202611112008"><\/script>');}catch(e){}})();</script>
-  <script src="js/image-questions.js?v=202611112008"></script>
-  <script src="js/pdf-text.js?v=202611112008"></script>
-  <script src="js/issue-report.js?v=202611112008"></script>
-  <script src="app.js?v=202611112008"></script>
+  <script src="js/supabase-config.js?v=202611112018"></script>
+  <script src="js/progress-core.js?v=202611112018"></script>
+  <script src="js/exam-registry.js?v=202611112018"></script>
+  <script src="js/yn-order.js?v=202611112018"></script>
+  <script src="js/account-auth.js?v=202611112018"></script>
+  <script src="js/password-gate.js?v=202611112018"></script>
+  <script>(function(){var c=window.__ITCERT_ACCOUNT__||{};if(c.enabled&&c.protectedBanks)return;document.write('<script src="questions.js?v=202611112018"><\/script>');try{var x=localStorage.getItem("itcert_exam_id_v1");if(x==="dop-c02"||x==="dp-700"||x==="dp-420")document.write('<script src="banks/questions-'+x+'.js?v=202611112018"><\/script>');}catch(e){}})();</script>
+  <script src="js/image-questions.js?v=202611112018"></script>
+  <script src="js/pdf-text.js?v=202611112018"></script>
+  <script src="js/issue-report.js?v=202611112018"></script>
+  <script src="app.js?v=202611112018"></script>
 </body>
 </html>

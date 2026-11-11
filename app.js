@@ -2182,33 +2182,17 @@
     );
     document.title = h1;
     setTxt("#view-home h2", pack.homeTitle);
-    const intro = $("#view-home > p.muted");
-    if (intro) {
-      if (exam && exam.id === "dop-c02") {
-        intro.textContent =
-          UI_LANG === "en"
-            ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
-            : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
-      } else if (exam && (exam.id === "dp-700" || exam.id === "dp-420")) {
-        intro.textContent =
-          UI_LANG === "en"
-            ? "Bank from your " + exam.title + " PDF; answers strictly from the PDF (answer image when present; text/image conflicts are flagged in the explanation). Domains marked (est.) are keyword guesses. Unofficial practice only."
-            : "题源来自你提供的 " + exam.title + " PDF；答案严格取自 PDF（有答案图以图为准，文字版与答案图不一致处在解析中标注）。标「(估)」的考点为关键词估算。非官方真题，仅供备考练习。";
-      } else {
-        intro.textContent = pack.homeIntro;
-      }
-    }
     rebuildHomeStats();
     const bp = $("#btn-go-practice");
     if (bp) {
-      bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>" +
+      bp.innerHTML = pack.btnPractice +
         '<span class="desc prog-line">' + escapeHtml(practiceStatsLine()) + '</span><span class="prog-bar"><i style="width:' +
         (statTotal() ? Math.round((submittedIdsInBank().length / statTotal()) * 100) : 0) + '%"></i></span>';
     }
     try { renderHomeExtras(); } catch (err) { console.error(err); }
     const be = $("#btn-go-exam");
     if (be) {
-      be.innerHTML = pack.btnExam + '<span class="desc">' + pack.btnExamDesc.replace(/700/g, String(PASS_SCORE)) + "</span>";
+      be.textContent = pack.btnExam;
     }
     const note = $("#view-home .note");
     if (note) note.textContent = PASS_SCORE === 700 ? pack.homeNote : pack.homeNote.replace(/约 700 \/ 1000|≈ 700 \/ 1000/, (UI_LANG === "en" ? "" : "") + PASS_SCORE + " / 1000 (" + SCORE_MIN + "–1000)").replace(/Microsoft/g, "AWS");
@@ -2264,7 +2248,7 @@
     setTxt("#btn-exam-next", pack.next);
     setTxt("#btn-exam-submit", pack.handIn);
     setTxt("#btn-exam-to-result", pack.viewScore);
-    const navHint = $("#view-exam .card .muted");
+    const navHint = $("#view-exam .exam-nav-legend");
     if (navHint) navHint.textContent = pack.examNavHint;
     const kbdE = $("#view-exam .kbd-hint");
     if (kbdE) kbdE.innerHTML = "<kbd>1</kbd>–<kbd>6</kbd> " + pack.kbdExam;
@@ -2276,11 +2260,7 @@
     setTxt("#btn-result-home", UI_LANG === "en" ? "Home" : "回首页");
     const wrongH = $$("#view-result h2");
     if (wrongH[1]) wrongH[1].textContent = pack.wrongTitle;
-    setTxt(".app-foot .foot-text", pack.foot);
-    const authorTxt =
-      UI_LANG === "en" ? "Author: 星火" : UI_LANG === "both" ? "作者 / Author：星火" : "作者：星火";
-    setTxt(".brand .author", authorTxt);
-    setTxt(".app-foot .foot-author", authorTxt);
+    setTxt(".app-foot .foot-author", "星火");
 
     // lang toggle active state
     $$(".lang-toggle button").forEach((btn) => {

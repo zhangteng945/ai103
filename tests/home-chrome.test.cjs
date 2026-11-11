@@ -97,3 +97,40 @@ test("登录后账号内容直接铺在首页卡片，刷题页不显示", () =>
   assert.match(auth, /id='btn-sync-upload'/);
   assert.match(auth, /id='btn-sync-download'/);
 });
+
+const auth = fs.readFileSync(path.join(root, "js/account-auth.js"), "utf8");
+
+test("首页账号卡片按钮单行排列，管理后台与进度按钮同一行", () => {
+  const start = css.indexOf("body.auth-ok.view-home .sync-ctl {");
+  assert.notEqual(start, -1);
+  const end = css.indexOf("}", start);
+  const body = css.slice(start, end + 1);
+  assert.match(body, /flex-wrap:\s*nowrap/);
+  assert.doesNotMatch(body, /flex-wrap:\s*wrap/);
+  assert.match(css, /body\.auth-ok\.view-home #btn-auth-logout/);
+  assert.match(auth, /placeAdminBtn/);
+  assert.match(auth, /ctl\.insertBefore\(btn, lo\)/);
+  assert.doesNotMatch(auth, /adminBtn\.style\.marginTop = "\.35rem"/);
+});
+
+test("首页去掉说明文案，页脚只保留星火署名", () => {
+  assert.match(html, /<h2>题库概览<\/h2>/);
+  assert.match(html, /id="exam-switcher"/);
+  assert.doesNotMatch(html, /id="home-intro"/);
+  assert.doesNotMatch(html, /exam-bank-hint/);
+  assert.doesNotMatch(html, /id="home-stats"/);
+  assert.equal((html.match(/题源来自你提供的 PDF/g) || []).length, 0);
+  assert.doesNotMatch(html, /按领域筛选 · 即时反馈与解析/);
+  assert.doesNotMatch(html, /限时抽题 · 结束计分/);
+  assert.doesNotMatch(html, /及格线参考/);
+  assert.doesNotMatch(html, /class="kbd-hint"/);
+  assert.doesNotMatch(html, /exam-nav-legend/);
+  assert.doesNotMatch(html, /真实考试结构：48 道普通题/);
+  assert.doesNotMatch(html, /进度按题库隔离保存在本机/);
+  assert.match(html, /<span class="foot-author">星火<\/span>/);
+  assert.doesNotMatch(html, /foot-text/);
+  assert.doesNotMatch(app, /intro\.textContent = pack\.homeIntro/);
+  assert.doesNotMatch(app, /setTxt\("\.app-foot \.foot-text"/);
+  assert.match(app, /setTxt\("\.app-foot \.foot-author", "星火"\)/);
+  assert.match(auth, /setSync\(""\)/);
+});
