@@ -125,7 +125,7 @@
       return "登录组件加载失败（脚本/网络），请强制刷新或换 Chrome 重试。";
     }
     if (state.user && state.user.email) {
-      return "已登录：" + state.user.email;
+      return "已登录：" + String(state.user.email||"").split("@")[0];
     }
     if (!state.ready) {
       return "正在恢复登录会话…";

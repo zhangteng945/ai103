@@ -20,7 +20,7 @@
   function setMsg(t, ok) {
     var el = $("admin-msg");
     if (!el) return;
-    el.textContent = t || "";
+    el.textContent = t ? shortMsg(t) : "";
     el.className = "admin-msg" + (t ? (ok ? " ok" : " err") : "");
   }
   function esc(s) {
@@ -29,9 +29,12 @@
       .replace(/"/g, "&quot;");
   }
   function shortEmail(e) {
-    e = String(e || "");
-    var d = "@" + (CFG.emailDomain || "ai103.local");
-    return e.endsWith(d) ? e.slice(0, -d.length) : e;
+    var s = String(e || "").trim();
+    var at = s.indexOf("@");
+    return at >= 0 ? s.slice(0, at).trim() : s;
+  }
+  function shortMsg(s) {
+    return String(s == null ? "" : s).replace(/[^\s@<>]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, function (m) { return shortEmail(m); });
   }
   function examLabel(v) {
     if (v === "*") return "全部 (*)";
@@ -162,8 +165,8 @@
     var box = $(boxId);
     if (!box) return;
     box.classList.remove("hidden");
-    box.innerHTML = "<div>" + esc(tip || "密码仅显示一次，请立即复制发给学员") + "</div>" +
-      "<div style='margin:.4rem 0'>账号：<b>" + esc(shortEmail(email)) + "</b></div>" +
+    box.innerHTML = "<div>" + esc(shortMsg(tip || "密码仅显示一次，请立即复制发给学员")) + "</div>" +
+      "<div style='margin:.4rem 0'>用户名：<b>" + esc(shortEmail(email)) + "</b></div>" +
       "<div class='pw-row'>密码：<code id='pw-once'>" + esc(password) + "</code> " +
       "<button type='button' class='btn btn-sm' id='btn-copy-pw'>复制密码</button></div>";
     var btn = $("btn-copy-pw");
@@ -728,7 +731,7 @@
       try {
         setMsg("正在开号…", true);
         var spec = AdminPayload.create(
-          ($("c-user").value || "").trim(),
+          shortEmail($("c-user").value || ""),
           $("c-days").value || DEFAULT_DAYS,
           $("c-max").value,
           selectedCreateExams()
@@ -763,7 +766,7 @@
       }};
       gate.classList.add("hidden");
       app.classList.remove("hidden");
-      $("admin-who").textContent = "管理员：" + (adminUser.email || "");
+      $("admin-who").textContent = "管理员：" + shortEmail(adminUser.email || "");
       bindUi();
       await loadList();
     } catch (e) {
@@ -790,6 +793,8 @@
     visibleReports: visibleReports,
     setReportFilter: setReportFilter,
     getReportFilter: function () { return reportFilter; },
+    shortEmail: shortEmail,
+    shortMsg: shortMsg,
     confirm: function (message, title, label) {
       bindSheetChrome();
       return confirmSheet(title || "请确认", message, label || "确定");

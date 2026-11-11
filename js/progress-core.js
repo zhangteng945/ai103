@@ -10,7 +10,8 @@
  *
  * clearedIds is an explicit tombstone: those question ids were removed on purpose
  * (reset / repair). Import-merge must not union them back. Manual upload/download
- * in account-auth overwrites the whole snapshot and does not call mergeSnapshots.
+ * in account-auth still overwrites practice + last exam, but merges mock-exam
+ * history (composeOverwriteWithMergedHist) instead of dropping the other side.
  */
 (function (root, factory) {
   var api = factory();
@@ -68,19 +69,80 @@
     return { v: VERSION, t: Date.now(), dev: meta.deviceId, exams: exams };
   }
 
-  function histKey(h) {
-    try { return JSON.stringify([h.result && h.result.correct, h.result && h.result.total, h.questionIds, h.answers]); } catch (e) { return String(h.t); }
+  function histScore(h) {
+    var r = h && h.result;
+    if (!r) return "";
+    if (r.score1000 != null) return String(r.score1000);
+    if (r.score != null) return String(r.score);
+    if (r.scaled != null) return String(r.scaled);
+    return "";
   }
-  function mergeHist(a, b) {
-    var seen = {}, out = [];
+  /** Prefer a stable id; otherwise exam+time+score (exam is implicit in per-exam arrays). */
+  function histKey(h, examId) {
+    if (h && h.id) return "id:" + String(h.id);
+    var exam = (h && h.examId) || examId || "";
+    return "k:" + exam + "|" + String((h && h.t) || "") + "|" + histScore(h) + "|" + String(h && h.result && h.result.correct != null ? h.result.correct : "") + "|" + String(h && h.result && h.result.total != null ? h.result.total : "");
+  }
+  function ensureHistId(h, examId) {
+    if (!isObj(h)) return h;
+    if (h.id) return h;
+    var copy = JSON.parse(JSON.stringify(h));
+    copy.id = "h_" + compositeHistKey(copy, examId).replace(/^k:/, "").replace(/\|/g, "_");
+    return copy;
+  }
+  function compositeHistKey(h, examId) {
+    var exam = (h && h.examId) || examId || "";
+    return "k:" + exam + "|" + String((h && h.t) || "") + "|" + histScore(h) + "|" + String(h && h.result && h.result.correct != null ? h.result.correct : "") + "|" + String(h && h.result && h.result.total != null ? h.result.total : "");
+  }
+  function mergeHist(a, b, examId) {
+    var byId = {}, byComp = {}, out = [];
     (a || []).concat(b || []).forEach(function (h) {
       if (!isObj(h)) return;
-      var k = histKey(h);
-      if (seen[k]) { if ((h.t || 0) < (seen[k].t || 0)) seen[k].t = h.t; return; }
-      seen[k] = h; out.push(h);
+      var item = JSON.parse(JSON.stringify(h));
+      var ck = compositeHistKey(item, examId);
+      var existing = (item.id && byId[item.id]) || null;
+      if (!existing && byComp[ck] && (!item.id || !byComp[ck].id || item.id === byComp[ck].id)) existing = byComp[ck];
+      if (existing) {
+        if ((item.t || 0) < (existing.t || 0)) existing.t = item.t;
+        if (!existing.id && item.id) {
+          existing.id = item.id;
+          byId[item.id] = existing;
+        }
+        byComp[ck] = existing;
+        return;
+      }
+      out.push(item);
+      if (item.id) byId[item.id] = item;
+      byComp[ck] = item;
     });
+    out = out.map(function (h) { return ensureHistId(h, examId); });
     out.sort(function (x, y) { return (x.t || 0) - (y.t || 0); });
     return out.slice(-HIST_MAX);
+  }
+  /**
+   * Manual upload/download: practice + last exam come from the overwrite side
+   * (upload: local covers cloud; download: cloud covers local). Mock-exam
+   * history is union-merged, deduped, sorted, and capped.
+   */
+  function composeOverwriteWithMergedHist(overwrite, other) {
+    var out = { v: VERSION, t: Date.now(), dev: overwrite && overwrite.dev, exams: {} };
+    var oe = (overwrite && overwrite.exams) || {};
+    var he = (other && other.exams) || {};
+    Object.keys(Object.assign({}, oe, he)).forEach(function (id) {
+      var a = oe[id] || {};
+      var b = he[id] || {};
+      var hist = mergeHist(a.hist, b.hist, id);
+      var hasOverwrite = Object.prototype.hasOwnProperty.call(oe, id);
+      if (!hasOverwrite && !hist.length) return;
+      out.exams[id] = {
+        p: hasOverwrite ? (a.p || null) : null,
+        pt: hasOverwrite ? (a.pt || 0) : 0,
+        last: hasOverwrite ? (a.last || null) : null,
+        lt: hasOverwrite ? (a.lt || 0) : 0,
+        hist: hist,
+      };
+    });
+    return out;
   }
 
   /**
@@ -163,7 +225,7 @@
         p: mergePractice(a.p, a.pt, b.p, b.pt),
         pt: Math.max(a.pt || 0, b.pt || 0),
         last: lastPick.last || null, lt: Math.max(a.lt || 0, b.lt || 0),
-        hist: mergeHist(a.hist, b.hist),
+        hist: mergeHist(a.hist, b.hist, id),
       };
     });
     return out;
@@ -200,7 +262,7 @@
       var item = parse(value, null);
       if (isObj(item)) {
         item.t = now;
-        h = mergeHist(Array.isArray(h) ? h : [], [item]);
+        h = mergeHist(Array.isArray(h) ? h : [], [item], id);
         (setRaw || function (k, v) { ls.setItem(k, v); })(H + id, JSON.stringify(h));
       }
     }
@@ -262,7 +324,7 @@
     return s;
   }
 
-  return { VERSION: VERSION, META_KEY: META_KEY, snapshot: snapshot, mergeSnapshots: mergeSnapshots, mergePractice: mergePractice,
-    mergeHist: mergeHist, sameData: sameData, apply: apply, noteWrite: noteWrite, clearAll: clearAll, replaceAll: replaceAll, readMeta: readMeta,
+  return { VERSION: VERSION, META_KEY: META_KEY, HIST_MAX: HIST_MAX, snapshot: snapshot, mergeSnapshots: mergeSnapshots, mergePractice: mergePractice,
+    mergeHist: mergeHist, histKey: histKey, composeOverwriteWithMergedHist: composeOverwriteWithMergedHist, sameData: sameData, apply: apply, noteWrite: noteWrite, clearAll: clearAll, replaceAll: replaceAll, readMeta: readMeta,
     writeMeta: writeMeta, encode: encode, decode: decode, keys: { P: P, L: L, H: H } };
 });

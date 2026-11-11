@@ -1,7 +1,8 @@
 /**
  * node js/account-auth.contract.test.js
  * Mocks fetch. Checks: meta is one request, ids/sample failures do not page the bank,
- * upload overwrites without a prior pull, download replaces local storage.
+ * upload pulls once so mock-exam history can be merged, then posts local
+ * practice over cloud; download overwrites local practice and merges history.
  */
 var assert = require("assert");
 
@@ -57,7 +58,7 @@ function jsonRes(body, status) {
   return { ok: status >= 200 && status < 300, status: status, text: async function () { return JSON.stringify(body); } };
 }
 global.fetch = async function (url, opt) {
-  calls.push({ url: String(url), method: (opt && opt.method) || "GET" });
+  calls.push({ url: String(url), method: (opt && opt.method) || "GET", body: opt && opt.body });
   var u = String(url);
   if (u.indexOf("meta=1") >= 0) {
     return jsonRes({ ok: true, mode: "meta", examId: "ai103", version: "v1", total: 3, domains: { plan: 2, genai: 1 }, index: [{ id: "q1", domain: "plan" }, { id: "q2", domain: "plan" }, { id: "q3", domain: "genai" }], questions: [] }, 200);
@@ -72,7 +73,10 @@ global.fetch = async function (url, opt) {
     return jsonRes({}, 200);
   }
   if (u.indexOf("user_progress") >= 0) {
-    return jsonRes([{ data: { v: 1, exams: { ai103: { p: { answers: { q1: ["A"] }, submitted: { q1: true }, flags: {}, wrongIds: { q9: true }, clearedIds: {} }, pt: 1, last: null, lt: 0, hist: [] } } } }], 200);
+    return jsonRes([{ data: { v: 1, exams: { ai103: { p: { answers: { q1: ["A"] }, submitted: { q1: true }, flags: {}, wrongIds: { q9: true }, clearedIds: {} }, pt: 1, last: null, lt: 0, hist: [
+      { t: 1000, result: { correct: 40, total: 65, score1000: 700 } },
+      { t: 1500, result: { correct: 30, total: 65, score1000: 500 }, id: "h_cloud" }
+    ] } } } }], 200);
   }
   return jsonRes({ ok: false, error: "unexpected" }, 500);
 };
@@ -107,17 +111,45 @@ require("./account-auth.js");
   assert.strictEqual(threw, true);
 
   ls.setItem("itcert_practice_v1_ai103", JSON.stringify({ answers: {}, submitted: {}, flags: {}, wrongIds: { localOnly: true }, clearedIds: {} }));
+  ls.setItem("itcert_exam_hist_v1_ai103", JSON.stringify([
+    { t: 1000, result: { correct: 40, total: 65, score1000: 700 } },
+    { t: 2000, result: { correct: 50, total: 65, score1000: 850 }, id: "h_local" }
+  ]));
   var nBefore = calls.length;
   await global.ITCERT_SYNC.uploadProgress();
   var up = calls.slice(nBefore);
-  assert.ok(up.some(function (c) { return c.method === "POST" && c.url.indexOf("user_progress") >= 0; }));
-  assert.ok(!up.some(function (c) { return c.method === "GET" && c.url.indexOf("user_progress") >= 0; }), "upload must not pull");
+  var upGet = up.filter(function (c) { return c.method === "GET" && c.url.indexOf("user_progress") >= 0; });
+  var upPost = up.filter(function (c) { return c.method === "POST" && c.url.indexOf("user_progress") >= 0; });
+  assert.ok(upGet.length >= 1, "upload pulls cloud history so it can merge");
+  assert.strictEqual(upPost.length, 1);
+  var posted = JSON.parse(upPost[0].body);
+  assert.strictEqual(posted.data.exams.ai103.p.wrongIds.localOnly, true, "upload posts local practice");
+  assert.strictEqual(posted.data.exams.ai103.p.wrongIds.q9, undefined, "upload does not keep cloud practice");
+  assert.strictEqual(posted.data.exams.ai103.hist.length, 3, "upload merges local and cloud history");
+  assert.ok(posted.data.exams.ai103.hist.some(function (h) { return h.id === "h_cloud"; }));
+  assert.ok(posted.data.exams.ai103.hist.some(function (h) { return h.id === "h_local"; }));
+  var localHistAfterUp = JSON.parse(ls.getItem("itcert_exam_hist_v1_ai103"));
+  assert.strictEqual(localHistAfterUp.length, 3, "upload also writes merged history locally");
+  var practiceAfterUp = JSON.parse(ls.getItem("itcert_practice_v1_ai103"));
+  assert.strictEqual(practiceAfterUp.wrongIds.localOnly, true, "upload leaves local practice in place");
 
   await global.ITCERT_SYNC.downloadProgress();
   var stored = JSON.parse(ls.getItem("itcert_practice_v1_ai103"));
   assert.deepStrictEqual(stored.answers.q1, ["A"]);
   assert.strictEqual(stored.wrongIds.localOnly, undefined, "download replaces local wrongs");
   assert.strictEqual(stored.wrongIds.q9, true);
+  var histAfterDown = JSON.parse(ls.getItem("itcert_exam_hist_v1_ai103"));
+  assert.strictEqual(histAfterDown.length, 3, "download merges history instead of dropping local records");
+  assert.ok(histAfterDown.some(function (h) { return h.id === "h_local"; }));
+  assert.strictEqual(global.AI103Auth.displayUserName("zhangsan@ai103.local"), "zhangsan");
+  assert.strictEqual(global.AI103Auth.displayUserName("ZhangSan"), "ZhangSan");
+  assert.strictEqual(global.AI103Auth.normalizeEmail("ZhangSan"), "zhangsan@ai103.local");
+  assert.strictEqual(global.AI103Auth.normalizeEmail("zhangsan@ai103.local"), "zhangsan@ai103.local");
+  assert.strictEqual(global.AI103Auth.normalizeEmail("zhangsan@other.example"), "zhangsan@ai103.local", "strips @ and appends the fixed domain");
+  var src = require("fs").readFileSync(require("path").join(__dirname, "account-auth.js"), "utf8");
+  assert.ok(src.indexOf('placeholder = "用户名"') >= 0);
+  assert.ok(src.indexOf("请使用管理员发放的用户名登录") >= 0);
+  assert.ok(src.indexOf("账号（如 zhangsan）") < 0);
   console.log("account-auth contract tests ok");
 })().catch(function (e) {
   console.error(e);

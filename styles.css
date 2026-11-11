@@ -1638,6 +1638,38 @@ html.auth-required body:not(.auth-ok) .topbar {
 .btn-danger { background: var(--danger-bg); color: var(--danger-strong); border: 0; }
 .btn-danger:hover:not(:disabled) { background: rgba(255, 59, 48, 0.18); }
 .btn-sm { padding: 0.38rem 0.8rem; font-size: 0.82rem; min-height: 32px; border-radius: 8px; }
+
+/* Shared iOS-style icon chrome buttons (back / refresh). */
+.icon-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--fill);
+  color: var(--text);
+  cursor: pointer;
+  flex: 0 0 auto;
+  text-decoration: none;
+  line-height: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--motion, 160ms) var(--ease), transform 0.12s var(--ease), opacity 0.12s var(--ease), color var(--motion, 160ms) var(--ease);
+}
+.icon-btn:hover { background: var(--fill-2); color: var(--text); }
+.icon-btn:active { transform: scale(0.96); opacity: 0.88; }
+.icon-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.icon-btn svg { display: block; pointer-events: none; }
+
 #btn-practice-reveal.active,
 #btn-practice-shuffle.active { background: var(--primary-tint-2); color: var(--primary); border: 0; }
 
@@ -2934,9 +2966,60 @@ table.admin-table { display: table; width: 100%; }
   background: transparent;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  min-width: 0;
+}
+.admin-page .admin-topbar .brand {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.admin-page .admin-topbar .brand > div:last-child {
+  min-width: 0;
+  overflow: hidden;
+}
+.admin-page .admin-topbar h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+.admin-page .admin-topbar .sub,
+.admin-page #admin-who {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.admin-page .admin-top-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+.admin-page .admin-top-actions .btn {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  text-decoration: none;
 }
 .admin-page .admin-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 100%;
   margin: 0 max(1rem, env(safe-area-inset-right, 0px)) 0 max(1rem, env(safe-area-inset-left, 0px));
+}
+.admin-page .admin-tabs::-webkit-scrollbar { display: none; }
+.admin-page .admin-tab {
+  flex: 1 0 auto;
+  white-space: nowrap;
 }
 .admin-page .admin-user-cards,
 .admin-page .admin-report-cards { display: none; }
@@ -3091,8 +3174,8 @@ body.admin-sheet-open { overflow: hidden; }
   .admin-page .admin-topbar {
     flex-wrap: nowrap;
     align-items: center;
-    gap: 0.5rem 0.65rem;
-    padding-bottom: 0.5rem;
+    gap: 0.5rem 0.55rem;
+    padding-bottom: 0.45rem;
   }
   .admin-page .admin-topbar h1 { font-size: 1.02rem; }
   .admin-page .admin-top-actions {
@@ -3100,22 +3183,27 @@ body.admin-sheet-open { overflow: hidden; }
     flex: 0 0 auto;
   }
   .admin-page .admin-top-actions .btn {
-    min-height: 44px;
-    padding: 0.4rem 0.7rem;
+    min-height: 36px;
+    padding: 0.35rem 0.65rem;
     white-space: nowrap;
+  }
+  .admin-page .admin-top-actions .btn-ghost {
+    border: 0.5px solid var(--border);
+    background: var(--bg-elevated, var(--bg-card));
   }
   .admin-page .admin-tabs {
     display: flex;
     flex-wrap: nowrap;
     width: auto;
+    overflow-x: auto;
     background: var(--fill);
     padding: 3px;
   }
   .admin-page .admin-tab {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 44px;
-    padding: 0.4rem 0.2rem;
+    flex: 1 0 auto;
+    min-width: 4.5rem;
+    min-height: 40px;
+    padding: 0.4rem 0.7rem;
     font-size: 0.86rem;
     text-align: center;
     white-space: nowrap;
@@ -3237,4 +3325,183 @@ body.admin-sheet-open { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   .admin-sheet, .admin-overlay-backdrop { transition: none; }
+}
+
+
+/* ===== Frontend top chrome compact (2026-11-11) =====
+   Single-line sticky topbar; practice/exam toolbars stay compact and do not wrap. */
+body.auth-ok .topbar {
+  display: flex;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  min-width: 0;
+}
+body.auth-ok .topbar .brand {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+body.auth-ok .topbar .brand > div:last-child {
+  min-width: 0;
+  overflow: hidden;
+}
+body.auth-ok .topbar .brand h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+body.auth-ok .topbar .brand .sub,
+body.auth-ok .topbar .brand .author {
+  display: none;
+}
+body.auth-ok .topbar .lang-toggle {
+  flex: 0 0 auto;
+  margin-left: 0;
+  white-space: nowrap;
+}
+body.auth-ok .topbar .lang-toggle button {
+  white-space: nowrap;
+  min-height: 32px;
+  padding: 0.28rem 0.7rem;
+}
+body.auth-ok.acct-open .topbar { flex-wrap: nowrap !important; }
+
+.practice-toolbar .toolbar-row,
+.exam-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+}
+.practice-toolbar .toolbar-main { gap: 0.35rem 0.45rem; }
+.practice-toolbar .btn,
+.exam-toolbar .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.toolbar-filter {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.toolbar-filter select {
+  flex: 1 1 0;
+  min-width: 5rem;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+.toolbar-progress .progress-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.practice-toolbar,
+.exam-toolbar {
+  max-width: 100%;
+}
+#btn-practice-back,
+#btn-exam-back,
+#btn-exam-config-back {
+  text-decoration: none;
+}
+.showans-toggle {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.showans-short { display: none; }
+.exam-toolbar .progress-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.exam-toolbar .timer { flex: 0 0 auto; white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .showans-full { display: none; }
+  .showans-short { display: inline; }
+  .toolbar-filter .filter-label { display: none; }
+}
+
+/* Compact chrome controls only; do not shrink question options / answer inputs. */
+@media (max-width: 520px) {
+  body.auth-ok .topbar .lang-toggle button {
+    min-height: 32px;
+    padding: 0.22rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  .practice-toolbar .btn,
+  .practice-toolbar select,
+  .exam-toolbar .btn,
+  #lbl-practice-showall {
+    min-height: 36px;
+  }
+  body.auth-ok.view-home .sync-ctl .btn,
+  body.auth-ok.view-home #btn-admin {
+    text-decoration: none;
+  }
+}
+body.auth-ok.view-home .sync-ctl .btn,
+body.auth-ok.view-home #btn-admin {
+  text-decoration: none;
+}
+
+/* practice-toolbar filter shrink: native select min-width:auto would overflow the row */
+.practice-toolbar .toolbar-main,
+.practice-toolbar .toolbar-progress {
+  min-width: 0;
+  max-width: 100%;
+}
+.practice-toolbar .toolbar-filter {
+  display: inline-flex;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+.practice-toolbar .toolbar-filter select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+
+/* Icon back control in the topbar; hide the brand tile so the row stays single-line. */
+.topbar-nav {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+}
+body.view-practice .topbar-nav,
+body.view-exam-config .topbar-nav,
+body.view-exam .topbar-nav,
+body.view-result .topbar-nav {
+  display: flex;
+}
+.topbar-nav .icon-btn { display: none; }
+body.view-practice .topbar-nav #btn-practice-back,
+body.view-result .topbar-nav #btn-practice-back,
+body.view-exam-config .topbar-nav #btn-exam-config-back,
+body.view-exam .topbar-nav #btn-exam-back {
+  display: inline-flex;
+}
+body.view-practice .topbar .brand-icon,
+body.view-exam-config .topbar .brand-icon,
+body.view-exam .topbar .brand-icon,
+body.view-result .topbar .brand-icon {
+  display: none;
+}
+
+.admin-page .admin-topbar > .icon-btn,
+.admin-page .admin-top-actions .icon-btn {
+  /* inherit shared .icon-btn size/style so it matches the practice topbar */
+  flex: 0 0 auto;
+}
+.admin-page .admin-topbar .brand-icon { display: none; }
+.admin-page .admin-topbar {
+  gap: 0.5rem 0.65rem;
+}
+@media (prefers-color-scheme: dark) {
+  .icon-btn { color: var(--text); background: var(--fill); }
+  .icon-btn:hover { background: var(--fill-2); color: var(--text); }
 }
