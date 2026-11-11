@@ -207,6 +207,21 @@ test('顶栏与标签在窄屏共用一块吸顶区域，互不重叠', () => {
   assert.match(css, /\.admin-page:has\(#admin-app\.hidden\) \.admin-tabs/);
 });
 
+test('管理后台顶栏与标签不换行，标题单行省略，标签可横向滑动', () => {
+  const section = css.slice(css.indexOf('Admin mobile operations'));
+  assert.match(section, /\.admin-page \.admin-topbar \{[\s\S]*?flex-wrap:\s*nowrap/);
+  assert.match(section, /\.admin-page \.admin-topbar h1 \{[\s\S]*?text-overflow:\s*ellipsis/);
+  assert.match(section, /\.admin-page \.admin-top-actions \{[\s\S]*?flex-wrap:\s*nowrap/);
+  assert.match(section, /\.admin-page \.admin-tabs \{[\s\S]*?flex-wrap:\s*nowrap/);
+  assert.match(section, /\.admin-page \.admin-tabs \{[\s\S]*?overflow-x:\s*auto/);
+  assert.match(section, /\.admin-page \.admin-tab \{[\s\S]*?white-space:\s*nowrap/);
+  const chromeRule = section.slice(section.indexOf('.admin-page .admin-chrome {'), section.indexOf('.admin-page .admin-topbar {'));
+  assert.match(chromeRule, /position:\s*sticky/);
+  assert.match(chromeRule, /top:\s*0/);
+  const topbarRule = section.slice(section.indexOf('.admin-page .admin-topbar {'), section.indexOf('.admin-page .admin-tabs {'));
+  assert.match(topbarRule, /position:\s*static/);
+});
+
 test('报错列表载荷含处理/删除，题号可读，已处理可区分并可筛选', () => {
   const { ui, document } = loadAdmin();
   assert.deepEqual(plain(ui.payload.resolveReport('ce33e2d9-e2e3-40d7-ac8d-8190ee87f58b', 'resolved')), {
