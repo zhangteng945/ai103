@@ -4054,15 +4054,17 @@
     const A = typeof window !== "undefined" ? window.AI103Auth : null;
     const api = examApi();
     if (!protectedBanksOn() || !A || typeof A.loadExamMeta !== "function" || !api) return;
-    const ids = (api.listAll || api.list).call(api).map((e) => e.id).filter((id) => canAccessExam(id));
-    let chain = Promise.resolve();
-    ids.forEach((id) => {
-      chain = chain.then(function () {
-        return A.loadExamMeta(id).then(function () {
-          if (state.mode === "home") updateExamSwitcherUI();
-        }, function () {});
-      });
-    });
+    const ids = (api.listAll || api.list).call(api).map((e) => e.id).filter((id) => canAccessExam(id) && id !== bankMeta.examId);
+    const CONCUR = 3;
+    let i = 0;
+    const run = function () {
+      if (i >= ids.length) return Promise.resolve();
+      const id = ids[i++];
+      return A.loadExamMeta(id).then(function () {
+        if (state.mode === "home") updateExamSwitcherUI();
+      }, function () {}).then(run);
+    };
+    for (let k = 0; k < Math.min(CONCUR, ids.length); k++) run();
   }
   function openExam(id) {
     if (!canAccessExam(id)) { alert("暂无该题库权限，请联系管理员"); return; }

@@ -13,6 +13,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="IT认证练习" />
   <link rel="stylesheet" href="styles.css?v=202611112115" />
+  <link rel="preload" href="js/account-auth.js?v=202611112115" as="script" />
+  <link rel="preload" href="app.js?v=202611112115" as="script" />
   <script src="js/account-config.js?v=202611112115"></script>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
@@ -227,7 +229,7 @@
     </footer>
   </div>
 
-  <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>正在读取题库信息…</div>
+  <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>正在加载…</div>
   <!-- Account login (js/account-auth.js, enabled in account-config.js). password-gate.js stays as fallback: it self-disables in account mode. -->
   <script src="js/supabase-config.js?v=202611112115"></script>
   <script src="js/progress-core.js?v=202611112115"></script>

@@ -18,14 +18,18 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(fetch(req)); return;
   }
   if (req.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith("index.html")) {
-    // network-first for the page so new versions arrive
-    e.respondWith(
-      fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put("./", copy));
+    // stale-while-revalidate: repeat visits paint from cache, then refresh in the background
+    e.respondWith((async () => {
+      const cached = await caches.match("./") || await caches.match(req);
+      const net = fetch(req).then((res) => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put("./", copy));
+        }
         return res;
-      }).catch(() => caches.match("./").then((r) => r || caches.match(req)))
-    );
+      }).catch(() => cached);
+      return cached || net;
+    })());
     return;
   }
   e.respondWith(
