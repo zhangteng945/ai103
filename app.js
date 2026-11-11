@@ -189,7 +189,7 @@
         text: "实现文本分析解决方案",
         extract: "实现信息提取解决方案",
       },
-      backHome: "← 首页",
+      backHome: "返回首页",
       resetProgress: "重置进度",
       prev: "上一题",
       next: "下一题",
@@ -258,9 +258,9 @@
       examCount50: "50 题",
       examCount58: "58 题（默认，真实考试）",
       examCount60: "60 题",
-      back: "← 返回",
+      back: "返回首页",
       startExam: "开始考试",
-      leaveExam: "← 离开",
+      leaveExam: "离开考试",
       examNavHint: "题目导航（点击跳转；底边高亮 = 已标记）",
       flagShort: "标记",
       unflagShort: "取消标记",
@@ -318,7 +318,7 @@
         text: "Implement text analysis solutions",
         extract: "Implement information extraction solutions",
       },
-      backHome: "← Home",
+      backHome: "Back to home",
       resetProgress: "Reset progress",
       prev: "Previous",
       next: "Next",
@@ -387,9 +387,9 @@
       examCount50: "50 questions",
       examCount58: "58 questions (default, real exam)",
       examCount60: "60 questions",
-      back: "← Back",
+      back: "Back to home",
       startExam: "Start exam",
-      leaveExam: "← Leave",
+      leaveExam: "Leave exam",
       examNavHint: "Navigator (click to jump; bottom highlight = flagged)",
       flagShort: "Flag",
       unflagShort: "Unflag",
@@ -2212,7 +2212,15 @@
     }
     const note = $("#view-home .note");
     if (note) note.textContent = PASS_SCORE === 700 ? pack.homeNote : pack.homeNote.replace(/约 700 \/ 1000|≈ 700 \/ 1000/, (UI_LANG === "en" ? "" : "") + PASS_SCORE + " / 1000 (" + SCORE_MIN + "–1000)").replace(/Microsoft/g, "AWS");
-    setTxt("#btn-practice-back", pack.backHome);
+    const setIconLabel = (sel, val) => {
+      const el = $(sel);
+      if (!el) return;
+      el.setAttribute("aria-label", val);
+      el.setAttribute("title", val);
+    };
+    setIconLabel("#btn-practice-back", pack.backHome);
+    setIconLabel("#btn-exam-config-back", pack.backHome);
+    setIconLabel("#btn-exam-back", pack.leaveExam);
     setTxt("#btn-practice-reset", pack.resetProgress);
     setTxt("#btn-practice-prev", pack.prev);
     setTxt("#btn-practice-next", pack.next);
@@ -2251,9 +2259,7 @@
     if (exLabs[0]) exLabs[0].textContent = pack.examCount;
     if (exLabs[1]) exLabs[1].textContent = pack.examMinutes;
     rebuildExamConfigControls();
-    setTxt("#btn-exam-config-back", pack.back);
     setTxt("#btn-exam-start", pack.startExam);
-    setTxt("#btn-exam-back", pack.leaveExam);
     setTxt("#btn-exam-prev", pack.prev);
     setTxt("#btn-exam-next", pack.next);
     setTxt("#btn-exam-submit", pack.handIn);

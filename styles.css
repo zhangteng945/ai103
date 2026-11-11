@@ -1638,6 +1638,38 @@ html.auth-required body:not(.auth-ok) .topbar {
 .btn-danger { background: var(--danger-bg); color: var(--danger-strong); border: 0; }
 .btn-danger:hover:not(:disabled) { background: rgba(255, 59, 48, 0.18); }
 .btn-sm { padding: 0.38rem 0.8rem; font-size: 0.82rem; min-height: 32px; border-radius: 8px; }
+
+/* Shared iOS-style icon chrome buttons (back / refresh). */
+.icon-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--fill);
+  color: var(--text);
+  cursor: pointer;
+  flex: 0 0 auto;
+  text-decoration: none;
+  line-height: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--motion, 160ms) var(--ease), transform 0.12s var(--ease), opacity 0.12s var(--ease), color var(--motion, 160ms) var(--ease);
+}
+.icon-btn:hover { background: var(--fill-2); color: var(--text); }
+.icon-btn:active { transform: scale(0.96); opacity: 0.88; }
+.icon-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.icon-btn svg { display: block; pointer-events: none; }
+
 #btn-practice-reveal.active,
 #btn-practice-shuffle.active { background: var(--primary-tint-2); color: var(--primary); border: 0; }
 
@@ -3431,4 +3463,54 @@ body.auth-ok.view-home #btn-admin {
   width: 100%;
   min-width: 0;
   max-width: 100%;
+}
+
+
+/* Icon back control in the topbar; hide the brand tile so the row stays single-line. */
+.topbar-nav {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+}
+body.view-practice .topbar-nav,
+body.view-exam-config .topbar-nav,
+body.view-exam .topbar-nav,
+body.view-result .topbar-nav {
+  display: flex;
+}
+.topbar-nav .icon-btn { display: none; }
+body.view-practice .topbar-nav #btn-practice-back,
+body.view-result .topbar-nav #btn-practice-back,
+body.view-exam-config .topbar-nav #btn-exam-config-back,
+body.view-exam .topbar-nav #btn-exam-back {
+  display: inline-flex;
+}
+body.view-practice .topbar .brand-icon,
+body.view-exam-config .topbar .brand-icon,
+body.view-exam .topbar .brand-icon,
+body.view-result .topbar .brand-icon {
+  display: none;
+}
+
+.admin-page .admin-top-actions .icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--fill);
+  color: var(--text);
+  text-decoration: none;
+}
+@media (max-width: 760px) {
+  .admin-page .admin-top-actions .icon-btn {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 0;
+    border: 0;
+    background: var(--fill);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .icon-btn { color: var(--text); background: var(--fill); }
+  .icon-btn:hover { background: var(--fill-2); color: var(--text); }
 }
