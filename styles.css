@@ -2054,6 +2054,16 @@ body.auth-ok.view-home .sync-row {
 body.auth-ok.view-home #sync-status:empty {
   display: none;
 }
+body.auth-ok.view-home .home-sync-hint {
+  display: block;
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 body.auth-ok.view-home .sync-ctl {
   display: flex;
   flex-wrap: nowrap;
@@ -2227,6 +2237,72 @@ body.touch .kbd-hint, body.touch #view-practice .hint-keys { display: none !impo
 .wb-hint{font-size:.82rem;color:#b45309}
 .qx-note{margin-top:.4rem}.qx-note textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:.4rem;border-radius:8px;border:1px solid var(--border,#ccc);background:transparent;color:inherit}
 .hx-row input[type=date]{font-size:16px;min-height:36px}
+/* Compact homepage score analysis */
+.home-analysis {
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 0.5px solid var(--border);
+}
+.home-analysis-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.home-plan {
+  margin: 0 0 1rem;
+}
+.home-plan-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.75rem;
+  margin: 0 0 0.45rem;
+}
+.home-plan-goal, .home-plan-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+}
+.home-plan-date input[type=date] {
+  font-size: 0.88rem;
+  min-height: 32px;
+  padding: 0.15rem 0.35rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--fill);
+  color: inherit;
+}
+.home-plan-tools .btn { min-height: 32px; padding: 0.25rem 0.7rem; }
+.home-analysis-sub {
+  margin: 0.9rem 0 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.home-analysis-empty {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.home-analysis .score-chart {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.home-analysis .dom-table { margin-top: 0; gap: 0.35rem; }
+.home-analysis .dom-row {
+  border: 0;
+  background: var(--fill);
+  border-radius: 10px;
+  min-height: 36px;
+  padding: 0.4rem 0.7rem;
+}
+.home-analysis .dom-row:hover { background: var(--fill-2, var(--fill)); }
+@media (prefers-color-scheme: dark) {
+  .home-analysis { border-top-color: var(--border); }
+  .score-line { stroke: #60a5fa; }
+}
 /* graded option states */
 .option.st-ok{border:2px solid var(--success);background:var(--success);color:#fff}
 .option.st-ok .oid{background:#fff;color:var(--success);border-color:#fff}
@@ -2388,7 +2464,36 @@ body.auth-ok.acct-open .topbar { flex-wrap: wrap !important; }
 .exam-toolbar {
   align-items: center;
 }
-.exam-nav-legend { margin-bottom: 0.45rem; }
+.exam-nav-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 1rem;
+  margin: 0 0 0.65rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.exam-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.exam-leg-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--fill);
+  box-sizing: border-box;
+}
+.exam-leg-swatch.answered { background: var(--primary-tint-2, var(--primary-tint)); }
+.exam-leg-swatch.flagged { box-shadow: inset 0 -3px 0 var(--warning); }
+.exam-rules {
+  margin: 0.85rem 0 0.15rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.exam-rules p { margin: 0 0 0.28rem; }
 
 /* --- Fixed bottom action dock --- */
 #view-practice:not(.hidden),

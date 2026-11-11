@@ -719,7 +719,7 @@
     var panel = $("auth-panel");
     if (panel && !$("sync-row")) {
       var row = document.createElement("div"); row.id = "sync-row"; row.className = "sync-row muted hidden";
-      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><button type='button' class='btn btn-sm' id='btn-sync-upload'>上传进度</button><button type='button' class='btn btn-sm' id='btn-sync-download'>下载进度</button></div>";
+      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><button type='button' class='btn btn-sm' id='btn-sync-upload'>上传进度</button><button type='button' class='btn btn-sm' id='btn-sync-download'>下载进度</button></div><p class='home-sync-hint muted'>进度不会自动同步，换设备请手动上传/下载。</p>";
       panel.appendChild(row);
       var lo2 = $("btn-auth-logout"); if (lo2) row.querySelector(".sync-ctl").appendChild(lo2);
       $("btn-sync-upload").onclick = function () { uploadProgress(); };

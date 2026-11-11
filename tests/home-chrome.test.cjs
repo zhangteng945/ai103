@@ -119,12 +119,14 @@ test("首页去掉说明文案，页脚只保留星火署名", () => {
   assert.doesNotMatch(html, /id="home-intro"/);
   assert.doesNotMatch(html, /exam-bank-hint/);
   assert.doesNotMatch(html, /id="home-stats"/);
+  assert.match(html, /id="home-analysis"/);
   assert.equal((html.match(/题源来自你提供的 PDF/g) || []).length, 0);
   assert.doesNotMatch(html, /按领域筛选 · 即时反馈与解析/);
   assert.doesNotMatch(html, /限时抽题 · 结束计分/);
   assert.doesNotMatch(html, /及格线参考/);
   assert.doesNotMatch(html, /class="kbd-hint"/);
-  assert.doesNotMatch(html, /exam-nav-legend/);
+  assert.match(html, /id="exam-nav-legend"/);
+  assert.match(html, /id="exam-config-rules"/);
   assert.doesNotMatch(html, /真实考试结构：48 道普通题/);
   assert.doesNotMatch(html, /进度按题库隔离保存在本机/);
   assert.match(html, /<span class="foot-author">星火<\/span>/);
@@ -133,4 +135,47 @@ test("首页去掉说明文案，页脚只保留星火署名", () => {
   assert.doesNotMatch(app, /setTxt\("\.app-foot \.foot-text"/);
   assert.match(app, /setTxt\("\.app-foot \.foot-author", "星火"\)/);
   assert.match(auth, /setSync\(""\)/);
+});
+
+test("首页成绩分析含模考图和分领域，并恢复目标日期搜索收藏", () => {
+  const start = app.indexOf("function renderHomeExtras()");
+  assert.notEqual(start, -1);
+  const end = app.indexOf("function promptSearch()", start);
+  const body = app.slice(start, end);
+  assert.match(body, /成绩分析/);
+  assert.match(body, /分领域正确率/);
+  assert.match(body, /scoreChart/);
+  assert.match(body, /暂无成绩数据/);
+  assert.match(body, /今日目标/);
+  assert.match(body, /考试日期/);
+  assert.match(body, /data-hx="search"/);
+  assert.match(body, /data-hx="favs"/);
+  assert.match(body, /data-hx="goal"/);
+  assert.match(css, /\.home-analysis\s*\{/);
+  assert.match(css, /\.home-plan\s*\{/);
+});
+
+test("模拟考试旁显示题量时长满分及格，设置页为短规则，导航有已答未答标记图例", () => {
+  assert.match(app, /function examMetaLine\(/);
+  assert.match(app, /满分 1000 · 及格/);
+  assert.match(app, /exam-meta-line/);
+  assert.match(app, /function examRulesLines\(/);
+  assert.match(app, /交卷后才显示答案/);
+  assert.match(app, /离开考试将放弃本场进度/);
+  assert.match(app, /fillExamConfigRules/);
+  assert.match(html, /id="exam-config-rules"/);
+  assert.match(html, /data-leg="answered"/);
+  assert.match(html, /data-leg="unanswered"/);
+  assert.match(html, /data-leg="flagged"/);
+  assert.doesNotMatch(html, /class="kbd-hint"/);
+  assert.equal((html.match(/题源来自你提供的 PDF/g) || []).length, 0);
+});
+
+test("账号卡片按钮下方有一行同步提示，且不换行", () => {
+  assert.match(auth, /class='home-sync-hint muted'>进度不会自动同步，换设备请手动上传\/下载。/);
+  const start = css.indexOf("body.auth-ok.view-home .home-sync-hint {");
+  assert.notEqual(start, -1);
+  const body = css.slice(start, css.indexOf("}", start) + 1);
+  assert.match(body, /white-space:\s*nowrap/);
+  assert.match(body, /font-size:\s*0\.72rem/);
 });
