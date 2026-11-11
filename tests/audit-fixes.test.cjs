@@ -59,7 +59,7 @@ test('旧四库所有框题沿用相同答错摘要/答对仅绿色规则',{skip
  assert.equal(questions,972);assert(boxes>0);
 });
 test('前台缓存版本升级，题库指针仍指向202611100825',()=>{
- const front='202611111920', bank='202611100825', dva='202611102145';
+ const front='202611111928', bank='202611100825', dva='202611102145';
  for(const f of ['index.html','admin.html','sw.js']){
   const text=fs.readFileSync(path.join(repo,f),'utf8');assert(text.includes(front),f);
   assert(!/202611100825|202611092331|202611092210/.test(text),f);
