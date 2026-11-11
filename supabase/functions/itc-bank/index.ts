@@ -20,7 +20,7 @@ const DEFAULT_VERSIONS: Record<ExamId, string> = {
   "dva-c02": DVA_VERSION,
   ai103: "202611011910",
   "dop-c02": "202611011900",
-  "dp-700": "202611011900",
+  "dp-700": "202611112115",
   "dp-420": "202611011900",
 };
 
