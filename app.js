@@ -667,11 +667,22 @@
     return !!(st && st.user && st.user.email);
   }
 
+  const BODY_VIEW_MODES = ["home", "practice", "examConfig", "exam", "result", "auth"];
+
+  function setBodyView(name) {
+    BODY_VIEW_MODES.forEach((v) => {
+      document.body.classList.toggle("view-" + v, v === name);
+    });
+    // Account panel and logout stay on the home view only.
+    if (name !== "home") document.body.classList.remove("acct-open");
+  }
+
   function hideAllAppViews() {
     Object.keys(views).forEach((k) => {
       if (views[k]) views[k].classList.add("hidden");
     });
     state.mode = "auth";
+    setBodyView("auth");
   }
 
   function showView(name) {
@@ -683,6 +694,7 @@
       views[k].classList.toggle("hidden", k !== name);
     });
     state.mode = name;
+    setBodyView(name);
   }
 
   function currentAuthUserId() {
