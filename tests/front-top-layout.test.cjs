@@ -37,7 +37,11 @@ test('返回首页改为顶栏图标按钮，后台返回和刷新风格统一',
   const exam = html.slice(html.indexOf('id="view-exam"'), html.indexOf('id="view-result"'));
   assert.doesNotMatch(exam, /id="btn-exam-back"/);
   const admin = fs.readFileSync(path.join(repo, 'admin.html'), 'utf8');
-  assert.match(admin, /class="icon-btn"[^>]*href="index.html"[^>]*aria-label="返回首页"/);
+  const adminTop = admin.slice(admin.indexOf('class="admin-topbar"'), admin.indexOf('class="admin-tabs"'));
+  assert.match(adminTop, /id="btn-admin-back"[^>]*aria-label="返回首页"/);
+  assert.ok(adminTop.indexOf('id="btn-admin-back"') < adminTop.indexOf('class="brand"'));
+  assert.ok(adminTop.indexOf('id="btn-refresh"') > adminTop.indexOf('admin-top-actions'));
+  assert.doesNotMatch(adminTop, /brand-icon/);
   assert.match(admin, /id="btn-refresh"[^>]*aria-label="刷新列表"/);
   assert.doesNotMatch(admin, /← 返回练习站|act-short">返回</);
   assert.match(css, /\.icon-btn\s*\{/);

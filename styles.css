@@ -3492,23 +3492,14 @@ body.view-result .topbar .brand-icon {
   display: none;
 }
 
+.admin-page .admin-topbar > .icon-btn,
 .admin-page .admin-top-actions .icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--fill);
-  color: var(--text);
-  text-decoration: none;
+  /* inherit shared .icon-btn size/style so it matches the practice topbar */
+  flex: 0 0 auto;
 }
-@media (max-width: 760px) {
-  .admin-page .admin-top-actions .icon-btn {
-    width: 36px;
-    height: 36px;
-    min-height: 36px;
-    padding: 0;
-    border: 0;
-    background: var(--fill);
-  }
+.admin-page .admin-topbar .brand-icon { display: none; }
+.admin-page .admin-topbar {
+  gap: 0.5rem 0.65rem;
 }
 @media (prefers-color-scheme: dark) {
   .icon-btn { color: var(--text); background: var(--fill); }
