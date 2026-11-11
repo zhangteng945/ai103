@@ -815,6 +815,16 @@ footer.app-foot {
   color: #fff;
   background: var(--primary);
 }
+
+/* Home/login: hide the language switch. Practice, exam config, exam, and result keep it.
+   Account toggle and logout stay on the home view only. */
+body.view-home .lang-toggle,
+body.view-auth .lang-toggle {
+  display: none !important;
+}
+body:not(.view-home) #btn-acct-toggle {
+  display: none !important;
+}
 .stem {
   white-space: pre-wrap;
 }
