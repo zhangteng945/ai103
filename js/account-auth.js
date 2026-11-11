@@ -198,10 +198,66 @@
   var BANK_IDS_MAX = 80;
   var BANK_DIRECT = "https://paswovhtsoljydywdmvb.supabase.co";
   var BANK_CACHE = "itcert-banks-v1";
+  var BANK_ORIGIN_KEY = "itcert_bank_origin_v1";
+  var BANK_META_KEY = "itcert_bank_meta_v1";
+  var BANK_PROXY_PROBE_MS = 2500;
   var BANK_GLOBAL = { ai103: "QUESTIONS_AI103", "dop-c02": "QUESTIONS_DOP_C02", "dp-700": "QUESTIONS_DP_700", "dp-420": "QUESTIONS_DP_420", "az305": "QUESTIONS_AZ305", "dva-c02": "QUESTIONS_DVA_C02" };
   var bankMem = {};
   var bankInflight = {};
   var bankOrigin = "";
+  function isProxyBankBase(base) {
+    return /tencentscf\.com|scf\.tencent/i.test(String(base || ""));
+  }
+  function readStoredOrigin() {
+    try {
+      return parse((global.sessionStorage || ls).getItem(BANK_ORIGIN_KEY));
+    } catch (e) { return null; }
+  }
+  function writeStoredOrigin(origin, proxyFailed) {
+    try {
+      var st = global.sessionStorage || ls;
+      st.setItem(BANK_ORIGIN_KEY, JSON.stringify({ origin: String(origin || ""), proxyFailed: !!proxyFailed, t: Date.now() }));
+    } catch (e) {}
+  }
+  function rememberBankOrigin(origin, proxyFailed) {
+    bankOrigin = String(origin || "").replace(/\/+$/, "");
+    writeStoredOrigin(bankOrigin, proxyFailed);
+  }
+  (function restoreBankOrigin() {
+    var stored = readStoredOrigin();
+    if (stored && stored.origin) bankOrigin = String(stored.origin).replace(/\/+$/, "");
+  })();
+  function bankPin(examId) {
+    return String((CFG.banks && CFG.banks[examId]) || "");
+  }
+  function metaCacheKey(examId) {
+    var uid = state.session && state.session.user && state.session.user.id;
+    return String(uid || "") + "::" + examId;
+  }
+  function readMetaCache(examId) {
+    try {
+      var all = parse(ls.getItem(BANK_META_KEY)) || {};
+      var rec = all[metaCacheKey(examId)];
+      if (rec && rec.pin === bankPin(examId) && rec.meta && rec.meta.examId === examId) return rec.meta;
+    } catch (e) {}
+    return null;
+  }
+  function writeMetaCache(examId, meta) {
+    try {
+      var all = parse(ls.getItem(BANK_META_KEY)) || {};
+      all[metaCacheKey(examId)] = { pin: bankPin(examId), meta: { examId: meta.examId, version: meta.version || "", total: meta.total || 0, domains: meta.domains || null, index: meta.index || null }, t: Date.now() };
+      setRaw(BANK_META_KEY, JSON.stringify(all));
+    } catch (e) {}
+  }
+  function clearMetaCache() {
+    try {
+      var uid = state.session && state.session.user && state.session.user.id;
+      if (!uid) { ls.removeItem(BANK_META_KEY); return; }
+      var all = parse(ls.getItem(BANK_META_KEY)) || {};
+      Object.keys(all).forEach(function (k) { if (k.indexOf(String(uid) + "::") === 0) delete all[k]; });
+      setRaw(BANK_META_KEY, JSON.stringify(all));
+    } catch (e) {}
+  }
   function purgeBankCache() {
     try {
       if (!global.caches || typeof global.caches.delete !== "function") return;
@@ -213,6 +269,7 @@
     bankMem = {};
     bankInflight = {};
     bankOrigin = "";
+    clearMetaCache();
     Object.keys(BANK_GLOBAL).forEach(function (id) {
       try { delete global[BANK_GLOBAL[id]]; } catch (e) { global[BANK_GLOBAL[id]] = undefined; }
     });
@@ -310,11 +367,12 @@
       if (!data || String(data.q || "") !== String(opt.q || "")) throw new Error(unsupportedBank("search"));
     }
   }
-  async function fetchBankRaw(examId, opt, token, base) {
+  async function fetchBankRaw(examId, opt, token, base, timeoutMs) {
     var root = String(base || "").replace(/\/+$/, "");
     var path = bankQuery(examId, opt);
     var ctl = typeof AbortController === "function" ? new AbortController() : null;
-    var tm = setTimeout(function () { if (ctl) ctl.abort(); }, Math.max(CFG.timeoutMs || 8000, 20000));
+    var wait = timeoutMs != null ? timeoutMs : Math.max(CFG.timeoutMs || 8000, 20000);
+    var tm = setTimeout(function () { if (ctl) ctl.abort(); }, wait);
     try {
       var res = await fetch(root + path, {
         method: "GET",
@@ -351,19 +409,61 @@
       return await fetchBankRaw(examId, opt, token, base);
     }
   }
+  async function fetchBankOnce(examId, opt, base, timeoutMs) {
+    var token = await ensureFreshToken();
+    return fetchBankRaw(examId, opt, token, base, timeoutMs);
+  }
   async function fetchBankWithFallback(examId, opt) {
     var direct = BANK_DIRECT.replace(/\/+$/, "");
+    var stored = readStoredOrigin();
     var primary = String(bankOrigin || BASE || direct).replace(/\/+$/, "");
+    if (!bankOrigin && stored && stored.proxyFailed && isProxyBankBase(primary) && direct) {
+      primary = direct;
+    }
     var bases = [primary];
     if (!bankOrigin && direct && direct !== primary) bases.push(direct);
+
+    // First itc-bank hop: SCF is not allowlisted. Race the short proxy probe
+    // with the direct host so a 404/timeout does not delay the real download.
+    if (!bankOrigin && bases.length > 1 && isProxyBankBase(bases[0])) {
+      var proxyBase = bases[0];
+      var winner = null;
+      var lastRace;
+      var pending = 2;
+      await new Promise(function (resolve) {
+        function done() { pending -= 1; if (pending <= 0 || winner) resolve(); }
+        fetchBankOnce(examId, opt, proxyBase, BANK_PROXY_PROBE_MS).then(function (data) {
+          if (!winner) { winner = { data: data, base: proxyBase }; }
+          done();
+        }).catch(function (e) {
+          lastRace = e;
+          if (shouldFallbackBank(e)) writeStoredOrigin("", true);
+          done();
+        });
+        fetchBankRetry(examId, opt, direct).then(function (data) {
+          if (!winner) { winner = { data: data, base: direct }; }
+          done();
+        }).catch(function (e) {
+          lastRace = e;
+          done();
+        });
+      });
+      if (winner) {
+        rememberBankOrigin(winner.base, isProxyBankBase(proxyBase) && winner.base === direct);
+        return winner.data;
+      }
+      throw lastRace || new Error("题库加载失败，请检查网络后重试");
+    }
+
     var last;
     for (var i = 0; i < bases.length; i++) {
       try {
         var data = await fetchBankRetry(examId, opt, bases[i]);
-        bankOrigin = String(bases[i]).replace(/\/+$/, "");
+        rememberBankOrigin(bases[i], isProxyBankBase(primary) && String(bases[i]).replace(/\/+$/, "") === direct);
         return data;
       } catch (e) {
         last = e;
+        if (shouldFallbackBank(e) && isProxyBankBase(bases[i])) writeStoredOrigin("", true);
         if (i === bases.length - 1 || !shouldFallbackBank(e)) throw e;
       }
     }
@@ -388,6 +488,12 @@
     return guardExam(examId).then(function (id) {
       var slot = bankSlot(id);
       if (slot.metaReady) return publicMeta(slot);
+      var cached = readMetaCache(id);
+      if (cached) {
+        applyPack(slot, Object.assign({ questions: [] }, cached), null);
+        slot.metaReady = true;
+        return publicMeta(slot);
+      }
       var inflightKey = "meta:" + id;
       if (bankInflight[inflightKey]) return bankInflight[inflightKey];
       var uid = state.session.user.id;
@@ -397,6 +503,7 @@
         applyPack(slot, data, null);
         slot.metaReady = true;
         if (!slot.total && data.total == null) throw new Error("题库数据异常，请稍后重试");
+        writeMetaCache(id, publicMeta(slot));
         return publicMeta(slot);
       }).catch(function (e) {
         var err = new Error(bankErrorMessage(e));
