@@ -3294,3 +3294,141 @@ body.admin-sheet-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .admin-sheet, .admin-overlay-backdrop { transition: none; }
 }
+
+
+/* ===== Frontend top chrome compact (2026-11-11) =====
+   Single-line sticky topbar; practice/exam toolbars stay compact and do not wrap. */
+body.auth-ok .topbar {
+  display: flex;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  min-width: 0;
+}
+body.auth-ok .topbar .brand {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+body.auth-ok .topbar .brand > div:last-child {
+  min-width: 0;
+  overflow: hidden;
+}
+body.auth-ok .topbar .brand h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+body.auth-ok .topbar .brand .sub,
+body.auth-ok .topbar .brand .author {
+  display: none;
+}
+body.auth-ok .topbar .lang-toggle {
+  flex: 0 0 auto;
+  margin-left: 0;
+  white-space: nowrap;
+}
+body.auth-ok .topbar .lang-toggle button {
+  white-space: nowrap;
+  min-height: 32px;
+  padding: 0.28rem 0.7rem;
+}
+body.auth-ok.acct-open .topbar { flex-wrap: nowrap !important; }
+
+.practice-toolbar .toolbar-row,
+.exam-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+}
+.practice-toolbar .toolbar-main { gap: 0.35rem 0.45rem; }
+.practice-toolbar .btn,
+.exam-toolbar .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.toolbar-filter {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.toolbar-filter select {
+  flex: 1 1 0;
+  min-width: 5rem;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+.toolbar-progress .progress-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.practice-toolbar,
+.exam-toolbar {
+  max-width: 100%;
+}
+#btn-practice-back,
+#btn-exam-back,
+#btn-exam-config-back {
+  text-decoration: none;
+}
+.showans-toggle {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.showans-short { display: none; }
+.exam-toolbar .progress-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.exam-toolbar .timer { flex: 0 0 auto; white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .showans-full { display: none; }
+  .showans-short { display: inline; }
+  .toolbar-filter .filter-label { display: none; }
+}
+
+/* Compact chrome controls only; do not shrink question options / answer inputs. */
+@media (max-width: 520px) {
+  body.auth-ok .topbar .lang-toggle button {
+    min-height: 32px;
+    padding: 0.22rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  .practice-toolbar .btn,
+  .practice-toolbar select,
+  .exam-toolbar .btn,
+  #lbl-practice-showall {
+    min-height: 36px;
+  }
+  body.auth-ok.view-home .sync-ctl .btn,
+  body.auth-ok.view-home #btn-admin {
+    text-decoration: none;
+  }
+}
+body.auth-ok.view-home .sync-ctl .btn,
+body.auth-ok.view-home #btn-admin {
+  text-decoration: none;
+}
+
+/* practice-toolbar filter shrink: native select min-width:auto would overflow the row */
+.practice-toolbar .toolbar-main,
+.practice-toolbar .toolbar-progress {
+  min-width: 0;
+  max-width: 100%;
+}
+.practice-toolbar .toolbar-filter {
+  display: inline-flex;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+.practice-toolbar .toolbar-filter select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}

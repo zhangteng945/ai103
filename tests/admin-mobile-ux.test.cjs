@@ -258,3 +258,15 @@ test('报错列表载荷含处理/删除，题号可读，已处理可区分并�
   assert.equal(ui.visibleReports(rows, 'open').length, 1);
   assert.equal(ui.visibleReports(rows, 'all').length, 2);
 });
+
+
+test('用户名显示去掉 @ 及域名，接口载荷仍用完整邮箱', () => {
+  const { ui } = loadAdmin();
+  assert.equal(ui.shortEmail('zhangsan@ai103.local'), 'zhangsan');
+  assert.equal(ui.shortEmail('zhangsan@other.example'), 'zhangsan');
+  assert.equal(ui.shortEmail('zhangsan'), 'zhangsan');
+  assert.equal(ui.shortMsg('已创建 zhangsan@ai103.local，密码仅显示一次'), '已创建 zhangsan，密码仅显示一次');
+  assert.deepEqual(plain(ui.payload.renewDays('a@ai103.local', '30')), {
+    action: 'renew', payload: { email: 'a@ai103.local', days: 30 }
+  });
+});

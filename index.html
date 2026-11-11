@@ -12,8 +12,8 @@
   <meta name="theme-color" content="#2563eb" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="IT认证练习" />
-  <link rel="stylesheet" href="styles.css?v=202611111943" />
-  <script src="js/account-config.js?v=202611111943"></script>
+  <link rel="stylesheet" href="styles.css?v=202611111953" />
+  <script src="js/account-config.js?v=202611111953"></script>
   <!-- Password gate: hide app until unlock (Supabase Auth UI temporarily off) -->
   <script>
     (function () {
@@ -110,7 +110,7 @@
         <div class="toolbar-row toolbar-main">
           <button type="button" class="btn btn-sm btn-ghost" id="btn-practice-back">← 首页</button>
           <label class="muted toolbar-filter">
-            筛选
+            <span class="filter-label">筛选</span>
             <select id="practice-filter" aria-label="按领域筛选">
               <option value="all">全部</option>
               <option value="flagged">已标记</option>
@@ -124,7 +124,7 @@
             </select>
           </label>
           <button type="button" class="btn btn-sm" id="btn-practice-shuffle" title="随机打乱当前题目顺序">乱序</button>
-          <label class="showans-toggle" id="lbl-practice-showall"><input type="checkbox" id="chk-practice-showall"> <span>始终显示答案（背题模式）</span></label>
+          <label class="showans-toggle" id="lbl-practice-showall"><input type="checkbox" id="chk-practice-showall"> <span class="showans-full">始终显示答案（背题模式）</span><span class="showans-short">背题</span></label>
         </div>
         <div class="toolbar-row toolbar-progress">
           <div class="progress-wrap">
@@ -244,16 +244,16 @@
 
   <div id="boot-loader" role="status" aria-live="polite"><span class="spin"></span>正在读取题库信息…</div>
   <!-- Account login (js/account-auth.js, enabled in account-config.js). password-gate.js stays as fallback: it self-disables in account mode. -->
-  <script src="js/supabase-config.js?v=202611111943"></script>
-  <script src="js/progress-core.js?v=202611111943"></script>
-  <script src="js/exam-registry.js?v=202611111943"></script>
-  <script src="js/yn-order.js?v=202611111943"></script>
-  <script src="js/account-auth.js?v=202611111943"></script>
-  <script src="js/password-gate.js?v=202611111943"></script>
-  <script>(function(){var c=window.__ITCERT_ACCOUNT__||{};if(c.enabled&&c.protectedBanks)return;document.write('<script src="questions.js?v=202611111943"><\/script>');try{var x=localStorage.getItem("itcert_exam_id_v1");if(x==="dop-c02"||x==="dp-700"||x==="dp-420")document.write('<script src="banks/questions-'+x+'.js?v=202611111943"><\/script>');}catch(e){}})();</script>
-  <script src="js/image-questions.js?v=202611111943"></script>
-  <script src="js/pdf-text.js?v=202611111943"></script>
-  <script src="js/issue-report.js?v=202611111943"></script>
-  <script src="app.js?v=202611111943"></script>
+  <script src="js/supabase-config.js?v=202611111953"></script>
+  <script src="js/progress-core.js?v=202611111953"></script>
+  <script src="js/exam-registry.js?v=202611111953"></script>
+  <script src="js/yn-order.js?v=202611111953"></script>
+  <script src="js/account-auth.js?v=202611111953"></script>
+  <script src="js/password-gate.js?v=202611111953"></script>
+  <script>(function(){var c=window.__ITCERT_ACCOUNT__||{};if(c.enabled&&c.protectedBanks)return;document.write('<script src="questions.js?v=202611111953"><\/script>');try{var x=localStorage.getItem("itcert_exam_id_v1");if(x==="dop-c02"||x==="dp-700"||x==="dp-420")document.write('<script src="banks/questions-'+x+'.js?v=202611111953"><\/script>');}catch(e){}})();</script>
+  <script src="js/image-questions.js?v=202611111953"></script>
+  <script src="js/pdf-text.js?v=202611111953"></script>
+  <script src="js/issue-report.js?v=202611111953"></script>
+  <script src="app.js?v=202611111953"></script>
 </body>
 </html>

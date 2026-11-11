@@ -75,7 +75,18 @@
     return { access: tok.access_token, refresh: tok.refresh_token, exp: Date.now() + (tok.expires_in || 3600) * 1000,
       user: { id: u.id, email: u.email, expires_at: expiresAtOf(u), exams: (u.app_metadata && u.app_metadata.exams) || null, role: (u.app_metadata && u.app_metadata.role) || null } };
   }
-  function normalizeEmail(raw) { var e = String(raw || "").trim().toLowerCase(); if (e && e.indexOf("@") < 0) e += "@" + CFG.emailDomain; return e; }
+  /** Visible username is the local part only; never show @domain. */
+  function usernameOf(raw) {
+    var s = String(raw || "").trim();
+    var at = s.indexOf("@");
+    return (at >= 0 ? s.slice(0, at) : s).trim();
+  }
+  function displayUserName(raw) { return usernameOf(raw); }
+  /** Auth still needs an email: strip @… then append the fixed domain. */
+  function normalizeEmail(raw) {
+    var u = usernameOf(raw).toLowerCase();
+    return u ? u + "@" + CFG.emailDomain : "";
+  }
 
   var state = { session: null, ready: false, expired: false, status: "", syncStatus: "", syncing: false, dirty: false, timer: null, initialMerge: false, lastPullAt: 0, claimedDevice: false };
 
@@ -91,7 +102,7 @@
 
   async function signIn(emailRaw, password) {
     var email = normalizeEmail(emailRaw);
-    if (!email || !password) { setStatus("请输入账号和密码"); return { ok: false }; }
+    if (!email || !password) { setStatus("请输入用户名和密码"); return { ok: false }; }
     setStatus("正在登录…");
     try {
       var tok = await withRetry(function () { return http("POST", "/auth/v1/token?grant_type=password", { email: email, password: password }); });
@@ -491,7 +502,7 @@
   }
   function loginStatusText() {
     var u = state.session && state.session.user; if (!u) return "";
-    return "已登录：" + u.email.replace("@" + CFG.emailDomain, "") + (u.expires_at ? " · 有效期至 " + fmtDate(u.expires_at) : "");
+    return "已登录：" + displayUserName(u.email) + (u.expires_at ? " · 有效期至 " + fmtDate(u.expires_at) : "");
   }
   async function signOut() {
     var s = state.session;
@@ -665,7 +676,7 @@
     var lb = $("btn-auth-login"); if (lb) { lb.classList.toggle("hidden", li); lb.textContent = "登录"; }
     var lo = $("btn-auth-logout"); if (lo) { lo.classList.toggle("hidden", !li); lo.textContent = "退出登录"; }
     var hint = document.querySelector("#auth-panel .auth-hint");
-    if (hint) hint.textContent = li ? "进度只保存在本机。换设备请点「上传进度」或「下载进度」（做题进度互相覆盖，模考历史合并，不自动同步）" : "请使用管理员发放的账号登录（账号可只填姓名缩写）";
+    if (hint) hint.textContent = li ? "进度只保存在本机。换设备请点「上传进度」或「下载进度」（做题进度互相覆盖，模考历史合并，不自动同步）" : "请使用管理员发放的用户名登录";
     if (li && !state.status) setStatus(loginStatusText());
     if (!li && !state.status) setStatus("请登录后使用");
     var sb = $("sync-row"); if (sb) sb.classList.toggle("hidden", !li);
@@ -690,9 +701,9 @@
     if (!$("auth-email")) {
       var i = document.createElement("input");
       i.type = "text"; i.id = "auth-email"; i.className = "auth-input"; i.name = "username";
-      i.autocomplete = "username"; i.placeholder = "账号（如 zhangsan）";
+      i.autocomplete = "username"; i.placeholder = "用户名"; i.setAttribute("aria-label", "用户名");
       form.insertBefore(i, form.firstChild);
-    } else { $("auth-email").placeholder = "账号（如 zhangsan）"; $("auth-email").type = "text"; }
+    } else { $("auth-email").placeholder = "用户名"; $("auth-email").type = "text"; $("auth-email").setAttribute("aria-label", "用户名"); $("auth-email").name = "username"; }
     var pw = $("auth-password"); if (pw) pw.placeholder = "密码";
     var panel = $("auth-panel");
     if (panel && !$("sync-row")) {
@@ -809,9 +820,10 @@
       pullProgress: downloadProgress, pushProgress: uploadProgress,
       refreshUi: refreshUi, applyAppGate: applyAppGate, init: boot,
       syncNow: function () { return Promise.resolve(); },
+      usernameOf: usernameOf, displayUserName: displayUserName, normalizeEmail: normalizeEmail,
     };
   }
-  global.ITCERT_SYNC = { enabled: ENABLED, openBackup: openBackup, uploadProgress: uploadProgress, downloadProgress: downloadProgress, noteLocalAhead: noteLocalAhead, _state: state, _cfg: CFG };
+  global.ITCERT_SYNC = { enabled: ENABLED, openBackup: openBackup, uploadProgress: uploadProgress, downloadProgress: downloadProgress, noteLocalAhead: noteLocalAhead, _state: state, _cfg: CFG, usernameOf: usernameOf, displayUserName: displayUserName, normalizeEmail: normalizeEmail };
   purgeBankCache();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })(window);

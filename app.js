@@ -201,6 +201,7 @@
       showAnswer: "显示答案",
       hideAnswer: "隐藏答案",
       alwaysShow: "始终显示答案（背题模式）",
+      alwaysShowShort: "背题",
       revealedTitle: "👁 已显示正确答案（未计分，不计入已答）",
       shuffle: "乱序",
       unshuffle: "恢复顺序",
@@ -329,6 +330,7 @@
       showAnswer: "Show answer",
       hideAnswer: "Hide answer",
       alwaysShow: "Always show answers (study mode)",
+      alwaysShowShort: "Study",
       revealedTitle: "👁 Answer shown (not scored, not counted as done)",
       shuffle: "Shuffle",
       unshuffle: "Original order",
@@ -2216,7 +2218,8 @@
     setTxt("#btn-practice-next", pack.next);
     setTxt("#btn-practice-skip", pack.skip);
     setTxt("#btn-practice-submit", pack.submit);
-    setTxt("#lbl-practice-showall span", pack.alwaysShow);
+    setTxt("#lbl-practice-showall .showans-full", pack.alwaysShow);
+    setTxt("#lbl-practice-showall .showans-short", pack.alwaysShowShort || pack.alwaysShow);
     setTxt("#practice-jump-pre", UI_LANG === "both" ? "跳到第 / Go to Q" : pack.jumpPre);
     setTxt("#practice-jump-suf", UI_LANG === "en" ? "" : I18N.zh.jumpSuf);
     setTxt("#btn-practice-jump", bi("jumpGo"));

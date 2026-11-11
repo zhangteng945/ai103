@@ -141,6 +141,15 @@ require("./account-auth.js");
   var histAfterDown = JSON.parse(ls.getItem("itcert_exam_hist_v1_ai103"));
   assert.strictEqual(histAfterDown.length, 3, "download merges history instead of dropping local records");
   assert.ok(histAfterDown.some(function (h) { return h.id === "h_local"; }));
+  assert.strictEqual(global.AI103Auth.displayUserName("zhangsan@ai103.local"), "zhangsan");
+  assert.strictEqual(global.AI103Auth.displayUserName("ZhangSan"), "ZhangSan");
+  assert.strictEqual(global.AI103Auth.normalizeEmail("ZhangSan"), "zhangsan@ai103.local");
+  assert.strictEqual(global.AI103Auth.normalizeEmail("zhangsan@ai103.local"), "zhangsan@ai103.local");
+  assert.strictEqual(global.AI103Auth.normalizeEmail("zhangsan@other.example"), "zhangsan@ai103.local", "strips @ and appends the fixed domain");
+  var src = require("fs").readFileSync(require("path").join(__dirname, "account-auth.js"), "utf8");
+  assert.ok(src.indexOf('placeholder = "用户名"') >= 0);
+  assert.ok(src.indexOf("请使用管理员发放的用户名登录") >= 0);
+  assert.ok(src.indexOf("账号（如 zhangsan）") < 0);
   console.log("account-auth contract tests ok");
 })().catch(function (e) {
   console.error(e);
