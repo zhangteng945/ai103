@@ -580,7 +580,7 @@
     var flag = "";
     try { flag = sessionStorage.getItem(STALE_KEY) || ""; } catch (e) {}
     if (flag === "1" && state.session) noteLocalAhead();
-    else if (state.session && !state.syncStatus) setSync("进度只保存在本机。换设备请点「上传进度」或「下载进度」。");
+    else if (state.session && !state.syncStatus) setSync("");
   }
   async function claimOnce() {
     if (!CFG.deviceLimit || !state.session || state.claimedDevice) return;
@@ -676,20 +676,31 @@
     var lb = $("btn-auth-login"); if (lb) { lb.classList.toggle("hidden", li); lb.textContent = "登录"; }
     var lo = $("btn-auth-logout"); if (lo) { lo.classList.toggle("hidden", !li); lo.textContent = "退出登录"; }
     var hint = document.querySelector("#auth-panel .auth-hint");
-    if (hint) hint.textContent = li ? "进度只保存在本机。换设备请点「上传进度」或「下载进度」（做题进度互相覆盖，模考历史合并，不自动同步）" : "请使用管理员发放的用户名登录";
+    if (hint) hint.textContent = li ? "" : "请使用管理员发放的用户名登录";
     if (li && !state.status) setStatus(loginStatusText());
     if (!li && !state.status) setStatus("请登录后使用");
     var sb = $("sync-row"); if (sb) sb.classList.toggle("hidden", !li);
     var adminBtn = $("btn-admin");
     var isAdmin = !!(li && state.session && state.session.user && state.session.user.role === "admin");
-    if (!adminBtn && isAdmin) {
-      var panel0 = $("auth-panel");
-      if (panel0) {
-        adminBtn = document.createElement("a");
-        adminBtn.id = "btn-admin"; adminBtn.className = "btn btn-sm btn-primary"; adminBtn.href = "admin.html";
-        adminBtn.textContent = "管理后台"; adminBtn.style.marginTop = ".35rem";
-        panel0.appendChild(adminBtn);
+    function placeAdminBtn(btn) {
+      var ctl = document.querySelector("#auth-panel .sync-ctl");
+      var lo = $("btn-auth-logout");
+      if (ctl) {
+        btn.style.marginTop = "";
+        if (lo && lo.parentNode === ctl) ctl.insertBefore(btn, lo);
+        else ctl.appendChild(btn);
+      } else {
+        var panel0 = $("auth-panel");
+        if (panel0 && btn.parentNode !== panel0) panel0.appendChild(btn);
       }
+    }
+    if (!adminBtn && isAdmin) {
+      adminBtn = document.createElement("a");
+      adminBtn.id = "btn-admin"; adminBtn.className = "btn btn-sm btn-primary"; adminBtn.href = "admin.html";
+      adminBtn.textContent = "管理后台";
+      placeAdminBtn(adminBtn);
+    } else if (adminBtn && isAdmin) {
+      placeAdminBtn(adminBtn);
     }
     if (adminBtn) adminBtn.classList.toggle("hidden", !isAdmin);
     var tg = $("btn-acct-toggle");
@@ -708,12 +719,12 @@
     var panel = $("auth-panel");
     if (panel && !$("sync-row")) {
       var row = document.createElement("div"); row.id = "sync-row"; row.className = "sync-row muted hidden";
-      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><button type='button' class='btn btn-sm' id='btn-sync-upload'>上传进度</button><button type='button' class='btn btn-sm' id='btn-sync-download'>下载进度</button></div>";
+      row.innerHTML = "<div id='sync-status'></div><div class='sync-ctl'><button type='button' class='btn btn-sm' id='btn-sync-upload'>上传进度</button><button type='button' class='btn btn-sm' id='btn-sync-download'>下载进度</button></div><p class='home-sync-hint muted'>进度不会自动同步，换设备请手动上传/下载。</p>";
       panel.appendChild(row);
       var lo2 = $("btn-auth-logout"); if (lo2) row.querySelector(".sync-ctl").appendChild(lo2);
       $("btn-sync-upload").onclick = function () { uploadProgress(); };
       $("btn-sync-download").onclick = function () { downloadProgress(); };
-      if (!state.syncStatus) setSync("进度只保存在本机。换设备请点「上传进度」或「下载进度」。");
+      if (!state.syncStatus) setSync("");
     }
   }
 

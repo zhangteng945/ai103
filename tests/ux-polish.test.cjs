@@ -80,7 +80,8 @@ test('练习页工具栏与底部操作栏保留全部原有控件，重置不�
   assert.match(practice, /jump-row-quiet/);
   const dock = practice.slice(dockAt);
   assert.doesNotMatch(dock, /id="practice-jump"/);
-  assert.match(index, /进度按题库隔离保存在本机/);
+  assert.match(index, /<span class="foot-author">星火<\/span>/);
+  assert.doesNotMatch(index, /进度按题库隔离保存在本机/);
   assert.doesNotMatch(index, /本地运行/);
   assert.match(index, /AZ-305/);
 });

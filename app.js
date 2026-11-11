@@ -1123,41 +1123,42 @@
     return svg + "</svg>";
   }
   function renderHomeExtras() {
-    let box = $("#home-extras");
-    if (!box) { const st = $("#home-stats"); if (!st) return; box = document.createElement("div"); box.id = "home-extras"; box.className = "home-extras"; st.insertAdjacentElement("afterend", box); }
-    const e = ex(); const tc = todayCount(); const cov = coverage();
-    let h = '<div class="hx-card"><div class="hx-row"><b>' + escapeHtml(L("今日目标", "Today")) + "</b> " + tc + "/" + e.goal +
-      ' <button type="button" class="btn btn-sm" data-hx="goal">' + escapeHtml(L("改目标", "Set goal")) + "</button>" +
-      ' <span class="hx-streak">🔥 ' + escapeHtml(L("连续 " + streakDays() + " 天", streakDays() + "-day streak")) + "</span></div>" +
-      '<span class="prog-bar"><i style="width:' + Math.min(100, Math.round((tc / e.goal) * 100)) + '%"></i></span>';
-    h += '<div class="hx-row"><label>' + escapeHtml(L("考试日期", "Exam date")) + ' <input type="date" id="hx-date" value="' + escapeHtml(e.examDate || "") + '"></label>';
-    const remainQ = Math.max(0, cov.total - cov.seen); const a7 = avg7();
-    if (e.examDate) {
-      const t0 = new Date(); t0.setHours(0, 0, 0, 0);
-      const days = Math.round((new Date(e.examDate + "T00:00:00") - t0) / 86400000);
-      if (days >= 0) {
-        const need = days > 0 ? Math.ceil(remainQ / days) : remainQ;
-        const ok = remainQ === 0 || a7 >= need;
-        h += ' <span>' + escapeHtml(days === 0 ? L("今天考试，加油！", "Exam is today, good luck!") : L("剩 " + days + " 天", days + " days left")) + "</span></div>";
-        h += '<div class="hx-row small">' + escapeHtml(L("需每天 " + need + " 题 · 近7天均 " + a7.toFixed(1) + " 题", "Need " + need + "/day · 7-day avg " + a7.toFixed(1))) +
-          ' <span class="hx-badge ' + (ok ? "ok" : "behind") + '">' + escapeHtml(ok ? L("进度达标", "On track") : L("进度落后", "Behind")) + "</span></div>";
-      } else h += ' <span class="muted">' + escapeHtml(L("考试日期已过", "Exam date passed")) + "</span></div>";
-    } else h += "</div>";
-    h += '<div class="hx-row small">' + escapeHtml(L("覆盖 " + cov.seen + "/" + cov.total + (cov.acc != null ? " · 正确率 " + cov.acc + "%" : ""), "Covered " + cov.seen + "/" + cov.total + (cov.acc != null ? " · accuracy " + cov.acc + "%" : ""))) + "</div>";
-    const last = e.scores.slice(-3).map((s) => s.s);
-    h += '<div class="hx-row small">' + escapeHtml(L("最近模考", "Recent mocks")) + "：" + (last.length ? last.map((s) => '<span class="' + (s >= PASS_SCORE ? "ok" : "bad") + '">' + s + "</span>").join(" · ") : "—") + " " + escapeHtml(L("（及格 " + PASS_SCORE + "）", "(pass " + PASS_SCORE + ")")) + "</div>";
-    h += scoreChart() + "</div>";
-    h += '<div class="hx-card"><b>' + escapeHtml(L("分领域正确率（点击练习）", "Accuracy by domain (tap to practise)")) + '</b><div class="dom-table">';
-    domStats().forEach((d) => {
-      const acc = d.done && d.ok != null ? Math.round((d.ok / d.done) * 100) : null;
-      h += '<button type="button" class="dom-row" data-hx="dom" data-d="' + d.id + '"><span class="dl">' + escapeHtml(d.label) + '</span><span class="dn">' + d.done + "/" + d.total + '</span><span class="da ' + (acc == null ? "" : acc >= 75 ? "ok" : "bad") + '">' + (acc == null ? "—" : acc + "%") + "</span></button>";
-    });
-    h += "</div></div>";
+    const box = $("#home-analysis");
+    if (!box) return;
+    const e = ex();
+    const tc = todayCount();
     const nf = Object.keys(e.favs).filter((id) => e.favs[id] && questionKnown(id)).length;
-    const nr = Object.keys(e.reports).length;
-    h += '<div class="hx-card hx-row"><button type="button" class="btn btn-sm" data-hx="favs"' + (nf ? "" : " disabled") + ">★ " + escapeHtml(L("收藏 ", "Favourites ")) + nf + "</button>" +
-      '<button type="button" class="btn btn-sm" data-hx="search">🔍 ' + escapeHtml(L("搜索题目", "Search")) + "</button>" +
-      (nr ? '<button type="button" class="btn btn-sm" data-hx="reports">⚑ ' + escapeHtml(L("复制报错 ", "Copy reports ")) + nr + "</button>" : "") + "</div>";
+    const scores = e.scores || [];
+    const domains = domStats();
+    const hasScores = scores.length > 0;
+    const hasDom = domains.some((d) => d.done > 0);
+    let h = '<div class="home-plan">';
+    h += '<div class="home-plan-row"><span class="home-plan-goal"><b>' + escapeHtml(L("今日目标", "Today")) + "</b> " + tc + "/" + e.goal +
+      ' <button type="button" class="btn btn-sm" data-hx="goal">' + escapeHtml(L("改", "Edit")) + "</button></span>";
+    h += '<label class="home-plan-date">' + escapeHtml(L("考试日期", "Exam date")) + ' <input type="date" id="hx-date" value="' + escapeHtml(e.examDate || "") + '"></label></div>';
+    h += '<div class="home-plan-row home-plan-tools">';
+    h += '<button type="button" class="btn btn-sm" data-hx="search">' + escapeHtml(L("搜索", "Search")) + "</button>";
+    h += '<button type="button" class="btn btn-sm" data-hx="favs"' + (nf ? "" : " disabled") + ">" + escapeHtml(L("收藏", "Favourites")) + (nf ? " " + nf : "") + "</button>";
+    h += "</div></div>";
+    h += '<h3 class="home-analysis-title">' + escapeHtml(L("成绩分析", "Score analysis")) + "</h3>";
+    if (!hasScores && !hasDom) {
+      h += '<p class="muted home-analysis-empty">' + escapeHtml(L("暂无成绩数据", "No score data yet")) + "</p>";
+    } else {
+      h += '<div class="home-analysis-chart">';
+      h += hasScores ? scoreChart() : ('<p class="muted home-analysis-empty">' + escapeHtml(L("暂无模考记录", "No mock exams yet")) + "</p>");
+      h += "</div>";
+      h += '<div class="home-analysis-sub">' + escapeHtml(L("分领域正确率", "Accuracy by domain")) + "</div>";
+      if (hasDom) {
+        h += '<div class="dom-table">';
+        domains.forEach((d) => {
+          const acc = d.done && d.ok != null ? Math.round((d.ok / d.done) * 100) : null;
+          h += '<button type="button" class="dom-row" data-hx="dom" data-d="' + d.id + '"><span class="dl">' + escapeHtml(d.label) + '</span><span class="dn">' + d.done + "/" + d.total + '</span><span class="da ' + (acc == null ? "" : acc >= 75 ? "ok" : "bad") + '">' + (acc == null ? "—" : acc + "%") + "</span></button>";
+        });
+        h += "</div>";
+      } else {
+        h += '<p class="muted home-analysis-empty">' + escapeHtml(L("暂无作答数据", "No practice data yet")) + "</p>";
+      }
+    }
     box.innerHTML = h;
     box.onclick = (ev) => {
       const b = ev.target.closest("[data-hx]"); if (!b) return;
@@ -1166,7 +1167,6 @@
       else if (k === "dom") startPractice(b.getAttribute("data-d"));
       else if (k === "favs") startPractice("favs");
       else if (k === "search") promptSearch();
-      else if (k === "reports") { const txt = reportText(Object.values(e.reports)); alert((copyText(txt) ? L("已复制：\n\n", "Copied:\n\n") : "") + txt); }
     };
     const di = $("#hx-date");
     if (di) di.addEventListener("change", () => { if (di.value) e.examDate = di.value; else delete e.examDate; saveEx(); renderHomeExtras(); });
@@ -2005,10 +2005,7 @@
         })
         .join("");
     }
-    const intro = $("#view-exam-config > p.muted");
-    if (intro && exam) {
-      intro.textContent = examIntroText(exam, pack);
-    }
+    fillExamConfigRules(exam);
   }
   function examIntroText(exam, pack) {
       if (!exam || exam.specialExam58) return pack.examConfigIntro;
@@ -2026,6 +2023,32 @@
               (exam.mockDefaultMinutes || 180) +
               " 分钟），与真实考试一致：可标记复习，交卷前有检查页，标准分 " + (exam.scoreMin || 100) + "–1000，" + (exam.passScore || 750) + " 分及格。考试过程中不显示对错。");
       }
+  }
+
+  function examMetaLine(exam) {
+    const n = (exam && exam.mockDefaultCount) || 58;
+    const m = (exam && exam.mockDefaultMinutes) || 90;
+    const pass = (exam && exam.passScore) || PASS_SCORE || 700;
+    return UI_LANG === "en"
+      ? n + " Q · " + m + " min · max 1000 · pass " + pass
+      : n + "题 · " + m + "分钟 · 满分 1000 · 及格 " + pass;
+  }
+  function examRulesLines(exam) {
+    const zh = UI_LANG !== "en";
+    const lines = [
+      (zh ? "默认 " : "Default ") + examMetaLine(exam),
+      zh ? "交卷后才显示答案；可标记，交卷前有检查页" : "Answers shown after you submit; you can flag items and review before handing in",
+      zh ? "离开考试将放弃本场进度" : "Leaving the exam discards this attempt",
+    ];
+    if (exam && exam.specialExam58) {
+      lines.push(zh ? "选 58 题时分 3 个部分，结束一部分后不能返回" : "The 58-question form has 3 sections; you can't go back after ending one");
+    }
+    return lines;
+  }
+  function fillExamConfigRules(exam) {
+    const el = $("#exam-config-rules");
+    if (!el) return;
+    el.innerHTML = examRulesLines(exam || currentExam()).map((line) => "<p>" + escapeHtml(line) + "</p>").join("");
   }
 
   function canAccessExam(id) {
@@ -2182,33 +2205,17 @@
     );
     document.title = h1;
     setTxt("#view-home h2", pack.homeTitle);
-    const intro = $("#view-home > p.muted");
-    if (intro) {
-      if (exam && exam.id === "dop-c02") {
-        intro.textContent =
-          UI_LANG === "en"
-            ? "Bank from your DOP-C02 PDF; answers taken strictly from PDF Correct Answer. Unofficial practice only."
-            : "题源来自你提供的 DOP-C02 PDF；答案严格取自 PDF Correct Answer。非官方真题，仅供备考练习。";
-      } else if (exam && (exam.id === "dp-700" || exam.id === "dp-420")) {
-        intro.textContent =
-          UI_LANG === "en"
-            ? "Bank from your " + exam.title + " PDF; answers strictly from the PDF (answer image when present; text/image conflicts are flagged in the explanation). Domains marked (est.) are keyword guesses. Unofficial practice only."
-            : "题源来自你提供的 " + exam.title + " PDF；答案严格取自 PDF（有答案图以图为准，文字版与答案图不一致处在解析中标注）。标「(估)」的考点为关键词估算。非官方真题，仅供备考练习。";
-      } else {
-        intro.textContent = pack.homeIntro;
-      }
-    }
     rebuildHomeStats();
     const bp = $("#btn-go-practice");
     if (bp) {
-      bp.innerHTML = pack.btnPractice + '<span class="desc">' + pack.btnPracticeDesc + "</span>" +
+      bp.innerHTML = pack.btnPractice +
         '<span class="desc prog-line">' + escapeHtml(practiceStatsLine()) + '</span><span class="prog-bar"><i style="width:' +
         (statTotal() ? Math.round((submittedIdsInBank().length / statTotal()) * 100) : 0) + '%"></i></span>';
     }
     try { renderHomeExtras(); } catch (err) { console.error(err); }
     const be = $("#btn-go-exam");
     if (be) {
-      be.innerHTML = pack.btnExam + '<span class="desc">' + pack.btnExamDesc.replace(/700/g, String(PASS_SCORE)) + "</span>";
+      be.innerHTML = pack.btnExam + '<span class="desc exam-meta-line">' + escapeHtml(examMetaLine(currentExam())) + "</span>";
     }
     const note = $("#view-home .note");
     if (note) note.textContent = PASS_SCORE === 700 ? pack.homeNote : pack.homeNote.replace(/约 700 \/ 1000|≈ 700 \/ 1000/, (UI_LANG === "en" ? "" : "") + PASS_SCORE + " / 1000 (" + SCORE_MIN + "–1000)").replace(/Microsoft/g, "AWS");
@@ -2253,8 +2260,7 @@
     const kbdP = $("#view-practice .kbd-hint");
     if (kbdP) kbdP.innerHTML = "<kbd>A</kbd>–<kbd>F</kbd> " + pack.kbdPractice + " · <kbd>←</kbd><kbd>→</kbd> " + escapeHtml(L("切题", "prev/next")) + " · <kbd>?</kbd> " + escapeHtml(L("帮助", "help"));
     setTxt("#view-exam-config h2", pack.examConfigTitle);
-    const exIntro = $("#view-exam-config > p.muted");
-    if (exIntro) exIntro.textContent = examIntroText(currentExam(), pack);
+    fillExamConfigRules(currentExam());
     const exLabs = $$("#view-exam-config .exam-config label > span");
     if (exLabs[0]) exLabs[0].textContent = pack.examCount;
     if (exLabs[1]) exLabs[1].textContent = pack.examMinutes;
@@ -2264,8 +2270,13 @@
     setTxt("#btn-exam-next", pack.next);
     setTxt("#btn-exam-submit", pack.handIn);
     setTxt("#btn-exam-to-result", pack.viewScore);
-    const navHint = $("#view-exam .card .muted");
-    if (navHint) navHint.textContent = pack.examNavHint;
+    const setLeg = (key, zh, en) => {
+      const el = $("#exam-nav-legend [data-leg='" + key + "']");
+      if (el) el.textContent = L(zh, en);
+    };
+    setLeg("answered", "已答", "Answered");
+    setLeg("unanswered", "未答", "Unanswered");
+    setLeg("flagged", "标记", "Flagged");
     const kbdE = $("#view-exam .kbd-hint");
     if (kbdE) kbdE.innerHTML = "<kbd>1</kbd>–<kbd>6</kbd> " + pack.kbdExam;
     setTxt("#view-result h2", pack.resultTitle);
@@ -2276,11 +2287,7 @@
     setTxt("#btn-result-home", UI_LANG === "en" ? "Home" : "回首页");
     const wrongH = $$("#view-result h2");
     if (wrongH[1]) wrongH[1].textContent = pack.wrongTitle;
-    setTxt(".app-foot .foot-text", pack.foot);
-    const authorTxt =
-      UI_LANG === "en" ? "Author: 星火" : UI_LANG === "both" ? "作者 / Author：星火" : "作者：星火";
-    setTxt(".brand .author", authorTxt);
-    setTxt(".app-foot .foot-author", authorTxt);
+    setTxt(".app-foot .foot-author", "星火");
 
     // lang toggle active state
     $$(".lang-toggle button").forEach((btn) => {
