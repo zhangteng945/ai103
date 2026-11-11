@@ -816,13 +816,13 @@ footer.app-foot {
   background: var(--primary);
 }
 
-/* Home/login: hide the language switch. Practice, exam config, exam, and result keep it.
-   Account toggle and logout stay on the home view only. */
+/* Home/login: hide the language switch. Practice, exam config, exam, and result keep it. */
 body.view-home .lang-toggle,
 body.view-auth .lang-toggle {
   display: none !important;
 }
-body:not(.view-home) #btn-acct-toggle {
+/* Account lives on the homepage card; never show the old topbar toggle. */
+body.auth-ok #btn-acct-toggle {
   display: none !important;
 }
 .stem {
@@ -1962,23 +1962,68 @@ html.auth-required body:not(.auth-ok) .auth-wechat-tip { flex: 0 0 auto; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
-/* header polish: dynamic icon text, compact unlocked status inside sticky bar */
+/* header polish: dynamic icon text */
 .brand-icon { font-size: 0.62rem; letter-spacing: -0.03em; overflow: hidden; text-align: center; line-height: 1.1; padding: 0 2px; }
-body.auth-ok .auth-panel {
-  width: auto;
-  flex: 0 1 auto;
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-  border: 0;
-  flex-wrap: nowrap;
-  gap: 0.4rem;
+
+/* Logged-in account card sits on the homepage, above the exam list. */
+body.auth-ok:not(.view-home) #auth-panel {
+  display: none !important;
 }
-body.auth-ok .auth-status { flex: 0 1 auto; font-size: 0.75rem; white-space: nowrap; }
-body.auth-ok .auth-hint,
-body.auth-ok .auth-wechat-tip { display: none; }
-@media (prefers-color-scheme: dark) { body.auth-ok .auth-panel { border: 0; } }
+body.auth-ok.view-home #auth-panel {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: none;
+  flex: 0 0 auto;
+  margin: 0 0 1rem;
+  padding: 1.2rem 1.3rem 1.25rem;
+  background: var(--bg-card);
+  border: 0;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  gap: 0.45rem;
+}
+@media (prefers-color-scheme: dark) {
+  body.auth-ok.view-home #auth-panel { border: 0.5px solid var(--border); }
+}
+body.auth-ok.view-home .auth-status {
+  flex: 0 0 auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: normal;
+  line-height: 1.45;
+}
+body.auth-ok.view-home .auth-hint,
+body.auth-ok.view-home .auth-wechat-tip,
+body.auth-ok.view-home #auth-form,
+body.auth-ok.view-home .auth-actions {
+  display: none !important;
+}
+body.auth-ok.view-home .sync-row {
+  margin-top: 0.1rem;
+  font-size: 0.85rem;
+}
+body.auth-ok.view-home .sync-ctl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+body.auth-ok.view-home #btn-admin {
+  align-self: flex-start;
+  margin-top: 0.15rem;
+}
+@media (max-width: 520px) {
+  body.auth-ok.view-home #auth-panel {
+    padding: 1.05rem 1rem 1.1rem;
+    border-radius: 14px;
+    margin-bottom: 0.85rem;
+  }
+  body.auth-ok.view-home .sync-ctl .btn { min-height: 36px; }
+}
 html.auth-required body:not(.auth-ok) .app-foot .foot-author { border-left: 0; margin-left: 0; padding-left: 0; }
 @media (max-width: 520px) { body.auth-ok .brand .sub { display: none; } }
 

@@ -671,8 +671,7 @@
     }
     if (adminBtn) adminBtn.classList.toggle("hidden", !isAdmin);
     var tg = $("btn-acct-toggle");
-    if (!tg && panel) { tg = document.createElement("button"); tg.type = "button"; tg.id = "btn-acct-toggle"; tg.className = "btn btn-sm btn-ghost acct-toggle"; tg.textContent = "账号"; panel.parentNode.insertBefore(tg, panel); tg.onclick = function () { document.body.classList.toggle("acct-open"); }; }
-    if (tg) tg.classList.toggle("hidden", !li);
+    if (tg) tg.classList.add("hidden");
     applyAppGate(); emit();
   }
   function ensureLoginDom() {
@@ -700,7 +699,7 @@
   function injectCss() {
     if ($("itcert-sync-css")) return;
     var s = document.createElement("style"); s.id = "itcert-sync-css";
-    s.textContent = ".sync-row{margin-top:.4rem;font-size:.85rem}.sync-ctl{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.35rem}.sync-auto{display:inline-flex;align-items:center;gap:.3rem}.acct-toggle{margin-left:auto}body.auth-ok #auth-panel{display:none!important}body.auth-ok.acct-open #auth-panel{display:flex!important;flex-direction:column;align-items:flex-start;width:100%;flex:1 1 100%;padding:.75rem 1rem;margin-top:.5rem;background:var(--bg-card,rgba(255,255,255,.06));border-radius:12px;gap:.3rem}body.auth-ok.acct-open .auth-status{white-space:normal;font-size:.85rem}.sync-banner{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#1f2937;color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:9999;font-size:.9rem}.sync-banner a{color:#93c5fd}" +
+    s.textContent = ".sync-row{margin-top:.4rem;font-size:.85rem}.sync-ctl{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.35rem}.sync-auto{display:inline-flex;align-items:center;gap:.3rem}.sync-banner{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#1f2937;color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:9999;font-size:.9rem}.sync-banner a{color:#93c5fd}" +
       ".bk-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998;display:flex;align-items:center;justify-content:center}.bk-box{background:var(--card,#fff);color:inherit;max-width:560px;width:92%;max-height:90vh;overflow:auto;border-radius:10px;padding:1rem}.bk-box textarea{width:100%;min-height:7rem;font-family:monospace;font-size:.75rem;word-break:break-all}.bk-box .row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}.bk-msg{font-size:.85rem;min-height:1.2em}" +
       "html.auth-required body:not(.auth-ok) #btn-backup{display:none}";
     document.head.appendChild(s);

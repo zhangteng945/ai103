@@ -18,7 +18,7 @@ test("首页去掉语言切换，刷题页保留；退出入口仍在首页", ()
   assert.match(html, /id="btn-auth-logout"/);
   assert.match(css, /body\.view-home \.lang-toggle/);
   assert.match(css, /body\.view-auth \.lang-toggle/);
-  assert.match(css, /body:not\(\.view-home\) #btn-acct-toggle/);
+  assert.match(css, /body\.auth-ok #btn-acct-toggle/);
   assert.match(app, /function setBodyView\(name\)/);
   assert.match(app, /setBodyView\(name\)/);
   assert.match(app, /setBodyView\("auth"\)/);
@@ -76,4 +76,24 @@ test("setBodyView 只在首页显示账号，离开首页关闭账号面板", ()
   assert.ok(!classes.has("acct-open"));
   assert.ok(classes.has("view-exam"));
   assert.ok(!classes.has("view-home"));
+});
+
+test("登录后账号内容直接铺在首页卡片，刷题页不显示", () => {
+  const authIdx = html.indexOf('id="auth-panel"');
+  const topbarStart = html.indexOf('<header class="topbar">');
+  const topbarEnd = html.indexOf("</header>");
+  const homeIdx = html.indexOf('id="view-home"');
+  assert.notEqual(authIdx, -1);
+  assert.ok(authIdx > topbarEnd, "auth-panel should be outside the topbar");
+  assert.ok(authIdx < homeIdx, "auth-panel should sit above the exam list");
+  assert.match(html, /id="btn-auth-logout"/);
+  assert.match(html, /id="auth-status"/);
+  assert.match(css, /body\.auth-ok\.view-home #auth-panel/);
+  assert.match(css, /body\.auth-ok:not\(\.view-home\) #auth-panel/);
+  const auth = fs.readFileSync(path.join(root, "js/account-auth.js"), "utf8");
+  assert.match(auth, /if \(tg\) tg\.classList\.add\("hidden"\)/);
+  assert.doesNotMatch(auth, /tg\.textContent = "账号"/);
+  assert.doesNotMatch(auth, /body\.auth-ok #auth-panel\{display:none!important\}/);
+  assert.match(auth, /id='btn-sync-upload'/);
+  assert.match(auth, /id='btn-sync-download'/);
 });
