@@ -1,7 +1,8 @@
 /**
  * account-auth.js — account login (gates the bank) + manual progress upload/download.
- * Progress is NOT synced automatically. 「上传进度」overwrites cloud with local.
- * 「下载进度」overwrites local with cloud. Neither path merges wrongIds.
+ * Progress is NOT synced automatically. 「上传进度」overwrites cloud practice with local;
+ * 「下载进度」overwrites local practice with cloud. Mock-exam history is merged both ways
+ * (deduped by id or exam+time+score). Neither path auto-syncs, and practice is not merged.
  * Active only when window.__ITCERT_ACCOUNT__.enabled === true; otherwise it only adds the
  * zero-backend「导出进度 / 导入进度」backup UI and leaves password-gate.js in charge.
  *
@@ -533,7 +534,7 @@
   }
   function forceLogout(msg) { state.session = null; writeSession(null); clearBankMemory(); purgeBankCache(); state.expired = /过期/.test(msg); setStatus(msg); refreshUi(); }
 
-  /* ---------------- manual progress upload / download (no merge, no auto sync) ---------------- */
+  /* ---------------- manual progress upload / download (practice overwrite, hist merge, no auto sync) ---------------- */
   var STALE_KEY = "itcert_cloud_stale";
   function setSync(t) { state.syncStatus = t; var el = $("sync-status"); if (el) el.textContent = t; }
   async function pullRemote(token, uid) {
@@ -541,8 +542,13 @@
     return rows && rows[0] ? rows[0].data : null;
   }
   async function pushRemote(token, uid, snap) {
-    // PostgREST upsert replaces the data column. Local snapshot overwrites cloud entirely.
+    // PostgREST upsert replaces the data column. Caller composes practice overwrite + merged hist first.
     await http("POST", "/rest/v1/user_progress?on_conflict=user_id", { user_id: uid, data: snap }, token, { Prefer: "resolution=merge-duplicates,return=minimal" });
+  }
+  function asProgressSnap(remote) {
+    if (remote == null) return { v: 1, exams: {} };
+    if (typeof remote !== "object" || Array.isArray(remote) || !remote.exams) throw new Error("云端进度无效");
+    return remote;
   }
   function syncFailText(e, verb) {
     if (!state.session) return "";
@@ -552,7 +558,7 @@
   }
   function noteLocalAhead(msg) {
     try { sessionStorage.setItem(STALE_KEY, "1"); } catch (e) {}
-    var text = msg || "本机进度已更新。云端仍是旧数据，需要覆盖云端请点「上传进度」。刷新不会自动拉回云端。";
+    var text = msg || "本机进度已更新。云端仍是旧数据，需要同步请点「上传进度」。刷新不会自动拉回云端。";
     setSync(text);
     showBanner(text + " <a href='#' id='sync-reload'>知道了</a>", true);
   }
@@ -578,17 +584,21 @@
   async function uploadProgress() {
     if (!ENABLED || !state.session) { setSync("请先登录"); return; }
     if (state.syncing) return;
-    if (!global.confirm("上传将用本机进度完整覆盖云端进度，云端现有记录会被替换。确定上传？")) return;
+    if (!global.confirm("上传将用本机做题进度覆盖云端做题进度；模拟考试历史会与云端合并后保存（按记录去重，不自动同步）。确定上传？")) return;
     state.syncing = true;
     setSync("正在上传…");
     try {
       await withRetry(async function () {
         var token = await ensureFreshToken();
-        await pushRemote(token, state.session.user.id, PC.snapshot(ls, knownExamIds()));
+        var local = PC.snapshot(ls, knownExamIds());
+        var remote = asProgressSnap(await pullRemote(token, state.session.user.id));
+        var composed = PC.composeOverwriteWithMergedHist(local, remote);
+        await pushRemote(token, state.session.user.id, composed);
+        if (typeof PC.apply === "function") PC.apply(ls, composed, setRaw);
       });
       clearLocalAhead();
       var meta = PC.readMeta(ls); meta.lastSyncAt = Date.now(); PC.writeMeta(ls, meta);
-      setSync("已上传到云端 " + fmtTime(Date.now()) + "（云端已被本机覆盖）");
+      setSync("已上传到云端 " + fmtTime(Date.now()) + "（做题进度已覆盖云端，模考历史已合并）");
     } catch (e) {
       setSync(syncFailText(e, "上传"));
     } finally { state.syncing = false; }
@@ -596,22 +606,23 @@
   async function downloadProgress() {
     if (!ENABLED || !state.session) { setSync("请先登录"); return; }
     if (state.syncing) return;
-    if (!global.confirm("下载将用云端进度完整覆盖本机进度，本机尚未上传的练习、错题和考试记录会丢失，并刷新页面。确定下载？")) return;
+    if (!global.confirm("下载将用云端做题进度覆盖本机做题进度；模拟考试历史会与本机合并后保存（按记录去重，不自动同步），并刷新页面。本机尚未上传的练习和错题会丢失。确定下载？")) return;
     state.syncing = true;
     setSync("正在下载…");
     try {
       await withRetry(async function () {
         var token = await ensureFreshToken();
-        var remote = await pullRemote(token, state.session.user.id);
-        if (remote && (typeof remote !== "object" || Array.isArray(remote) || !remote.exams)) throw new Error("云端进度无效");
-        if (typeof PC.replaceAll === "function") PC.replaceAll(ls, remote || { v: 1, exams: {} }, setRaw);
+        var remote = asProgressSnap(await pullRemote(token, state.session.user.id));
+        var local = PC.snapshot(ls, knownExamIds());
+        var composed = PC.composeOverwriteWithMergedHist(remote, local);
+        if (typeof PC.replaceAll === "function") PC.replaceAll(ls, composed, setRaw);
         else {
           PC.clearAll(ls);
-          if (remote && remote.exams) PC.apply(ls, remote, setRaw);
+          PC.apply(ls, composed, setRaw);
         }
       });
       clearLocalAhead();
-      setSync("已用云端进度覆盖本机，正在刷新…");
+      setSync("已用云端做题进度覆盖本机，模考历史已合并，正在刷新…");
       setTimeout(function () { location.reload(); }, 300);
     } catch (e) {
       state.syncing = false;
@@ -654,7 +665,7 @@
     var lb = $("btn-auth-login"); if (lb) { lb.classList.toggle("hidden", li); lb.textContent = "登录"; }
     var lo = $("btn-auth-logout"); if (lo) { lo.classList.toggle("hidden", !li); lo.textContent = "退出登录"; }
     var hint = document.querySelector("#auth-panel .auth-hint");
-    if (hint) hint.textContent = li ? "进度只保存在本机。换设备请点「上传进度」或「下载进度」（互相覆盖，不自动合并）" : "请使用管理员发放的账号登录（账号可只填姓名缩写）";
+    if (hint) hint.textContent = li ? "进度只保存在本机。换设备请点「上传进度」或「下载进度」（做题进度互相覆盖，模考历史合并，不自动同步）" : "请使用管理员发放的账号登录（账号可只填姓名缩写）";
     if (li && !state.status) setStatus(loginStatusText());
     if (!li && !state.status) setStatus("请登录后使用");
     var sb = $("sync-row"); if (sb) sb.classList.toggle("hidden", !li);
@@ -739,7 +750,7 @@
         PC.apply(ls, PC.mergeSnapshots(PC.snapshot(ls, knownExamIds()), incoming), setRaw);
         var meta = PC.readMeta(ls); Object.keys(meta.ts).forEach(function (k) { meta.ts[k] = Math.max(meta.ts[k], Date.now() - 1); }); PC.writeMeta(ls, meta);
         try { sessionStorage.setItem(STALE_KEY, "1"); } catch (e2) {}
-        msg("导入成功，正在刷新…云端不会自动更新，需要覆盖请之后点「上传进度」。");
+        msg("导入成功，正在刷新…云端不会自动更新，需要同步请之后点「上传进度」。");
         setTimeout(function () { location.reload(); }, 600);
       } catch (e) { msg("导入失败：" + (e.message || e)); }
     }

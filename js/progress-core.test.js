@@ -1,6 +1,7 @@
 /**
  * node js/progress-core.test.js
- * Covers wrongIds merge (import path) and full snapshot replace (manual download).
+ * Covers wrongIds merge (import path), full snapshot replace (practice overwrite),
+ * and mock-exam history merge / dedup / cap for manual upload and download.
  */
 var assert = require("assert");
 var PC = require("./progress-core.js");
@@ -63,5 +64,71 @@ assert.strictEqual(ls.getItem("itcert_practice_v1_dop-c02"), null, "download dro
 var applied = JSON.parse(ls.getItem("itcert_practice_v1_ai103"));
 assert.deepStrictEqual(applied.answers.q1, ["A"]);
 assert.strictEqual(applied.wrongIds.junk, undefined);
+
+function hist(t, score, extra) {
+  var h = { t: t, result: { correct: Math.round((score || 0) / 1000 * 65), total: 65, score1000: score, pass: (score || 0) >= 720 } };
+  if (extra) Object.keys(extra).forEach(function (k) { h[k] = extra[k]; });
+  return h;
+}
+
+var sameNoIdA = hist(1000, 700);
+var sameNoIdB = hist(1000, 700);
+var byId = hist(2000, 850, { id: "h_keep" });
+var cloudDupOfId = hist(2000, 850); // no id, same exam+time+score as byId
+var unique = hist(1500, 600, { id: "h_mid" });
+var mergedHist = PC.mergeHist([sameNoIdA, byId], [sameNoIdB, cloudDupOfId, unique], "ai103");
+assert.strictEqual(mergedHist.length, 3, "dedupes by id and by exam+time+score");
+assert.strictEqual(mergedHist[0].t, 1000);
+assert.strictEqual(mergedHist[1].id, "h_mid");
+assert.strictEqual(mergedHist[2].id, "h_keep");
+assert.ok(mergedHist[0].id, "assigns id when a history record has none");
+assert.strictEqual(mergedHist[0].result.score1000, 700);
+
+var sameIdDiffScore = PC.mergeHist(
+  [hist(3000, 500, { id: "same" })],
+  [hist(3000, 900, { id: "same" })],
+  "ai103"
+);
+assert.strictEqual(sameIdDiffScore.length, 1, "id wins over composite when both have the same id");
+
+var distinctIdsSameScore = PC.mergeHist(
+  [hist(4000, 800, { id: "a1" })],
+  [hist(4000, 800, { id: "a2" })],
+  "ai103"
+);
+assert.strictEqual(distinctIdsSameScore.length, 2, "different ids stay distinct even with the same composite");
+
+var overflow = [];
+for (var i = 0; i < 60; i++) overflow.push(hist(5000 + i, 400 + i, { id: "cap_" + i }));
+var capped = PC.mergeHist(overflow.slice(0, 40), overflow.slice(40), "ai103");
+assert.strictEqual(capped.length, PC.HIST_MAX, "caps merged history at HIST_MAX");
+assert.strictEqual(capped[0].id, "cap_10", "keeps the most recent HIST_MAX records");
+assert.strictEqual(capped[capped.length - 1].id, "cap_59");
+
+var localSnap = {
+  v: 1, t: 1, exams: {
+    ai103: { p: practice({ localOnly: true }, {}), pt: 9, last: { result: { score1000: 850 } }, lt: 9, hist: [sameNoIdA, byId] },
+  },
+};
+var cloudSnap = {
+  v: 1, t: 2, exams: {
+    ai103: { p: practice({ q9: true }, { q1: ["A"] }), pt: 1, last: { result: { score1000: 500 } }, lt: 1, hist: [sameNoIdB, unique] },
+    "dop-c02": { p: practice({ keepme: true }, {}), pt: 4, last: null, lt: 0, hist: [hist(800, 720, { id: "h_dop" })] },
+  },
+};
+var uploaded = PC.composeOverwriteWithMergedHist(localSnap, cloudSnap);
+assert.deepStrictEqual(uploaded.exams.ai103.p.wrongIds, { localOnly: true }, "upload keeps local practice");
+assert.strictEqual(uploaded.exams.ai103.last.result.score1000, 850, "upload keeps local last exam");
+assert.strictEqual(uploaded.exams.ai103.hist.length, 3, "upload merges history");
+assert.strictEqual(uploaded.exams["dop-c02"].p, null, "upload does not keep cloud-only practice");
+assert.strictEqual(uploaded.exams["dop-c02"].hist[0].id, "h_dop", "upload keeps cloud-only exam history");
+
+var downloaded = PC.composeOverwriteWithMergedHist(cloudSnap, localSnap);
+assert.strictEqual(downloaded.exams.ai103.p.wrongIds.q9, true, "download keeps cloud practice");
+assert.strictEqual(downloaded.exams.ai103.p.wrongIds.localOnly, undefined, "download does not keep local-only practice");
+assert.strictEqual(downloaded.exams.ai103.last.result.score1000, 500, "download keeps cloud last exam");
+assert.strictEqual(downloaded.exams.ai103.hist.length, 3, "download merges history");
+assert.ok(downloaded.exams.ai103.hist.some(function (h) { return h.id === "h_keep"; }));
+assert.strictEqual(downloaded.exams["dop-c02"].p.wrongIds.keepme, true);
 
 console.log("progress-core tests ok");
