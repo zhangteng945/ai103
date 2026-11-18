@@ -3664,3 +3664,100 @@ body.view-result .topbar .brand-icon {
   .icon-btn { color: var(--text); background: var(--fill); }
   .icon-btn:hover { background: var(--fill-2); color: var(--text); }
 }
+
+/* =====================================================================
+   Practice / exam question pane — 2026-11-18
+   Keep the stem and options in a scroll area that ends above the dock,
+   so answers are never hidden or shifted under the fixed bottom bar.
+   Changing questions resets this pane to the top (see scrollQuestionTop).
+   ===================================================================== */
+body.view-practice,
+body.view-exam {
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+body.view-practice .app,
+body.view-exam .app {
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+body.view-practice .topbar,
+body.view-exam .topbar {
+  position: relative;
+  flex: 0 0 auto;
+}
+body.view-practice #view-practice:not(.hidden),
+body.view-exam #view-exam:not(.hidden) {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+body.view-practice .practice-toolbar,
+body.view-exam .exam-toolbar {
+  flex: 0 0 auto;
+  margin-bottom: 0.65rem;
+}
+.q-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: 0.5rem;
+}
+/* Short viewports (browser chrome / WeChat): slightly tighter question card
+   so a typical 4-option item can sit fully above the dock. */
+@media (max-height: 760px) {
+  body.view-practice .practice-toolbar,
+  body.view-exam .exam-toolbar { margin-bottom: 0.4rem; }
+  body.view-practice #practice-body.card,
+  body.view-exam #exam-body.card { padding-top: 0.95rem; padding-bottom: 0.95rem; }
+  body.view-practice .q-meta,
+  body.view-exam .q-meta { margin-bottom: 0.65rem; }
+  body.view-practice .stem,
+  body.view-exam .stem { margin-bottom: 0.85rem; }
+  body.view-practice .options,
+  body.view-exam .options { gap: 0.45rem; }
+  body.view-practice .option,
+  body.view-exam .option { padding-top: 0.8rem; padding-bottom: 0.8rem; }
+}
+body.view-practice .action-dock,
+body.view-exam .action-dock {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  flex: 0 0 auto;
+  width: auto;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  z-index: 5;
+}
+body.view-practice .app-foot,
+body.view-exam .app-foot {
+  display: none;
+}
+
+/* Options / answer widgets stay inside the card and the visible pane. */
+#practice-options,
+#exam-options,
+#practice-boxes,
+#exam-boxes,
+.options,
+.answer-area,
+.option,
+.otext {
+  max-width: 100%;
+  min-width: 0;
+}

@@ -2839,14 +2839,7 @@
     else setJumpHint("");
     const inp = $("#practice-jump-input");
     if (inp) inp.value = "";
-    const body = $("#practice-body");
-    if (body && body.scrollIntoView) {
-      try {
-        body.scrollIntoView({ block: "start", behavior: "smooth" });
-      } catch (e) {
-        body.scrollIntoView();
-      }
-    }
+    scrollQuestionTop();
     return true;
   }
   function renderJumpSelect() {
@@ -2880,6 +2873,7 @@
       const idx = state.practiceIndex;
       const body = $("#practice-body");
       if (body) body.innerHTML = "<p class='muted'>正在加载题目…</p>";
+      scrollIfQuestionChanged((state.practiceFilter || "") + ":" + idx + ":loading");
       ensurePracticeWindow(idx).then(function () {
         if (token !== practiceLoadToken || state.mode !== "practice" || state.practiceIndex !== idx) return;
         hydratePracticeList();
@@ -3052,6 +3046,7 @@
         });
       });
     }
+    scrollIfQuestionChanged((state.practiceFilter || "") + ":" + state.practiceIndex + ":" + (q && q.id));
   }
 
   function assignDragNext(q, key, mode) {
@@ -3494,6 +3489,7 @@
       $("#btn-exam-prev").disabled = true;
       $("#btn-exam-next").disabled = true;
       $("#btn-exam-flag").disabled = true;
+      scrollIfQuestionChanged("exam-review");
       return;
     }
     $("#btn-exam-flag").disabled = false;
@@ -3595,6 +3591,7 @@
         });
       }
     }
+    scrollIfQuestionChanged("exam:" + state.examIndex + ":" + (q && q.id));
   }
 
   function renderExamGrid(reviewMode) {
@@ -3887,9 +3884,30 @@
     }
   }
 
+  function questionScrollRoot() {
+    if (state.mode === "practice") return $("#practice-scroll") || $("#practice-body");
+    if (state.mode === "exam") return $("#exam-scroll") || $("#exam-body");
+    return null;
+  }
   function scrollQuestionTop() {
-    try { window.scrollTo({ top: 0, behavior: "smooth" }); }
-    catch (e) { try { window.scrollTo(0, 0); } catch (e2) {} }
+    const root = questionScrollRoot();
+    if (root) {
+      root.scrollTop = 0;
+      root.scrollLeft = 0;
+    }
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try {
+      document.documentElement.scrollTop = 0;
+      document.documentElement.scrollLeft = 0;
+      document.body.scrollTop = 0;
+      document.body.scrollLeft = 0;
+    } catch (e2) {}
+  }
+  let lastQuestionScrollKey = null;
+  function scrollIfQuestionChanged(key) {
+    if (key === lastQuestionScrollKey) return;
+    lastQuestionScrollKey = key;
+    scrollQuestionTop();
   }
 
   function questionList() {
