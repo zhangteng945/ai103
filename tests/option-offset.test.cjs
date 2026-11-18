@@ -63,3 +63,33 @@ test('选项和作答区在窄屏下限制在卡片宽度内', () => {
   assert.match(block, /max-width:\s*100%/);
   assert.match(block, /min-width:\s*0/);
 });
+
+test('练习/模考不再用 50vw 做底栏通栏，避免把选项挤出卡片左边', () => {
+  const start = css.lastIndexOf('Practice / exam options stay inside the card');
+  assert.ok(start >= 0, 'missing 2026-11-18 options containment block');
+  const block = css.slice(start);
+  const dock = block.match(/body\.view-practice \.action-dock,\s*body\.view-exam \.action-dock\s*\{[^}]*\}/);
+  assert.ok(dock, 'missing dock override in containment block');
+  assert.match(dock[0], /margin-left:\s*0/);
+  assert.match(dock[0], /margin-right:\s*0/);
+  assert.match(dock[0], /width:\s*100%/);
+  assert.doesNotMatch(dock[0], /50vw/);
+  assert.match(block, /body\.view-practice \.app,\s*body\.view-exam \.app\s*\{[^}]*max-width:\s*none/);
+  assert.match(block, /padding-left:\s*max\([^;]*calc\(50% - 410px\)/);
+});
+
+test('选项网格锁在卡片内：单列 100% 宽，不能 fixed/负边距/平移到视口左边', () => {
+  const start = css.lastIndexOf('Practice / exam options stay inside the card');
+  const block = css.slice(start);
+  const opts = block.match(/body\.view-practice #practice-options,[\s\S]*?body\.view-exam \.options\s*\{[^}]*\}/);
+  assert.ok(opts, 'missing options containment rule');
+  assert.match(opts[0], /grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+  assert.match(opts[0], /width:\s*100%/);
+  assert.match(opts[0], /position:\s*relative/);
+  assert.match(opts[0], /left:\s*auto/);
+  assert.match(opts[0], /margin-left:\s*0/);
+  assert.match(opts[0], /transform:\s*none/);
+  assert.match(block, /body\.view-practice \.q-scroll,\s*body\.view-exam \.q-scroll\s*\{[^}]*overflow-x:\s*hidden/);
+  assert.match(block, /#practice-body\.card,\s*#exam-body\.card\s*\{[^}]*overflow-x:\s*hidden/);
+  assert.match(block, /#practice-body\.card,\s*#exam-body\.card\s*\{[^}]*contain:\s*layout/);
+});

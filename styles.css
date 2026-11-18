@@ -3761,3 +3761,100 @@ body.view-exam .app-foot {
   max-width: 100%;
   min-width: 0;
 }
+
+/* =====================================================================
+   Practice / exam options stay inside the card — 2026-11-18
+   Windows Edge (classic scrollbar, sometimes a side pane) makes 100vw
+   wider than the visible layout viewport. Full-bleed chrome used
+   margin: calc(50% - 50vw), which can overflow the practice column and
+   leave .options as a shrink-to-fit sliver at the left of the screen
+   (stem / 案例 / 收藏 / 跳转 stay in the centered card).
+   Use 100% / 50% for chrome, and pin the options grid to the card.
+   ===================================================================== */
+body.view-practice .app,
+body.view-exam .app {
+  max-width: none;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  min-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+body.view-practice .app .topbar,
+body.view-exam .app .topbar {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: max(1rem, env(safe-area-inset-left, 0px), calc(50% - 410px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px), calc(50% - 410px));
+}
+body.view-practice #view-practice:not(.hidden),
+body.view-exam #view-exam:not(.hidden) {
+  max-width: 820px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+body.view-practice .action-dock,
+body.view-exam .action-dock {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+body.view-practice .q-scroll,
+body.view-exam .q-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+#practice-body.card,
+#exam-body.card {
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  contain: layout;
+}
+.case-box,
+.q-meta,
+.stem {
+  max-width: 100%;
+  min-width: 0;
+}
+.case-box {
+  overflow-x: hidden;
+}
+body.view-practice #practice-options,
+body.view-exam #exam-options,
+body.view-practice .options,
+body.view-exam .options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  inset: auto;
+  float: none;
+  margin-left: 0;
+  margin-right: 0;
+  transform: none;
+}
+body.view-practice .option,
+body.view-exam .option {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
