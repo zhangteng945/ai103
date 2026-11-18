@@ -3,7 +3,7 @@
    New SW versions skipWaiting+claim, then drop old itcert-cache-* so the first
    navigation after an update hits the network (not a stale HTML shell). sw.js
    itself is never cache-first, so later updates are not pinned to an old script. */
-const CACHE = "itcert-cache-202611181115";
+const CACHE = "itcert-cache-202611181145";
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil((async () => {
   await Promise.all((await caches.keys()).filter((key) => key.startsWith("itcert-cache-") && key !== CACHE).map((key) => caches.delete(key)));

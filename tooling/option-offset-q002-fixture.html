@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>q002 offset fixture</title>
+<link rel="stylesheet" href="../styles.css">
+<style id="extra"></style>
+</head>
+<body class="auth-ok view-practice">
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-icon">AI</div><div><h1>IT认证练习</h1></div></div>
+    </header>
+    <section id="view-practice">
+      <div class="toolbar practice-toolbar">
+        <div class="toolbar-row toolbar-progress">
+          <div class="progress-wrap">
+            <div class="progress-bar"><i id="practice-progress-bar" style="width:1.6%"></i></div>
+            <div class="progress-label" id="practice-progress-label">已答 3 / 187（当前第 2 题）</div>
+          </div>
+        </div>
+      </div>
+      <div class="q-scroll" id="practice-scroll">
+        <div class="card" id="practice-body">
+        
+<div class="q-meta">
+  <span class="badge">#q002</span>
+  <span class="badge pdf-ref" title="规划和管理 Azure AI 解决方案 · 案例研究 · 问题 2">规划和管理 Azure AI 解决方案 · 案例研究 · 问题 2 · 第6页</span>
+  <span class="badge domain">规划和管理 Azure AI 解决方案</span>
+  <span class="badge">单选</span>
+  <span class="badge">案例研究</span>
+</div>
+<details class="case-box" id="case-box">
+  <summary>案例背景</summary>
+  <div class="case-body">概述<br><br>公司信息<br><br>Contoso, Ltd 是一家跨国零售公司，通过使用 Microsoft Foundry 构建、部署和管理生成式 AI 和基于代理的解决方案。<br><br>现有环境<br><br>身份环境<br><br>Contoso 使用 Microsoft Entra ID 进行身份管理、身份验证和授权功能，使代理能够访问组织资源和服务。<br><br>Contoso 最近成立了一个新的 AI 工程团队，名为 Agent1Dev Team，以优化和维护现有的 AI 解决方案。<br><br>该团队与解决方案架构师、DevOps 工程师和安全工程师合作，设计、实施、监控和保护 AI 应用程序。<br><br>Contoso 还有一个名为 Agent1Test Team 的团队，负责在解决方案部署之前验证 AI 解决方案。<br><br>生成环境<br><br>Contoso 有一个 Microsoft Foundry 部署，其中包含两个项目，分别名为 Project1 和 Project2。<br><br>项目1<br><br>Project1 包含一个名为 Agent1 的客户支持代理，帮助客户处理产品咨询和故障排除请求。<br><br>Agent1 具有以下配置：<br><br>Agent1 使用基础模型部署。<br><br>安全评估管道 未 启用。<br><br>工具调用审批工作流 未 启用。<br><br>对话记忆约束 未 配置。<br><br>Agent1 通过数字支持渠道与客户互动，并回答有关 Contoso 产品的一般问题。<br><br>Project1 部署在位于欧盟 (EU) 的 Azure 区域。<br><br>Agent1Dev 团队将使用 Project1 来优化和维护 Agent1。<br><br>项目2<br><br>Project2 包含一个已部署的视频生成模型。Contoso 的市场部门可以访问 Project2，并计划使用该模型开发视频创作解决方案。<br><br>该解决方案的开发尚未完成。<br><br>数据环境<br><br>Contoso 在支持 AI 应用的 Azure 资源中存储与产品相关的信息。<br><br>Azure 环境包含一个名为 storage1 的 Azure Blob 存储帐户，该帐户存储所有 Contoso 产品的产品详细信息表。<br><br>产品说明书包括规格、功能描述和产品支持信息，Agent1 可以用来回答客户问题。产品说明书以 PDF 格式存储。<br><br>问题陈述<br><br>Contoso 确定了以下问题：<br><br>Agent1 仅对 Contoso 产品有一般了解。<br><br>最近与 Agent1 的聊天互动进行了情感分析。分析结果尚未 处理。<br><br>Agent1 在回答客户问题时，不使用存储在 storage1 中的产品说明书中的详细产品信息。<br><br>Contoso 的财务部门报告称，供应商发票必须手动审核，以确保发票与供应商合同中定义的条款相符。发票包含表格、徽标，以及各种布局，使得文件难以一致地处理。<br><br>需求<br><br>计划变更<br><br>Contoso 计划实施以下变更：<br><br>为 Project1 实施一个解决方案，通过评估发票的视觉布局和文本内容来分析供应商发票，以便能够根据供应商合同条款验证发票细节。<br><br>更新 Agent1 使用的基础模型部署，并标准化模型版本，以确保连续性和一致的响应。<br><br>启用 Agent1 从存储在 storage1 中的产品表中检索和使用详细的产品信息。<br><br>为产品表实施一个索引解决方案，以便 Agent1 可以用来回答客户问题。<br><br>完成视频创作解决方案的开发。<br><br>技术要求<br><br>Contoso 确定了以下技术要求：<br><br>Agent1 使用的模型部署必须支持可扩展的高吞吐量生成 AI 工作负载，并动态扩展以处理可变的客户支持流量，而无需保留吞吐量容量。<br><br>产品表必须通过使用索引管道进行处理，以支持语义和向量搜索，以便 Agent1 可以检索相关的产品信息。<br><br>使用产品表信息生成的响应必须相关、完整且准确。<br><br>Agent1 必须能够使用产品表回答有关产品详细信息的自然语言问题。<br><br>Agent1 使用的模型版本必须保持一致，以确保稳定的响应。<br><br>模型处理的数据必须保留在欧盟内。<br><br>安全和合规要求<br><br>Contoso 确定了以下安全和合规要求：<br><br>API 密钥必须 不 用于访问部署在 Foundry 的模型。<br><br>访问 Azure 资源必须遵循最小权限原则。<br><br>Contoso 的开发人员必须通过 Microsoft Entra 认证来访问 Microsoft Foundry 资源。<br><br>对 Project1 的访问必须通过名为 SC_Agent1_Dev 的安全组分配给 Agent1Dev 团队的成员。<br><br>对 Project1 的访问必须通过名为 SC_Agent1_Test 的安全组分配给 Agent1Test 团队的成员。<br><br>Agent1 绝不能泄露客户信息，即使包含客户数据的文档错误地添加到 storage1 的产品表存储库中。<br><br>产品表可能包含嵌入文本的图像。Agent1 必须受到保护，以防止潜在隐藏在图像中的恶意指令。<br><br>业务需求<br><br>Contoso 确定了以下业务需求：<br><br>与 Agent1 互动的用户必须在未来的互动中拥有个性化体验，包括 Agent1 能够保留对话上下文并回忆之前互动中的相关信息。<br><br>Agent1 只能回答有关 Contoso 销售的产品的问题。</div>
+</details>
+<div class="stem">您需要配置 Agent1 以满足安全和合规要求。<br>你应该使用什么？</div>
+<div class="options" id="practice-options">
+<button type="button" class="option" data-oid="A"><span class="oid">A</span><span class="otext">自残内容过滤</span></button>
+<button type="button" class="option" data-oid="B"><span class="oid">B</span><span class="otext">提示屏障</span></button>
+<button type="button" class="option" data-oid="C"><span class="oid">C</span><span class="otext">个人可识别信息 (PII) 检测</span></button>
+<button type="button" class="option" data-oid="D"><span class="oid">D</span><span class="otext">暴力内容过滤</span></button>
+
+</div>
+
+        </div>
+        <div class="q-extras" id="q-extras">
+          <div class="qx-row">
+            <button type="button" class="btn btn-sm">☆ 收藏</button>
+            <button type="button" class="btn btn-sm">↺ 重做</button>
+            <button type="button" class="btn btn-sm">⚑ 报错</button>
+          </div>
+          <details class="qx-note"><summary>📝 我的笔记</summary><textarea rows="3"></textarea></details>
+        </div>
+        <form class="jump-row jump-row-quiet" id="practice-jump">
+          <label class="jump-label">跳到第 <input type="text" value="" placeholder="1–187"> 题</label>
+          <button type="submit" class="btn btn-sm btn-ghost">跳转</button>
+          <select><option>第 2 题 ✓</option></select>
+        </form>
+      </div>
+      <div class="action-dock" id="practice-dock">
+        <div class="action-bar">
+          <div class="action-secondary">
+            <button type="button" class="btn btn-sm">标记复习</button>
+            <button type="button" class="btn btn-sm">跳过</button>
+            <button type="button" class="btn btn-sm btn-ghost">显示答案</button>
+          </div>
+          <div class="action-primary">
+            <button type="button" class="btn">上一题</button>
+            <button type="button" class="btn btn-primary">提交</button>
+            <button type="button" class="btn">下一题</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
